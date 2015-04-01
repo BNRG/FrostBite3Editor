@@ -1,0 +1,42 @@
+package tk.captainsplexx.EBX;
+
+import tk.captainsplexx.EBX.EBXHandler.FieldValueType;
+
+
+public class EBXField{
+	EBXFieldDescriptor fieldDescritor;
+	int offset;
+	Object value;
+	FieldValueType type;
+	
+	public EBXField(EBXFieldDescriptor fieldDescritor, int offset) {
+		this.fieldDescritor = fieldDescritor;
+		this.offset = offset;
+	}
+	public EBXFieldDescriptor getFieldDescritor() {
+		return fieldDescritor;
+	}
+	public void setFieldDescritor(EBXFieldDescriptor fieldDescritor) {
+		this.fieldDescritor = fieldDescritor;
+	}
+	public int getOffset() {
+		return offset;
+	}
+	public void setOffset(int offset) {
+		this.offset = offset;
+	}
+	public Object getValue() {
+		return value;
+	}
+	public FieldValueType getType() {
+		return type;
+	}
+	public void setValue(Object value, FieldValueType type) {
+		this.value = value;
+		this.type = type;
+	}
+	
+	public EBXComplex getValueAsComplex(){
+		return (EBXComplex) value;
+	}	
+}
