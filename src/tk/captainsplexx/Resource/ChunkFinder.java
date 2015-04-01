@@ -12,7 +12,7 @@ public class ChunkFinder {
 	public String findChunkFile(String meshFilePath, ResourceHandler rsh) {
 		this.MeshBytes = readFile(meshFilePath);
 		buffer = readByte(MeshBytes, 0xC8, 16);
-		return rsh.getChunkFolderPath()+bytesToHex(buffer).toLowerCase()+".chunk";
+		return null /*rsh.getChunkFolderPath()+bytesToHex(buffer).toLowerCase()+".chunk"*/;//TODO
 	}
 		
 	static char[] hexArray = "0123456789ABCDEF".toCharArray();

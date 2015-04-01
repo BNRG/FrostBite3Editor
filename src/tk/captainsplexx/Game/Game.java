@@ -51,12 +51,12 @@ public class Game {
 		terrainHandler.generate(0, 0);
 		terrainHandler.generate(0, 0);
 				
-		resourceHandler = new ResourceHandler("D:/dump_bf4_fs/chunks/", "res/externalFileGUIDs");	
+		resourceHandler = new ResourceHandler("res/externalFileGUIDs"); //<--not needed in future
 		
 		shaderHandler = new ShaderHandler();
 		entityHandler = new EntityHandler(modelHandler, resourceHandler);
 				
-		/*LZ4 unpacker = new LZ4();///OUTDATED
+		/*LZ4 unpacker = new LZ4();///used directly in cas extactor
 		EbxCasConverter conv = new EbxCasConverter();
 		System.out.println(unpacker.getHexString(conv.createCAS(unpacker.decompress(resourceHandler.getFileReader().readFile("res/cas_99.lz77"))))); ///OUTDATED
 		*/
@@ -73,34 +73,7 @@ public class Game {
 		byte[] data = CasDataReader.readCas("72CEA8EE09AC2467B5B31561D0CDEFB96519A514", gamePath+"/Data", ccManager.getEntries());
 		
 		resourceHandler.getEBXHandler().getLoader().loadEBX(data);
-		
-		
-		
-		
-		
-		
-		
-		/*
-		ArrayList<File> files1 = new ArrayList<File>();
-		listf("C:/Users/Jannik/Desktop/Battlefield Modding/dump_bf4_fs/bundles_more_info/ebx/", files1, "meshvariationdb_win32.ebx");
-		
-		
-		for (int i=1; i<files1.size();i++) {
-			try{
-				resourceHandler.getEBXHandler().getLoader().loadEBX(files1.get(i).getAbsolutePath().replace('\\', '/'));//TAKES BYTEARRAY NOW!!
-				resourceHandler.getMeshVariationDatabaseHandler().addDatabase(resourceHandler.getEBXHandler().getLoader().getInstances().get(0));
-			}catch(Exception e){
-				e.printStackTrace();
-			}
-		}*/
-		//entityHandler.createEntityFromMesh("res/objects/architecture/housechina_01/housechina_01_destruction_Mesh.mesh", "C:/Users/Jannik/Desktop/Battlefield Modding/dump_bf4_fs/bundles/", "C:/Users/Jannik/Desktop/Battlefield Modding/dump_bf4_fs/bundles/");
-		entityHandler.createEntityFromMesh("res/objects/architecture/housesettlement_01/housesettlement_01_medium_01_destruction_Mesh.mesh", "D:/dump_bf4_fs/bundles/", "D:/dump_bf4_fs/bundles/");
-		entityHandler.createEntityFromMesh("res/objects/architecture/housesettlement_01/housesettlement_01_medium_01_door_Mesh.mesh", "D:/dump_bf4_fs/bundles/", "D:/dump_bf4_fs/bundles/");
-		
-		/*for (MeshVariationDatabaseEntry s : resourceHandler.getMeshVariationDatabaseHandler().entries.values()){
-			entityHandler.createEntityFromMesh("res/"+s.getName().toLowerCase()+".mesh", "C:/Users/Jannik/Desktop/Battlefield Modding/dump_bf4_fs/bundles/");
-		}*/
-		
+			
 		
 		/*Main.getEventHander().addEvent(new Event(1, -1, new Runnable() {
 		void run() {
@@ -155,5 +128,17 @@ public class Game {
 
 	public ShaderHandler getShaderHandler() {
 		return shaderHandler;
+	}
+
+
+	public String getGamePath() {
+		return gamePath;
+	}
+
+
+	public void setGamePath(String gamePath) {
+		this.gamePath = gamePath;
 	}		
+	
+	
 }

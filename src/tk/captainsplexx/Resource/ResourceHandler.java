@@ -4,7 +4,7 @@ import tk.captainsplexx.EBX.EBXHandler;
 import tk.captainsplexx.Render.TextureHandler;
 
 public class ResourceHandler {
-	public String chunkFolderPath;
+	//public String chunkFolderPath;
 	
 	public MeshChunkLoader mcL;
 	public ChunkFinder ckF;
@@ -12,8 +12,8 @@ public class ResourceHandler {
 	public EBXHandler ebxHandler;
 	public TextureHandler textureHandler;
 
-	public ResourceHandler(String chunkFolderPath, String guidTablePath) {
-		this.chunkFolderPath = chunkFolderPath;
+	public ResourceHandler(/*String chunkFolderPath,*/ String guidTablePath) {
+		//this.chunkFolderPath = chunkFolderPath;
 		this.mcL = new MeshChunkLoader();
 		this.ckF = new ChunkFinder();
 		this.ebxHandler = new EBXHandler(guidTablePath);
@@ -30,9 +30,9 @@ public class ResourceHandler {
 		return ckF;
 	}
 
-	public String getChunkFolderPath() {
+	/*public String getChunkFolderPath() {
 		return chunkFolderPath;
-	}
+	}*/
 	
 
 	public MeshVariationDatabaseHandler getMeshVariationDatabaseHandler() {

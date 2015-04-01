@@ -1,6 +1,5 @@
 package tk.captainsplexx.JavaFX;
 
-import tk.captainsplexx.JavaFX.Windows.JavaFXMainWindow;
 
 public class JavaFXHandler {
 	

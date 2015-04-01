@@ -44,7 +44,7 @@ public class Main {
 		
 		try {
             Display.setDisplayMode(new DisplayMode(DISPLAY_WIDTH, DISPLAY_HEIGHT));
-            Display.setTitle("Unofficial FrostBite3 Editor Tools by CAPTAINSPLEXX");
+            Display.setTitle("Unofficial FrostBite3 Editor by CaptainSpleXx.TK");
             Display.create();
             Mouse.setClipMouseCoordinatesToWindow(true);
             Mouse.setGrabbed(true);
