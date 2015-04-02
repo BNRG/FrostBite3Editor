@@ -48,8 +48,8 @@ public class JavaFXMainWindow extends Application{
 		/*LEFT*/
 		Parent leftroot = null;
 		try {
-			leftLoader = new FXMLLoader(); //not static to access controller class
-			leftroot = leftLoader.load(getClass().getResource("LeftWindow.fxml"));
+			leftLoader = new FXMLLoader(getClass().getResource("LeftWindow.fxml")); //not static to access controller class
+			leftroot = leftLoader.load();
 			leftController = leftLoader.getController();
 			System.out.println(leftController);
 		} catch (IOException e) {
@@ -65,8 +65,8 @@ public class JavaFXMainWindow extends Application{
         /*RIGHT*/
         Parent rightroot = null;
 		try { 
-			rightLoader = new FXMLLoader(); //not static to access controller class
-			rightroot = rightLoader.load(getClass().getResource("RightWindow.fxml"));
+			rightLoader = new FXMLLoader(getClass().getResource("RightWindow.fxml")); //not static to access controller class
+			rightroot = rightLoader.load();
 			rightController = (RightController) rightLoader.getController();
 			System.out.println(rightController);
 		} catch (IOException e) {
@@ -79,6 +79,8 @@ public class JavaFXMainWindow extends Application{
         stageRight.setY(Display.getDesktopDisplayMode().getHeight()/2-(sceneLeft.getHeight()/2));
         stageRight.setScene(sceneRight);
         stageRight.show();
+        
+        rightController.getEBXExplorer().setRoot(new TreeItem<String>("TEST"));
         
 	}
 	
