@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.lwjgl.opengl.Display;
 
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -13,6 +14,7 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeSortMode;
 import javafx.scene.control.TreeView;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 
 public class JavaFXMainWindow extends Application{
@@ -49,7 +51,6 @@ public class JavaFXMainWindow extends Application{
 		
 	void launchApplication(){
 		launch(); //Runs until window closes.
-		System.err.println("FXML Windows CLOSED!");
 		System.exit(0); //TODO
 	}
 
@@ -70,6 +71,12 @@ public class JavaFXMainWindow extends Application{
         stage.setTitle("Tools / Explorer");
         stage.setScene(sceneLeft);
         stage.show();
+        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+			@Override
+			public void handle(WindowEvent e) {
+				e.consume();
+			}
+		});
                 
         /*RIGHT*/
         Parent rightroot = null;
@@ -87,6 +94,14 @@ public class JavaFXMainWindow extends Application{
         stageRight.setY(Display.getDesktopDisplayMode().getHeight()/2-(sceneLeft.getHeight()/2));
         stageRight.setScene(sceneRight);
         stageRight.show();
+        stageRight.setOnCloseRequest(new EventHandler<WindowEvent>() {
+			@Override
+			public void handle(WindowEvent e) {
+				e.consume();
+			}
+		});
+        	
+        
         
         rightController.getEBXExplorer().setCellFactory(new Callback<TreeView<TreeViewEntry>,TreeCell<TreeViewEntry>>(){
             @Override
@@ -95,7 +110,7 @@ public class JavaFXMainWindow extends Application{
             }
         });
         
-        rightController.getEBXExplorer().setRoot(new TreeItem<TreeViewEntry>(new TreeViewEntry("TEST", TreeViewConverter.compoundIcon, null, EntryType.NULL)));
+        rightController.getEBXExplorer().setRoot(new TreeItem<TreeViewEntry>(new TreeViewEntry("TEST", TreeViewConverter.boxIcon, null, EntryType.NULL)));
         rightController.getEBXExplorer().getRoot().getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry("TEST2", TreeViewConverter.textIcon, null, EntryType.NULL)));
 	}
 	
