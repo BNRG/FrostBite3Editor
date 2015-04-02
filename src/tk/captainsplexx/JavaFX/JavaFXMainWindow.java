@@ -8,6 +8,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.TreeItem;
 import javafx.stage.Stage;
 
 public class JavaFXMainWindow extends Application{
@@ -50,6 +51,7 @@ public class JavaFXMainWindow extends Application{
 			leftLoader = new FXMLLoader(); //not static to access controller class
 			leftroot = leftLoader.load(getClass().getResource("LeftWindow.fxml"));
 			leftController = leftLoader.getController();
+			System.out.println(leftController);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -65,7 +67,8 @@ public class JavaFXMainWindow extends Application{
 		try { 
 			rightLoader = new FXMLLoader(); //not static to access controller class
 			rightroot = rightLoader.load(getClass().getResource("RightWindow.fxml"));
-			rightController = rightLoader.getController();
+			rightController = (RightController) rightLoader.getController();
+			System.out.println(rightController);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -77,7 +80,7 @@ public class JavaFXMainWindow extends Application{
         stageRight.setScene(sceneRight);
         stageRight.show();
         
-        
 	}
+	
 	
 }
