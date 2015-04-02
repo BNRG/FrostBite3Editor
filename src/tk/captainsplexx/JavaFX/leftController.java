@@ -6,7 +6,7 @@ import javafx.scene.control.TreeView;
 
 public class LeftController {
 	@FXML
-	public TreeView<String> explorer;
+	public TreeView<TreeViewEntry> explorer;
 	
 	/*OnAction*/
 	public void exit(){ 
@@ -18,7 +18,7 @@ public class LeftController {
 		//Main.getGame().setGamePath(""); //TODO
 	}
 
-	public TreeView<String> getExplorer() {
+	public TreeView<TreeViewEntry> getExplorer() {
 		return explorer;
 	}
 

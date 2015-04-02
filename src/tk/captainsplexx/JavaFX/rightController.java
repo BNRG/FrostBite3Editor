@@ -5,9 +5,9 @@ import javafx.scene.control.TreeView;
 
 public class RightController {
 	@FXML
-	public TreeView<String> ebxExplorer;
+	public TreeView<TreeViewEntry> ebxExplorer;
 
-	public TreeView<String> getEBXExplorer() {
+	public TreeView<TreeViewEntry> getEBXExplorer() {
 		return ebxExplorer;
 	}
 	
