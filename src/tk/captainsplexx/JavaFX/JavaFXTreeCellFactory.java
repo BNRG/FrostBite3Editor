@@ -1,6 +1,8 @@
 package tk.captainsplexx.JavaFX;
 
+import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
 import tk.captainsplexx.JavaFX.JavaFXMainWindow.WorkDropType;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.control.ContextMenu;
@@ -27,13 +29,12 @@ public class JavaFXTreeCellFactory extends TreeCell<TreeViewEntry> {
         public JavaFXTreeCellFactory() {
             MenuItem addMenuItem = new MenuItem("Add Entry");
             addMenu.getItems().add(addMenuItem);
-            /*addMenuItem.setOnAction(new EventHandler() {
+            addMenuItem.setOnAction(new EventHandler() {
                 public void handle(Event t) {
-                    TreeItem newEmployee = 
-                        new TreeItem<TreeViewEntry>(new TreeViewEntry().setName("TEST"));
-                            getTreeItem().getChildren().add(newEmployee);
+                    TreeItem newItem = new TreeItem<TreeViewEntry>(new TreeViewEntry("NEW ENTRY", null, null, EntryType.NULL));
+                    getTreeItem().getChildren().add(newItem);
                 }
-            });*/
+            });
 
             setOnDragDetected(new EventHandler<MouseEvent>() {
                 @Override
@@ -111,21 +112,18 @@ public class JavaFXTreeCellFactory extends TreeCell<TreeViewEntry> {
         @Override
         public void startEdit() {
             super.startEdit();
- 
-            if (textField == null) {
-                createTextField(getTreeItem());
-            }
-            setText(null);
-            setGraphic(textField);
-            textField.selectAll();
+	        //if (textField == null) { //USELESS ?
+	        createTextField(getTreeItem());
+	        //}
+	        setText(null);
+	        setGraphic(textField);
+	        textField.selectAll();
         }
  
         @Override
         public void cancelEdit() {
             super.cancelEdit();
- 
-            setText((String) getItem().getName());
-            setGraphic(getTreeItem().getValue().getGraphic());
+            updateItem(getTreeItem().getValue(), getTreeItem().getValue()==null);
         }
  
         @Override
@@ -138,12 +136,16 @@ public class JavaFXTreeCellFactory extends TreeCell<TreeViewEntry> {
             } else {
                 if (isEditing()) {
                     if (textField != null) {
-                        textField.setText(item.getName()); //TODO
+                        textField.setText(convertToString(item)); //TODO
                     }
                     setText(null);
                     setGraphic(textField);
                 } else {
-                    setText(item.getName());
+                	if (item.getType() == EntryType.ARRAY || item.getType() == EntryType.COMPOUND){
+                		setText(item.getName()+":"+item.getType().toString());
+                	}else{
+                		setText(item.getName()+":"+convertToString(item));
+                	}
                     setGraphic(getTreeItem().getValue().getGraphic());
                     if (!getTreeItem().isLeaf()&&getTreeItem().getParent()!= null){
                         setContextMenu(addMenu);
@@ -153,14 +155,22 @@ public class JavaFXTreeCellFactory extends TreeCell<TreeViewEntry> {
         }
         
         private void createTextField(TreeItem<TreeViewEntry> treeItem) {
-            textField = new TextField(getString());
+            textField = new TextField(convertToString(treeItem.getValue()));
             textField.setOnKeyReleased(new EventHandler<KeyEvent>() {
  
                 @Override
                 public void handle(KeyEvent t) {
                     if (t.getCode() == KeyCode.ENTER) {
-                    	treeItem.getValue().setName(textField.getText());
-                        commitEdit(treeItem.getValue());
+                    	Object obj = convertToObject(textField.getText(), treeItem.getValue());
+                    	if (obj != null && (treeItem.getValue().getType() == EntryType.ARRAY) || treeItem.getValue().getType() == EntryType.COMPOUND){
+                    		treeItem.getValue().setName((String) obj);
+                            commitEdit(treeItem.getValue());
+                    	}else if (obj != null){
+                    		treeItem.getValue().setValue(obj);
+                            commitEdit(treeItem.getValue());
+                    	}else{
+                    		cancelEdit();
+                    	}
                     } else if (t.getCode() == KeyCode.ESCAPE) {
                         cancelEdit();
                     }
@@ -168,8 +178,84 @@ public class JavaFXTreeCellFactory extends TreeCell<TreeViewEntry> {
             });  
             
         }
- 
-        private String getString() {
-            return getItem() == null ? "" : getItem().toString();
+        
+        public String convertToString(TreeViewEntry item){
+        	switch(item.type){
+	    		case STRING:
+	    			return (String)item.getValue();
+	    		case FLOAT:
+	    			return ((Float)item.getValue()).toString();
+	    		case DOUBLE:
+	    			return ((Double)item.getValue()).toString();
+	    		case SHORT:
+	    			return ((Short)item.getValue()).toString();
+	    		case INTEGER:
+	    			return ((Integer)item.getValue()).toString();
+	    		case LONG:
+	    			return ((Long)item.getValue()).toString();
+	    		case ARRAY:
+	    			return item.getName();
+	    		case COMPOUND:
+	    			return item.getName();
+	    		case BOOL:
+	    			if (((Boolean)item.getValue())==true){
+	    				return "TRUE";
+	    			}else{
+	    				return "FALSE";
+	    			}
+	    		case BYTE:
+	    			return byteToHex(((Byte)item.getValue()));
+	    		case NULL:
+	    			return ("NULL"); //DEFINED NULL ("NULL")
+				default:
+					return null; //UNDEFINED NULL ("null")
+        	}
         }
+        
+        public Object convertToObject(String value, TreeViewEntry item){
+        	try{
+	        	switch(item.type){
+		    		case STRING:
+		    			return(value);
+		    		case COMPOUND:
+		    			return(value);
+		    		case ARRAY:
+		    			return(value);
+		    		case FLOAT:
+		    			return(Float.valueOf(value));
+		    		case DOUBLE:
+		    			return(Double.valueOf(value));
+		    		case SHORT:
+		    			return(Short.valueOf(value));
+		    		case INTEGER:
+		    			return(Integer.valueOf(value));
+		    		case LONG:
+		    			return(Long.valueOf(value));
+		    		case BYTE:
+		    			return(hexToByte(value));
+		    		case BOOL:
+		    			if (value.equals("TRUE")){
+		    				return true;
+		    			}else{
+		    				return false;
+		    			}
+		    		case NULL:
+		    			return("NULL"); //DEFINED NULL ("NULL")
+					default:
+						return null; //UNDEFINED NULL ("null")
+	        	}
+        	}catch(Exception e){
+        		System.err.println("Couldn't not parse entry with name "+item.getName()+" in JavaFXTreeCellFactory!");
+        		return null;
+        	}
+        }
+        
+        byte hexToByte(String s) {
+    	    byte data = (byte) ((Character.digit(s.charAt(0), 16) << 4) + Character.digit(s.charAt(1), 16));
+    	    return data;
+    	}
+        
+    	String byteToHex(byte in) {
+    		return String.format("%02x", in).toUpperCase();
+    	}
 }
