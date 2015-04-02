@@ -5,8 +5,8 @@ DO NOT JOIN WITH A MODIF. CLIENT ANY PUNKBUSTER OR FAIRFIGHT ENABLED SERVER!
 
 Project designed for eclipse.
 
-http://i.imgur.com/WCl9z2I.jpg
+>http://i.imgur.com/WCl9z2I.jpg
 
 The right side will be designed like
-https://github.com/jaquadro/NBTExplorer
+>https://github.com/jaquadro/NBTExplorer
 for easy editing EBX Files.
