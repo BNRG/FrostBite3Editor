@@ -21,7 +21,7 @@ import javafx.util.Callback;
 public class JavaFXMainWindow extends Application{
 	
 	public static enum EntryType{
-		STRING, INTEGER, LONG, BOOL, FLOAT, DOUBLE, ARRAY, COMPOUND, BYTE, NULL, SHORT
+		STRING, INTEGER, LONG, BOOL, FLOAT, DOUBLE, ARRAY, LIST, BYTE, NULL, SHORT
 	};
 	
 	public static enum WorkDropType { DROP_INTO, REORDER };
@@ -112,13 +112,13 @@ public class JavaFXMainWindow extends Application{
         rightController.getEBXExplorer().setEditable(true);
         
         /*Sample data*/
-        rightController.getEBXExplorer().setRoot(new TreeItem<TreeViewEntry>(new TreeViewEntry("TEST", new ImageView(TreeViewConverter.boxIcon), null, EntryType.ARRAY)));
+        rightController.getEBXExplorer().setRoot(new TreeItem<TreeViewEntry>(new TreeViewEntry("TEST", new ImageView(TreeViewConverter.compoundIcon), null, EntryType.LIST)));
         rightController.getEBXExplorer().getRoot().getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry("TEST2", new ImageView(TreeViewConverter.textIcon), "TEXT2", EntryType.STRING)));
         rightController.getEBXExplorer().getRoot().getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry("TEST3", new ImageView(TreeViewConverter.integerIcon), 1, EntryType.INTEGER)));
         rightController.getEBXExplorer().getRoot().getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry("TEST4", new ImageView(TreeViewConverter.doubleIcon), 1.0d, EntryType.DOUBLE)));
         rightController.getEBXExplorer().getRoot().getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry("TEST5", new ImageView(TreeViewConverter.floatIcon), 100.1002f, EntryType.FLOAT)));
-        //rightController.getEBXExplorer().getRoot().getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry("TEST6", new ImageView(TreeViewConverter.boolIcon), 100.1002f, EntryType.BOOL)));
-        rightController.getEBXExplorer().getRoot().getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry("TEST7", new ImageView(TreeViewConverter.floatIcon), (byte) (0xFA>>0), EntryType.BYTE)));
+        rightController.getEBXExplorer().getRoot().getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry("TEST6", new ImageView(TreeViewConverter.boolIcon), true, EntryType.BOOL)));
+        rightController.getEBXExplorer().getRoot().getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry("TEST7", new ImageView(TreeViewConverter.byteIcon), (byte) (0xFA>>0), EntryType.BYTE)));
 	}
 	
 }

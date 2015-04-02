@@ -112,12 +112,18 @@ public class JavaFXTreeCellFactory extends TreeCell<TreeViewEntry> {
         @Override
         public void startEdit() {
             super.startEdit();
-	        //if (textField == null) { //USELESS ?
-	        createTextField(getTreeItem());
-	        //}
-	        setText(null);
-	        setGraphic(textField);
-	        textField.selectAll();
+            TreeViewEntry entry = getTreeItem().getValue();
+	        if (entry.getType()==EntryType.BOOL){
+	        	entry.setValue(!((Boolean) entry.getValue()));
+	        	commitEdit(getTreeItem().getValue());
+	        }else{
+	        	//if (textField == null) { //USELESS ?
+		        createTextField(getTreeItem());
+		        //}
+		        setText(null);
+		        setGraphic(textField);
+		        textField.selectAll();
+	        }
         }
  
         @Override
@@ -141,7 +147,7 @@ public class JavaFXTreeCellFactory extends TreeCell<TreeViewEntry> {
                     setText(null);
                     setGraphic(textField);
                 } else {
-                	if (item.getType() == EntryType.ARRAY || item.getType() == EntryType.COMPOUND){
+                	if (item.getType() == EntryType.ARRAY || item.getType() == EntryType.LIST){
                 		setText(item.getName()+":"+item.getType().toString());
                 	}else{
                 		setText(item.getName()+":"+convertToString(item));
@@ -162,7 +168,7 @@ public class JavaFXTreeCellFactory extends TreeCell<TreeViewEntry> {
                 public void handle(KeyEvent t) {
                     if (t.getCode() == KeyCode.ENTER) {
                     	Object obj = convertToObject(textField.getText(), treeItem.getValue());
-                    	if (obj != null && (treeItem.getValue().getType() == EntryType.ARRAY) || treeItem.getValue().getType() == EntryType.COMPOUND){
+                    	if (obj != null && (treeItem.getValue().getType() == EntryType.ARRAY) || treeItem.getValue().getType() == EntryType.LIST){
                     		treeItem.getValue().setName((String) obj);
                             commitEdit(treeItem.getValue());
                     	}else if (obj != null){
@@ -195,7 +201,7 @@ public class JavaFXTreeCellFactory extends TreeCell<TreeViewEntry> {
 	    			return ((Long)item.getValue()).toString();
 	    		case ARRAY:
 	    			return item.getName();
-	    		case COMPOUND:
+	    		case LIST:
 	    			return item.getName();
 	    		case BOOL:
 	    			if (((Boolean)item.getValue())==true){
@@ -217,7 +223,7 @@ public class JavaFXTreeCellFactory extends TreeCell<TreeViewEntry> {
 	        	switch(item.type){
 		    		case STRING:
 		    			return(value);
-		    		case COMPOUND:
+		    		case LIST:
 		    			return(value);
 		    		case ARRAY:
 		    			return(value);
@@ -251,8 +257,7 @@ public class JavaFXTreeCellFactory extends TreeCell<TreeViewEntry> {
         }
         
         byte hexToByte(String s) {
-    	    byte data = (byte) ((Character.digit(s.charAt(0), 16) << 4) + Character.digit(s.charAt(1), 16));
-    	    return data;
+    	    return (byte)((Character.digit(s.charAt(0), 16) << 4) + Character.digit(s.charAt(1), 16));
     	}
         
     	String byteToHex(byte in) {
