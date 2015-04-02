@@ -2,7 +2,9 @@ package tk.captainsplexx.Resource;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 
 public class FileHandler {
 	
@@ -35,6 +37,17 @@ public class FileHandler {
 			System.err.println("could not read file part from: "+filepath);
 			return null;
 		}
+	}
+	
+	public static InputStream getStream(String path){
+		InputStream is = null;
+		try {
+			is = new FileInputStream(path);
+		} catch (FileNotFoundException e) {
+			System.err.println("Could not read ImputStream from: "+path);
+			e.printStackTrace();
+		}
+		return is;
 	}
 	
 	//WRITE - FileOutputStream

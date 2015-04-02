@@ -2,6 +2,7 @@ package tk.captainsplexx.JavaFX;
 
 import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
 import tk.captainsplexx.JavaFX.JavaFXMainWindow.WorkDropType;
+import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
@@ -11,6 +12,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.effect.InnerShadow;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
@@ -23,19 +25,121 @@ import javafx.scene.paint.Color;
 public class JavaFXTreeCellFactory extends TreeCell<TreeViewEntry> {
         private TextField textField;
         private WorkDropType dropType;
-        private ContextMenu addMenu = new ContextMenu();
-        TreeItem<TreeViewEntry> draggedTreeItem;
+        private ContextMenu contextMenuAdd = new ContextMenu();
+        private ContextMenu contextMenuModify = new ContextMenu();
+        private TreeItem<TreeViewEntry> draggedTreeItem;
+        private MenuItem addText, addFloat, addDouble, addArray, addInteger, addBool, addList, addLong, addByte, addShort, removeAdd, removeModify;
  
         public JavaFXTreeCellFactory() {
-            MenuItem addMenuItem = new MenuItem("Add Entry");
-            addMenu.getItems().add(addMenuItem);
-            addMenuItem.setOnAction(new EventHandler() {
+            addText = new MenuItem("Add Text");
+            addText.setGraphic(new ImageView(JavaFXHandler.textIcon));
+            addText.setOnAction(new EventHandler() {
                 public void handle(Event t) {
-                    TreeItem newItem = new TreeItem<TreeViewEntry>(new TreeViewEntry("NEW ENTRY", null, null, EntryType.NULL));
+                    TreeItem newItem = new TreeItem<TreeViewEntry>(new TreeViewEntry("NEW STRING ENTRY", new ImageView(JavaFXHandler.textIcon), "", EntryType.STRING));
                     getTreeItem().getChildren().add(newItem);
                 }
             });
-
+            
+            addFloat = new MenuItem("Add Float");
+            addFloat.setGraphic(new ImageView(JavaFXHandler.floatIcon));
+            addFloat.setOnAction(new EventHandler() {
+                public void handle(Event t) {
+                    TreeItem newItem = new TreeItem<TreeViewEntry>(new TreeViewEntry("NEW FLOAT ENTRY", new ImageView(JavaFXHandler.floatIcon), 0.0f, EntryType.FLOAT));
+                    getTreeItem().getChildren().add(newItem);
+                }
+            });
+            
+            addDouble = new MenuItem("Add Double");
+            addDouble.setGraphic(new ImageView(JavaFXHandler.doubleIcon));
+            addDouble.setOnAction(new EventHandler() {
+                public void handle(Event t) {
+                    TreeItem newItem = new TreeItem<TreeViewEntry>(new TreeViewEntry("NEW DOUBLE ENTRY", new ImageView(JavaFXHandler.doubleIcon), 0.0d, EntryType.DOUBLE));
+                    getTreeItem().getChildren().add(newItem);
+                }
+            });
+            
+            addArray = new MenuItem("Add Array");
+            addArray.setGraphic(new ImageView(JavaFXHandler.arrayIcon));
+            addArray.setOnAction(new EventHandler() {
+                public void handle(Event t) {
+                    TreeItem newItem = new TreeItem<TreeViewEntry>(new TreeViewEntry("NEW ARRAY ENTRY", new ImageView(JavaFXHandler.arrayIcon), null, EntryType.ARRAY));
+                    getTreeItem().getChildren().add(newItem);
+                }
+            });
+            
+            addInteger = new MenuItem("Add Integer");
+            addInteger.setGraphic(new ImageView(JavaFXHandler.integerIcon));
+            addInteger.setOnAction(new EventHandler() {
+                public void handle(Event t) {
+                    TreeItem newItem = new TreeItem<TreeViewEntry>(new TreeViewEntry("NEW INTEGER ENTRY", new ImageView(JavaFXHandler.integerIcon), 1337, EntryType.INTEGER));
+                    getTreeItem().getChildren().add(newItem);
+                }
+            });
+            
+            addBool = new MenuItem("Add Bool");
+            addBool.setGraphic(new ImageView(JavaFXHandler.boolIcon));
+            addBool.setOnAction(new EventHandler() {
+                public void handle(Event t) {
+                    TreeItem newItem = new TreeItem<TreeViewEntry>(new TreeViewEntry("NEW BOOL ENTRY", new ImageView(JavaFXHandler.boolIcon), false, EntryType.BOOL));
+                    getTreeItem().getChildren().add(newItem);
+                }
+            });
+            
+            addList = new MenuItem("Add List");
+            addList.setGraphic(new ImageView(JavaFXHandler.listIcon));
+            addList.setOnAction(new EventHandler() {
+                public void handle(Event t) {
+                    TreeItem newItem = new TreeItem<TreeViewEntry>(new TreeViewEntry("NEW LIST ENTRY", new ImageView(JavaFXHandler.listIcon), null, EntryType.LIST));
+                    getTreeItem().getChildren().add(newItem);
+                }
+            });
+            
+            addLong = new MenuItem("Add Long");
+            addLong.setGraphic(new ImageView(JavaFXHandler.longIcon));
+            addLong.setOnAction(new EventHandler() {
+                public void handle(Event t) {
+                    TreeItem newItem = new TreeItem<TreeViewEntry>(new TreeViewEntry("NEW LONG ENTRY", new ImageView(JavaFXHandler.longIcon), (long) 9001, EntryType.LONG));
+                    getTreeItem().getChildren().add(newItem);
+                }
+            });
+            
+            addByte = new MenuItem("Add Byte");
+            addByte.setGraphic(new ImageView(JavaFXHandler.byteIcon));
+            addByte.setOnAction(new EventHandler() {
+                public void handle(Event t) {
+                    TreeItem newItem = new TreeItem<TreeViewEntry>(new TreeViewEntry("NEW BYTE ENTRY", new ImageView(JavaFXHandler.shortIcon), (byte) 0, EntryType.BYTE));
+                    getTreeItem().getChildren().add(newItem);
+                }
+            });
+            
+            addShort= new MenuItem("Add Short");
+            addShort.setGraphic(new ImageView(JavaFXHandler.shortIcon));
+            addShort.setOnAction(new EventHandler() {
+                public void handle(Event t) {
+                    TreeItem newItem = new TreeItem<TreeViewEntry>(new TreeViewEntry("NEW SHORT ENTRY", new ImageView(JavaFXHandler.byteIcon), (short) 0, EntryType.SHORT));
+                    getTreeItem().getChildren().add(newItem);
+                }
+            });
+            
+            EventHandler<ActionEvent> removeEvent = new EventHandler() {
+                public void handle(Event t) {
+                	if (getTreeItem().getParent()!=null){
+                		getTreeItem().getParent().getChildren().remove(getTreeItem());
+                	}
+                }
+            };
+            
+            removeAdd = new MenuItem("Remove");
+            removeAdd.setGraphic(new ImageView(JavaFXHandler.removeIcon));
+            removeAdd.setOnAction(removeEvent);
+            
+            removeModify = new MenuItem("Remove");
+            removeModify.setGraphic(new ImageView(JavaFXHandler.removeIcon));
+            removeModify.setOnAction(removeEvent);
+            
+            contextMenuAdd.getItems().addAll(addText, addFloat, addDouble, addInteger, addLong, addByte, addBool, addArray, addList, removeAdd);
+            contextMenuModify.getItems().addAll(removeModify);
+            
             setOnDragDetected(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent event) {
@@ -153,8 +257,10 @@ public class JavaFXTreeCellFactory extends TreeCell<TreeViewEntry> {
                 		setText(item.getName()+":"+convertToString(item));
                 	}
                     setGraphic(getTreeItem().getValue().getGraphic());
-                    if (!getTreeItem().isLeaf()&&getTreeItem().getParent()!= null){
-                        setContextMenu(addMenu);
+                    if (getTreeItem().getValue().getType()==EntryType.ARRAY||getTreeItem().getValue().getType()==EntryType.LIST){
+                        setContextMenu(contextMenuAdd);
+                    }else if (getTreeItem()!=null){
+                    	setContextMenu(contextMenuModify);
                     }
                 }
             }
