@@ -13,6 +13,7 @@ import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeSortMode;
 import javafx.scene.control.TreeView;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
@@ -110,8 +111,8 @@ public class JavaFXMainWindow extends Application{
             }
         });
         
-        rightController.getEBXExplorer().setRoot(new TreeItem<TreeViewEntry>(new TreeViewEntry("TEST", TreeViewConverter.boxIcon, null, EntryType.NULL)));
-        rightController.getEBXExplorer().getRoot().getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry("TEST2", TreeViewConverter.textIcon, null, EntryType.NULL)));
+        rightController.getEBXExplorer().setRoot(new TreeItem<TreeViewEntry>(new TreeViewEntry("TEST", new ImageView(TreeViewConverter.boxIcon), null, EntryType.NULL)));
+        rightController.getEBXExplorer().getRoot().getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry("TEST2", new ImageView(TreeViewConverter.textIcon), null, EntryType.NULL)));
 	}
 	
 	

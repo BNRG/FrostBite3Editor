@@ -1,8 +1,6 @@
 package tk.captainsplexx.JavaFX;
 
 import tk.captainsplexx.JavaFX.JavaFXMainWindow.WorkDropType;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.control.ContextMenu;
@@ -11,7 +9,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.effect.InnerShadow;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
@@ -128,7 +125,7 @@ public class JavaFXTreeCellFactory extends TreeCell<TreeViewEntry> {
             super.cancelEdit();
  
             setText((String) getItem().getName());
-            setGraphic(new ImageView(getTreeItem().getValue().getGraphic()));
+            setGraphic(getTreeItem().getValue().getGraphic());
         }
  
         @Override
@@ -147,7 +144,7 @@ public class JavaFXTreeCellFactory extends TreeCell<TreeViewEntry> {
                     setGraphic(textField);
                 } else {
                     setText(item.getName());
-                    setGraphic(new ImageView(getTreeItem().getValue().getGraphic()));
+                    setGraphic(getTreeItem().getValue().getGraphic());
                     if (!getTreeItem().isLeaf()&&getTreeItem().getParent()!= null){
                         setContextMenu(addMenu);
                     }

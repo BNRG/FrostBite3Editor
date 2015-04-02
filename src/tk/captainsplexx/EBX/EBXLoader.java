@@ -256,7 +256,7 @@ public class EBXLoader {
 				try{
 					field.setValue(externalGUIDs[(tempValue & 0x7fffffff)].getFileGUID(), FieldValueType.Guid); // INTERNAL ?? EXTERNAL ??
 				}catch (Exception e){
-					//field.setValue(internalGUIDs.get(tempValue-1), FieldValueType.Guid);// <'=_._Ö_._='>
+					//field.setValue(internalGUIDs.get(tempValue-1), FieldValueType.Guid);// <'=_._Ö_._='> //TODO
 				}
 			}
 		}

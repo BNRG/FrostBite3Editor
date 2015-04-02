@@ -1,17 +1,17 @@
 package tk.captainsplexx.JavaFX;
 
 import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
-import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 public class TreeViewEntry {
 	public String name;
-	public Image graphic;
+	public ImageView graphic;
 	public Object value;
 	public EntryType type;
 	
 	
 	
-	public TreeViewEntry(String name, Image graphic, Object value,
+	public TreeViewEntry(String name, ImageView graphic, Object value,
 			EntryType type) {
 		super();
 		this.name = name;
@@ -26,10 +26,10 @@ public class TreeViewEntry {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public Image getGraphic() {
+	public ImageView getGraphic() {
 		return graphic;
 	}
-	public void setGraphic(Image graphic) {
+	public void setGraphic(ImageView graphic) {
 		this.graphic = graphic;
 	}
 	public Object getValue() {
