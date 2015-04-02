@@ -4,15 +4,17 @@ import java.io.IOException;
 
 import org.lwjgl.opengl.Display;
 
-import tk.captainsplexx.Game.Main;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class JavaFXMainWindow extends Application{ //is Controller
-		
+public class JavaFXMainWindow extends Application{
+	
+	public FXMLLoader leftLoader;
+	public FXMLLoader rightLoader;
+	
 	public void runApplication(){
 		new Thread(new Runnable() {
 			@Override
@@ -24,37 +26,43 @@ public class JavaFXMainWindow extends Application{ //is Controller
 		
 	void launchApplication(){
 		launch(); //Runs until window closes.
-		System.err.println("FXML Window CLOSED!");
+		System.err.println("FXML Windows CLOSED!");
 		System.exit(0); //TODO
 	}
 
 	@Override
 	public void start(Stage stage) {
-		Parent root = null;
-		try { 
-			root = FXMLLoader.load(getClass().getResource("MainWindow.fxml"));
+		/*LEFT*/
+		Parent leftroot = null;
+		try {
+			leftLoader = new FXMLLoader(); //Not static to access controller class
+			leftroot = leftLoader.load(getClass().getResource("LeftWindow.fxml"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-        Scene scene = new Scene(root, 275, 700);
-                
-        stage.setX(Display.getWidth()*0.01);
-        stage.setY(Display.getHeight()*0.25);
-        
+		Scene sceneLeft = new Scene(leftroot, 275, 700);
+        stage.setX(Display.getDesktopDisplayMode().getWidth()*0.01f);
+        stage.setY(Display.getDesktopDisplayMode().getHeight()/2-(sceneLeft.getHeight()/2));
         stage.setTitle("Tools / Explorer");
-        stage.setScene(scene);
-        //stage.setResizable(false);
+        stage.setScene(sceneLeft);
         stage.show();
+                
+        /*RIGHT*/
+        Parent rightroot = null;
+		try { 
+			rightLoader = new FXMLLoader(); //Not static to access controller class
+			rightroot = rightLoader.load(getClass().getResource("RightWindow.fxml"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+        Stage stageRight = new Stage();
+        Scene sceneRight = new Scene(rightroot, 275, 700);
+        stageRight.setTitle("EBX Tools");
+        stageRight.setX(Display.getDesktopDisplayMode().getWidth()*0.985f-sceneLeft.getWidth());
+        stageRight.setY(Display.getDesktopDisplayMode().getHeight()/2-(sceneLeft.getHeight()/2));
+        stageRight.setScene(sceneRight);
+        stageRight.show();
+               
 	}
 	
-	/*OnAction*/
-	public void exit(){ 
-		System.out.println("EXIT -> FXML LEFT -> MENU -> QUIT");
-	}
-	
-	public void changegamepath(){
-		System.out.println("Current gamepath: "+Main.getGame().getGamePath());
-		//Main.getGame().setGamePath(""); //TODO
-	}
-
 }
