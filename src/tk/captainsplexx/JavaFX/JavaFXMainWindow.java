@@ -77,6 +77,23 @@ public class JavaFXMainWindow extends Application{
 				e.consume();
 			}
 		});
+        
+        leftController.getExplorer().setCellFactory(new Callback<TreeView<TreeViewEntry>,TreeCell<TreeViewEntry>>(){
+            @Override
+            public TreeCell<TreeViewEntry> call(TreeView<TreeViewEntry> p) {
+                return new JavaFXTreeCellFactory();
+            }
+        });
+        leftController.getExplorer().setEditable(true);
+        
+        /*Sample data*/
+        leftController.getExplorer().setRoot(new TreeItem<TreeViewEntry>(new TreeViewEntry("TEST", new ImageView(JavaFXHandler.listIcon), null, EntryType.LIST)));
+        leftController.getExplorer().getRoot().getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry("TEST2", new ImageView(JavaFXHandler.textIcon), "TEXT2", EntryType.STRING)));
+        leftController.getExplorer().getRoot().getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry("TEST3", new ImageView(JavaFXHandler.integerIcon), 1, EntryType.INTEGER)));
+        leftController.getExplorer().getRoot().getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry("TEST4", new ImageView(JavaFXHandler.doubleIcon), 1.0d, EntryType.DOUBLE)));
+        leftController.getExplorer().getRoot().getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry("TEST5", new ImageView(JavaFXHandler.floatIcon), 100.1002f, EntryType.FLOAT)));
+        leftController.getExplorer().getRoot().getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry("TEST6", new ImageView(JavaFXHandler.boolIcon), true, EntryType.BOOL)));
+        leftController.getExplorer().getRoot().getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry("TEST7", new ImageView(JavaFXHandler.byteIcon), (byte) (0xFA>>0), EntryType.BYTE)));
                 
         /*RIGHT*/
         Parent rightroot = null;
