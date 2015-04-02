@@ -1,15 +1,11 @@
 package tk.captainsplexx.Game;
 
-import javax.swing.JFrame;
-
-import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 
 import tk.captainsplexx.Event.EventHandler;
 import tk.captainsplexx.JavaFX.JavaFXHandler;
-import tk.captainsplexx.Render.JFrameHandler;
 import tk.captainsplexx.Render.Render;
 
 
@@ -18,7 +14,6 @@ public class Main {
 	public static Render render;
 	public static EventHandler eventHandler;
 	public static InputHandler inputHandler;
-	public static JFrameHandler jFrameHandler;
 	public static JavaFXHandler jfxHandler;
 	
 	public static int DISPLAY_WIDTH;
@@ -92,8 +87,10 @@ public class Main {
 	public static EventHandler getEventHander(){
 		return eventHandler;
 	}
-	
-	public static JFrameHandler getJFrameHandler(){
-		return jFrameHandler;
+
+	public static JavaFXHandler getJavaFXHandler() {
+		return jfxHandler;
 	}
+	
+	
 }

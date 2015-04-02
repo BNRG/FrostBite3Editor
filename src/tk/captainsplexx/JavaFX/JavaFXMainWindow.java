@@ -12,9 +12,21 @@ import javafx.stage.Stage;
 
 public class JavaFXMainWindow extends Application{
 	
+	/*LOADER and CONTROLLER*/
 	public FXMLLoader leftLoader;
 	public FXMLLoader rightLoader;
+	public LeftController leftController;
+	public RightController rightController;
 	
+	public FXMLLoader getLeftLoader() {
+		return leftLoader;
+	}
+
+	public FXMLLoader getRightLoader() {
+		return rightLoader;
+	}
+	/*END OF LOADER*/
+
 	public void runApplication(){
 		new Thread(new Runnable() {
 			@Override
@@ -35,8 +47,9 @@ public class JavaFXMainWindow extends Application{
 		/*LEFT*/
 		Parent leftroot = null;
 		try {
-			leftLoader = new FXMLLoader(); //Not static to access controller class
+			leftLoader = new FXMLLoader(); //not static to access controller class
 			leftroot = leftLoader.load(getClass().getResource("LeftWindow.fxml"));
+			leftController = leftLoader.getController();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -50,8 +63,9 @@ public class JavaFXMainWindow extends Application{
         /*RIGHT*/
         Parent rightroot = null;
 		try { 
-			rightLoader = new FXMLLoader(); //Not static to access controller class
+			rightLoader = new FXMLLoader(); //not static to access controller class
 			rightroot = rightLoader.load(getClass().getResource("RightWindow.fxml"));
+			rightController = rightLoader.getController();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -62,7 +76,8 @@ public class JavaFXMainWindow extends Application{
         stageRight.setY(Display.getDesktopDisplayMode().getHeight()/2-(sceneLeft.getHeight()/2));
         stageRight.setScene(sceneRight);
         stageRight.show();
-               
+        
+        
 	}
 	
 }

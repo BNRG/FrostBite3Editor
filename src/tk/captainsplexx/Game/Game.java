@@ -22,6 +22,7 @@ import tk.captainsplexx.EBX.EBXInstance;
 import tk.captainsplexx.EBX.EBXInstanceRepeater;
 import tk.captainsplexx.Entity.Entity;
 import tk.captainsplexx.Game.EntityHandler.Type;
+
 import tk.captainsplexx.Maths.Matrices;
 import tk.captainsplexx.Model.RawModel;
 import tk.captainsplexx.Render.ModelHandler;
@@ -55,7 +56,8 @@ public class Game {
 		
 		shaderHandler = new ShaderHandler();
 		entityHandler = new EntityHandler(modelHandler, resourceHandler);
-				
+	
+		
 		/*LZ4 unpacker = new LZ4();///used directly in cas extactor
 		EbxCasConverter conv = new EbxCasConverter();
 		System.out.println(unpacker.getHexString(conv.createCAS(unpacker.decompress(resourceHandler.getFileReader().readFile("res/cas_99.lz77"))))); ///OUTDATED

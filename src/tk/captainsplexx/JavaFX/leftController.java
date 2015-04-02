@@ -4,7 +4,7 @@ import tk.captainsplexx.Game.Main;
 import javafx.fxml.FXML;
 import javafx.scene.control.TreeView;
 
-public class leftController {
+public class LeftController {
 	@FXML
 	public TreeView<String> explorer;
 	
@@ -17,5 +17,9 @@ public class leftController {
 		System.out.println("Current gamepath: "+Main.getGame().getGamePath());
 		//Main.getGame().setGamePath(""); //TODO
 	}
-	
+
+	public TreeView<String> getExplorer() {
+		return explorer;
+	}
+
 }
