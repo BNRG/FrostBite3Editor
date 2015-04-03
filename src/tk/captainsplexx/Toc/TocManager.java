@@ -200,7 +200,7 @@ public class TocManager {
 	int readLEB128(byte[] fileArray, FileSeeker seeker){ //Read the next few bytes as LEB128/7bit encoding and return an integer.
 		int result = 0;
 		int shift = 0;
-		while(true){ //NOT TESTED ??! //TODO
+		while(true){
 			byte b = readByte(fileArray, seeker);
 			result |= (b & 0x7f) << shift;
 			if ((b & 0x80) == 0){

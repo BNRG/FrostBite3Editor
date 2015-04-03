@@ -85,6 +85,8 @@ public class JavaFXMainWindow extends Application{
             }
         });
         leftController.getExplorer().setEditable(true);
+        leftController.getExplorer().setPrefWidth(Display.getDesktopDisplayMode().getWidth());
+        leftController.getExplorer().setPrefHeight(Display.getDesktopDisplayMode().getHeight());
         
         
         /*RIGHT*/
@@ -118,6 +120,8 @@ public class JavaFXMainWindow extends Application{
             }
         });
         rightController.getEBXExplorer().setEditable(true);
+        rightController.getEBXExplorer().setPrefWidth(Display.getDesktopDisplayMode().getWidth());
+        rightController.getEBXExplorer().setPrefHeight(Display.getDesktopDisplayMode().getHeight());
         
         /*Sample data*/
         rightController.getEBXExplorer().setRoot(new TreeItem<TreeViewEntry>(new TreeViewEntry("TEST", new ImageView(JavaFXHandler.listIcon), null, EntryType.LIST)));

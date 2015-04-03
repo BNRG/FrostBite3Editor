@@ -18,7 +18,6 @@ public class MeshChunkLoader {
 	private int Submesh_Mat_Name_Offset;
 	private long FaceIndiceOffset=0;
 	private int submesh_vert_count=0;
-	//read_vert_pos_value=readHalfFloat;
 	private float Model_Scale = 39f;
 	private String Submesh_Material_Name="";
 	private long Submesh_Face_Indice_Count = 0;
@@ -163,13 +162,10 @@ public class MeshChunkLoader {
 		return coords;
 	}
 	
+	//-----------------------------
 	public String getSubMeshName(int submesh){
 		return SubmeshNames[submesh];
 	}
-	//-----------------------------
-	
-	
-	
 	
 	public int getIndicesPositions(int submesh){
 		return Indice_Positions[submesh];

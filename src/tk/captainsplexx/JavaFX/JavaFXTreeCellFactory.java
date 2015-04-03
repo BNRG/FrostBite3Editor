@@ -166,6 +166,8 @@ public class JavaFXTreeCellFactory extends TreeCell<TreeViewEntry> {
                         
                         draggedTreeItem = null;                  
                         event.setDropCompleted(true);
+                    }else if(getTreeItem() != draggedTreeItem && getTreeItem() != null && dropType == WorkDropType.REORDER){
+                    	System.out.println("reorder!");
                     }
                     event.consume();
                 }});
