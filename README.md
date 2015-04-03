@@ -1,12 +1,12 @@
 # FrostBite3Editor
 Unofficial FrostBite3 Editor Tools by CAPTAINSPLEXX
 
-DO NOT JOIN WITH A MODIF. CLIENT ANY PUNKBUSTER OR FAIRFIGHT ENABLED SERVER!
+DO NOT JOIN WITH A MODIF. CLIENT WITH PUNKBUSTER OR FAIRFIGHT ENABLED SERVER!
 
 Project designed for eclipse.
 
->http://i.imgur.com/WCl9z2I.jpg
+>Roadmap: http://i.imgur.com/WCl9z2I.jpg
 
-The right side will be designed like
->https://github.com/jaquadro/NBTExplorer
-for easy editing EBX Files.
+>Youtube: https://www.youtube.com/channel/UCNSVft8rtEmWSYZ_OeyPyBg
+
+>Twitter & Reddit: @CaptainSpleXx
