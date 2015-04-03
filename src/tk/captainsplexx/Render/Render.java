@@ -43,9 +43,8 @@ public class Render {
 
 		pe = game.getPlayerHandler().getPlayerEntity();
 		camera = new FPCameraController(pe);
-		matrices = new Matrices();
 
-		projectionMatrix = matrices.createProjectionMatrix(60f,
+		projectionMatrix = Matrices.createProjectionMatrix(60f,
 				Main.DISPLAY_WIDTH, Main.DISPLAY_HEIGHT, zNear, zFar);
 		
 		glMatrixMode(GL_MODELVIEW);
@@ -145,4 +144,14 @@ public class Render {
 	public FPCameraController getCamera() {
 		return camera;
 	}
+
+	public Matrix4f getProjectionMatrix() {
+		return projectionMatrix;
+	}
+
+	public void setProjectionMatrix(Matrix4f projectionMatrix) {
+		this.projectionMatrix = projectionMatrix;
+	}
+	
+	
 }

@@ -10,7 +10,7 @@ public class LeftController {
 	
 	/*OnAction*/
 	public void exit(){ 
-		System.out.println("EXIT -> FXML LEFT -> MENU -> QUIT");
+		System.out.println("EXIT -> FXML LEFT -> MENU -> QUIT");	
 	}
 	
 	public void changegamepath(){

@@ -4,7 +4,7 @@ import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 
 public class Matrices {
-	public Matrix4f createProjectionMatrix(Float fieldOfView, int WIDTH, int HEIGHT, float near_plane, float far_plane){
+	public static Matrix4f createProjectionMatrix(Float fieldOfView, int WIDTH, int HEIGHT, float near_plane, float far_plane){
 		Matrix4f projectionMatrix = new Matrix4f();
 		projectionMatrix.setIdentity();
 		float aspectRatio = (float)WIDTH / (float)HEIGHT;
@@ -22,7 +22,7 @@ public class Matrices {
 		return projectionMatrix;
 	}
 	
-	public Matrix4f createTransformationMatrix(Vector3f translation, Vector3f rotation, Vector3f scaling){
+	public static Matrix4f createTransformationMatrix(Vector3f translation, Vector3f rotation, Vector3f scaling){
 		Matrix4f transformationMatrix = new Matrix4f();
 		transformationMatrix.setIdentity();
 		Matrix4f.translate(translation, transformationMatrix, transformationMatrix);
@@ -33,7 +33,7 @@ public class Matrices {
 		return transformationMatrix;
 	}
 	
-	public Matrix4f createViewMatrix(Vector3f position, Vector3f rotation){
+	public static Matrix4f createViewMatrix(Vector3f position, Vector3f rotation){
 		Matrix4f viewMatrix = new Matrix4f();
 		viewMatrix.setIdentity();
 		Matrix4f.rotate((float) Math.toRadians(rotation.x), new Vector3f(1,0,0), viewMatrix, viewMatrix);
