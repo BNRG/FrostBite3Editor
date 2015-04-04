@@ -22,7 +22,7 @@ import tk.captainsplexx.EBX.EBXInstance;
 import tk.captainsplexx.EBX.EBXInstanceRepeater;
 import tk.captainsplexx.Entity.Entity;
 import tk.captainsplexx.Game.EntityHandler.Type;
-
+import tk.captainsplexx.Itexture.ItextureHandler;
 import tk.captainsplexx.Maths.Matrices;
 import tk.captainsplexx.Model.RawModel;
 import tk.captainsplexx.Render.ModelHandler;
@@ -40,10 +40,13 @@ public class Game {
 	public ResourceHandler resourceHandler;
 	public EntityHandler entityHandler;
 	public ShaderHandler shaderHandler;
+	public CasCatManager cCatManager; 
+	public ItextureHandler itextureHandler;
 	public String gamePath;
+	
 		
 	public Game(){
-		gamePath = "C:/Program Files (x86)/Origin Games/Battlefield 4"; //hardcoded for now//TODO
+		gamePath = "C:/Program Files (x86)/Origin Games/Battlefield 4";
 		modelHandler = new ModelHandler();
 		
 		playerHandler = new PlayerHandler();
@@ -56,15 +59,26 @@ public class Game {
 		
 		shaderHandler = new ShaderHandler();
 		entityHandler = new EntityHandler(modelHandler, resourceHandler);
-	
+		
+		
+		cCatManager = new CasCatManager();
+		cCatManager.readCAT(FileHandler.readFile(gamePath+"/Data/cas.cat"));
+		
+		
+		byte[] data = CasDataReader.readCas("72CEA8EE09AC2467B5B31561D0CDEFB96519A514", gamePath+"/Data", cCatManager.getEntries());
+		resourceHandler.getEBXHandler().getLoader().loadEBX(data);
+		
+		/*itextureHandler = new ItextureHandler(); guid to sha1 -> sb converter first
+		 *byte[] texture = itextureHandler.getDSS(FileHandler.readFile("D:/dump_bf4_fs/bundles_more_info/res/objects/architecture/apartmentbuilding_modules/t_apartmentbuilding_modules_04_d 2495893419b2e1d1 0b000000030000000000000000000000.itexture"), gamePath+"/Data", cCatManager.getEntries());
+		* /
+		
 		
 		/*LZ4 unpacker = new LZ4();///used directly in cas extactor
 		EbxCasConverter conv = new EbxCasConverter();
 		System.out.println(unpacker.getHexString(conv.createCAS(unpacker.decompress(resourceHandler.getFileReader().readFile("res/cas_99.lz77"))))); ///OUTDATED
 		*/
 		
-		CasCatManager ccManager = new CasCatManager();
-		ccManager.readCAT(FileHandler.readFile(gamePath+"/Data/cas.cat"));
+		
 		
 		/*
 		TocManager tocMan = new TocManager();
@@ -72,9 +86,7 @@ public class Game {
 		//TODO TocFile sb = tocMan.readSbPart(FileHandler.readFile("D:/dump_bf4_fs/MP_Playground.sb", 0x10, 0xAD954));
 		*/
 		
-		byte[] data = CasDataReader.readCas("72CEA8EE09AC2467B5B31561D0CDEFB96519A514", gamePath+"/Data", ccManager.getEntries());
 		
-		resourceHandler.getEBXHandler().getLoader().loadEBX(data);
 			
 		
 		/*Main.getEventHander().addEvent(new Event(1, -1, new Runnable() {
@@ -107,7 +119,9 @@ public class Game {
 	    }
 	}
 	
-	//Getters and Setters
+	//<----------GETTER AND SETTER--------------->//
+	
+	/*Handler*/
 	public ResourceHandler getResourceHandler() {
 		return resourceHandler;
 	}
@@ -132,7 +146,18 @@ public class Game {
 		return shaderHandler;
 	}
 
+	public ItextureHandler getItextureHandler() {
+		return itextureHandler;
+	}
 
+
+	public CasCatManager getcCatManager() {
+		return cCatManager;
+	}
+	/*End of Handler*/
+	
+	
+	/*GamePath*/
 	public String getGamePath() {
 		return gamePath;
 	}
@@ -140,7 +165,11 @@ public class Game {
 
 	public void setGamePath(String gamePath) {
 		this.gamePath = gamePath;
-	}		
+	}
+	/*End of GamePath*/
+	
+	
+	
 	
 	
 }
