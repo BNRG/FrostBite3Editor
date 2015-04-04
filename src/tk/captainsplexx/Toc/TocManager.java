@@ -9,7 +9,7 @@ import tk.captainsplexx.Resource.FileSeeker;
 
 public class TocManager {
 	public static enum TocFieldType {
-		STRING, BOOL, INTEGER, LONG, ID, SHA1, LIST
+		STRING, BOOL, INTEGER, LONG, GUID, SHA1, LIST
 	};
 	
 	public static enum TocEntryType {
@@ -110,7 +110,7 @@ public class TocManager {
 			if (list.isEmpty()){list = null;}
 			field = new TocField(list, TocFieldType.LIST, name);
 		}else if (fieldType == 0x0F){ //ID 16 stored as HEXSTRING
-			field = new TocField(bytesToHex(readByte(data, 16, seeker)), TocFieldType.ID, name);
+			field = new TocField(bytesToHex(readByte(data, 16, seeker)), TocFieldType.GUID, name);
 		}else if (fieldType == 0x09){ //LONG
 			field = new TocField(readLong(data, seeker), TocFieldType.LONG, name);
 		}else if (fieldType == 0x08){ //INTEGER

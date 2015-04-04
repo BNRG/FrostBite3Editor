@@ -23,6 +23,7 @@ import tk.captainsplexx.EBX.EBXInstanceRepeater;
 import tk.captainsplexx.Entity.Entity;
 import tk.captainsplexx.Game.EntityHandler.Type;
 import tk.captainsplexx.Itexture.ItextureHandler;
+import tk.captainsplexx.JavaFX.TreeViewConverter;
 import tk.captainsplexx.Maths.Matrices;
 import tk.captainsplexx.Model.RawModel;
 import tk.captainsplexx.Render.ModelHandler;
@@ -66,8 +67,8 @@ public class Game {
 		
 		
 		TocManager tocMan = new TocManager();
-		tocMan.readToc(FileHandler.readFile("D:/dump_bf4_fs/MP_Playground.toc"));
-		//tocFile sb = tocMan.readSbPart(FileHandler.readFile("D:/dump_bf4_fs/MP_Playground.sb", 0x10, 0xAD954));
+		Main.getJavaFXHandler().getMainWindow().setRoot(TreeViewConverter.getTreeView(tocMan.readToc(FileHandler.readFile("D:/dump_bf4_fs/MP_Playground.toc"))));
+		//TocFile sb = tocMan.readSbPart(FileHandler.readFile("D:/dump_bf4_fs/MP_Playground.sb", 0x10, 0xAD954));
 		
 		
 		
