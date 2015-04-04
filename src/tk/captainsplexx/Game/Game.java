@@ -65,29 +65,22 @@ public class Game {
 		cCatManager.readCAT(FileHandler.readFile(gamePath+"/Data/cas.cat"));
 		
 		
-		byte[] data = CasDataReader.readCas("72CEA8EE09AC2467B5B31561D0CDEFB96519A514", gamePath+"/Data", cCatManager.getEntries());
-		resourceHandler.getEBXHandler().getLoader().loadEBX(data);
-		
-		/*itextureHandler = new ItextureHandler(); guid to sha1 -> sb converter first
-		 *byte[] texture = itextureHandler.getDSS(FileHandler.readFile("D:/dump_bf4_fs/bundles_more_info/res/objects/architecture/apartmentbuilding_modules/t_apartmentbuilding_modules_04_d 2495893419b2e1d1 0b000000030000000000000000000000.itexture"), gamePath+"/Data", cCatManager.getEntries());
-		* /
-		
-		
-		/*LZ4 unpacker = new LZ4();///used directly in cas extactor
-		EbxCasConverter conv = new EbxCasConverter();
-		System.out.println(unpacker.getHexString(conv.createCAS(unpacker.decompress(resourceHandler.getFileReader().readFile("res/cas_99.lz77"))))); ///OUTDATED
-		*/
-		
-		
-		
-		/*
 		TocManager tocMan = new TocManager();
 		tocMan.readToc(FileHandler.readFile("D:/dump_bf4_fs/MP_Playground.toc"));
-		//TODO TocFile sb = tocMan.readSbPart(FileHandler.readFile("D:/dump_bf4_fs/MP_Playground.sb", 0x10, 0xAD954));
-		*/
+		//tocFile sb = tocMan.readSbPart(FileHandler.readFile("D:/dump_bf4_fs/MP_Playground.sb", 0x10, 0xAD954));
 		
 		
-			
+		
+		byte[] data = CasDataReader.readCas("72CEA8EE09AC2467B5B31561D0CDEFB96519A514", gamePath+"/Data", cCatManager.getEntries());
+		resourceHandler.getEBXHandler().getLoader().loadEBX(data);
+		EbxCasConverter conv = new EbxCasConverter();
+		conv.createCAS(data);
+		
+		/*guid to sha1 -> sb converter first*/
+		//byte[] ddsTexture = ItextureHandler.getDSS(FileHandler.readFile("D:/dump_bf4_fs/bundles_more_info/res/objects/architecture/apartmentbuilding_modules/t_apartmentbuilding_modules_04_d 2495893419b2e1d1 0b000000030000000000000000000000.itexture"), gamePath+"/Data", cCatManager.getEntries());
+		
+		
+		
 		
 		/*Main.getEventHander().addEvent(new Event(1, -1, new Runnable() {
 		void run() {

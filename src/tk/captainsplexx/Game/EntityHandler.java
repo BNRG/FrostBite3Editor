@@ -45,7 +45,7 @@ public class EntityHandler {
 	public int createEntityFromMesh(String subpathMesh, String pathRoot, String textureRoot){
 		try{
 			MeshChunkLoader msl = resourceHandler.getMeshChunkLoader();
-			msl.loadFile(pathRoot+subpathMesh, resourceHandler.getChunkFinder().findChunkFile(pathRoot+subpathMesh,resourceHandler));
+			//msl.loadFile(pathRoot+subpathMesh, resourceHandler.getChunkFinder().findChunkFile(pathRoot+subpathMesh,resourceHandler)); //input for chunk file.
 			String[] texturedModel = new String[msl.getSubMeshCount()];
 			ArrayList<String> materials = resourceHandler.getMeshVariationDatabaseHandler().getMaterials(msl.getName(), 0); //VARIATION ID ??!
 			for (int submesh=0; submesh<msl.getSubMeshCount();submesh++){
