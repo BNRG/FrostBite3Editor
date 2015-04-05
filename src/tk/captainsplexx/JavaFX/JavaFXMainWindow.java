@@ -151,7 +151,7 @@ public class JavaFXMainWindow extends Application{
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
-				rightController.getEBXExplorer().setRoot(new TreeItem<TreeViewEntry>(Main.getJavaFXHandler().getTreeViewStructureRight().getValue().clone()));
+				rightController.getEBXExplorer().setRoot(Main.getJavaFXHandler().getTreeViewStructureRight());
 			}
 		});	
 	}
@@ -160,7 +160,7 @@ public class JavaFXMainWindow extends Application{
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
-				leftController.getExplorer().setRoot(new TreeItem<TreeViewEntry>(Main.getJavaFXHandler().getTreeViewStructureLeft().getValue().clone()));
+				leftController.getExplorer().setRoot(Main.getJavaFXHandler().getTreeViewStructureLeft());
 			}
 		});	
 	}
