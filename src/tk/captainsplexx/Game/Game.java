@@ -47,10 +47,13 @@ public class Game {
 	public ShaderHandler shaderHandler;
 	public ItextureHandler itextureHandler;
 	public String gamePath;
+	public String gamePlatform;
 	
 		
 	public Game(){
 		gamePath = "C:/Program Files (x86)/Origin Games/Battlefield 4";
+		gamePlatform = "Win32";
+		
 		modelHandler = new ModelHandler();
 		
 		playerHandler = new PlayerHandler();
@@ -69,7 +72,7 @@ public class Game {
 		
 		
 		TocManager tocMan = new TocManager();
-		TreeItem<TreeViewEntry> test = TreeViewConverter.getTreeView(tocMan.readToc(FileHandler.readFile("D:/dump_bf4_fs/MP_Playground.toc")));
+		TreeItem<TreeViewEntry> test = TreeViewConverter.getTreeView(tocMan.readToc(FileHandler.readFile(gamePath+"/Data/"+gamePlatform+"/Levels/MP/MP_Siege/MP_Siege.toc")));
 		Main.getJavaFXHandler().setTreeViewStructureLeft(test);
 		Main.getJavaFXHandler().getMainWindow().updateLeftRoot();
 		//TocFile sb = tocMan.readSbPart(FileHandler.readFile("D:/dump_bf4_fs/MP_Playground.sb", 0x10, 0xAD954));
@@ -150,7 +153,7 @@ public class Game {
 	/*End of Handler*/
 	
 	
-	/*GamePath*/
+	/*Game*/
 	public String getGamePath() {
 		return gamePath;
 	}
@@ -159,7 +162,19 @@ public class Game {
 	public void setGamePath(String gamePath) {
 		this.gamePath = gamePath;
 	}
-	/*End of GamePath*/
+
+
+	public String getGamePlatform() {
+		return gamePlatform;
+	}
+
+
+	public void setGamePlatform(String gamePlatform) {
+		this.gamePlatform = gamePlatform;
+	}
+	
+	
+	/*End of Game*/
 	
 	
 	

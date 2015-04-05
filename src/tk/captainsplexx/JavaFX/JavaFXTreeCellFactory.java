@@ -1,7 +1,5 @@
 package tk.captainsplexx.JavaFX;
 
-import java.util.List;
-
 import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
 import tk.captainsplexx.JavaFX.JavaFXMainWindow.WorkDropType;
 import javafx.event.ActionEvent;
@@ -25,12 +23,13 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.paint.Color;
 
 public class JavaFXTreeCellFactory extends TreeCell<TreeViewEntry> {
-
+		private enum Operation {Name, Value};
+		private Operation modifyOp;
         private TextField textField;
         private WorkDropType dropType;
         private ContextMenu contextMenu = new ContextMenu();
         public TreeItem<TreeViewEntry> draggedTreeItem;
-        private MenuItem addText, addFloat, addDouble, addArray, addInteger, addBool, addList, addLong, addByte, addShort, remove;
+        private MenuItem addText, addFloat, addDouble, addArray, addInteger, addBool, addList, addLong, addByte, addShort, remove, rename;
         public JavaFXTreeCellFactory() {
         	
             addText = new MenuItem("Add Text");
@@ -122,7 +121,18 @@ public class JavaFXTreeCellFactory extends TreeCell<TreeViewEntry> {
                     getTreeItem().getChildren().add(newItem);
                 }
             });
-                        
+                      
+            
+            rename = new MenuItem("Rename");
+            rename.setGraphic(new ImageView(JavaFXHandler.pencilIcon));
+            rename.setOnAction(new EventHandler<ActionEvent>() {
+                public void handle(ActionEvent t) {
+                	modifyOp = Operation.Name;
+                	startEdit();
+                }
+            });
+            
+            
             remove = new MenuItem("Remove");
             remove.setGraphic(new ImageView(JavaFXHandler.removeIcon));
             remove.setOnAction(new EventHandler<ActionEvent>() {
@@ -132,6 +142,7 @@ public class JavaFXTreeCellFactory extends TreeCell<TreeViewEntry> {
                 	}
                 }
             });
+            
             
                         
             setOnDragDetected(new EventHandler<MouseEvent>() {
@@ -214,20 +225,27 @@ public class JavaFXTreeCellFactory extends TreeCell<TreeViewEntry> {
         @Override
         public void startEdit() {
             super.startEdit();
-            TreeViewEntry entry = getTreeItem().getValue();
-	        if (entry.getType()==EntryType.BOOL){
-	        	entry.setValue(!((Boolean) entry.getValue()));
-	        	commitEdit(getTreeItem().getValue());
-	        }else{
-	        	//if (textField == null) { //USELESS ?
-		        createTextField(getTreeItem());
-		        //}
+            if (modifyOp == Operation.Name){
+            	createTextField(getTreeItem());
 		        setText(null);
 		        setGraphic(textField);
 		        textField.selectAll();
-	        }
+            }else if (modifyOp == null){
+            	TreeViewEntry entry = getTreeItem().getValue();
+    	        if (entry.getType()==EntryType.BOOL){
+    	        	entry.setValue(!((Boolean) entry.getValue()));
+    	        	commitEdit(getTreeItem().getValue());
+    	        }else{
+    	        	//if (textField == null) { //USELESS ?
+    		        createTextField(getTreeItem());
+    		        //}
+    		        setText(null);
+    		        setGraphic(textField);
+    		        textField.selectAll();
+    	        }
+            }
         }
- 
+         
         @Override
         public void cancelEdit() {
             super.cancelEdit();
@@ -259,7 +277,7 @@ public class JavaFXTreeCellFactory extends TreeCell<TreeViewEntry> {
 		                if (getTreeItem().getValue().getType()==EntryType.ARRAY||getTreeItem().getValue().getType()==EntryType.LIST){
 		                  	contextMenu.getItems().addAll(addText, addFloat, addDouble, addInteger, addLong, addByte, addBool, addArray, addList, remove);
 		                }else if (getTreeItem()!= null){
-		                  	contextMenu.getItems().addAll(remove);
+		                  	contextMenu.getItems().addAll(rename, remove);
 		                }
 		                setContextMenu(contextMenu);
 		             }
@@ -268,23 +286,34 @@ public class JavaFXTreeCellFactory extends TreeCell<TreeViewEntry> {
         }
         
         private void createTextField(TreeItem<TreeViewEntry> treeItem) {
-            textField = new TextField(convertToString(treeItem.getValue()));
+        	if (modifyOp == Operation.Name){
+        		textField = new TextField(treeItem.getValue().getName());
+        	}else{
+        		textField = new TextField(convertToString(treeItem.getValue()));
+        	}
             textField.setOnKeyReleased(new EventHandler<KeyEvent>() {
  
                 @Override
                 public void handle(KeyEvent t) {
                     if (t.getCode() == KeyCode.ENTER) {
-                    	Object obj = convertToObject(textField.getText(), treeItem.getValue());
-                    	if (obj != null && (treeItem.getValue().getType() == EntryType.ARRAY) || treeItem.getValue().getType() == EntryType.LIST){
-                    		treeItem.getValue().setName((String) obj);
-                            commitEdit(treeItem.getValue());
-                    	}else if (obj != null){
-                    		treeItem.getValue().setValue(obj);
-                            commitEdit(treeItem.getValue());
-                    	}else{
-                    		cancelEdit();
+                    	if (modifyOp == Operation.Name){
+	                    	treeItem.getValue().setName(textField.getText());
+	                        commitEdit(treeItem.getValue());
+	                        modifyOp = null;
+                    	}else if(modifyOp == null){
+                    		Object obj = convertToObject(textField.getText(), treeItem.getValue());
+	                    	if (obj != null && (treeItem.getValue().getType() == EntryType.ARRAY) || treeItem.getValue().getType() == EntryType.LIST){
+	                    		treeItem.getValue().setName((String) obj);
+	                            commitEdit(treeItem.getValue());
+	                    	}else if (obj != null){
+	                    		treeItem.getValue().setValue(obj);
+	                            commitEdit(treeItem.getValue());
+	                    	}else{
+	                    		cancelEdit();
+	                    	}
                     	}
                     } else if (t.getCode() == KeyCode.ESCAPE) {
+                    	modifyOp = null;
                         cancelEdit();
                     }
                 }

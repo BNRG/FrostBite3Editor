@@ -16,7 +16,6 @@ public class TreeViewConverter {
 		for (TocEntry e : tocFile.getEntries()){
 			root.getChildren().add(readEntry(e));		
 		}
-		root.getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry("Stop", new ImageView(JavaFXHandler.textIcon), "RIGHT SIDE WORKS!", EntryType.STRING)));
 		return root;
 	}
 	
