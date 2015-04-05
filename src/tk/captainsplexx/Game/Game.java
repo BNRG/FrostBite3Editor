@@ -5,6 +5,8 @@ import java.io.File;
 import java.nio.file.Files;
 import java.util.ArrayList;
 
+import javafx.scene.control.TreeItem;
+
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -24,6 +26,8 @@ import tk.captainsplexx.Entity.Entity;
 import tk.captainsplexx.Game.EntityHandler.Type;
 import tk.captainsplexx.Itexture.ItextureHandler;
 import tk.captainsplexx.JavaFX.TreeViewConverter;
+import tk.captainsplexx.JavaFX.TreeViewEntry;
+import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
 import tk.captainsplexx.Maths.Matrices;
 import tk.captainsplexx.Model.RawModel;
 import tk.captainsplexx.Render.ModelHandler;
@@ -67,7 +71,8 @@ public class Game {
 		
 		
 		TocManager tocMan = new TocManager();
-		Main.getJavaFXHandler().getMainWindow().setLeftRoot(TreeViewConverter.getTreeView(tocMan.readToc(FileHandler.readFile("D:/dump_bf4_fs/MP_Playground.toc"))));
+		Main.getJavaFXHandler().setTreeViewStructureLeft(new TreeItem<TreeViewEntry>(TreeViewConverter.getTreeView(tocMan.readToc(FileHandler.readFile("D:/dump_bf4_fs/MP_Playground.toc"))).getValue()));
+		Main.getJavaFXHandler().getMainWindow().updateLeftRoot();
 		//TocFile sb = tocMan.readSbPart(FileHandler.readFile("D:/dump_bf4_fs/MP_Playground.sb", 0x10, 0xAD954));
 		
 		

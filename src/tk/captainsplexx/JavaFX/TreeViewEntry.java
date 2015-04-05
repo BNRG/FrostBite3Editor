@@ -5,7 +5,7 @@ package tk.captainsplexx.JavaFX;
 import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
 import javafx.scene.image.ImageView;
 
-public class TreeViewEntry{
+public class TreeViewEntry implements Cloneable{
 
 	public String name;
 	public ImageView graphic;
@@ -51,6 +51,13 @@ public class TreeViewEntry{
 	public void setType(EntryType type) {
 		this.type = type;
 	}
-
 	
+	public TreeViewEntry clone(){
+		try {
+			return (TreeViewEntry) super.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 }

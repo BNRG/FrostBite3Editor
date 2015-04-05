@@ -6,6 +6,7 @@ import org.lwjgl.opengl.Display;
 
 import tk.captainsplexx.Game.Main;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -17,6 +18,7 @@ import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
+
 
 public class JavaFXMainWindow extends Application{
 	
@@ -57,6 +59,7 @@ public class JavaFXMainWindow extends Application{
 			}
 		}).start();
 	}
+	
 		
 	void launchApplication(){
 		launch(); //Runs until window closes.
@@ -98,7 +101,6 @@ public class JavaFXMainWindow extends Application{
         leftController.getExplorer().setEditable(true);
         leftController.getExplorer().setPrefWidth(Display.getDesktopDisplayMode().getWidth());
         leftController.getExplorer().setPrefHeight(Display.getDesktopDisplayMode().getHeight());
-        
         
         /*RIGHT*/
         Parent rightroot = null;
@@ -145,12 +147,22 @@ public class JavaFXMainWindow extends Application{
         
 	}
 
-	public void setRightRoot(TreeItem<TreeViewEntry> treeViewStructure){
-		rightController.getEBXExplorer().setRoot(treeViewStructure);
+	public void updateRightRoot(){
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				rightController.getEBXExplorer().setRoot(new TreeItem<TreeViewEntry>(Main.getJavaFXHandler().getTreeViewStructureRight().getValue().clone()));
+			}
+		});	
 	}
 	
-	public void setLeftRoot(TreeItem<TreeViewEntry> treeViewStructure){
-		leftController.getExplorer().setRoot(treeViewStructure);
+	public void updateLeftRoot(){
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				leftController.getExplorer().setRoot(new TreeItem<TreeViewEntry>(Main.getJavaFXHandler().getTreeViewStructureLeft().getValue().clone()));
+			}
+		});	
 	}
-
+	
 }

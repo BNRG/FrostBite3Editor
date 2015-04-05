@@ -1,12 +1,16 @@
 package tk.captainsplexx.JavaFX;
 
 import tk.captainsplexx.Resource.FileHandler;
+import javafx.scene.control.TreeItem;
 import javafx.scene.image.Image;
 
 
 public class JavaFXHandler {
 	
 	JavaFXMainWindow main;
+
+	TreeItem<TreeViewEntry> treeViewStructureLeft;
+	TreeItem<TreeViewEntry> treeViewStructureRight;
 	
 	public static final Image textIcon = new Image(FileHandler.getStream("res/images/edit-small-caps.png"));
 	public static final Image byteIcon = new Image(FileHandler.getStream("res/images/document-attribute-b.png"));
@@ -33,5 +37,27 @@ public class JavaFXHandler {
 	
 	public void setMainWindow(JavaFXMainWindow main){
 		this.main = main;
+	}
+	
+	
+	
+	
+	/* Getter and setter */
+	public TreeItem<TreeViewEntry> getTreeViewStructureLeft() {
+		return treeViewStructureLeft;
+	}
+
+	public void setTreeViewStructureLeft(
+			TreeItem<TreeViewEntry> treeViewStructureLeft) {
+		this.treeViewStructureLeft = treeViewStructureLeft;
+	}
+
+	public TreeItem<TreeViewEntry> getTreeViewStructureRight() {
+		return treeViewStructureRight;
+	}
+
+	public void setTreeViewStructureRight(
+			TreeItem<TreeViewEntry> treeViewStructureRight) {
+		this.treeViewStructureRight = treeViewStructureRight;
 	}
 }
