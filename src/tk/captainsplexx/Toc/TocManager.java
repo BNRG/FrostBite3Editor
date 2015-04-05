@@ -5,6 +5,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 
+import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.FileSeeker;
 
 public class TocManager {
@@ -78,7 +79,7 @@ public class TocManager {
 		int entryType = (readByte(data, seeker) & 0xFF); //byte needs to be casted to unsigned.
 		if (entryType == 0x82){
 			entry = new TocEntry(TocEntryType.ORDINARY);
-			int entrySize = readLEB128(data, seeker); 
+			int entrySize = FileHandler.readLEB128(data, seeker); 
 			int entryOffset = seeker.getOffset();
 			while (seeker.getOffset() < entryOffset+entrySize){ //READ FIELDS
 				TocField field = readField(data, seeker);
@@ -102,7 +103,7 @@ public class TocManager {
 		}
 		if (fieldType == 0x01){ //#list type, containing ENTRIES (MULTIPLE ONE) 
 			ArrayList<TocEntry> list = new ArrayList<TocEntry>();
-			int listSize = readLEB128(data, seeker); 
+			int listSize = FileHandler.readLEB128(data, seeker); 
 			int listOffset = seeker.getOffset();
 			while (seeker.getOffset() < listOffset+listSize){ 
 				list.add(readEntry(data, seeker));
@@ -110,7 +111,7 @@ public class TocManager {
 			if (list.isEmpty()){list = null;}
 			field = new TocField(list, TocFieldType.LIST, name);
 		}else if (fieldType == 0x0F){ //ID 16 stored as HEXSTRING
-			field = new TocField(bytesToHex(readByte(data, 16, seeker)), TocFieldType.GUID, name);
+			field = new TocField(FileHandler.bytesToHex(readByte(data, 16, seeker)), TocFieldType.GUID, name);
 		}else if (fieldType == 0x09){ //LONG
 			field = new TocField(readLong(data, seeker), TocFieldType.LONG, name);
 		}else if (fieldType == 0x08){ //INTEGER
@@ -121,13 +122,13 @@ public class TocManager {
 				bool = true;
 			}
 			field = new TocField(bool, TocFieldType.BOOL, name);
-		//}else if ((fieldType == 0x02) || (fieldType == 0x13)){
+		}else if ((fieldType == 0x02) || (fieldType == 0x13)){
 			//read128(f)
-			//System.err.println("todo-tocmanager");
+			System.err.println("todo-tocmanager");
 		}else if (fieldType == 0x10){ //SHA1 stored as HEXSTRING
-			field = new TocField(bytesToHex(readByte(data, 20, seeker)), TocFieldType.SHA1, name);
+			field = new TocField(FileHandler.bytesToHex(readByte(data, 20, seeker)), TocFieldType.SHA1, name);
 		}else if (fieldType == 0x07){ // #string, length (including trailing null) prefixed as 7bit int
-			readLEB128(data, seeker); //SKIP LENGTH
+			FileHandler.readLEB128(data, seeker); //SKIP LENGTH
 			field = new TocField(readString(data, seeker), TocFieldType.STRING, name);
 		}else if (fieldType == 0x00){
 			//RETURN
@@ -188,27 +189,7 @@ public class TocManager {
 	byte[] readMagic(byte[] fileArray) {
 		return readByte(fileArray, 0, 4);
 	}
-
-	String bytesToHex(byte[] in) {
-		final StringBuilder builder = new StringBuilder();
-		for (byte b : in) {
-			builder.append(String.format("%02x", b));
-		}
-		return builder.toString();
-	}
 	
-	int readLEB128(byte[] fileArray, FileSeeker seeker){ //Read the next few bytes as LEB128/7bit encoding and return an integer.
-		int result = 0;
-		int shift = 0;
-		while(true){
-			byte b = readByte(fileArray, seeker);
-			result |= (b & 0x7f) << shift;
-			if ((b & 0x80) == 0){
-			   return result;
-			}
-			shift += 7;
-		}
-	}
 
 	byte[] readByte(byte[] fileArray, int offset, int len) {
 		byte[] buffer = new byte[len];

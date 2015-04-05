@@ -1,7 +1,5 @@
 package tk.captainsplexx.EBX;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -10,6 +8,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 import tk.captainsplexx.EBX.EBXHandler.FieldValueType;
+import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.FileSeeker;
 
 public class EBXLoader {
@@ -68,28 +67,28 @@ public class EBXLoader {
 		//Decrypt Header 36 Bytes long 3I6H3I
 		seeker.setOffset(0x04);
 		header = new EBXHeader(
-				readInt(ebxFileBytes, seeker), //absolute offset for string section start 0x04 4bytes
-				readInt(ebxFileBytes, seeker), //length from string section start to EOF 0x08 4bytes
-				readInt(ebxFileBytes, seeker), //number of external GUIDs 0x0C 4bytes
-				readShort(ebxFileBytes, seeker), //total number of instance repeaters 0x10 2byte
-				readShort(ebxFileBytes, seeker), //instance repeaters with GUID 0x12 2bytes
-				readShort(ebxFileBytes, seeker), //0x14 2bytes ??!
-				readShort(ebxFileBytes, seeker), //number of complex entries 0x16 2bytes
-				readShort(ebxFileBytes, seeker), //number of field entries 0x18 2bytes
-				readShort(ebxFileBytes, seeker), //length of name section including padding 0x1A 2bytes
-				readInt(ebxFileBytes, seeker), //length of string section including padding 0x1C 4bytes
-				readInt(ebxFileBytes, seeker), //num array repeater 0x20 4bytes
-				readInt(ebxFileBytes, seeker)); //length of normal payload section; the start of the array payload section is absStringOffset+lenString+lenPayload 0x24 4bytes	
+				FileHandler.readInt(ebxFileBytes, seeker, order), //absolute offset for string section start 0x04 4bytes
+				FileHandler.readInt(ebxFileBytes, seeker, order), //length from string section start to EOF 0x08 4bytes
+				FileHandler.readInt(ebxFileBytes, seeker, order), //number of external GUIDs 0x0C 4bytes
+				FileHandler.readShort(ebxFileBytes, seeker, order), //total number of instance repeaters 0x10 2byte
+				FileHandler.readShort(ebxFileBytes, seeker, order), //instance repeaters with GUID 0x12 2bytes
+				FileHandler.readShort(ebxFileBytes, seeker, order), //0x14 2bytes ??!
+				FileHandler.readShort(ebxFileBytes, seeker, order), //number of complex entries 0x16 2bytes
+				FileHandler.readShort(ebxFileBytes, seeker, order), //number of field entries 0x18 2bytes
+				FileHandler.readShort(ebxFileBytes, seeker, order), //length of name section including padding 0x1A 2bytes
+				FileHandler.readInt(ebxFileBytes, seeker, order), //length of string section including padding 0x1C 4bytes
+				FileHandler.readInt(ebxFileBytes, seeker, order), //num array repeater 0x20 4bytes
+				FileHandler.readInt(ebxFileBytes, seeker, order)); //length of normal payload section; the start of the array payload section is absStringOffset+lenString+lenPayload 0x24 4bytes	
 		
 		//Calculate ArraySection Start Offset
 		arraySectionstart=header.getAbsStringOffset()+header.getLenString()+header.getLenPayload();
 		//Read out file GUID as HEXSTRING!
-		fileGUID=bytesToHex(readByte(ebxFileBytes, 16, seeker)).toUpperCase();
+		fileGUID=FileHandler.bytesToHex(FileHandler.readByte(ebxFileBytes, seeker, 16)).toUpperCase();
 		//Calc of externalGUIDs
 		while (seeker.getOffset()%16!=0){ seeker.seek(1); } //#padding
 		externalGUIDs = new EBXExternalGUID[header.getNumGUID()];
 		for (int i=0;i<externalGUIDs.length;i++){
-			externalGUIDs[i] = new EBXExternalGUID((bytesToHex(readByte(ebxFileBytes, 16, seeker)).toUpperCase()), (bytesToHex(readByte(ebxFileBytes, 16, seeker)).toUpperCase()));
+			externalGUIDs[i] = new EBXExternalGUID((FileHandler.bytesToHex(FileHandler.readByte(ebxFileBytes, seeker, 16)).toUpperCase()), (FileHandler.bytesToHex(FileHandler.readByte(ebxFileBytes, seeker, 16)).toUpperCase()));
 		}
 		//Get Keywords and Calculate Hashes
 		this.keywordDict = new HashMap<Integer, String>();
@@ -104,30 +103,30 @@ public class EBXLoader {
 		seeker.setOffset(startKeyOffset+header.getLenName());
 		this.fieldDescriptors = new EBXFieldDescriptor[header.getNumField()];
 		for (int i=0;i<fieldDescriptors.length;i++){
-			fieldDescriptors[i] = new EBXFieldDescriptor(keywordDict.get(readInt(ebxFileBytes, seeker)),
-					readShort(ebxFileBytes, seeker),
-					readShort(ebxFileBytes, seeker),
-					readInt(ebxFileBytes, seeker),
-					readInt(ebxFileBytes, seeker));
+			fieldDescriptors[i] = new EBXFieldDescriptor(keywordDict.get(FileHandler.readInt(ebxFileBytes, seeker)),
+					FileHandler.readShort(ebxFileBytes, seeker, order),
+					FileHandler.readShort(ebxFileBytes, seeker, order),
+					FileHandler.readInt(ebxFileBytes, seeker, order),
+					FileHandler.readInt(ebxFileBytes, seeker, order));
 		}		
 		//ComplexDescriptor
 		complexDescriptors = new EBXComplexDescriptor[header.getNumComplex()];
 		for (int i=0;i<complexDescriptors.length;i++){
-			complexDescriptors[i] = new EBXComplexDescriptor(keywordDict.get(readInt(ebxFileBytes, seeker)),
-					readInt(ebxFileBytes, seeker), 
-					(char) readByte(ebxFileBytes, 1, seeker)[0], 
-					(char) readByte(ebxFileBytes, 1, seeker)[0],
-					readShort(ebxFileBytes, seeker),
-					readShort(ebxFileBytes, seeker),
-					readShort(ebxFileBytes, seeker));
+			complexDescriptors[i] = new EBXComplexDescriptor(keywordDict.get(FileHandler.readInt(ebxFileBytes, seeker, order)),
+					FileHandler.readInt(ebxFileBytes, seeker, order), 
+					(char) FileHandler.readByte(ebxFileBytes, seeker), 
+					(char) FileHandler.readByte(ebxFileBytes, seeker),
+					FileHandler.readShort(ebxFileBytes, seeker, order),
+					FileHandler.readShort(ebxFileBytes, seeker, order),
+					FileHandler.readShort(ebxFileBytes, seeker, order));
 		}
 		//instanceRepeaters
 		//??????????????????????????????????????????????????????????????????????????????
 		instanceRepeaters = new EBXInstanceRepeater[header.getNumInstanceRepeater()];
 		for (int i=0;i<instanceRepeaters.length;i++){
 			instanceRepeaters[i] = new EBXInstanceRepeater(
-					readShort(ebxFileBytes, seeker), 
-					readShort(ebxFileBytes, seeker));
+					FileHandler.readShort(ebxFileBytes, seeker, order), 
+					FileHandler.readShort(ebxFileBytes, seeker, order));
 		}
 		
 		//arrayRepeaters
@@ -137,9 +136,9 @@ public class EBXLoader {
 		arrayRepeaters = new EBXArrayRepeater[header.getNumArrayRepeater()];
 		for (int i=0; i<arrayRepeaters.length;i++){
 			arrayRepeaters[i] = new EBXArrayRepeater(
-					readInt(ebxFileBytes, seeker),
-					readInt(ebxFileBytes, seeker),
-					readInt(ebxFileBytes, seeker));
+					FileHandler.readInt(ebxFileBytes, seeker, order),
+					FileHandler.readInt(ebxFileBytes, seeker, order),
+					FileHandler.readInt(ebxFileBytes, seeker, order));
 		}
 		
 		
@@ -156,9 +155,9 @@ public class EBXLoader {
 			for (int repetition=0; repetition<ir.getRepetitions();repetition++){
 				while (seeker.getOffset()%complexDescriptors[ir.complexIndex].alignment!=0){ seeker.seek(1); } //#obey alignment of the instance; peek into the complex for that
 				if (repeater<header.getNumGUIDRepeater()){
-					tempGUID = bytesToHex(readByte(ebxFileBytes, 16, seeker));
+					tempGUID = FileHandler.bytesToHex(FileHandler.readByte(ebxFileBytes, seeker, 16));
 				}else{
-					tempGUID = bytesToHex(ByteBuffer.allocate(4).putInt(nonGUIDindex).array());
+					tempGUID = FileHandler.bytesToHex(ByteBuffer.allocate(4).putInt(nonGUIDindex).array());
 					nonGUIDindex++;
 				}
 				internalGUIDs.add(tempGUID);
@@ -197,7 +196,7 @@ public class EBXLoader {
 		if (fieldDesc.getType() == (short) 0x0029|| fieldDesc.getType() == (short) 0xd029 || fieldDesc.getType() == (short) 0x0000 || fieldDesc.getType() == (short) 0x8029){ //COMPLEX
 			field.setValue(readComplex(fieldDesc.getRef(), false), EBXHandler.FieldValueType.Complex);
 		}else if (fieldDesc.getType() == 0x0041){ // ARRAYREPEATER aka ARRAYCOMPLEX
-			int indexasdf = readInt(ebxFileBytes, seeker);
+			int indexasdf = FileHandler.readInt(ebxFileBytes, seeker);
 			EBXArrayRepeater arrayRepeater = arrayRepeaters[indexasdf];
 			EBXComplexDescriptor arrayComplexDesc = complexDescriptors[fieldDesc.getRef()];
 			seeker.setOffset(arraySectionstart+arrayRepeater.offset);
@@ -209,7 +208,7 @@ public class EBXLoader {
 			arrayComplex.setFields(fields);
 			field.setValue(arrayComplex, FieldValueType.ArrayComplex);
 		}else if (fieldDesc.getType() == (short) 0x407D || fieldDesc.getType() == (short) 0x409D){//STRING
-			int stringOffset = readInt(ebxFileBytes, seeker);
+			int stringOffset = FileHandler.readInt(ebxFileBytes, seeker);
 			if (stringOffset==-1){
 				field.setValue("", FieldValueType.String);
 			}else{
@@ -220,7 +219,7 @@ public class EBXLoader {
 				trueFilename = (String) field.getValue();
 			}
 		}else if (fieldDesc.getType() == (short) 0x0089 || fieldDesc.getType() == (short) 0xC089){//ENUM GIVES STRING BACK - incomplete implementation
-			int compareValue = readInt(ebxFileBytes, seeker);
+			int compareValue = FileHandler.readInt(ebxFileBytes, seeker);
 			EBXComplexDescriptor enumComplex = complexDescriptors[fieldDesc.getRef()];
 			
 			if (enumComplex.getNumField()==0){
@@ -233,23 +232,23 @@ public class EBXLoader {
 				}
 			}
 		}else if (fieldDesc.getType()== (short) 0xC15D){ //GUID
-			field.setValue(bytesToHex(readByte(ebxFileBytes, 16, seeker)), FieldValueType.Guid);
+			field.setValue(FileHandler.bytesToHex(FileHandler.readByte(ebxFileBytes, seeker,16)), FieldValueType.Guid);
 		}else if (fieldDesc.getType()== (short) 0x417D){ //8HEX
-			field.setValue(bytesToHex(readByte(ebxFileBytes, 8, seeker)), FieldValueType.Hex8);
+			field.setValue(FileHandler.bytesToHex(FileHandler.readByte(ebxFileBytes,seeker, 8)), FieldValueType.Hex8);
 		}else if (fieldDesc.getType()==(short) 0xC13D){//FLOAT
-			field.setValue(readFloat(ebxFileBytes, seeker), FieldValueType.Float);
+			field.setValue(FileHandler.readFloat(ebxFileBytes, seeker), FieldValueType.Float);
 		}else if (fieldDesc.getType()==(short) 0xC10D){//uint ===???
-			field.setValue((readInt(ebxFileBytes, seeker) & 0xffffffffL), FieldValueType.UIntegerAsLong);
+			field.setValue((FileHandler.readInt(ebxFileBytes, seeker, order) & 0xffffffffL), FieldValueType.UIntegerAsLong);
 		}else if(fieldDesc.getType() == (short) 0xc0fd){ // signed int ?=??
-			field.setValue(readInt(ebxFileBytes, seeker), FieldValueType.Integer);
+			field.setValue(FileHandler.readInt(ebxFileBytes, seeker), FieldValueType.Integer);
 		}else if (fieldDesc.getType() == (short) 0xc0ad){//BOOL
-			field.setValue(((readByte(ebxFileBytes, 1, seeker)[0])!=0x0), FieldValueType.Bool);
+			field.setValue(((FileHandler.readByte(ebxFileBytes, seeker))!=0x0), FieldValueType.Bool);
 		}else if (fieldDesc.getType() == (short) 0xc0ed){//short
-			field.setValue(readShort(ebxFileBytes, seeker), FieldValueType.Short);			
+			field.setValue(FileHandler.readShort(ebxFileBytes, seeker, order), FieldValueType.Short);			
 		}else if (fieldDesc.getType() == (short) 0xc0cd){//BYTE
-			field.setValue(readByte(ebxFileBytes, 1, seeker)[0], FieldValueType.Byte);
+			field.setValue(FileHandler.readByte(ebxFileBytes, seeker), FieldValueType.Byte);
 		}else if(fieldDesc.getType() == (short) 0x0035){ // ##guid and guidTable stuff | guidtable needs to be created first
-			int tempValue = readInt(ebxFileBytes, seeker);
+			int tempValue = FileHandler.readInt(ebxFileBytes, seeker);
 			if (tempValue == 0x0){
 				field.setValue("*nullGUID*", FieldValueType.Guid);
 			}else{ /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////!!!!
@@ -308,99 +307,13 @@ public class EBXLoader {
 		}
 		return buffer;
 	}
-	
-	public byte[] readByte(byte[] fileArray, int len, FileSeeker seeker) {
-		byte[] buffer = readByte(fileArray, seeker.offset, len);
-		seeker.seek(buffer.length);
-		return buffer;
-	}
 
-	public byte[] readFile(String filepath) {
-		try {
-			File file = new File(filepath);
-			FileInputStream fin = new FileInputStream(file);
-			byte fileContent[] = new byte[(int) file.length()];
-			fin.read(fileContent);
-			fin.close();
-			return fileContent;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	public short readShort(byte[] fileArray, int offset) {
-		return ByteBuffer.wrap(readByte(fileArray, offset, 2)).order(order)
-				.getShort();
-	}
-	
-	public short readShort(byte[] fileArray, FileSeeker seeker){
-		return ByteBuffer.wrap(readByte(fileArray, 2, seeker)).order(order).getShort();
-	}
-
-	public int readInt(byte[] fileArray, int offset) {
-		return ByteBuffer.wrap(readByte(fileArray, offset, 4)).order(order)
-				.getInt();
-	}
-	
-	public int readInt(byte[] fileArray, FileSeeker seeker){
-		return ByteBuffer.wrap(readByte(fileArray, 4, seeker)).order(order).getInt();
-	}
 
 	public byte[] readMagic(byte[] fileArray) {
 		return readByte(fileArray, 0, 4);
 	}
 
-	public static String bytesToHex(byte[] in) {
-		final StringBuilder builder = new StringBuilder();
-		for (byte b : in) {
-			builder.append(String.format("%02x", b));
-		}
-		return builder.toString();
-	}
 	
-	public float readHalfFloat(byte[] fileArray, int offset){
-		return convertHalfToFloat(ByteBuffer.wrap(readByte(fileArray, offset, 2)).order(ByteOrder.LITTLE_ENDIAN).getShort());
-	}
-	
-	public float readFloat(byte[] fileArray, FileSeeker seeker){
-		return ByteBuffer.wrap(readByte(fileArray, 4, seeker)).order(ByteOrder.LITTLE_ENDIAN).getFloat();
-	}
-	
-	public float readFloat(byte[] fileArray, int offset){
-		return ByteBuffer.wrap(readByte(fileArray, offset, 4)).order(ByteOrder.LITTLE_ENDIAN).getFloat();
-	}
-	
-	public long readLong(byte[] fileArray, int offset){
-		return ByteBuffer.wrap(readByte(fileArray, offset, 8)).order(ByteOrder.LITTLE_ENDIAN).getLong();
-	}
-	
-	public float convertHalfToFloat(short half) {
-        switch ((int) half) {
-            case 0x0000:
-                return 0f;
-            case 0x8000:
-                return -0f;
-            case 0x7c00:
-                return Float.POSITIVE_INFINITY;
-            case 0xfc00:
-                return Float.NEGATIVE_INFINITY;
-            default:
-                return Float.intBitsToFloat(((half & 0x8000) << 16)
-                        | (((half & 0x7c00) + 0x1C000) << 13)
-                        | ((half & 0x03FF) << 13));
-        }
-    }
-	
-	public byte[] hexStringToByteArray(String s) {
-	    int len = s.length();
-	    byte[] data = new byte[len / 2];
-	    for (int i = 0; i < len; i += 2) {
-	        data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
-	                             + Character.digit(s.charAt(i+1), 16));
-	    }
-	    return data;
-	}
 
 	// Constructor
 	public EBXLoader() {

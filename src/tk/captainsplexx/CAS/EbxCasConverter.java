@@ -1,8 +1,9 @@
 package tk.captainsplexx.CAS;
 
 import java.util.ArrayList;
-import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+
+import tk.captainsplexx.Resource.FileHandler;
 
 public class EbxCasConverter {
 	ArrayList<Byte> newCAS;
@@ -24,36 +25,13 @@ public class EbxCasConverter {
 		newCAS = new ArrayList<Byte>();		
 		addBytes(header);
 		int decompressedSize = decompressedEBX.length;
-		addBytes(toBytes(decompressedSize, ByteOrder.BIG_ENDIAN));
+		addBytes(FileHandler.toBytes(decompressedSize, ByteOrder.BIG_ENDIAN));
 		addBytes(compressionType); // 0x0070 -- uncompressed || 0x0970 lz4 compressed || 0x0071 -- uncompressed no payload ??!
-		addBytes(toBytes((short) decompressedSize, ByteOrder.BIG_ENDIAN));
+		addBytes(FileHandler.toBytes((short) decompressedSize, ByteOrder.BIG_ENDIAN));
 		addBytes(decompressedEBX);
-		return toByteArray(newCAS);
+		return FileHandler.toByteArray(newCAS);
 	}
 	
-	public static byte[] toBytes(int i, ByteOrder order)
-	{
-	  byte[] result = new byte[4];
-
-	  result[0] = (byte) (i >> 24);
-	  result[1] = (byte) (i >> 16);
-	  result[2] = (byte) (i >> 8);
-	  result[3] = (byte) (i /*>> 0*/);
-	  return ByteBuffer.wrap(result).order(order).array();
-	}
-	
-	public static byte[] toBytes(short s, ByteOrder order){
-		byte[] bArray = new byte[2];
-		byte[] sArray = toBytes((int) s, order);
-		if (order == ByteOrder.BIG_ENDIAN){
-			bArray[0] = sArray[2];
-			bArray[1] = sArray[3];
-		}else{
-			bArray[0] = sArray[0];
-			bArray[1] = sArray[1];
-		}
-		return bArray;
-	}
 	
 	public void addBytes(byte[] arr){
 		for (Byte b : arr){
@@ -61,12 +39,5 @@ public class EbxCasConverter {
 		}
 	}
 	
-	public static byte[] toByteArray(ArrayList<Byte> in) {
-	    final int n = in.size();
-	    byte ret[] = new byte[n];
-	    for (int i = 0; i < n; i++) {
-	        ret[i] = in.get(i);
-	    }
-	    return ret;
-	}
+	
 }

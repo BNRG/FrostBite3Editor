@@ -116,7 +116,9 @@ public class FileHandler {
 	public static int readInt(byte[] fileArray, FileSeeker seeker) {
 		return ByteBuffer.wrap(readByte(fileArray, seeker, 4))
 				.order(ByteOrder.LITTLE_ENDIAN).getInt();
+	
 	}
+	
 	public static String readSHA1(byte[] fileArray, FileSeeker seeker) {
 		return bytesToHex(readByte(fileArray, seeker, 20));
 	}
@@ -159,6 +161,74 @@ public class FileHandler {
 		}
 		return output;
 	}
+	
+	public static byte[] toBytes(int i, ByteOrder order)
+	{
+	  byte[] result = new byte[4];
+
+	  result[0] = (byte) (i >> 24);
+	  result[1] = (byte) (i >> 16);
+	  result[2] = (byte) (i >> 8);
+	  result[3] = (byte) (i /*>> 0*/);
+	  return ByteBuffer.wrap(result).order(order).array();
+	}
+	
+	public static byte[] toBytes(short s, ByteOrder order){
+		byte[] bArray = new byte[2];
+		byte[] sArray = toBytes((int) s, order);
+		if (order == ByteOrder.BIG_ENDIAN){
+			bArray[0] = sArray[2];
+			bArray[1] = sArray[3];
+		}else{
+			bArray[0] = sArray[0];
+			bArray[1] = sArray[1];
+		}
+		return bArray;
+	}
+	
+	public static byte[] toByteArray(ArrayList<Byte> in) {
+	    final int n = in.size();
+	    byte ret[] = new byte[n];
+	    for (int i = 0; i < n; i++) {
+	        ret[i] = in.get(i);
+	    }
+	    return ret;
+	}
+	
+	public static int readLEB128(byte[] fileArray, FileSeeker seeker){ //Read the next few bytes as LEB128/7bit encoding and return an integer.
+		int result = 0;
+		int shift = 0;
+		while(true){
+			byte b = readByte(fileArray, seeker);
+			result |= (b & 0x7f) << shift;
+			if ((b & 0x80) == 0){
+			   return result;
+			}
+			shift += 7;
+		}
+	}
+	
+	public static float convertHalfToFloat(short half) {
+        switch ((int) half) {
+            case 0x0000:
+                return 0f;
+            case 0x8000:
+                return -0f;
+            case 0x7c00:
+                return Float.POSITIVE_INFINITY;
+            case 0xfc00:
+                return Float.NEGATIVE_INFINITY;
+            default:
+                return Float.intBitsToFloat(((half & 0x8000) << 16)
+                        | (((half & 0x7c00) + 0x1C000) << 13)
+                        | ((half & 0x03FF) << 13));
+        }
+    }
+		
+	public static float readFloat(byte[] fileArray, FileSeeker seeker){
+		return ByteBuffer.wrap(readByte(fileArray, seeker, 4)).order(ByteOrder.LITTLE_ENDIAN).getFloat();
+	}
+	
 	
 	
 }
