@@ -333,6 +333,8 @@ public class JavaFXTreeCellFactory extends TreeCell<TreeViewEntry> {
 	    			return ((Short)item.getValue()).toString();
 	    		case INTEGER:
 	    			return ((Integer)item.getValue()).toString();
+	    		case UINTEGER:
+	    			return ((Long)item.getValue()).toString();
 	    		case LONG:
 	    			return ((Long)item.getValue()).toString();
 	    		case ARRAY:
@@ -345,8 +347,12 @@ public class JavaFXTreeCellFactory extends TreeCell<TreeViewEntry> {
 	    			}else{
 	    				return "FALSE";
 	    			}
+	    		case HEX8:
+	    			return (String)item.getValue();
 	    		case BYTE:
 	    			return byteToHex(((Byte)item.getValue()));
+	    		case ENUM:
+	    			return (String)item.getValue();
 	    		case NULL:
 	    			return ("NULL"); //DEFINED NULL ("NULL")
 				default:
@@ -358,6 +364,10 @@ public class JavaFXTreeCellFactory extends TreeCell<TreeViewEntry> {
         	try{
 	        	switch(item.type){
 		    		case STRING:
+		    			return(value);
+		    		case ENUM:
+		    			return(value);
+		    		case HEX8:
 		    			return(value);
 		    		case LIST:
 		    			return(value);
@@ -373,6 +383,8 @@ public class JavaFXTreeCellFactory extends TreeCell<TreeViewEntry> {
 		    			return(Integer.valueOf(value));
 		    		case LONG:
 		    			return(Long.valueOf(value));
+		    		case UINTEGER:
+		    			return(Long.valueOf(value))& 0xffffffffL;
 		    		case BYTE:
 		    			return(hexToByte(value));
 		    		case BOOL:

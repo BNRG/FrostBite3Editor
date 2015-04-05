@@ -12,10 +12,8 @@ import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.FileSeeker;
 
 public class EBXLoader {
-	// Constructor on end of class!
 	public byte[] ebxFileBytes;
 	public String guidTablePath;
-	public HashMap<Integer, Integer> numDict = new HashMap<Integer, Integer>();
 	public HashMap<Integer, String> keywordDict;
 
 	public byte[] littleHeader = new byte[] { (byte) 0xCE, (byte) 0xD1,
@@ -311,22 +309,5 @@ public class EBXLoader {
 
 	public byte[] readMagic(byte[] fileArray) {
 		return readByte(fileArray, 0, 4);
-	}
-
-	
-
-	// Constructor
-	public EBXLoader() {
-		numDict.put(0xC12D, 8);
-		numDict.put(0xc0cd, 1);
-		numDict.put(0x0035, 4);
-		numDict.put(0xc10d, 4);
-		numDict.put(0xc14d, 8);
-		numDict.put(0xc0ad, 1);
-		numDict.put(0xc0fd, 4);
-		numDict.put(0xc0bd, 1);
-		numDict.put(0xc0ed, 2);
-		numDict.put(0xc0dd, 2);
-		numDict.put(0xc13d, 4);
 	}
 }

@@ -79,10 +79,12 @@ public class Game {
 		
 		
 		
-		byte[] data = CasDataReader.readCas("72CEA8EE09AC2467B5B31561D0CDEFB96519A514", gamePath+"/Data", resourceHandler.getCasCatManager().getEntries());
-		resourceHandler.getEBXHandler().getLoader().loadEBX(data);
-		EbxCasConverter conv = new EbxCasConverter();
-		conv.createCAS(data);
+		byte[] data = CasDataReader.readCas("72CEA8EE09AC2467B5B31561D0CDEFB96519A514", gamePath+"/Data", resourceHandler.getCasCatManager().getEntries()); //Playground/Content/Buildings
+		TreeItem<TreeViewEntry> testebx = TreeViewConverter.getTreeView(resourceHandler.getEBXHandler().loadFile(data));
+		Main.getJavaFXHandler().setTreeViewStructureRight(testebx);
+		Main.getJavaFXHandler().getMainWindow().updateRightRoot();
+		//EbxCasConverter conv = new EbxCasConverter();
+		//conv.createCAS(data);
 		
 		/*guid to sha1 -> sb converter first*/
 		//byte[] ddsTexture = ItextureHandler.getDSS(FileHandler.readFile("D:/dump_bf4_fs/bundles_more_info/res/objects/architecture/apartmentbuilding_modules/t_apartmentbuilding_modules_04_d 2495893419b2e1d1 0b000000030000000000000000000000.itexture"), gamePath+"/Data", cCatManager.getEntries());
