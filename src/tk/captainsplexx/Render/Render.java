@@ -33,7 +33,6 @@ public class Render {
 
 	FPCameraController camera;
 	PlayerEntity pe;
-	public Matrices matrices;
 	public Matrix4f viewMatrix;
 	public Matrix4f projectionMatrix;
 	public Matrix4f transformationMatrix;
@@ -66,7 +65,7 @@ public class Render {
 		camera.yaw(camera.dx * camera.mouseSensitivity);
 		camera.pitch(-camera.dy * camera.mouseSensitivity);
 
-		viewMatrix = matrices.createViewMatrix(camera.getPosition(),
+		viewMatrix = Matrices.createViewMatrix(camera.getPosition(),
 				new Vector3f(camera.getPitch(), camera.getYaw(), 0.0f));
 
 		StaticShader shader = game.getShaderHandler().getStaticShader();
@@ -83,7 +82,7 @@ public class Render {
 				
 				String[] texturedModels = e.getTexturedModelNames();
 				for (int i = 0; i < texturedModels.length; i++) {
-					transformationMatrix = matrices.createTransformationMatrix(
+					transformationMatrix = Matrices.createTransformationMatrix(
 							e.getPosition(), e.getRotation(), e.getScaling());
 					shader.loadTransformationMatrix(Matrix4f.add(transformationMatrix, lol, null));
 					TexturedModel tm = game.modelHandler.getTexturedModels().get(
@@ -109,10 +108,10 @@ public class Render {
 			}
 		}
 		// Terrain Render
-		Matrix4f TerrainransformationMatrix = matrices.createTransformationMatrix(
+		Matrix4f TerrainransformationMatrix = Matrices.createTransformationMatrix(
 				new Vector3f(0.0f, -500.0f, 0.0f), new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(1.0f, 1.0f, 1.0f));
 		
-		Matrix4f TerrainransformationMatrix1 = matrices.createTransformationMatrix(
+		Matrix4f TerrainransformationMatrix1 = Matrices.createTransformationMatrix(
 				new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(1.0f, 1.0f, 1.0f));
 				
 		for (Terrain curTerr : game.getTerrainHandler().getTerrainList()) {

@@ -30,4 +30,8 @@ public class JavaFXHandler {
 	public JavaFXMainWindow getMainWindow() {
 		return main;
 	}
+	
+	public void setMainWindow(JavaFXMainWindow main){
+		this.main = main;
+	}
 }

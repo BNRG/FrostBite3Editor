@@ -67,7 +67,7 @@ public class Game {
 		
 		
 		TocManager tocMan = new TocManager();
-		Main.getJavaFXHandler().getMainWindow().setRoot(TreeViewConverter.getTreeView(tocMan.readToc(FileHandler.readFile("D:/dump_bf4_fs/MP_Playground.toc"))));
+		Main.getJavaFXHandler().getMainWindow().setLeftRoot(TreeViewConverter.getTreeView(tocMan.readToc(FileHandler.readFile("D:/dump_bf4_fs/MP_Playground.toc"))));
 		//TocFile sb = tocMan.readSbPart(FileHandler.readFile("D:/dump_bf4_fs/MP_Playground.sb", 0x10, 0xAD954));
 		
 		

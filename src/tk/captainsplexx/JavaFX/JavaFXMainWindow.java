@@ -31,10 +31,7 @@ public class JavaFXMainWindow extends Application{
 	public FXMLLoader rightLoader;
 	public LeftController leftController;
 	public RightController rightController;
-	
-	public Parent leftroot = null;
-	public Parent rightroot = null;
-	
+		
 	public FXMLLoader getLeftLoader() {
 		return leftLoader;
 	}
@@ -43,45 +40,12 @@ public class JavaFXMainWindow extends Application{
 		return rightLoader;
 	}
 	
-	
 	public LeftController getLeftController() {
 		return leftController;
 	}
 
-	public void setLeftController(LeftController leftController) {
-		this.leftController = leftController;
-	}
-
 	public RightController getRightController() {
 		return rightController;
-	}
-
-	public void setRightController(RightController rightController) {
-		this.rightController = rightController;
-	}
-
-	public void setLeftLoader(FXMLLoader leftLoader) {
-		this.leftLoader = leftLoader;
-	}
-
-	public void setRightLoader(FXMLLoader rightLoader) {
-		this.rightLoader = rightLoader;
-	}
-	
-	public Parent getLeftroot() {
-		return leftroot;
-	}
-	
-	public void setLeftroot(Parent leftroot) {
-		this.leftroot = leftroot;
-	}
-	
-	public Parent getRightroot() {
-		return rightroot;
-	}
-
-	public void setRightroot(Parent rightroot) {
-		this.rightroot = rightroot;
 	}
 	
 	/*---------START--------------*/
@@ -101,17 +65,18 @@ public class JavaFXMainWindow extends Application{
 
 	@Override
 	public void start(Stage stage) {
-		JavaFXMainWindow mainWindow = Main.getJavaFXHandler().getMainWindow(); //Stupid thread bypass.
+		Main.getJavaFXHandler().setMainWindow(this); //Stupid thread bypass.
+		Parent leftroot = null;
 		/*LEFT*/
 		try {
-			mainWindow.setLeftLoader(new FXMLLoader(getClass().getResource("LeftWindow.fxml"))); //not static to access controller class
-			mainWindow.setLeftroot(mainWindow.getLeftLoader().load());
-			mainWindow.setLeftController(mainWindow.getLeftLoader().getController());
+			leftLoader = new FXMLLoader(getClass().getResource("LeftWindow.fxml")); //not static to access controller class
+			leftroot = leftLoader.load();
+			leftController =  leftLoader.getController();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		//Scene sceneLeft = new Scene(leftroot, 275, 700);
-		Scene sceneLeft = new Scene(mainWindow.getLeftroot(), 275, 700);
+		Scene sceneLeft = new Scene(leftroot, 275, 700);
         stage.setX(Display.getDesktopDisplayMode().getWidth()*0.01f);
         stage.setY(Display.getDesktopDisplayMode().getHeight()/2-(sceneLeft.getHeight()/2));
         stage.setTitle("Tools / Explorer");
@@ -124,27 +89,28 @@ public class JavaFXMainWindow extends Application{
 			}
 		});
                 
-        mainWindow.getLeftController().getExplorer().setCellFactory(new Callback<TreeView<TreeViewEntry>,TreeCell<TreeViewEntry>>(){
+        leftController.getExplorer().setCellFactory(new Callback<TreeView<TreeViewEntry>,TreeCell<TreeViewEntry>>(){
             @Override
             public TreeCell<TreeViewEntry> call(TreeView<TreeViewEntry> p) {
                 return new JavaFXTreeCellFactory();
             }
         });
-        mainWindow.getLeftController().getExplorer().setEditable(true);
-        mainWindow.getLeftController().getExplorer().setPrefWidth(Display.getDesktopDisplayMode().getWidth());
-        mainWindow.getLeftController().getExplorer().setPrefHeight(Display.getDesktopDisplayMode().getHeight());
+        leftController.getExplorer().setEditable(true);
+        leftController.getExplorer().setPrefWidth(Display.getDesktopDisplayMode().getWidth());
+        leftController.getExplorer().setPrefHeight(Display.getDesktopDisplayMode().getHeight());
         
         
         /*RIGHT*/
+        Parent rightroot = null;
 		try { 
-			mainWindow.setRightLoader(new FXMLLoader(getClass().getResource("RightWindow.fxml"))); //not static to access controller class
-			mainWindow.setRightroot(mainWindow.getRightLoader().load());
-			mainWindow.setRightController(mainWindow.getRightLoader().getController());
+			rightLoader = new FXMLLoader(getClass().getResource("RightWindow.fxml")); //not static to access controller class
+			rightroot = rightLoader.load();
+			rightController = rightLoader.getController();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
         Stage stageRight = new Stage();
-        Scene sceneRight = new Scene(mainWindow.getRightroot(), 275, 700);
+        Scene sceneRight = new Scene(rightroot, 275, 700);
         stageRight.setTitle("EBX Tools");
         stageRight.setX(Display.getDesktopDisplayMode().getWidth()*0.985f-sceneLeft.getWidth());
         stageRight.setY(Display.getDesktopDisplayMode().getHeight()/2-(sceneLeft.getHeight()/2));
@@ -157,30 +123,34 @@ public class JavaFXMainWindow extends Application{
 			}
 		});
         
-        mainWindow.getRightController().getEBXExplorer().setCellFactory(new Callback<TreeView<TreeViewEntry>,TreeCell<TreeViewEntry>>(){
+        rightController.getEBXExplorer().setCellFactory(new Callback<TreeView<TreeViewEntry>,TreeCell<TreeViewEntry>>(){
             @Override
             public TreeCell<TreeViewEntry> call(TreeView<TreeViewEntry> p) {
                 return new JavaFXTreeCellFactory();
             }
         });
-        mainWindow.getRightController().getEBXExplorer().setEditable(true);
-        mainWindow.getRightController().getEBXExplorer().setPrefWidth(Display.getDesktopDisplayMode().getWidth());
-        mainWindow.getRightController().getEBXExplorer().setPrefHeight(Display.getDesktopDisplayMode().getHeight());
+        rightController.getEBXExplorer().setEditable(true);
+        rightController.getEBXExplorer().setPrefWidth(Display.getDesktopDisplayMode().getWidth());
+        rightController.getEBXExplorer().setPrefHeight(Display.getDesktopDisplayMode().getHeight());
         
         
-        mainWindow.getRightController().getEBXExplorer().setRoot(new TreeItem<TreeViewEntry>(new TreeViewEntry("TEST", new ImageView(JavaFXHandler.listIcon), null, EntryType.LIST)));
-        mainWindow.getRightController().getEBXExplorer().getRoot().getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry("TEST2", new ImageView(JavaFXHandler.textIcon), "TEXT2", EntryType.STRING)));
-        mainWindow.getRightController().getEBXExplorer().getRoot().getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry("TEST3", new ImageView(JavaFXHandler.integerIcon), 1, EntryType.INTEGER)));
-        mainWindow.getRightController().getEBXExplorer().getRoot().getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry("TEST4", new ImageView(JavaFXHandler.doubleIcon), 1.0d, EntryType.DOUBLE)));
-        mainWindow.getRightController().getEBXExplorer().getRoot().getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry("TEST5", new ImageView(JavaFXHandler.floatIcon), 100.1002f, EntryType.FLOAT)));
-        mainWindow.getRightController().getEBXExplorer().getRoot().getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry("TEST6", new ImageView(JavaFXHandler.boolIcon), true, EntryType.BOOL)));
-        mainWindow.getRightController().getEBXExplorer().getRoot().getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry("TEST7", new ImageView(JavaFXHandler.byteIcon), (byte) (0xFA>>0), EntryType.BYTE)));
-        mainWindow.getRightController().getEBXExplorer().getRoot().setExpanded(true);
+        rightController.getEBXExplorer().setRoot(new TreeItem<TreeViewEntry>(new TreeViewEntry("TEST", new ImageView(JavaFXHandler.listIcon), null, EntryType.LIST)));
+        rightController.getEBXExplorer().getRoot().getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry("TEST2", new ImageView(JavaFXHandler.textIcon), "TEXT2", EntryType.STRING)));
+        rightController.getEBXExplorer().getRoot().getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry("TEST3", new ImageView(JavaFXHandler.integerIcon), 1, EntryType.INTEGER)));
+        rightController.getEBXExplorer().getRoot().getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry("TEST4", new ImageView(JavaFXHandler.doubleIcon), 1.0d, EntryType.DOUBLE)));
+        rightController.getEBXExplorer().getRoot().getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry("TEST5", new ImageView(JavaFXHandler.floatIcon), 100.1002f, EntryType.FLOAT)));
+        rightController.getEBXExplorer().getRoot().getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry("TEST6", new ImageView(JavaFXHandler.boolIcon), true, EntryType.BOOL)));
+        rightController.getEBXExplorer().getRoot().getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry("TEST7", new ImageView(JavaFXHandler.byteIcon), (byte) (0xFA>>0), EntryType.BYTE)));
+        rightController.getEBXExplorer().getRoot().setExpanded(true);
         
 	}
 
-	public void setRoot(TreeItem<TreeViewEntry> treeViewStructure){
-		Main.getJavaFXHandler().getMainWindow().getLeftController().getExplorer().setRoot(treeViewStructure); //NOT ALLOWED ?
+	public void setRightRoot(TreeItem<TreeViewEntry> treeViewStructure){
+		rightController.getEBXExplorer().setRoot(treeViewStructure);
+	}
+	
+	public void setLeftRoot(TreeItem<TreeViewEntry> treeViewStructure){
+		leftController.getExplorer().setRoot(treeViewStructure);
 	}
 
 }

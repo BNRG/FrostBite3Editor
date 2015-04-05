@@ -6,6 +6,7 @@ import org.lwjgl.opengl.DisplayMode;
 
 import tk.captainsplexx.Event.EventHandler;
 import tk.captainsplexx.JavaFX.JavaFXHandler;
+import tk.captainsplexx.JavaFX.JavaFXMainWindow;
 import tk.captainsplexx.Render.Render;
 
 
@@ -91,6 +92,5 @@ public class Main {
 	public static JavaFXHandler getJavaFXHandler() {
 		return jfxHandler;
 	}
-	
 	
 }
