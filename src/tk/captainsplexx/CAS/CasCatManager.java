@@ -17,7 +17,7 @@ public class CasCatManager {
 	public FileSeeker seeker;
 	public byte[] cat;
 	
-	public boolean readCAT(byte[] fileArray) {
+	public boolean readCat(byte[] fileArray) {
 		System.out.println("Reading cas.cat file!");
 		for (int i = 0; i <header.length; i++){
 			if (header[i] != fileArray[i]){
@@ -38,7 +38,7 @@ public class CasCatManager {
 		}//EOF
 		return true;
 	}
-	public byte[] getCAT(){
+	public byte[] getCat(){
 		System.out.println("Generating cas.cat file with a size of: "+(entries.size()*32)+16+" Byte!");
 		seeker = new FileSeeker();
 		cat = new byte[(entries.size()*32)+16];

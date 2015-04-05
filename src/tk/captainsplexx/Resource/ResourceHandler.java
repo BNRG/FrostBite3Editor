@@ -1,5 +1,6 @@
 package tk.captainsplexx.Resource;
 
+import tk.captainsplexx.CAS.CasCatManager;
 import tk.captainsplexx.EBX.EBXHandler;
 import tk.captainsplexx.Render.TextureHandler;
 
@@ -10,6 +11,7 @@ public class ResourceHandler {
 	public MeshVariationDatabaseHandler mvdH;
 	public EBXHandler ebxHandler;
 	public TextureHandler textureHandler;
+	public CasCatManager cCatManager; 
 
 	public ResourceHandler(/*String chunkFolderPath,*/ String guidTablePath) {
 		//this.chunkFolderPath = chunkFolderPath;
@@ -17,6 +19,7 @@ public class ResourceHandler {
 		this.ebxHandler = new EBXHandler(guidTablePath);
 		this.mvdH = new MeshVariationDatabaseHandler(this.ebxHandler);
 		this.textureHandler = new TextureHandler();
+		this.cCatManager = new CasCatManager();
 	}
 	
 
@@ -40,9 +43,10 @@ public class ResourceHandler {
 	public TextureHandler getTextureHandler() {
 		return textureHandler;
 	}
-	
-	
-	
-	
+
+
+	public CasCatManager getCasCatManager() {
+		return cCatManager;
+	}
 	
 }

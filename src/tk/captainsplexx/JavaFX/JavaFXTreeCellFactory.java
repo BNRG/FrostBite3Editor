@@ -237,32 +237,34 @@ public class JavaFXTreeCellFactory extends TreeCell<TreeViewEntry> {
         @Override
         public void updateItem(TreeViewEntry item, boolean empty) {
             super.updateItem(item, empty);
-            if (empty) {
-                setText(null);
-                setGraphic(null);
-            } else {
-                if (isEditing()) {
-                    if (textField != null) {
-                        textField.setText(convertToString(item));
-                    }
-                    setText(null);
-                    setGraphic(textField);
-                } else {
-                	if (item.getType() == EntryType.ARRAY || item.getType() == EntryType.LIST){
-                		setText(item.getName()+":"+item.getType().toString());
-                	}else{
-                		setText(item.getName()+":"+convertToString(item));
-                	}
-                    setGraphic(getTreeItem().getValue().getGraphic());
-                    contextMenu.getItems().clear();
-                    if (getTreeItem().getValue().getType()==EntryType.ARRAY||getTreeItem().getValue().getType()==EntryType.LIST){
-                    	contextMenu.getItems().addAll(addText, addFloat, addDouble, addInteger, addLong, addByte, addBool, addArray, addList, remove);
-                    }else if (getTreeItem()!= null){
-                    	contextMenu.getItems().addAll(remove);
-                    }
-                    setContextMenu(contextMenu);
-                }
-            }
+	        if (empty) {
+	        	setText(null);
+	        	setGraphic(null);
+	        } else {
+	        	if (isEditing()) {
+	            	if (textField != null) {
+	                  	textField.setText(convertToString(item));
+	                }
+	                setText(null);
+	                setGraphic(textField);
+	            } else {
+	            	if (item != null){ //TODO TEST
+		               if (item.getType() == EntryType.ARRAY || item.getType() == EntryType.LIST){
+		                	setText(item.getName()+":"+item.getType().toString());
+		                }else{
+		                	setText(item.getName()+":"+convertToString(item));
+		                }
+		                setGraphic(getTreeItem().getValue().getGraphic());
+		                contextMenu.getItems().clear();
+		                if (getTreeItem().getValue().getType()==EntryType.ARRAY||getTreeItem().getValue().getType()==EntryType.LIST){
+		                  	contextMenu.getItems().addAll(addText, addFloat, addDouble, addInteger, addLong, addByte, addBool, addArray, addList, remove);
+		                }else if (getTreeItem()!= null){
+		                  	contextMenu.getItems().addAll(remove);
+		                }
+		                setContextMenu(contextMenu);
+		             }
+	            }
+	        }
         }
         
         private void createTextField(TreeItem<TreeViewEntry> treeItem) {

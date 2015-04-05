@@ -45,7 +45,6 @@ public class Game {
 	public ResourceHandler resourceHandler;
 	public EntityHandler entityHandler;
 	public ShaderHandler shaderHandler;
-	public CasCatManager cCatManager; 
 	public ItextureHandler itextureHandler;
 	public String gamePath;
 	
@@ -66,18 +65,18 @@ public class Game {
 		entityHandler = new EntityHandler(modelHandler, resourceHandler);
 		
 		
-		cCatManager = new CasCatManager();
-		cCatManager.readCAT(FileHandler.readFile(gamePath+"/Data/cas.cat"));
+		resourceHandler.getCasCatManager().readCat(FileHandler.readFile(gamePath+"/Data/cas.cat"));
 		
 		
 		TocManager tocMan = new TocManager();
-		Main.getJavaFXHandler().setTreeViewStructureLeft(new TreeItem<TreeViewEntry>(TreeViewConverter.getTreeView(tocMan.readToc(FileHandler.readFile("D:/dump_bf4_fs/MP_Playground.toc"))).getValue()));
+		TreeItem<TreeViewEntry> test = TreeViewConverter.getTreeView(tocMan.readToc(FileHandler.readFile("D:/dump_bf4_fs/MP_Playground.toc")));
+		Main.getJavaFXHandler().setTreeViewStructureLeft(test);
 		Main.getJavaFXHandler().getMainWindow().updateLeftRoot();
 		//TocFile sb = tocMan.readSbPart(FileHandler.readFile("D:/dump_bf4_fs/MP_Playground.sb", 0x10, 0xAD954));
 		
 		
 		
-		byte[] data = CasDataReader.readCas("72CEA8EE09AC2467B5B31561D0CDEFB96519A514", gamePath+"/Data", cCatManager.getEntries());
+		byte[] data = CasDataReader.readCas("72CEA8EE09AC2467B5B31561D0CDEFB96519A514", gamePath+"/Data", resourceHandler.getCasCatManager().getEntries());
 		resourceHandler.getEBXHandler().getLoader().loadEBX(data);
 		EbxCasConverter conv = new EbxCasConverter();
 		conv.createCAS(data);
@@ -147,11 +146,6 @@ public class Game {
 
 	public ItextureHandler getItextureHandler() {
 		return itextureHandler;
-	}
-
-
-	public CasCatManager getcCatManager() {
-		return cCatManager;
 	}
 	/*End of Handler*/
 	
