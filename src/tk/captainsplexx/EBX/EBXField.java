@@ -31,6 +31,11 @@ public class EBXField{
 	public FieldValueType getType() {
 		return type;
 	}
+	
+	
+	public void setType(FieldValueType type) {
+		this.type = type;
+	}
 	public void setValue(Object value, FieldValueType type) {
 		this.value = value;
 		this.type = type;

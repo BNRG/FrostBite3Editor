@@ -193,7 +193,7 @@ public class EBXLoader {
 		
 		if (fieldDesc.getType() == (short) 0x0029|| fieldDesc.getType() == (short) 0xd029 || fieldDesc.getType() == (short) 0x0000 || fieldDesc.getType() == (short) 0x8029){ //COMPLEX
 			field.setValue(readComplex(fieldDesc.getRef(), false), EBXHandler.FieldValueType.Complex);
-		}else if (fieldDesc.getType() == 0x0041){ // ARRAYREPEATER aka ARRAYCOMPLEX
+		}else if (fieldDesc.getType() == 0x0041){ //ARRAYCOMPLEX
 			int indexasdf = FileHandler.readInt(ebxFileBytes, seeker);
 			EBXArrayRepeater arrayRepeater = arrayRepeaters[indexasdf];
 			EBXComplexDescriptor arrayComplexDesc = complexDescriptors[fieldDesc.getRef()];
@@ -202,6 +202,33 @@ public class EBXLoader {
 			EBXField[] fields = new EBXField[arrayRepeater.getRepetitions()];
 			for (int i=0; i<fields.length;i++){
 				fields[i] = readField(arrayComplexDesc.getFieldStartIndex());
+				if (fields[i].getFieldDescritor().getType() == (short) 0x0029|| fields[i].getFieldDescritor().getType() == (short) 0xd029 || fields[i].getFieldDescritor().getType() == (short) 0x0000 || fields[i].getFieldDescritor().getType() == (short) 0x8029){ //COMPLEX
+					fields[i].setType(FieldValueType.Complex);
+				}else if (fields[i].getFieldDescritor().getType() == 0x0041){ //ARRAYCOMPLEX
+					fields[i].setType(FieldValueType.ArrayComplex);
+				}else if (fields[i].getFieldDescritor().getType() == (short) 0x407D || fields[i].getFieldDescritor().getType() == (short) 0x409D){//STRING
+					fields[i].setType(FieldValueType.String);
+				}else if (fields[i].getFieldDescritor().getType() == (short) 0x0089 || fields[i].getFieldDescritor().getType() == (short) 0xC089){//ENUM
+					fields[i].setType(FieldValueType.Enum);
+				}else if (fields[i].getFieldDescritor().getType()== (short) 0xC15D){ //GUID
+					fields[i].setType(FieldValueType.Guid);
+				}else if (fields[i].getFieldDescritor().getType()== (short) 0x417D){ //8HEX
+					fields[i].setType(FieldValueType.Hex8);
+				}else if (fields[i].getFieldDescritor().getType()==(short) 0xC13D){//FLOAT
+					fields[i].setType(FieldValueType.Float);
+				}else if (fields[i].getFieldDescritor().getType()==(short) 0xC10D){//uint ===???
+					fields[i].setType(FieldValueType.UIntegerAsLong);
+				}else if(fields[i].getFieldDescritor().getType() == (short) 0xc0fd){ // signed int ?=??
+					fields[i].setType(FieldValueType.Integer);
+				}else if (fields[i].getFieldDescritor().getType() == (short) 0xc0ad){//BOOL
+					fields[i].setType(FieldValueType.Bool);
+				}else if (fields[i].getFieldDescritor().getType() == (short) 0xc0ed){//short
+					fields[i].setType(FieldValueType.Short);			
+				}else if (fields[i].getFieldDescritor().getType() == (short) 0xc0cd){//BYTE
+					fields[i].setType(FieldValueType.Byte);
+				}else if(fields[i].getFieldDescritor().getType() == (short) 0x0035){ // ##guid
+					fields[i].setType(FieldValueType.Guid);
+				}
 			}
 			arrayComplex.setFields(fields);
 			field.setValue(arrayComplex, FieldValueType.ArrayComplex);
@@ -216,14 +243,14 @@ public class EBXLoader {
 			if (isPrimaryInstance && fieldDesc.getName().equals("Name") && trueFilename.equals("")){
 				trueFilename = (String) field.getValue();
 			}
-		}else if (fieldDesc.getType() == (short) 0x0089 || fieldDesc.getType() == (short) 0xC089){//ENUM GIVES STRING BACK - incomplete implementation
+		}else if (fieldDesc.getType() == (short) 0x0089 || fieldDesc.getType() == (short) 0xC089){//ENUM GIVES STRING BACK - incomplete implementation //TODO
 			int compareValue = FileHandler.readInt(ebxFileBytes, seeker);
 			EBXComplexDescriptor enumComplex = complexDescriptors[fieldDesc.getRef()];
 			
 			if (enumComplex.getNumField()==0){
 				field.setValue("*nullEnum*", FieldValueType.Enum);
 			}else{
-				for (int index=0; index<enumComplex.getNumField(); index++){
+				for (int index=0; index<enumComplex.getNumField(); index++){ //TODO check ??
 					if (fieldDescriptors[index].getOffset()==compareValue){
 						field.setValue(fieldDescriptors[index], FieldValueType.Enum);
 					}
