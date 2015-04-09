@@ -11,27 +11,23 @@ public class TreeViewEntry implements Cloneable{
 	public ImageView graphic;
 	public Object value;
 	public EntryType type;
+	public short ebxType;
 	
 	public TreeViewEntry(String name, ImageView graphic, Object value, EntryType type) {
 		this.name = name;
 		this.graphic = graphic;
 		this.value = value;
 		this.type = type;
+		this.ebxType = 0;
 	}
-	
-	
 	
 	public String getName() {
 		return name;
 	}
 
-
-
 	public void setName(String name) {
 		this.name = name;
 	}
-
-
 
 	public ImageView getGraphic() {
 		return graphic;
@@ -52,6 +48,14 @@ public class TreeViewEntry implements Cloneable{
 		this.type = type;
 	}
 	
+	public short getEBXType() {
+		return ebxType;
+	}
+
+	public void setEBXType(short ebxType) {
+		this.ebxType = ebxType;
+	}
+
 	public TreeViewEntry clone(){
 		try {
 			return (TreeViewEntry) super.clone();

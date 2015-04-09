@@ -9,6 +9,7 @@ import tk.captainsplexx.Resource.FileSeeker;
 
 public class CasDataReader { //casPath == folderPath
 	public static byte[] readCas(String SHA1, String casFolderPath, ArrayList<CasCatEntry> casCatEntries){
+		SHA1 = SHA1.replaceAll("\\s","");
 		for (CasCatEntry e : casCatEntries){
 			//SKIP IF NOT SHA1
 			if (!e.getSHA1().equals(SHA1.toLowerCase())){continue;}
@@ -22,7 +23,7 @@ public class CasDataReader { //casPath == folderPath
 			if (!casFilePath.endsWith("/")){casFilePath+="/";}
 			casFilePath += "cas_"+ casFile + ".cas";
 			
-			System.out.println("READING CAS: "+ casFilePath);
+			System.out.println("Reading CAS: "+ casFilePath+" for SHA1: "+SHA1);
 			
 			return convertToRAWData(FileHandler.readFile(casFilePath, e.getOffset(), e.getProcSize()), e.getProcSize());
 			//DONE

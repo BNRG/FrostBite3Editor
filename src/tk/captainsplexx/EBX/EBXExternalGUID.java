@@ -5,7 +5,7 @@ public class EBXExternalGUID {
 	public String ObjectGUID;
 	public EBXExternalGUID(String fileGUID, String objectGUID) {
 		this.fileGUID = fileGUID;
-		ObjectGUID = objectGUID;
+		this.ObjectGUID = objectGUID;
 	}
 	public String getFileGUID() {
 		return fileGUID;
@@ -17,7 +17,7 @@ public class EBXExternalGUID {
 		return ObjectGUID;
 	}
 	public void setObjectGUID(String objectGUID) {
-		ObjectGUID = objectGUID;
+		this.ObjectGUID = objectGUID;
 	}
 	
 }

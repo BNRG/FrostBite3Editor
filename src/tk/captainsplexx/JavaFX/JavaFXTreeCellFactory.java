@@ -1,16 +1,19 @@
 package tk.captainsplexx.JavaFX;
 
+import java.nio.ByteOrder;
+
 import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
 import tk.captainsplexx.JavaFX.JavaFXMainWindow.WorkDropType;
+import tk.captainsplexx.Resource.FileHandler;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
-
 import javafx.scene.effect.InnerShadow;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
@@ -271,6 +274,9 @@ public class JavaFXTreeCellFactory extends TreeCell<TreeViewEntry> {
 		                	setText(item.getName()+":"+item.getType().toString());
 		                }else{
 		                	setText(item.getName()+":"+convertToString(item));
+		                }
+		                if (item.getEBXType()!=0){
+		                	setTooltip(new Tooltip("Type: "+FileHandler.bytesToHex(FileHandler.toBytes(item.getEBXType(), ByteOrder.BIG_ENDIAN))));
 		                }
 		                setGraphic(getTreeItem().getValue().getGraphic());
 		                contextMenu.getItems().clear();

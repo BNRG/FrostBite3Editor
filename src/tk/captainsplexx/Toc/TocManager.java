@@ -5,12 +5,14 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 
+import org.omg.IOP.CodecPackage.InvalidTypeForEncoding;
+
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.FileSeeker;
 
 public class TocManager {
 	public static enum TocFieldType {
-		STRING, BOOL, INTEGER, LONG, GUID, SHA1, LIST
+		STRING, BOOL, INTEGER, LONG, GUID, SHA1, LIST, RAW
 	};
 	
 	public static enum TocEntryType {
@@ -75,12 +77,15 @@ public class TocManager {
 	}
 	
 	public TocEntry readEntry(byte[] data, FileSeeker seeker){
+		//System.out.println("Reading ENTRY at "+seeker.getOffset());
 		TocEntry entry;
 		int entryType = (readByte(data, seeker) & 0xFF); //byte needs to be casted to unsigned.
 		if (entryType == 0x82){
 			entry = new TocEntry(TocEntryType.ORDINARY);
 			int entrySize = FileHandler.readLEB128(data, seeker); 
 			int entryOffset = seeker.getOffset();
+			
+			//for (int test=0; test<2; test++){ //TODO ---V
 			while (seeker.getOffset() < entryOffset+entrySize){ //READ FIELDS
 				TocField field = readField(data, seeker);
 				if (field != null){
@@ -122,16 +127,16 @@ public class TocManager {
 				bool = true;
 			}
 			field = new TocField(bool, TocFieldType.BOOL, name);
-		}else if ((fieldType == 0x02) || (fieldType == 0x13)){
-			//read128(f)
-			System.err.println("todo-tocmanager");
+		}else if ((fieldType == 0x02) || (fieldType == 0x13)){ //sbTocFile -> RES -> ENTRY: idata
+			int length = FileHandler.readLEB128(data, seeker);
+			field = new TocField(FileHandler.readByte(data, seeker, length), TocFieldType.RAW, name); //TODO //TEST
 		}else if (fieldType == 0x10){ //SHA1 stored as HEXSTRING
 			field = new TocField(FileHandler.bytesToHex(readByte(data, 20, seeker)), TocFieldType.SHA1, name);
 		}else if (fieldType == 0x07){ // #string, length (including trailing null) prefixed as 7bit int
 			FileHandler.readLEB128(data, seeker); //SKIP LENGTH
 			field = new TocField(readString(data, seeker), TocFieldType.STRING, name);
 		}else if (fieldType == 0x00){
-			//RETURN
+			return null;
 		}else{
 			System.err.println("Unknown FieldType: "+fieldType+" -- TocManager");
 		}

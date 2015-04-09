@@ -72,14 +72,19 @@ public class Game {
 		
 		
 		TocManager tocMan = new TocManager();
-		TreeItem<TreeViewEntry> test = TreeViewConverter.getTreeView(tocMan.readToc(FileHandler.readFile(gamePath+"/Data/"+gamePlatform+"/Levels/MP/MP_Siege/MP_Siege.toc")));
+		TocFile sb = tocMan.readSbPart(FileHandler.readFile("D:/dump_bf4_fs/MP_Playground.sb", 0x10, 0xAD954));
+		//TocFile toc = tocMan.readToc(FileHandler.readFile(gamePath+"/Data/"+gamePlatform+"/Levels/MP/MP_Siege/MP_Siege.toc"));
+		TreeItem<TreeViewEntry> test = TreeViewConverter.getTreeView(sb);
 		Main.getJavaFXHandler().setTreeViewStructureLeft(test);
 		Main.getJavaFXHandler().getMainWindow().updateLeftRoot();
-		//TocFile sb = tocMan.readSbPart(FileHandler.readFile("D:/dump_bf4_fs/MP_Playground.sb", 0x10, 0xAD954));
 		
 		
 		
-		byte[] data = CasDataReader.readCas("72CEA8EE09AC2467B5B31561D0CDEFB96519A514", gamePath+"/Data", resourceHandler.getCasCatManager().getEntries()); //Playground/Content/Buildings
+		//7D 28 E8 12 01 C3 03 97 FB 99 FF 3B BA 3A 75 1A E6 C0 4E 02 mesh
+		
+		
+		
+		byte[] data = CasDataReader.readCas("76 06 C5 5F F0 95 B8 53 9A C6 A5 FC 60 0A E3 25 3D 09 5F 85", gamePath+"/Data", resourceHandler.getCasCatManager().getEntries());
 		TreeItem<TreeViewEntry> testebx = TreeViewConverter.getTreeView(resourceHandler.getEBXHandler().loadFile(data));
 		Main.getJavaFXHandler().setTreeViewStructureRight(testebx);
 		Main.getJavaFXHandler().getMainWindow().updateRightRoot();

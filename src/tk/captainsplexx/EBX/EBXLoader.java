@@ -119,7 +119,6 @@ public class EBXLoader {
 					FileHandler.readShort(ebxFileBytes, seeker, order));
 		}
 		//instanceRepeaters
-		//??????????????????????????????????????????????????????????????????????????????
 		instanceRepeaters = new EBXInstanceRepeater[header.getNumInstanceRepeater()];
 		for (int i=0;i<instanceRepeaters.length;i++){
 			instanceRepeaters[i] = new EBXInstanceRepeater(
@@ -140,7 +139,7 @@ public class EBXLoader {
 		}
 		
 		
-		//PayLoad aka. assign internal guids and nonGUIDindex to a complex
+		//PayLoad
 		internalGUIDs = new ArrayList<String>(); 
 		fields = new ArrayList<EBXField>(); 
 		instances = new ArrayList<EBXInstance>(); 
@@ -273,18 +272,33 @@ public class EBXLoader {
 		}else if (fieldDesc.getType() == (short) 0xc0cd){//BYTE
 			field.setValue(FileHandler.readByte(ebxFileBytes, seeker), FieldValueType.Byte);
 		}else if(fieldDesc.getType() == (short) 0x0035){ // ##guid and guidTable stuff | guidtable needs to be created first
-			int tempValue = FileHandler.readInt(ebxFileBytes, seeker);
-			if (tempValue == 0x0){
+			//int tempValue = FileHandler.readInt(ebxFileBytes, seeker);
+			int tempValue = 0;
+			if (field.getValue()!=null){
+				tempValue = (int) field.getValue();
+			}//TODO
+			if(tempValue>>31 == 1){
+				//System.err.println("EXTER");
+				field.setValue(externalGUIDs[(tempValue & 0x7fffffff)].getFileGUID(), FieldValueType.Guid);
+			}else if (tempValue == 0x0){
+				//System.err.println("NULL");
 				field.setValue("*nullGUID*", FieldValueType.Guid);
-			}else{ /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////!!!!
-				try{
-					field.setValue(externalGUIDs[(tempValue & 0x7fffffff)].getFileGUID(), FieldValueType.Guid); // INTERNAL ?? EXTERNAL ??
-				}catch (Exception e){
-					//field.setValue(internalGUIDs.get(tempValue-1), FieldValueType.Guid);// <'=_._Ö_._='> //TODO
-				}
+			}else{
+				//System.err.println("INT");
+				field.setValue(internalGUIDs.get(tempValue-1), FieldValueType.Guid);// <'=_._Ö_._='> //TODO
 			}
 		}
 		else{
+			/*
+			 try:
+                (typ,length)=numDict[fieldDesc.type]
+                num=self.unpack(typ,f.read(length))[0]
+                field.value=num
+            except:
+                print "Unknown field type: "+str(fieldDesc.type)+" File name: "+self.relPath
+                field.value="*unknown field type*"
+			 */
+			
 			System.err.println("Unknown field type: "+Integer.toHexString(fieldDesc.getType())+" File name: "+filePath);
 			field.setValue("*unknown field type*", FieldValueType.Unknown);
 		}		

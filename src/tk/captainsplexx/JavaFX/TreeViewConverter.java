@@ -92,10 +92,9 @@ public class TreeViewConverter {
 			switch(ebxField.getType()){
 				case ArrayComplex:
 					entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), new ImageView(JavaFXHandler.arrayIcon), null, EntryType.ARRAY);
+					entry.setEBXType((short) (ebxField.getFieldDescritor().getType()&0xFFFF));
 					TreeItem<TreeViewEntry> fieldArray = new TreeItem<TreeViewEntry>(entry);
 					for (EBXField eF : ebxField.getValueAsComplex().getFields()){
-						System.out.println(eF.getFieldDescritor().getName());
-						System.out.println(eF.getType());
 						fieldArray.getChildren().add(readField(eF));
 					}
 					return fieldArray;
@@ -107,6 +106,7 @@ public class TreeViewConverter {
 					break;
 				case Complex:
 					entry = new TreeViewEntry(ebxField.getValueAsComplex().getComplexDescriptor().getName()+" "+ebxField.getFieldDescritor().getName(), new ImageView(JavaFXHandler.instanceIcon), null, EntryType.LIST);
+					entry.setEBXType((short) (ebxField.getFieldDescritor().getType()&0xFFFF));
 					TreeItem<TreeViewEntry> complexFields = new TreeItem<TreeViewEntry>(entry);
 					for (EBXField eF : ebxField.getValueAsComplex().getFields()){
 						complexFields.getChildren().add(readField(eF));
@@ -145,6 +145,7 @@ public class TreeViewConverter {
 				default:
 					break;
 			}
+			entry.setEBXType((short) (ebxField.getFieldDescritor().getType()&0xFFFF));
 			TreeItem<TreeViewEntry> field = new TreeItem<TreeViewEntry>(entry);
 			return field;
 		}else{
