@@ -11,12 +11,15 @@ import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
 import tk.captainsplexx.Toc.TocEntry;
 import tk.captainsplexx.Toc.TocField;
 import tk.captainsplexx.Toc.TocFile;
+import tk.captainsplexx.Toc.TocManager.TocEntryType;
+import tk.captainsplexx.Toc.TocManager.TocFieldType;
+import tk.captainsplexx.Toc.TocManager.TocFileType;
 import javafx.scene.control.TreeItem;
 import javafx.scene.image.ImageView;
 
 public class TreeViewConverter {
 	
-	/*TOC*/
+	/*FROM TOC*/
 	public static TreeItem<TreeViewEntry> getTreeView(TocFile tocFile){
 		TreeItem<TreeViewEntry> root = new TreeItem<TreeViewEntry>(new TreeViewEntry("TocFile", new ImageView(JavaFXHandler.listIcon), null, EntryType.LIST));
 		for (TocEntry e : tocFile.getEntries()){
@@ -24,7 +27,6 @@ public class TreeViewConverter {
 		}
 		return root;
 	}
-	
 	static TreeItem<TreeViewEntry> readEntry(TocEntry tocEntry){
 		TreeItem<TreeViewEntry> entry = new TreeItem<TreeViewEntry>(new TreeViewEntry("TocEntry", new ImageView(JavaFXHandler.listIcon), null, EntryType.LIST));
 		for (TocField f : tocEntry.getFields()){
@@ -32,7 +34,6 @@ public class TreeViewConverter {
 		}
 		return entry;
 	}
-	
 	static TreeItem<TreeViewEntry> readField(TocField tocField){
 		TreeViewEntry entry = null;
 		switch(tocField.getType()){
@@ -72,7 +73,7 @@ public class TreeViewConverter {
 	
 	
 	
-	/*EBX*/
+	/*FROM EBX*/
 	public static TreeItem<TreeViewEntry> getTreeView(EBXFile ebx){
 		TreeItem<TreeViewEntry> root = new TreeItem<TreeViewEntry>(new TreeViewEntry(ebx.getTruePath(), new ImageView(JavaFXHandler.documentIcon), null, EntryType.LIST));
 		for (EBXInstance instance : ebx.getInstances()){
@@ -80,16 +81,14 @@ public class TreeViewConverter {
 		}
 		return root;
 	}
-	
-	public static TreeItem<TreeViewEntry> readInstance(EBXInstance instance){
+	static TreeItem<TreeViewEntry> readInstance(EBXInstance instance){
 		TreeItem<TreeViewEntry> iList = new TreeItem<TreeViewEntry>(new TreeViewEntry(instance.getComplex().getComplexDescriptor().getName()+" "+instance.getGuid().toUpperCase(), new ImageView(JavaFXHandler.listIcon), null, EntryType.LIST));
 		for(EBXField field : instance.getComplex().getFields()){
 			iList.getChildren().add(readField(field));
 		}
 		return iList;
 	}
-	
-	public static TreeItem<TreeViewEntry> readField(EBXField ebxField){
+	static TreeItem<TreeViewEntry> readField(EBXField ebxField){
 		TreeViewEntry entry = null;
 		if (ebxField != null){
 			switch(ebxField.getType()){
@@ -158,7 +157,61 @@ public class TreeViewConverter {
 			return null;
 		}
 	}
-	
-	
 	/*END OF EBX*/
+	
+	/*ENCODE TO TOC*/
+	public static TocFile getTocFile(TreeItem<TreeViewEntry> rootEntry, TocFileType type){
+		TocFile file = new TocFile(type);
+		ArrayList<TocEntry> entries = new ArrayList<TocEntry>();
+		for (TreeItem<TreeViewEntry> child : rootEntry.getChildren()){
+			entries.add(getTocEntry(child, TocEntryType.ORDINARY));
+		}
+		file.getEntries().addAll(entries);
+		return file;
+	}
+	
+	static TocEntry getTocEntry(TreeItem<TreeViewEntry> entry, TocEntryType type){
+		TocEntry tocEntry = new TocEntry(type);
+		ArrayList<TocField> fields = new ArrayList<TocField>();
+		for (TreeItem<TreeViewEntry> child : entry.getChildren()){
+			fields.add(getTocField(child));
+		}
+		tocEntry.getFields().addAll(fields);
+		return tocEntry;
+	}
+	static TocField getTocField(TreeItem<TreeViewEntry> field){
+		TocField tf = null;
+		switch(field.getValue().getType()){
+		case BOOL:
+			tf = new TocField(field.getValue().getValue(), TocFieldType.BOOL, field.getValue().getName());
+			break;
+		case GUID:
+			tf = new TocField(field.getValue().getValue(), TocFieldType.GUID, field.getValue().getName());
+			break;
+		case INTEGER:
+			tf = new TocField(field.getValue().getValue(), TocFieldType.INTEGER, field.getValue().getName());
+			break;
+		case LIST:
+			ArrayList<TocEntry> tocEntries = new ArrayList<TocEntry>();
+			for (TreeItem<TreeViewEntry> item : field.getChildren()){
+				tocEntries.add(getTocEntry(item, TocEntryType.ORDINARY));
+			}
+			tf = new TocField(tocEntries, TocFieldType.LIST, field.getValue().getName());
+			break;
+		case LONG:
+			tf = new TocField(field.getValue().getValue(), TocFieldType.LONG, field.getValue().getName());
+			break;
+		case SHA1:
+			tf = new TocField(field.getValue().getValue(), TocFieldType.SHA1, field.getValue().getName());
+			break;
+		case STRING:
+			tf = new TocField(field.getValue().getValue(), TocFieldType.STRING, field.getValue().getName());
+			break;
+		case RAW:
+			tf = new TocField(field.getValue().getValue(), TocFieldType.RAW, field.getValue().getName());
+			break; 
+		}
+		return tf;
+	}
+	/*END OF TO TOC*/
 }

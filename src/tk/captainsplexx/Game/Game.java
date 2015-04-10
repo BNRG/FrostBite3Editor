@@ -37,6 +37,7 @@ import tk.captainsplexx.Resource.MeshVariationDatabaseEntry;
 import tk.captainsplexx.Resource.ResourceHandler;
 import tk.captainsplexx.Toc.TocFile;
 import tk.captainsplexx.Toc.TocManager;
+import tk.captainsplexx.Toc.TocManager.TocFileType;
 
 public class Game {
 	public ModelHandler modelHandler;
@@ -75,6 +76,7 @@ public class Game {
 		//TocFile sb = tocMan.readSbPart(FileHandler.readFile(gamePath+"/Data/"+gamePlatform+"/Levels/MP/MP_Siege/MP_Siege.sb", 0x12, 0x3E8));
 		TocFile toc = tocMan.readToc(FileHandler.readFile(gamePath+"/Data/"+gamePlatform+"/Levels/MP/MP_Siege/MP_Siege.toc"));
 		TreeItem<TreeViewEntry> test = TreeViewConverter.getTreeView(toc);
+		TocFile newToc = TreeViewConverter.getTocFile(test, TocFileType.Sig);
 		Main.getJavaFXHandler().setTreeViewStructureLeft(test);
 		Main.getJavaFXHandler().getMainWindow().updateLeftRoot();
 		
