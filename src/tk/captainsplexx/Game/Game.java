@@ -73,10 +73,12 @@ public class Game {
 		
 		
 		TocManager tocMan = new TocManager();
-		//TocFile sb = tocMan.readSbPart(FileHandler.readFile(gamePath+"/Data/"+gamePlatform+"/Levels/MP/MP_Siege/MP_Siege.sb", 0x12, 0x3E8));
+		TocFile sb = tocMan.readSbPart(FileHandler.readFile(gamePath+"/Data/"+gamePlatform+"/Levels/MP/MP_Siege/MP_Siege.sb", 0x12, 0x3E8));
 		TocFile toc = tocMan.readToc(FileHandler.readFile(gamePath+"/Data/"+gamePlatform+"/Levels/MP/MP_Siege/MP_Siege.toc"));
 		TreeItem<TreeViewEntry> test = TreeViewConverter.getTreeView(toc);
+		TreeItem<TreeViewEntry> test2 = TreeViewConverter.getTreeView(sb);
 		TocFile newToc = TreeViewConverter.getTocFile(test, TocFileType.Sig);
+		TocFile newSb = TreeViewConverter.getTocFile(test2, TocFileType.SbPart);
 		Main.getJavaFXHandler().setTreeViewStructureLeft(test);
 		Main.getJavaFXHandler().getMainWindow().updateLeftRoot();
 		
