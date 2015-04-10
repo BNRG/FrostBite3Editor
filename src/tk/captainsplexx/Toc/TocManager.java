@@ -33,7 +33,8 @@ public class TocManager {
 	}
 
 	public TocFile readToc(byte[] fileArray) {
-		int header = readInt(fileArray, 0x0, ByteOrder.BIG_ENDIAN);
+		seeker = new FileSeeker();
+		int header = FileHandler.readInt(fileArray, seeker, ByteOrder.BIG_ENDIAN);
 		TocFileType fileType = null;
 		if (header == 0x00D1CE00 || header == 0x00D1CE01) { //#the file is XOR encrypted and has a signature
 			fileType = TocFileType.XORSig;
@@ -79,13 +80,12 @@ public class TocManager {
 	public TocEntry readEntry(byte[] data, FileSeeker seeker){
 		//System.out.println("Reading ENTRY at "+seeker.getOffset());
 		TocEntry entry;
-		int entryType = (readByte(data, seeker) & 0xFF); //byte needs to be casted to unsigned.
+		int entryType = (FileHandler.readByte(data, seeker) & 0xFF); //byte needs to be casted to unsigned.
 		if (entryType == 0x82){
 			entry = new TocEntry(TocEntryType.ORDINARY);
 			int entrySize = FileHandler.readLEB128(data, seeker); 
 			int entryOffset = seeker.getOffset();
 			
-			//for (int test=0; test<2; test++){ //TODO ---V
 			while (seeker.getOffset() < entryOffset+entrySize){ //READ FIELDS
 				TocField field = readField(data, seeker);
 				if (field != null){
@@ -94,6 +94,7 @@ public class TocManager {
 			}
 		}else{
 			entry = new TocEntry(TocEntryType.UNKNOWN);
+			System.err.println("Unknown Type in TocManger detected: "+entryType+" at "+seeker.getOffset());
 			//TODO
 		}
 		return entry;
@@ -101,10 +102,10 @@ public class TocManager {
 	
 	public TocField readField(byte[] data, FileSeeker seeker){
 		TocField field = null;
-		int fieldType = (readByte(data, seeker) & 0xFF); //byte needs to be casted to unsigned.
+		int fieldType = (FileHandler.readByte(data, seeker) & 0xFF); //byte needs to be casted to unsigned.
 		String name = "";
 		if (fieldType != 0x00){
-			name = readString(data, seeker);
+			name = FileHandler.readString(data, seeker);
 		}
 		if (fieldType == 0x01){ //#list type, containing ENTRIES (MULTIPLE ONE) 
 			ArrayList<TocEntry> list = new ArrayList<TocEntry>();
@@ -116,106 +117,34 @@ public class TocManager {
 			if (list.isEmpty()){list = null;}
 			field = new TocField(list, TocFieldType.LIST, name);
 		}else if (fieldType == 0x0F){ //ID 16 stored as HEXSTRING
-			field = new TocField(FileHandler.bytesToHex(readByte(data, 16, seeker)), TocFieldType.GUID, name);
+			field = new TocField(FileHandler.bytesToHex(FileHandler.readByte(data, seeker, 16)), TocFieldType.GUID, name);
 		}else if (fieldType == 0x09){ //LONG
-			field = new TocField(readLong(data, seeker), TocFieldType.LONG, name);
+			field = new TocField(FileHandler.readLong(data, seeker), TocFieldType.LONG, name);
+
 		}else if (fieldType == 0x08){ //INTEGER
-			field = new TocField(readInt(data, seeker), TocFieldType.INTEGER, name);
+			field = new TocField(FileHandler.readInt(data, seeker), TocFieldType.INTEGER, name);
 		}else if (fieldType == 0x06){ //BOOL
 			boolean bool = false;
-			if (readByte(data, seeker) == 0x01){
+			if (FileHandler.readByte(data, seeker) == 0x01){
 				bool = true;
 			}
 			field = new TocField(bool, TocFieldType.BOOL, name);
-		}else if ((fieldType == 0x02) || (fieldType == 0x13)){ //sbTocFile -> RES -> ENTRY: idata
+		}else if ((fieldType == 0x02) || (fieldType == 0x13)){ //sbTocFile -> RES -> ENTRY: idata 0x13 //TODO What is the diffrence ?
 			int length = FileHandler.readLEB128(data, seeker);
-			field = new TocField(FileHandler.readByte(data, seeker, length), TocFieldType.RAW, name); //TODO //TEST
+			field = new TocField(FileHandler.readByte(data, seeker, length), TocFieldType.RAW, name);
 		}else if (fieldType == 0x10){ //SHA1 stored as HEXSTRING
-			field = new TocField(FileHandler.bytesToHex(readByte(data, 20, seeker)), TocFieldType.SHA1, name);
+			field = new TocField(FileHandler.bytesToHex(FileHandler.readByte(data, seeker, 20)), TocFieldType.SHA1, name);
 		}else if (fieldType == 0x07){ // #string, length (including trailing null) prefixed as 7bit int
 			FileHandler.readLEB128(data, seeker); //SKIP LENGTH
-			field = new TocField(readString(data, seeker), TocFieldType.STRING, name);
+			field = new TocField(FileHandler.readString(data, seeker), TocFieldType.STRING, name);
 		}else if (fieldType == 0x00){
 			return null;
 		}else{
-			System.err.println("Unknown FieldType: "+fieldType+" -- TocManager");
+			System.err.println("Unknown FieldType: "+fieldType+" in TocManager detected at "+seeker.getOffset());
 		}
 		return field;
 	}
 
-	// Inputstream Operations
-	int readInt(byte[] fileArray, int offset) {
-		return ByteBuffer.wrap(readByte(fileArray, offset, 4))
-				.order(ByteOrder.LITTLE_ENDIAN).getInt();
-	}
-	
-	int readInt(byte[] fileArray, int offset, ByteOrder order) {
-		return ByteBuffer.wrap(readByte(fileArray, offset, 4))
-				.order(order).getInt();
-	}
-	
-	long readLong(byte[] fileArray, int offset) {
-		return ByteBuffer.wrap(readByte(fileArray, offset, 8))
-				.order(ByteOrder.LITTLE_ENDIAN).getLong();
-	}
 
-	String readString(byte[] fileArray, FileSeeker seeker) {
-		String tmp = "";
-		while(true){
-			byte[] b = readByte(fileArray, 1, seeker);
-			if (b[0] != 0x0) {
-				try {
-					tmp += new String(b, "UTF-8");
-				} catch (UnsupportedEncodingException e) {
-					System.err.println("Error - UnsupportedEncodingException in TocManager");
-					e.printStackTrace();
-				}
-			}else{
-				break;
-			}
-		}
-		return tmp;
-	}
 
-	int readInt(byte[] fileArray, FileSeeker seeker) {
-		return ByteBuffer.wrap(readByte(fileArray, 4, seeker))
-				.order(ByteOrder.LITTLE_ENDIAN).getInt();
-	}
-	
-	int readInt(byte[] fileArray, FileSeeker seeker, ByteOrder order){
-		return ByteBuffer.wrap(readByte(fileArray, 4, seeker))
-				.order(order).getInt();
-	}
-	
-	long readLong(byte[] fileArray, FileSeeker seeker){
-		return ByteBuffer.wrap(readByte(fileArray, 8, seeker)).order(ByteOrder.LITTLE_ENDIAN).getLong();
-	}
-
-	byte[] readMagic(byte[] fileArray) {
-		return readByte(fileArray, 0, 4);
-	}
-	
-
-	byte[] readByte(byte[] fileArray, int offset, int len) {
-		byte[] buffer = new byte[len];
-		for (int i = 0; i < len; i++) {
-			try {
-				buffer[i] = fileArray[offset + i];
-			} catch (ArrayIndexOutOfBoundsException e) {
-				System.out.println("END OF FILE REACHED!!");
-				buffer[i] = 0;
-			}
-		}
-		return buffer;
-	}
-	
-	byte readByte(byte[] fileArray, FileSeeker seeker){
-		return readByte(fileArray, 1, seeker)[0];
-	}
-
-	byte[] readByte(byte[] fileArray, int len, FileSeeker seeker) {
-		byte[] buffer = readByte(fileArray, seeker.offset, len);
-		seeker.seek(buffer.length);
-		return buffer;
-	}
 }

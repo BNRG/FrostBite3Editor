@@ -2,10 +2,10 @@ package tk.captainsplexx.EBX;
 
 public class EBXExternalGUID {
 	public String fileGUID;
-	public String ObjectGUID;
-	public EBXExternalGUID(String fileGUID, String objectGUID) {
+	public String instanceGUID;
+	public EBXExternalGUID(String fileGUID, String instanceGUID) {
 		this.fileGUID = fileGUID;
-		this.ObjectGUID = objectGUID;
+		this.instanceGUID = instanceGUID;
 	}
 	public String getFileGUID() {
 		return fileGUID;
@@ -13,11 +13,11 @@ public class EBXExternalGUID {
 	public void setFileGUID(String fileGUID) {
 		this.fileGUID = fileGUID;
 	}
-	public String getObjectGUID() {
-		return ObjectGUID;
+	public String getInstanceGUID() {
+		return instanceGUID;
 	}
-	public void setObjectGUID(String objectGUID) {
-		this.ObjectGUID = objectGUID;
+	public void setInstanceGUID(String instanceGUID) {
+		this.instanceGUID = instanceGUID;
 	}
 	
 }

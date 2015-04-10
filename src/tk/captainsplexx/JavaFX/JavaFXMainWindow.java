@@ -24,7 +24,7 @@ public class JavaFXMainWindow extends Application{
 	
 	public static enum EntryType{
 		STRING, INTEGER, LONG, BOOL, FLOAT, DOUBLE, ARRAY, LIST, BYTE, NULL, SHORT,
-		SHA1, GUID, ENUM, HEX8, UINTEGER
+		SHA1, GUID, ENUM, HEX8, UINTEGER, RAW, CHUNKGUID
 	};
 	
 	public static enum WorkDropType { DROP_INTO, REORDER };

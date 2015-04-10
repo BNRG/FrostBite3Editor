@@ -56,10 +56,13 @@ public class TreeViewConverter {
 				entry = new TreeViewEntry(tocField.getName(), new ImageView(JavaFXHandler.longIcon), tocField.getObj(), EntryType.LONG);
 				break;
 			case SHA1:
-				entry = new TreeViewEntry(tocField.getName(), null, tocField.getObj(), EntryType.SHA1);
+				entry = new TreeViewEntry(tocField.getName(), new ImageView(JavaFXHandler.hashIcon), tocField.getObj(), EntryType.SHA1);
 				break;
 			case STRING:
 				entry = new TreeViewEntry(tocField.getName(), new ImageView(JavaFXHandler.textIcon), tocField.getObj(), EntryType.STRING);
+				break;
+			case RAW:
+				entry = new TreeViewEntry(tocField.getName(), new ImageView(JavaFXHandler.rawIcon), tocField.getObj(), EntryType.RAW);
 				break;
 		}
 		TreeItem<TreeViewEntry> field = new TreeItem<TreeViewEntry>(entry);
@@ -122,6 +125,9 @@ public class TreeViewConverter {
 				case Float:
 					entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), new ImageView(JavaFXHandler.floatIcon), (Float)ebxField.getValue(), EntryType.FLOAT);
 					break;
+				case ChunkGuid:
+					entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), null, (String)ebxField.getValue(), EntryType.CHUNKGUID);
+					break;
 				case Guid:
 					entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), null, (String)ebxField.getValue(), EntryType.GUID);
 					break;
@@ -137,8 +143,8 @@ public class TreeViewConverter {
 				case String:
 					entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), new ImageView(JavaFXHandler.textIcon), (String)ebxField.getValue(), EntryType.STRING);
 					break;
-				case UIntegerAsLong:
-					entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), null, (Long)ebxField.getValue(), EntryType.UINTEGER);
+				case UInteger:
+					entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), null, (Integer)ebxField.getValue(), EntryType.UINTEGER);
 					break;
 				case Unknown:
 					break;

@@ -14,7 +14,9 @@ import tk.captainsplexx.Resource.FileSeeker;
 public class EBXLoader {
 	public byte[] ebxFileBytes;
 	public String guidTablePath;
+	public HashMap<Integer, Integer> numDict = new HashMap<Integer, Integer>();
 	public HashMap<Integer, String> keywordDict;
+	
 
 	public byte[] littleHeader = new byte[] { (byte) 0xCE, (byte) 0xD1,
 			(byte) 0xB2, (byte) 0x0F };
@@ -190,6 +192,8 @@ public class EBXLoader {
 		EBXField field = new EBXField(fieldDesc, seeker.getOffset());
 		fields.add(field);
 		
+		
+		/*<DECODE>*/
 		if (fieldDesc.getType() == (short) 0x0029|| fieldDesc.getType() == (short) 0xd029 || fieldDesc.getType() == (short) 0x0000 || fieldDesc.getType() == (short) 0x8029){ //COMPLEX
 			field.setValue(readComplex(fieldDesc.getRef(), false), EBXHandler.FieldValueType.Complex);
 		}else if (fieldDesc.getType() == 0x0041){ //ARRAYCOMPLEX
@@ -216,7 +220,7 @@ public class EBXLoader {
 				}else if (fields[i].getFieldDescritor().getType()==(short) 0xC13D){//FLOAT
 					fields[i].setType(FieldValueType.Float);
 				}else if (fields[i].getFieldDescritor().getType()==(short) 0xC10D){//uint ===???
-					fields[i].setType(FieldValueType.UIntegerAsLong);
+					fields[i].setType(FieldValueType.UInteger);
 				}else if(fields[i].getFieldDescritor().getType() == (short) 0xc0fd){ // signed int ?=??
 					fields[i].setType(FieldValueType.Integer);
 				}else if (fields[i].getFieldDescritor().getType() == (short) 0xc0ad){//BOOL
@@ -255,14 +259,14 @@ public class EBXLoader {
 					}
 				}
 			}
-		}else if (fieldDesc.getType()== (short) 0xC15D){ //GUID
-			field.setValue(FileHandler.bytesToHex(FileHandler.readByte(ebxFileBytes, seeker,16)), FieldValueType.Guid);
+		}else if (fieldDesc.getType()== (short) 0xC15D){ //GUID CHUNK ??
+			field.setValue(FileHandler.bytesToHex(FileHandler.readByte(ebxFileBytes, seeker,16)), FieldValueType.ChunkGuid);
 		}else if (fieldDesc.getType()== (short) 0x417D){ //8HEX
 			field.setValue(FileHandler.bytesToHex(FileHandler.readByte(ebxFileBytes,seeker, 8)), FieldValueType.Hex8);
 		}else if (fieldDesc.getType()==(short) 0xC13D){//FLOAT
 			field.setValue(FileHandler.readFloat(ebxFileBytes, seeker), FieldValueType.Float);
 		}else if (fieldDesc.getType()==(short) 0xC10D){//uint ===???
-			field.setValue((FileHandler.readInt(ebxFileBytes, seeker, order) & 0xffffffffL), FieldValueType.UIntegerAsLong);
+			field.setValue((FileHandler.readInt(ebxFileBytes, seeker, order) & 0xffffffff), FieldValueType.UInteger);
 		}else if(fieldDesc.getType() == (short) 0xc0fd){ // signed int ?=??
 			field.setValue(FileHandler.readInt(ebxFileBytes, seeker), FieldValueType.Integer);
 		}else if (fieldDesc.getType() == (short) 0xc0ad){//BOOL
@@ -271,24 +275,23 @@ public class EBXLoader {
 			field.setValue(FileHandler.readShort(ebxFileBytes, seeker, order), FieldValueType.Short);			
 		}else if (fieldDesc.getType() == (short) 0xc0cd){//BYTE
 			field.setValue(FileHandler.readByte(ebxFileBytes, seeker), FieldValueType.Byte);
-		}else if(fieldDesc.getType() == (short) 0x0035){ // ##guid and guidTable stuff | guidtable needs to be created first
-			//int tempValue = FileHandler.readInt(ebxFileBytes, seeker);
-			int tempValue = 0;
-			if (field.getValue()!=null){
-				tempValue = (int) field.getValue();
-			}//TODO
-			if(tempValue>>31 == 1){
+		}else if(fieldDesc.getType() == (short) 0x0035){ // #guid
+			int tempValue = FileHandler.readInt(ebxFileBytes, seeker);
+			if(((tempValue>>31) & 0xFFFFFFFF) == -1){
 				//System.err.println("EXTER");
-				field.setValue(externalGUIDs[(tempValue & 0x7fffffff)].getFileGUID(), FieldValueType.Guid);
+				EBXExternalGUID guid = externalGUIDs[(tempValue & 0x7fffffff)];
+				field.setValue(guid.getFileGUID()+"/"+guid.getInstanceGUID(), FieldValueType.Guid);
 			}else if (tempValue == 0x0){
 				//System.err.println("NULL");
 				field.setValue("*nullGUID*", FieldValueType.Guid);
 			}else{
-				//System.err.println("INT");
-				field.setValue(internalGUIDs.get(tempValue-1), FieldValueType.Guid);// <'=_._Ö_._='> //TODO
+				//System.err.println("INT"); //TODO WE NEED A RECURSE!
+				field.setValue("INTERNAL GUID TODO", FieldValueType.Guid);
+				//field.setValue(internalGUIDs.get(tempValue-1), FieldValueType.Guid);
 			}
-		}
-		else{
+		}else{
+			System.err.println("Unknown field type: "+Integer.toHexString(fieldDesc.getType())+" File name: "+filePath);
+			field.setValue("*unknown field type*", FieldValueType.Unknown);
 			/*
 			 try:
                 (typ,length)=numDict[fieldDesc.type]
@@ -298,10 +301,8 @@ public class EBXLoader {
                 print "Unknown field type: "+str(fieldDesc.type)+" File name: "+self.relPath
                 field.value="*unknown field type*"
 			 */
-			
-			System.err.println("Unknown field type: "+Integer.toHexString(fieldDesc.getType())+" File name: "+filePath);
-			field.setValue("*unknown field type*", FieldValueType.Unknown);
-		}		
+		}
+		/*<END OF DECODE>*/
 		return field;
 		
 	}
@@ -350,5 +351,20 @@ public class EBXLoader {
 
 	public byte[] readMagic(byte[] fileArray) {
 		return readByte(fileArray, 0, 4);
+	}
+
+	// Constructor
+	public EBXLoader() {
+		numDict.put(0xC12D, 8);
+		numDict.put(0xc0cd, 1);
+		numDict.put(0x0035, 4);
+		numDict.put(0xc10d, 4);
+		numDict.put(0xc14d, 8);
+		numDict.put(0xc0ad, 1);
+		numDict.put(0xc0fd, 4);
+		numDict.put(0xc0bd, 1);
+		numDict.put(0xc0ed, 2);
+		numDict.put(0xc0dd, 2);
+		numDict.put(0xc13d, 4);
 	}
 }

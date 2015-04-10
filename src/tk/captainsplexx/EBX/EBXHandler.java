@@ -10,7 +10,7 @@ public class EBXHandler {
 	public HashMap<String, EBXFile> files;
 	
 	public enum FieldValueType{
-		Complex, ArrayComplex, String, Enum, Guid, ExternalGuid, Hex8, Unknown,/*Field,*/ Float, Integer, Bool, Short, Byte, UIntegerAsLong
+		Complex, ArrayComplex, String, Enum, ExternalGuid, Hex8, Unknown,/*Field,*/ Float, Integer, Bool, Short, Byte, UInteger, ChunkGuid, Guid
 	}
 	
 	public EBXHandler(String guidTablePath){

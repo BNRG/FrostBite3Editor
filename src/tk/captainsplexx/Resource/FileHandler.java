@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
@@ -227,6 +228,31 @@ public class FileHandler {
 		
 	public static float readFloat(byte[] fileArray, FileSeeker seeker){
 		return ByteBuffer.wrap(readByte(fileArray, seeker, 4)).order(ByteOrder.LITTLE_ENDIAN).getFloat();
+	}
+	
+	public static long readLong(byte[] fileArray, FileSeeker seeker) {
+		return ByteBuffer.wrap(readByte(fileArray, seeker, 8)).order(ByteOrder.LITTLE_ENDIAN).getLong();
+	}
+	
+	public static long readLong(byte[] fileArray, FileSeeker seeker, ByteOrder order) {
+		return ByteBuffer.wrap(readByte(fileArray, seeker, 8)).order(order).getLong();
+	}
+	
+	public static String readString(byte[] fileArray, FileSeeker seeker) {
+		String tmp = "";
+		while(true){
+			byte[] b = readByte(fileArray, seeker, 1);
+			if (b[0] != 0x0) {
+				try {
+					tmp += new String(b, "UTF-8");
+				} catch (UnsupportedEncodingException e) {
+					e.printStackTrace();
+				}
+			}else{
+				break;
+			}
+		}
+		return tmp;
 	}
 	
 	

@@ -331,6 +331,8 @@ public class JavaFXTreeCellFactory extends TreeCell<TreeViewEntry> {
         	switch(item.type){
 	    		case STRING:
 	    			return (String)item.getValue();
+	    		case SHA1:
+	    			return (String)item.getValue();
 	    		case FLOAT:
 	    			return ((Float)item.getValue()).toString();
 	    		case DOUBLE:
@@ -340,7 +342,7 @@ public class JavaFXTreeCellFactory extends TreeCell<TreeViewEntry> {
 	    		case INTEGER:
 	    			return ((Integer)item.getValue()).toString();
 	    		case UINTEGER:
-	    			return ((Long)item.getValue()).toString();
+	    			return ((Integer)item.getValue()).toString();
 	    		case LONG:
 	    			return ((Long)item.getValue()).toString();
 	    		case ARRAY:
@@ -359,8 +361,14 @@ public class JavaFXTreeCellFactory extends TreeCell<TreeViewEntry> {
 	    			return byteToHex(((Byte)item.getValue()));
 	    		case ENUM:
 	    			return (String)item.getValue();
+	    		case RAW:
+	    			return FileHandler.bytesToHex((byte[]) item.getValue());
 	    		case NULL:
 	    			return ("NULL"); //DEFINED NULL ("NULL")
+	    		case GUID:
+	    			return (String)item.getValue();
+	    		case CHUNKGUID:
+	    			return (String)item.getValue();
 				default:
 					return null; //UNDEFINED NULL ("null")
         	}
@@ -390,9 +398,11 @@ public class JavaFXTreeCellFactory extends TreeCell<TreeViewEntry> {
 		    		case LONG:
 		    			return(Long.valueOf(value));
 		    		case UINTEGER:
-		    			return(Long.valueOf(value))& 0xffffffffL;
+		    			return(Integer.valueOf(value))& 0xffffffff;
 		    		case BYTE:
 		    			return(hexToByte(value));
+		    		case RAW:
+		    			return(FileHandler.hexStringToByteArray(value));
 		    		case BOOL:
 		    			if (value.equals("TRUE")){
 		    				return true;
@@ -401,6 +411,12 @@ public class JavaFXTreeCellFactory extends TreeCell<TreeViewEntry> {
 		    			}
 		    		case NULL:
 		    			return("NULL"); //DEFINED NULL ("NULL")
+		    		case GUID:
+		    			return(value);
+		    		case CHUNKGUID:
+		    			return(value);
+		    		case SHA1:
+		    			return(value);
 					default:
 						return null; //UNDEFINED NULL ("null")
 	        	}

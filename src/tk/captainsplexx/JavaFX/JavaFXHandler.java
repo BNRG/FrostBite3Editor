@@ -23,6 +23,8 @@ public class JavaFXHandler {
 	public static final Image arrayIcon = new Image(FileHandler.getStream("res/images/edit-code.png"));
 	public static final Image instanceIcon = new Image(FileHandler.getStream("res/images/box.png"));
 	public static final Image listIcon = new Image(FileHandler.getStream("res/images/wooden-box.png"));
+	public static final Image hashIcon = new Image(FileHandler.getStream("res/images/hash.png"));
+	public static final Image rawIcon = new Image(FileHandler.getStream("res/images/block.png"));
 	 
 	public static final Image pencilIcon = new Image(FileHandler.getStream("res/images/pencil.png"));
 	public static final Image removeIcon = new Image(FileHandler.getStream("res/images/cross.png"));
