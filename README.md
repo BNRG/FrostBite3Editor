@@ -9,7 +9,7 @@ DO NOT JOIN WITH A MODIF. CLIENT WITH PUNKBUSTER OR FAIRFIGHT ENABLED SERVER!
 
 Project designed for eclipse.
 
->Roadmap: http://i.imgur.com/WCl9z2I.jpg
+>Roadmap: http://i.imgur.com/rGUma38.jpg
 
 >Youtube: https://www.youtube.com/channel/UCNSVft8rtEmWSYZ_OeyPyBg
 
