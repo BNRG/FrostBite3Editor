@@ -15,4 +15,4 @@ Project designed for eclipse.
 
 >Twitter & Reddit: @CaptainSpleXx
 
->How to custom configs: http://i.imgur.com/QmeCBIu.jpg
+>How to custom configs: http://i.imgur.com/QmeCBIu.jpg (Take a look into Game.cfg file!)
