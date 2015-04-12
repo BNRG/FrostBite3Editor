@@ -1,0 +1,9 @@
+Core.LogLevel FatalAssert
+Core.DisplayAsserts false
+Core.IgnoreAlways true
+Core.CrashOnFatalErrors 1
+
+timeout
+sleep 200
+
+main.playCommands Scripts/Debug/timeoutLevel

@@ -1,0 +1,6 @@
+Core.LogLevel FatalAssert
+
+server.restartLevel
+sleep 60
+
+main.playCommands Scripts/Debug/restartLevel

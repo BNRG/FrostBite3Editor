@@ -1,0 +1,75 @@
+Core.LogLevel FatalAssert
+
+server.loadLevel Levels/SP_Prologue/SP_Prologue
+sleep 60
+server.restartLevel
+sleep 240
+client.restartFromLastCheckpoint
+sleep 60
+server.loadLevel Levels/FrontEnd/FrontEnd
+sleep 30
+
+server.loadLevel Levels/SP_Shanghai/SP_Shanghai
+sleep 60
+server.restartLevel
+sleep 180
+client.restartFromLastCheckpoint
+sleep 60
+server.loadLevel Levels/FrontEnd/FrontEnd
+sleep 30
+
+server.loadLevel Levels/SP_Naval/SP_Naval
+sleep 60
+server.restartLevel
+sleep 180
+client.restartFromLastCheckpoint
+sleep 60
+server.loadLevel Levels/FrontEnd/FrontEnd
+sleep 30
+
+server.loadLevel Levels/SP_Airfield/SP_Airfield
+sleep 60
+server.restartLevel
+sleep 180
+client.restartFromLastCheckpoint
+sleep 60
+server.loadLevel Levels/FrontEnd/FrontEnd
+sleep 30
+
+server.loadLevel Levels/SP_Prison/SP_Prison
+sleep 60
+server.restartLevel
+sleep 180
+client.restartFromLastCheckpoint
+sleep 60
+server.loadLevel Levels/FrontEnd/FrontEnd
+sleep 30
+
+server.loadLevel Levels/SP_Journey/SP_Journey
+sleep 60
+server.restartLevel
+sleep 180
+client.restartFromLastCheckpoint
+sleep 60
+server.loadLevel Levels/FrontEnd/FrontEnd
+sleep 30
+
+server.loadLevel Levels/SP_Dam/SP_Dam
+sleep 60
+server.restartLevel
+sleep 180
+client.restartFromLastCheckpoint
+sleep 60
+server.loadLevel Levels/FrontEnd/FrontEnd
+sleep 30
+
+server.loadLevel Levels/SP_Suez/SP_Suez
+sleep 60
+server.restartLevel
+sleep 180
+client.restartFromLastCheckpoint
+sleep 60
+server.loadLevel Levels/FrontEnd/FrontEnd
+sleep 30
+
+main.playCommands Scripts/Debug/cycleSpLevelsViaMainMenu

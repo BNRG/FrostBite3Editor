@@ -1,0 +1,188 @@
+TAG ! tag:frostbite.net:
+---
+'Categorisations':
+  - name: AllocsByAssetType
+    rules:
+    - category: AI
+      matches:
+      - assetType: AIEntryData
+      - assetType: AIVehicleTypes
+      - assetType: AIWeaponData
+      - assetType: BFAIWeaponData
+    - category: Ant
+      matches:
+      - assetType: AntAnimationSetAsset
+      - assetType: AntPackageAsset
+      - assetType: AntProjectAsset
+      - assetType: MasterSkeletonAsset
+      - assetType: SkeletonAsset
+      - assetType: RagdollAsset
+    - category: Audio
+      matches:
+      - assetType: AudioSystemAsset
+      - assetType: ImpulseResponseAsset
+      - assetType: MixerAsset
+      - assetType: MixerSystemAsset
+      - assetType: SoundPatchAsset
+      - assetType: SoundPatchConfigurationAsset
+      - assetType: SoundWaveAsset
+      - assetType: VoiceOverLogicAsset
+      - assetType: VoiceOverSystemAsset
+      - assetType: SoundMasterPatchAsset
+    - category: Decals
+      matches:
+      - assetType: DecalTemplateData
+    - category: Effects
+      matches:
+      - assetType: EffectBlueprint
+      - assetType: EmitterDocument
+    - category: Enlighten
+      matches:
+      - assetType: EnlightenDataAsset
+      - assetType: EnlightenShaderDatabaseAsset
+      - assetType: StaticEnlightenData
+    - category: GameplayData
+      matches:
+      - assetType: DataContainerAsset
+      - assetType: GameDataContainerAsset
+      - assetType: GunSwayModifierData
+      - assetType: EntryInputActionMapsData
+      - assetType: ProjectileBlueprint
+      - assetType: ProfileOptionBool
+      - assetType: ProfileOptionEnum
+      - assetType: ProfileOptionFloat
+      - assetType: ProfileOptionDataInt
+      - assetType: ProfileOptionDataString
+      - assetType: ProfileOptionAsset
+      - assetType: ProfileOptionDataBool
+      - assetType: ProfileOptionDataEnum
+      - assetType: ProfileOptionDataFloat
+    - category: LevelData
+      matches:
+      - assetType: SubWorldData
+      - assetType: LevelData
+      - assetType: SettingsBundleAsset
+      - assetType: LevelDescriptionAsset
+    - category: LevelLogic
+      matches:
+      - assetType: LogicPrefabBlueprint
+    - category: Materials
+      matches:
+      - assetType: MaterialContainerAsset
+      - assetType: MaterialGridData
+    - category: Meshes
+      matches:
+      - assetType: CompositeMeshAsset
+      - assetType: MeshLogGroup
+      - assetType: MeshVariationDatabase
+      - assetType: RigidMeshAsset
+      - assetType: SkinnedMeshAsset
+    - category: ObjectData
+      matches:
+      - assetType: ObjectBlueprint
+      - assetType: ObjectVariation
+      - assetType: PrefabBlueprint
+      - assetType: SpatialPrefabBlueprint
+      - assetType: MeshLodGroup
+    - category: Persistence
+      matches:
+      - assetType: BasicDogTagData
+      - assetType: PersistenceData
+      - assetType: AdvancedDogTagData
+      - assetType: AwardDataTree
+      - assetType: BattlepackData
+      - assetType: BattlepackAsset
+      - assetType: BlazePresenceBackdenData
+      - assetType: BlazeServerBackendData
+      - assetType: CriteriaGateList
+      - assetType: StatCategoriesWeaponTree
+      - assetType: StatCategoriesWeaponAccessoryTree
+      - assetType: PresenceRspServiceData
+      - assetType: RankParamsAsset
+      - assetType: PlayerTypeProfile
+      - assetType: ScoringData
+      - assetType: UnlockAsset
+      - assetType: StaticUnlockList
+      - assetType: StatCategoriesVehicleTree
+      - assetType: RichPrecenceData
+      - assetType: ValueUnlockAsset
+      - assetType: RichPresenceData
+      - assetType: EntitlementQuery
+    - category: Physics
+      matches:
+      - assetType: CharacterPhysicsData
+      - assetType: DestructionVolumeAsset
+      - assetType: GroupPhysicsEntityAsset
+      - assetType: HavokAsset
+    - category: Shaders
+      matches:
+      - assetType: ShaderDatabaseAsset
+      - assetType: ShaderGraph
+      - assetType: ShaderProgramDatabaseAsset
+    - category: SoldierData
+      matches:
+      - assetType: SoldierBlueprint
+      - assetType: CharacterSocketListAsset
+      - assetType: VeniceSoldierCustomizationAsset
+    - category: TerrainData
+      matches:
+      - assetType: TerrainData
+      - assetType: TerrainDecalsData
+      - assetType: TerrainStreamingTreeAsset
+      - assetType: WaterAsset
+    - category: Textures
+      matches:
+      - assetType: TextureAsset
+      - assetType: RenderTextureAsset
+      - assetType: TextureArrayAsset
+    - category: UI
+      matches:
+      - assetType: BFCrosshairTypeAsset
+      - assetType: BFLockingTypeAsset
+      - assetType: UIActionData
+      - assetType: UIActionscriptLibraryAsset
+      - assetType: UIAlerttagCompData
+      - assetType: UIAnimatedTextureAsset
+      - assetType: UIAsset
+      - assetType: UIDeployScreenData
+      - assetType: UIElementFillData
+      - assetType: UIElementFontStyle
+      - assetType: UIGraphAsset
+      - assetType: UIPostProcessComponentData
+      - assetType: UIPreRoundCompData
+      - assetType: UIRenderCompData
+      - assetType: UIScoreboardWidgetData
+      - assetType: UITextDatabase
+      - assetType: UIWidgetAsset
+      - assetType: BFUICppScreenData
+      - assetType: BFUIIMSettingsAsset
+      - assetType: BFUIWorldIconBehavior
+      - assetType: UICreditsAsset
+      - assetType: UIScreenAsset
+      - assetType: UIItemDescriptionAsset
+      - assetType: UIHudScreenData
+      - assetType: UIMinimapIconTextureAtlasAsset
+      - assetType: UISoldierStatusWidgetData
+      - assetType: UITeamCompData
+      - assetType: UIScoreboardScreenData
+      - assetType: UICapturepointtagCompData
+      - assetType: UIJavelinIndicatorWidgetData
+      - assetType: UICrosshairWidgetData
+      - assetType: UIIMWidgetData
+      - assetType: UITextureMappingAsset
+      - assetType: UIFlowCppScreenData
+      - assetType: UIElementGenericStyle
+    - category: VehicleData
+      matches:
+      - assetType: VehicleBlueprint
+      - assetType: VeniceVehicleCustomizationAsset
+    - category: VisualEnvironment
+      matches:
+      - assetType: VisualEnvironmentBlueprint
+    - category: WeaponData
+      matches:
+      - assetType: WeaponFiringDataAsset
+      - assetType: SoldierWeaponBlueprint
+      - assetType: SoldierWeaponUnlockAsset
+      - assetType: VeniceSoldierWeaponCustomizationAsset
+      - assetType: WeaponUnlockAsset

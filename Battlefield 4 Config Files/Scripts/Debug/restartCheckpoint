@@ -1,0 +1,6 @@
+Core.LogLevel FatalAssert
+
+client.restartFromLastCheckpoint
+sleep 30
+
+main.playCommands Scripts/Debug/restartCheckpoint
