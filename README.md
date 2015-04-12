@@ -14,3 +14,5 @@ Project designed for eclipse.
 >Youtube: https://www.youtube.com/channel/UCNSVft8rtEmWSYZ_OeyPyBg
 
 >Twitter & Reddit: @CaptainSpleXx
+
+>How to custom configs: http://i.imgur.com/QmeCBIu.jpg
