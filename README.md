@@ -1,9 +1,11 @@
 # FrostBite3Editor
 Unofficial FrostBite3 Editor Tools by CAPTAINSPLEXX
 
+
+>http://goo.gl/CjfAhg quick expl. what it is!
+
 >WORK IN PROGRESS
->Main functionality ~75% done 
->Design of Interface ~15% done
+>Main functionality ~76% done 
 
 Read LICENSE before using it!
 
