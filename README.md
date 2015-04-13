@@ -5,9 +5,7 @@ Unofficial FrostBite3 Editor Tools by CAPTAINSPLEXX
 >Main functionality ~75% done 
 >Design of Interface ~15% done
 
-DO NOT JOIN WITH A MODIF. CLIENT WITH PUNKBUSTER OR FAIRFIGHT ENABLED SERVER!
-
-Project designed for eclipse.
+Read LICENSE before using it!
 
 >Roadmap: http://i.imgur.com/rGUma38.jpg
 
