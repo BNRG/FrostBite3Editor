@@ -12,6 +12,9 @@ public class JavaFXHandler {
 	TreeItem<TreeViewEntry> treeViewStructureLeft;
 	TreeItem<TreeViewEntry> treeViewStructureRight;
 	
+	public static final Image applicationIcon16 = new Image(FileHandler.getStream("res/icon/16.png"));
+	public static final Image applicationIcon32 = new Image(FileHandler.getStream("res/icon/32.png"));
+	
 	public static final Image textIcon = new Image(FileHandler.getStream("res/images/edit-small-caps.png"));
 	public static final Image byteIcon = new Image(FileHandler.getStream("res/images/document-attribute-b.png"));
 	public static final Image boolIcon = new Image(FileHandler.getStream("res/images/document-attribute-bool.png"));

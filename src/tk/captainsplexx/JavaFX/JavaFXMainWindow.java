@@ -67,7 +67,7 @@ public class JavaFXMainWindow extends Application{
 	}
 
 	@Override
-	public void start(Stage stage) {
+	public void start(Stage stageLeft) {
 		Main.getJavaFXHandler().setMainWindow(this); //Stupid thread bypass.
 		Parent leftroot = null;
 		/*LEFT*/
@@ -80,12 +80,14 @@ public class JavaFXMainWindow extends Application{
 		}
 		//Scene sceneLeft = new Scene(leftroot, 275, 700);
 		Scene sceneLeft = new Scene(leftroot, 275, 700);
-        stage.setX(Display.getDesktopDisplayMode().getWidth()*0.01f);
-        stage.setY(Display.getDesktopDisplayMode().getHeight()/2-(sceneLeft.getHeight()/2));
-        stage.setTitle("Tools / Explorer");
-        stage.setScene(sceneLeft);
-        stage.show();
-        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+		stageLeft.setX(Display.getDesktopDisplayMode().getWidth()*0.01f);
+		stageLeft.setY(Display.getDesktopDisplayMode().getHeight()/2-(sceneLeft.getHeight()/2));
+		stageLeft.setTitle("Tools / Explorer");
+		stageLeft.getIcons().add(JavaFXHandler.applicationIcon16);
+		stageLeft.getIcons().add(JavaFXHandler.applicationIcon32);
+		stageLeft.setScene(sceneLeft);
+		stageLeft.show();
+		stageLeft.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			@Override
 			public void handle(WindowEvent e) {
 				e.consume();
@@ -117,6 +119,8 @@ public class JavaFXMainWindow extends Application{
         stageRight.setX(Display.getDesktopDisplayMode().getWidth()*0.985f-sceneLeft.getWidth());
         stageRight.setY(Display.getDesktopDisplayMode().getHeight()/2-(sceneLeft.getHeight()/2));
         stageRight.setScene(sceneRight);
+        stageRight.getIcons().add(JavaFXHandler.applicationIcon16);
+        stageRight.getIcons().add(JavaFXHandler.applicationIcon32);
         stageRight.show();
         stageRight.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			@Override
