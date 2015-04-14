@@ -1,12 +1,17 @@
 package tk.captainsplexx.Game;
 
+import java.io.File;
+import java.nio.ByteBuffer;
+
+import javax.imageio.ImageIO;
+
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
+import org.newdawn.slick.opengl.ImageIOImageData;
 
 import tk.captainsplexx.Event.EventHandler;
 import tk.captainsplexx.JavaFX.JavaFXHandler;
-import tk.captainsplexx.JavaFX.JavaFXMainWindow;
 import tk.captainsplexx.Render.Render;
 
 
@@ -25,6 +30,8 @@ public class Main {
 	public static float zNear;
 	public static float zFar;
 	
+	public static float FOV;
+	
 	public static int currentTick = -1;
 	public static int currentTime = 0;
 	public static int oldTime = -1;
@@ -37,11 +44,17 @@ public class Main {
 		
 		zNear = 1f;
 		zFar = 25000f;
+		FOV = 60f;
 		
 		try {
             Display.setDisplayMode(new DisplayMode(DISPLAY_WIDTH, DISPLAY_HEIGHT));
             Display.setTitle("Unofficial FrostBite3 Editor by CaptainSpleXx.TK");
+            Display.setResizable(true);
             Display.create();
+            Display.setIcon(new ByteBuffer[] {
+            	new ImageIOImageData().imageToByteBuffer(ImageIO.read(new File("res/icon/16.png")), false, false, null),
+                new ImageIOImageData().imageToByteBuffer(ImageIO.read(new File("res/icon/32.png")), false, false, null)
+            });
             Mouse.setClipMouseCoordinatesToWindow(true);
             Mouse.setGrabbed(true);
         } catch (Exception e) {
@@ -50,12 +63,11 @@ public class Main {
             System.exit(1);
         }
 		
-		//jFrameHandler = new JFrameHandler();
 		jfxHandler = new JavaFXHandler();
 		
 		eventHandler = new EventHandler();
 		game = new Game();
-		render = new Render(game, zNear, zFar);	
+		render = new Render(game);	
 		inputHandler = new InputHandler();
 		
 		while(!Display.isCloseRequested()){

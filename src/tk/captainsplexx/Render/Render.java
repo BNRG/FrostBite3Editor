@@ -1,8 +1,10 @@
 package tk.captainsplexx.Render;
 
 
+import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
@@ -37,14 +39,13 @@ public class Render {
 	public Matrix4f projectionMatrix;
 	public Matrix4f transformationMatrix;
 
-	public Render(Game game, float zNear, float zFar) {
+	public Render(Game game) {
 		this.game = game;
 
 		pe = game.getPlayerHandler().getPlayerEntity();
 		camera = new FPCameraController(pe);
 
-		projectionMatrix = Matrices.createProjectionMatrix(60f,
-				Main.DISPLAY_WIDTH, Main.DISPLAY_HEIGHT, zNear, zFar);
+		projectionMatrix = Matrices.createProjectionMatrix(Main.FOV, Main.DISPLAY_WIDTH, Main.DISPLAY_HEIGHT, Main.zNear, Main.zFar);
 		
 		glMatrixMode(GL_MODELVIEW);
 		glEnable(GL_DEPTH_TEST);
@@ -72,8 +73,6 @@ public class Render {
 		shader.start();
 		shader.loadProjectionMatrix(projectionMatrix);
 		shader.loadViewMatrix(viewMatrix);
-		Matrix4f lol = new Matrix4f();
-		lol.setIdentity();
 		for (Entity e : game.entityHandler.getEntities()) {
 			if (e.isVisible){
 				if (e.getHighlighted()){
@@ -82,9 +81,8 @@ public class Render {
 				
 				String[] texturedModels = e.getTexturedModelNames();
 				for (int i = 0; i < texturedModels.length; i++) {
-					transformationMatrix = Matrices.createTransformationMatrix(
-							e.getPosition(), e.getRotation(), e.getScaling());
-					shader.loadTransformationMatrix(Matrix4f.add(transformationMatrix, lol, null));
+					shader.loadTransformationMatrix(Matrices.createTransformationMatrix(
+							e.getPosition(), e.getRotation(), e.getScaling()));
 					TexturedModel tm = game.modelHandler.getTexturedModels().get(
 							(texturedModels[i]));
 					RawModel raw = tm.rawModel;
@@ -100,10 +98,6 @@ public class Render {
 					GL20.glDisableVertexAttribArray(1);
 					GL30.glBindVertexArray(0);
 				}
-				
-				lol.translate(new Vector3f(0.0f, 1500.0f, 1500.0f));
-				lol.rotate(45f, new Vector3f(0.0f, 1.0f, 0.0f));
-				
 				shader.loadHighlighted(false);
 			}
 		}
@@ -137,6 +131,9 @@ public class Render {
 		
 
 		Display.update();
+		if (Display.wasResized()){
+			updateProjectionMatrix();
+		}
 		Display.sync(Main.DISPLAY_RATE);
 	}
 
@@ -148,9 +145,9 @@ public class Render {
 		return projectionMatrix;
 	}
 
-	public void setProjectionMatrix(Matrix4f projectionMatrix) {
-		this.projectionMatrix = projectionMatrix;
+	public void updateProjectionMatrix(){
+		projectionMatrix = Matrices.createProjectionMatrix(Main.FOV, Display.getWidth(), Display.getHeight(), Main.zNear, Main.zFar);
+		Main.DISPLAY_WIDTH = Display.getWidth();
+		Main.DISPLAY_HEIGHT = Display.getHeight();
 	}
-	
-	
 }
