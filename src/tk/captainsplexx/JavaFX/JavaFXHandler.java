@@ -8,9 +8,10 @@ import javafx.scene.image.Image;
 public class JavaFXHandler {
 	
 	JavaFXMainWindow main;
-
-	TreeItem<TreeViewEntry> treeViewStructureLeft;
-	TreeItem<TreeViewEntry> treeViewStructureRight;
+	
+	public TreeItem<TreeViewEntry> treeViewStructureLeft;
+	public TreeItem<TreeViewEntry> treeViewStructureLeft1;
+	public TreeItem<TreeViewEntry> treeViewStructureRight;
 	
 	public static final Image applicationIcon16 = new Image(FileHandler.getStream("res/icon/16.png"));
 	public static final Image applicationIcon32 = new Image(FileHandler.getStream("res/icon/32.png"));
@@ -48,8 +49,6 @@ public class JavaFXHandler {
 	}
 	
 	
-	
-	
 	/* Getter and setter */
 	public TreeItem<TreeViewEntry> getTreeViewStructureLeft() {
 		return treeViewStructureLeft;
@@ -67,5 +66,14 @@ public class JavaFXHandler {
 	public void setTreeViewStructureRight(
 			TreeItem<TreeViewEntry> treeViewStructureRight) {
 		this.treeViewStructureRight = treeViewStructureRight;
+	}
+
+	public TreeItem<TreeViewEntry> getTreeViewStructureLeft1() {
+		return treeViewStructureLeft1;
+	}
+
+	public void setTreeViewStructureLeft1(
+			TreeItem<TreeViewEntry> treeViewStructureLeft1) {
+		this.treeViewStructureLeft1 = treeViewStructureLeft1;
 	}
 }

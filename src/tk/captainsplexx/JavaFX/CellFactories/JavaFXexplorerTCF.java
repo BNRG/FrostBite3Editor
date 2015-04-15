@@ -1,12 +1,16 @@
-package tk.captainsplexx.JavaFX;
+package tk.captainsplexx.JavaFX.CellFactories;
 
-import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
-import tk.captainsplexx.Toc.TocSBLink;
 import javafx.event.EventHandler;
 import javafx.scene.control.TreeCell;
-import javafx.scene.control.TreeItem;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import tk.captainsplexx.Game.Main;
+import tk.captainsplexx.JavaFX.JavaFXHandler;
+import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
+import tk.captainsplexx.JavaFX.TreeViewConverter;
+import tk.captainsplexx.JavaFX.TreeViewEntry;
+import tk.captainsplexx.Toc.TocConverter;
+import tk.captainsplexx.Toc.TocSBLink;
 
 public class JavaFXexplorerTCF extends TreeCell<TreeViewEntry> {
 	public static enum ExplorerMode {
@@ -35,10 +39,10 @@ public class JavaFXexplorerTCF extends TreeCell<TreeViewEntry> {
 					getTreeItem().getValue().setName(getTreeItem().getValue().getName()+initString);
 					getTreeItem().getValue().setGraphic(new ImageView(JavaFXHandler.rawIcon));
 					
-					/*REPLACE WITH CONTENT*/
-					getTreeItem().getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry("test", null, null, EntryType.STRING)));
-					
-					getTreeItem().setExpanded(true);
+					Main.getJavaFXHandler().setTreeViewStructureLeft1(
+							TreeViewConverter.getTreeView(((TocSBLink)getTreeItem().getValue().getValue()).getLinkedSBPart(Main.getGame().getCurrentTocPath()+".sb"))
+					);
+					Main.getJavaFXHandler().getMainWindow().updateLeftRoot1();
 				}
 			}
 		});

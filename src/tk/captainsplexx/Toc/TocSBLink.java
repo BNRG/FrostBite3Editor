@@ -38,6 +38,12 @@ public class TocSBLink {
 	}
 	
 	public TocFile getLinkedSBPart(String sbPath){
-		return TocManager.readSbPart(FileHandler.readFile(sbPath, (int) this.offset, this.size));
+		try{
+			return TocManager.readSbPart(FileHandler.readFile(sbPath, (int) this.offset, this.size));
+		}catch (Exception e){
+			e.printStackTrace();
+			System.err.println("Could not read Sb part from "+sbPath+" at "+this.offset);
+			return null;
+		}
 	}
 }

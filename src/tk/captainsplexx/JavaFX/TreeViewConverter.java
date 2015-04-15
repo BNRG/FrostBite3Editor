@@ -2,12 +2,12 @@ package tk.captainsplexx.JavaFX;
 
 import java.util.ArrayList;
 
-import tk.captainsplexx.EBX.EBXComplexDescriptor;
 import tk.captainsplexx.EBX.EBXField;
 import tk.captainsplexx.EBX.EBXFieldDescriptor;
 import tk.captainsplexx.EBX.EBXFile;
 import tk.captainsplexx.EBX.EBXInstance;
 import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
+import tk.captainsplexx.Toc.ConvertedSBpart;
 import tk.captainsplexx.Toc.ConvertedTocFile;
 import tk.captainsplexx.Toc.TocEntry;
 import tk.captainsplexx.Toc.TocField;
@@ -36,6 +36,7 @@ public class TreeViewConverter {
 		}
 		return entry;
 	}
+	@SuppressWarnings("unchecked")
 	static TreeItem<TreeViewEntry> readField(TocField tocField){
 		TreeViewEntry entry = null;
 		switch(tocField.getType()){
@@ -181,6 +182,7 @@ public class TreeViewConverter {
 		tocEntry.getFields().addAll(fields);
 		return tocEntry;
 	}
+	@SuppressWarnings("incomplete-switch")
 	static TocField getTocField(TreeItem<TreeViewEntry> field){
 		TocField tf = null;
 		switch(field.getValue().getType()){
@@ -237,6 +239,14 @@ public class TreeViewConverter {
 		
 		
 		return rootnode;
-	}
+	}	
 	/*END OF CONVERTED TOC*/
+	
+	/*START OF CONVERTED TOCSBPart*/
+	public static TreeItem<TreeViewEntry> getTreeView(ConvertedSBpart part){
+		TreeItem<TreeViewEntry> rootnode = new TreeItem<TreeViewEntry>(new TreeViewEntry("sbPart", new ImageView(JavaFXHandler.documentIcon), null, EntryType.LIST));
+		
+		return rootnode;
+	}
+	/*END OF CONVERTED TOCSBPart*/
 }

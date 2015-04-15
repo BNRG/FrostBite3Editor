@@ -5,6 +5,8 @@ import java.io.IOException;
 import org.lwjgl.opengl.Display;
 
 import tk.captainsplexx.Game.Main;
+import tk.captainsplexx.JavaFX.CellFactories.JavaFXebxTCF;
+import tk.captainsplexx.JavaFX.CellFactories.JavaFXexplorerTCF;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -93,16 +95,29 @@ public class JavaFXMainWindow extends Application{
 				e.consume();
 			}
 		});
-                
+        /*EXPLORER 0*/
         leftController.getExplorer().setCellFactory(new Callback<TreeView<TreeViewEntry>,TreeCell<TreeViewEntry>>(){
             @Override
             public TreeCell<TreeViewEntry> call(TreeView<TreeViewEntry> p) {
                 return new JavaFXexplorerTCF();
             }
         });
-        leftController.getExplorer().setEditable(true);
+        leftController.getExplorer().setEditable(false);
         leftController.getExplorer().setPrefWidth(Display.getDesktopDisplayMode().getWidth());
         leftController.getExplorer().setPrefHeight(Display.getDesktopDisplayMode().getHeight());
+        /*END OF EXPLORER 0*/
+        
+        /*EXPLORER 1*/
+        leftController.getExplorer1().setCellFactory(new Callback<TreeView<TreeViewEntry>,TreeCell<TreeViewEntry>>(){
+            @Override
+            public TreeCell<TreeViewEntry> call(TreeView<TreeViewEntry> p) {
+                return new JavaFXebxTCF();
+            }
+        });
+        leftController.getExplorer1().setEditable(false);
+        leftController.getExplorer1().setPrefWidth(Display.getDesktopDisplayMode().getWidth());
+        leftController.getExplorer1().setPrefHeight(Display.getDesktopDisplayMode().getHeight());
+        /*END OF EXPLORER 1*/
         
         /*RIGHT*/
         Parent rightroot = null;
@@ -129,6 +144,7 @@ public class JavaFXMainWindow extends Application{
 			}
 		});
         
+        /*EBX-EXPLORER*/
         rightController.getEBXExplorer().setCellFactory(new Callback<TreeView<TreeViewEntry>,TreeCell<TreeViewEntry>>(){
             @Override
             public TreeCell<TreeViewEntry> call(TreeView<TreeViewEntry> p) {
@@ -138,17 +154,7 @@ public class JavaFXMainWindow extends Application{
         rightController.getEBXExplorer().setEditable(true);
         rightController.getEBXExplorer().setPrefWidth(Display.getDesktopDisplayMode().getWidth());
         rightController.getEBXExplorer().setPrefHeight(Display.getDesktopDisplayMode().getHeight());
-        
-        
-        rightController.getEBXExplorer().setRoot(new TreeItem<TreeViewEntry>(new TreeViewEntry("TEST", new ImageView(JavaFXHandler.listIcon), null, EntryType.LIST)));
-        rightController.getEBXExplorer().getRoot().getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry("TEST2", new ImageView(JavaFXHandler.textIcon), "TEXT2", EntryType.STRING)));
-        rightController.getEBXExplorer().getRoot().getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry("TEST3", new ImageView(JavaFXHandler.integerIcon), 1, EntryType.INTEGER)));
-        rightController.getEBXExplorer().getRoot().getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry("TEST4", new ImageView(JavaFXHandler.doubleIcon), 1.0d, EntryType.DOUBLE)));
-        rightController.getEBXExplorer().getRoot().getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry("TEST5", new ImageView(JavaFXHandler.floatIcon), 100.1002f, EntryType.FLOAT)));
-        rightController.getEBXExplorer().getRoot().getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry("TEST6", new ImageView(JavaFXHandler.boolIcon), true, EntryType.BOOL)));
-        rightController.getEBXExplorer().getRoot().getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry("TEST7", new ImageView(JavaFXHandler.byteIcon), (byte) (0xFA>>0), EntryType.BYTE)));
-        rightController.getEBXExplorer().getRoot().setExpanded(true);
-        
+        /*END OF EBX-EXPLORER*/
 	}
 
 	public void updateRightRoot(){
@@ -169,4 +175,12 @@ public class JavaFXMainWindow extends Application{
 		});	
 	}
 	
+	public void updateLeftRoot1(){
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				leftController.getExplorer1().setRoot(Main.getJavaFXHandler().getTreeViewStructureLeft1());
+			}
+		});	
+	}
 }

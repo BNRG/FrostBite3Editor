@@ -73,6 +73,7 @@ public class TocManager {
 			}
 		}//EOF
 		TocFile file = new TocFile(TocFileType.SbPart);
+		file.getEntries().addAll(entries);
 		return file;
 	}
 	

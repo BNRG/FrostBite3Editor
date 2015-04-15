@@ -1,7 +1,10 @@
-package tk.captainsplexx.JavaFX;
+package tk.captainsplexx.JavaFX.CellFactories;
 
 import java.nio.ByteOrder;
 
+import tk.captainsplexx.JavaFX.JavaFXHandler;
+import tk.captainsplexx.JavaFX.JavaFXMainWindow;
+import tk.captainsplexx.JavaFX.TreeViewEntry;
 import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
 import tk.captainsplexx.JavaFX.JavaFXMainWindow.WorkDropType;
 import tk.captainsplexx.Resource.FileHandler;

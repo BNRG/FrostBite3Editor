@@ -5,7 +5,6 @@ import java.io.File;
 import java.util.ArrayList;
 
 import javafx.scene.control.TreeItem;
-
 import tk.captainsplexx.CAS.CasDataReader;
 import tk.captainsplexx.Itexture.ItextureHandler;
 import tk.captainsplexx.JavaFX.TreeViewConverter;
@@ -29,11 +28,14 @@ public class Game {
 	public String gamePath;
 	public String gamePlatform;
 	
+	public String currentTocPath;
+	
 		
 	@SuppressWarnings("unused")
 	public Game(){
 		gamePath = "C:/Program Files (x86)/Origin Games/Battlefield 4";
 		gamePlatform = "Win32";
+		currentTocPath = "";
 		
 		modelHandler = new ModelHandler();
 		
@@ -51,22 +53,22 @@ public class Game {
 		
 		resourceHandler.getCasCatManager().readCat(FileHandler.readFile(gamePath+"/Data/cas.cat"));
 		
+		currentTocPath = gamePath+"/Data/"+gamePlatform+"/Levels/MP/MP_Siege/MP_Siege";
+		TocFile toc = TocManager.readToc(FileHandler.readFile(currentTocPath+".toc"));
 		
-		TocFile toc = TocManager.readToc(FileHandler.readFile(gamePath+"/Data/"+gamePlatform+"/Levels/MP/MP_Siege/MP_Siege.toc"));
-		
-		//TocFile sb = TocManager.readSbPart(FileHandler.readFile(gamePath+"/Data/"+gamePlatform+"/Levels/MP/MP_Siege/MP_Siege.sb", 0x12, 0x3E8)); 
+		//TocFile sb = TocManager.readSbPart(FileHandler.readFile(currentTocPath+".sb", 0x12, 0x3E8)); 
 		//Data is now comming from Converted TOC! (DEBUG ONLY)
 		
 		ConvertedTocFile convToc = TocConverter.convertTocFile(toc);
 		TreeItem<TreeViewEntry> convTocTree = TreeViewConverter.getTreeView(convToc);
 		
-		TreeItem<TreeViewEntry> test = TreeViewConverter.getTreeView(toc);
+		TreeItem<TreeViewEntry> test = TreeViewConverter.getTreeView(convToc);
 		
 			
 		
 		//TocFile newToc = TreeViewConverter.getTocFile(test, TocFileType.Sig);
 		//TocFile newSb = TreeViewConverter.getTocFile(test2, TocFileType.SbPart);
-		Main.getJavaFXHandler().setTreeViewStructureLeft(convTocTree);
+		Main.getJavaFXHandler().setTreeViewStructureLeft(test);
 		Main.getJavaFXHandler().getMainWindow().updateLeftRoot();
 		
 		
@@ -170,6 +172,17 @@ public class Game {
 	public void setGamePlatform(String gamePlatform) {
 		this.gamePlatform = gamePlatform;
 	}
+
+
+	public String getCurrentTocPath() {
+		return currentTocPath;
+	}
+
+
+	public void setCurrentTocPath(String currentTocPath) {
+		this.currentTocPath = currentTocPath;
+	}
+	
 	
 	
 	/*End of Game*/

@@ -7,6 +7,8 @@ import javafx.scene.control.TreeView;
 public class LeftController {
 	@FXML
 	public TreeView<TreeViewEntry> explorer;
+	@FXML
+	public TreeView<TreeViewEntry> explorer1;
 	
 	/*OnAction*/
 	public void exit(){ 
@@ -22,4 +24,7 @@ public class LeftController {
 		return explorer;
 	}
 
+	public TreeView<TreeViewEntry> getExplorer1() {
+		return explorer1;
+	}
 }

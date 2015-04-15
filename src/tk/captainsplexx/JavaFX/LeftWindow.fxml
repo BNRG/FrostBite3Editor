@@ -49,9 +49,9 @@
         </Menu>
       </menus>
     </MenuBar>
-    <SplitPane dividerPositions="0.2505567928730512" focusTraversable="true" orientation="VERTICAL" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
+    <SplitPane dividerPositions="0.2505567928730512, 0.5" focusTraversable="true" orientation="VERTICAL" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
       <items>
-        <AnchorPane SplitPane.resizableWithParent="false">
+        <AnchorPane prefHeight="222.0" prefWidth="277.0" SplitPane.resizableWithParent="false">
                <children>
                   <TabPane prefHeight="136.0" prefWidth="277.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <tabs>
@@ -73,18 +73,30 @@
                     </tabs>
                   </TabPane>
                </children></AnchorPane>
-        <ScrollPane prefHeight="200.0" prefWidth="277.0">
+        <ScrollPane prefHeight="350.0" prefWidth="277.0">
           <content>
-            <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0">
+            <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0" prefHeight="814.0" prefWidth="265.0">
                      <opaqueInsets>
                         <Insets />
                      </opaqueInsets>
                      <children>
-                        <TreeView fx:id="explorer" prefHeight="800.0" prefWidth="265.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        <TreeView fx:id="explorer" prefHeight="800.0" />
                      </children>
             </AnchorPane>
           </content>
         </ScrollPane>
+            <ScrollPane layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="277.0">
+               <content>
+                  <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0" prefHeight="814.0" prefWidth="265.0">
+                     <children>
+                        <TreeView fx:id="explorer1" prefHeight="800.0" />
+                     </children>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                  </AnchorPane>
+               </content>
+            </ScrollPane>
       </items>
     </SplitPane>
       <BorderPane>
