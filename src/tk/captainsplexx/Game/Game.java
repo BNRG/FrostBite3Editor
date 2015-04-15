@@ -35,6 +35,8 @@ import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.MeshChunkLoader;
 import tk.captainsplexx.Resource.MeshVariationDatabaseEntry;
 import tk.captainsplexx.Resource.ResourceHandler;
+import tk.captainsplexx.Toc.ConvertedTocFile;
+import tk.captainsplexx.Toc.TocConverter;
 import tk.captainsplexx.Toc.TocFile;
 import tk.captainsplexx.Toc.TocManager;
 import tk.captainsplexx.Toc.TocManager.TocFileType;
@@ -74,10 +76,12 @@ public class Game {
 		
 		TocFile sb = TocManager.readSbPart(FileHandler.readFile(gamePath+"/Data/"+gamePlatform+"/Levels/MP/MP_Siege/MP_Siege.sb", 0x12, 0x3E8));
 		TocFile toc = TocManager.readToc(FileHandler.readFile(gamePath+"/Data/"+gamePlatform+"/Levels/MP/MP_Siege/MP_Siege.toc"));
+		ConvertedTocFile convToc = TocConverter.convertTocFile(toc);
+		
 		TreeItem<TreeViewEntry> test = TreeViewConverter.getTreeView(toc);
 		TreeItem<TreeViewEntry> test2 = TreeViewConverter.getTreeView(sb);
-		TocFile newToc = TreeViewConverter.getTocFile(test, TocFileType.Sig);
-		TocFile newSb = TreeViewConverter.getTocFile(test2, TocFileType.SbPart);
+		//TocFile newToc = TreeViewConverter.getTocFile(test, TocFileType.Sig);
+		//TocFile newSb = TreeViewConverter.getTocFile(test2, TocFileType.SbPart);
 		Main.getJavaFXHandler().setTreeViewStructureLeft(test);
 		Main.getJavaFXHandler().getMainWindow().updateLeftRoot();
 		

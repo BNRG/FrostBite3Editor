@@ -1,11 +1,13 @@
 package tk.captainsplexx.Toc;
 
-public class TocResource {
+import tk.captainsplexx.Resource.ResourceHandler.ResourceType;
+
+public class ResourceLink {
 	public String path;
-	public String type;
+	public ResourceType type;
 	public String sha1;
 	
-	public TocResource(String path, String type, String sha1) {
+	public ResourceLink(String path, ResourceType type, String sha1) {
 		this.path = path;
 		this.type = type;
 		this.sha1 = sha1;
@@ -15,7 +17,7 @@ public class TocResource {
 		return path;
 	}
 
-	public String getType() {
+	public ResourceType getType() {
 		return type;
 	}
 

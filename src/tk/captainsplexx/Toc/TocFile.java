@@ -22,6 +22,5 @@ public class TocFile {
 
 	public void setType(TocFileType type) {
 		this.type = type;
-	}	
-	
+	}		
 }

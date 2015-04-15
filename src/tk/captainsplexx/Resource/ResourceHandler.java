@@ -7,6 +7,12 @@ import tk.captainsplexx.Render.TextureHandler;
 public class ResourceHandler {
 	//public String chunkFolderPath;
 	
+	public static enum ResourceType{DDS, EBX, CHUNK, SOUND, ITEXTURE, MESH, HKDESTRUCTION, HKNONDESTRUCTION, ANT,
+				ANIMTRACKDATA, RAGDOLL, OCCLUDERMESH,
+			LIGHTINGSYSTEM, GFX, STREAIMINGSTUB, ENLIGHTEN, PROBESET, STATICENLIGHTEN,
+		SHADERDATERBASE, SHADERDB, SHADERPROGRAMDB, LUAC
+	};
+	
 	public MeshChunkLoader mcL;
 	public MeshVariationDatabaseHandler mvdH;
 	public EBXHandler ebxHandler;
