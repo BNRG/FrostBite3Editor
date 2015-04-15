@@ -25,7 +25,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.paint.Color;
 
-public class JavaFXTreeCellFactory extends TreeCell<TreeViewEntry> {
+public class JavaFXebxTCF extends TreeCell<TreeViewEntry> {
 		private enum Operation {Name, Value};
 		private Operation modifyOp;
         private TextField textField;
@@ -33,7 +33,7 @@ public class JavaFXTreeCellFactory extends TreeCell<TreeViewEntry> {
         private ContextMenu contextMenu = new ContextMenu();
         public TreeItem<TreeViewEntry> draggedTreeItem;
         private MenuItem addText, addFloat, addDouble, addArray, addInteger, addBool, addList, addLong, addByte, addShort, remove, rename;
-        public JavaFXTreeCellFactory() {
+        public JavaFXebxTCF() {
         	
             addText = new MenuItem("Add Text");
             addText.setGraphic(new ImageView(JavaFXHandler.textIcon));
@@ -189,8 +189,8 @@ public class JavaFXTreeCellFactory extends TreeCell<TreeViewEntry> {
                 @Override
                 public void handle(DragEvent event) {
                 	if (getTreeItem()!=null){
-	                	double height = JavaFXTreeCellFactory.this.getHeight();
-	                	Point2D sceneCoordinates = JavaFXTreeCellFactory.this.localToScene(0d, 0d);
+	                	double height = JavaFXebxTCF.this.getHeight();
+	                	Point2D sceneCoordinates = JavaFXebxTCF.this.localToScene(0d, 0d);
 	                    
 	                    double y = event.getSceneY() - (sceneCoordinates.getY());
 	                    

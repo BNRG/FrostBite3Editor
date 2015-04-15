@@ -97,7 +97,7 @@ public class JavaFXMainWindow extends Application{
         leftController.getExplorer().setCellFactory(new Callback<TreeView<TreeViewEntry>,TreeCell<TreeViewEntry>>(){
             @Override
             public TreeCell<TreeViewEntry> call(TreeView<TreeViewEntry> p) {
-                return new JavaFXTreeCellFactory();
+                return new JavaFXebxTCF();
             }
         });
         leftController.getExplorer().setEditable(true);
@@ -132,7 +132,7 @@ public class JavaFXMainWindow extends Application{
         rightController.getEBXExplorer().setCellFactory(new Callback<TreeView<TreeViewEntry>,TreeCell<TreeViewEntry>>(){
             @Override
             public TreeCell<TreeViewEntry> call(TreeView<TreeViewEntry> p) {
-                return new JavaFXTreeCellFactory();
+                return new JavaFXebxTCF();
             }
         });
         rightController.getEBXExplorer().setEditable(true);

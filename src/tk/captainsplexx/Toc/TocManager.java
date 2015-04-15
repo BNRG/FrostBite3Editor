@@ -1,11 +1,7 @@
 package tk.captainsplexx.Toc;
 
-import java.io.UnsupportedEncodingException;
-import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
-
-import org.omg.IOP.CodecPackage.InvalidTypeForEncoding;
 
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.FileSeeker;
@@ -23,17 +19,10 @@ public class TocManager {
 		XORSig, Sig, None, SbPart
 	};
 
-	public ArrayList<TocFile> files;
-	public ArrayList<TocEntry> entries;
-	public FileSeeker seeker;
-	public byte[] data;
-
-	public TocManager() {
-		files = new ArrayList<TocFile>();
-	}
-
-	public TocFile readToc(byte[] fileArray) {
-		seeker = new FileSeeker();
+	public static TocFile readToc(byte[] fileArray) {
+		FileSeeker seeker = new FileSeeker();
+		ArrayList<TocEntry> entries = new ArrayList<TocEntry>();
+		byte[] data;
 		int header = FileHandler.readInt(fileArray, seeker, ByteOrder.BIG_ENDIAN);
 		TocFileType fileType = null;
 		if (header == 0x00D1CE00 || header == 0x00D1CE01) { //#the file is XOR encrypted and has a signature
@@ -57,7 +46,6 @@ public class TocManager {
 			data = fileArray;
 		}
 		seeker = new FileSeeker();
-		entries = new ArrayList<TocEntry>();
 		while (seeker.getOffset() < data.length){ //READ ENTRIES
 			entries.add(readEntry(data, seeker));
 		}//EOF
@@ -66,18 +54,17 @@ public class TocManager {
 		return file;
 	}
 	
-	public TocFile readSbPart(byte[] part) { // instead of reading the complete file, only read parts
-		seeker = new FileSeeker();
-		entries = new ArrayList<TocEntry>();
+	public static TocFile readSbPart(byte[] part) { // instead of reading the complete file, only read parts
+		FileSeeker seeker = new FileSeeker();
+		ArrayList<TocEntry> entries = new ArrayList<TocEntry>();
 		while (seeker.getOffset() < part.length){ //READ ENTRIES
 			entries.add(readEntry(part, seeker));
 		}//EOF
 		TocFile file = new TocFile(TocFileType.SbPart);
-		file.getEntries().addAll(entries);
 		return file;
 	}
 	
-	public TocEntry readEntry(byte[] data, FileSeeker seeker){
+	static TocEntry readEntry(byte[] data, FileSeeker seeker){
 		//System.out.println("Reading ENTRY at "+seeker.getOffset());
 		TocEntry entry;
 		int entryType = (FileHandler.readByte(data, seeker) & 0xFF); //byte needs to be casted to unsigned.
@@ -100,7 +87,7 @@ public class TocManager {
 		return entry;
 	}
 	
-	public TocField readField(byte[] data, FileSeeker seeker){
+	static TocField readField(byte[] data, FileSeeker seeker){
 		TocField field = null;
 		int fieldType = (FileHandler.readByte(data, seeker) & 0xFF); //byte needs to be casted to unsigned.
 		String name = "";

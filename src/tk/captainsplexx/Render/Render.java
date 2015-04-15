@@ -1,19 +1,13 @@
 package tk.captainsplexx.Render;
 
-
-import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
-import org.lwjgl.util.glu.GLU;
-
-import com.sun.org.apache.xerces.internal.dom.DeepNodeListImpl;
 
 import static org.lwjgl.opengl.GL11.*;
 import tk.captainsplexx.Camera.FPCameraController;
@@ -45,7 +39,7 @@ public class Render {
 		pe = game.getPlayerHandler().getPlayerEntity();
 		camera = new FPCameraController(pe);
 
-		projectionMatrix = Matrices.createProjectionMatrix(Main.FOV, Main.DISPLAY_WIDTH, Main.DISPLAY_HEIGHT, Main.zNear, Main.zFar);
+		updateProjectionMatrix(Main.FOV, Main.DISPLAY_WIDTH, Main.DISPLAY_HEIGHT, Main.zNear, Main.zFar);
 		
 		glMatrixMode(GL_MODELVIEW);
 		glEnable(GL_DEPTH_TEST);
@@ -132,7 +126,7 @@ public class Render {
 
 		Display.update();
 		if (Display.wasResized()){
-			updateProjectionMatrix();
+			updateProjectionMatrix(Main.FOV, Display.getWidth(), Display.getHeight(), Main.zNear, Main.zFar);
 		}
 		Display.sync(Main.DISPLAY_RATE);
 	}
@@ -145,9 +139,12 @@ public class Render {
 		return projectionMatrix;
 	}
 
-	public void updateProjectionMatrix(){
-		projectionMatrix = Matrices.createProjectionMatrix(Main.FOV, Display.getWidth(), Display.getHeight(), Main.zNear, Main.zFar);
-		Main.DISPLAY_WIDTH = Display.getWidth();
-		Main.DISPLAY_HEIGHT = Display.getHeight();
+	public void updateProjectionMatrix(float FOV, int DISPLAY_WIDTH, int DISPLAY_HEIGHT, float zNear, float zFar){
+		Main.FOV = FOV;
+		Main.DISPLAY_WIDTH = DISPLAY_WIDTH;
+		Main.DISPLAY_HEIGHT = DISPLAY_HEIGHT;
+		Main.zNear = zNear;
+		Main.zFar = zFar;
+		projectionMatrix = Matrices.createProjectionMatrix(Main.FOV, Main.DISPLAY_WIDTH, Main.DISPLAY_HEIGHT, Main.zNear, Main.zFar);
 	}
 }
