@@ -2,44 +2,21 @@ package tk.captainsplexx.Game;
 
 
 import java.io.File;
-import java.nio.file.Files;
 import java.util.ArrayList;
 
 import javafx.scene.control.TreeItem;
 
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.vector.Vector3f;
-
-import tk.captainsplexx.CAS.CasCatManager;
 import tk.captainsplexx.CAS.CasDataReader;
-import tk.captainsplexx.CAS.EbxCasConverter;
-import tk.captainsplexx.EBX.EBXArrayRepeater;
-import tk.captainsplexx.EBX.EBXComplex;
-import tk.captainsplexx.EBX.EBXComplexDescriptor;
-import tk.captainsplexx.EBX.EBXField;
-import tk.captainsplexx.EBX.EBXFieldDescriptor;
-import tk.captainsplexx.EBX.EBXFile;
-import tk.captainsplexx.EBX.EBXHandler;
-import tk.captainsplexx.EBX.EBXInstance;
-import tk.captainsplexx.EBX.EBXInstanceRepeater;
-import tk.captainsplexx.Entity.Entity;
-import tk.captainsplexx.Game.EntityHandler.Type;
 import tk.captainsplexx.Itexture.ItextureHandler;
 import tk.captainsplexx.JavaFX.TreeViewConverter;
 import tk.captainsplexx.JavaFX.TreeViewEntry;
-import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
-import tk.captainsplexx.Maths.Matrices;
-import tk.captainsplexx.Model.RawModel;
 import tk.captainsplexx.Render.ModelHandler;
 import tk.captainsplexx.Resource.FileHandler;
-import tk.captainsplexx.Resource.MeshChunkLoader;
-import tk.captainsplexx.Resource.MeshVariationDatabaseEntry;
 import tk.captainsplexx.Resource.ResourceHandler;
 import tk.captainsplexx.Toc.ConvertedTocFile;
 import tk.captainsplexx.Toc.TocConverter;
 import tk.captainsplexx.Toc.TocFile;
 import tk.captainsplexx.Toc.TocManager;
-import tk.captainsplexx.Toc.TocManager.TocFileType;
 
 public class Game {
 	public ModelHandler modelHandler;
@@ -53,6 +30,7 @@ public class Game {
 	public String gamePlatform;
 	
 		
+	@SuppressWarnings("unused")
 	public Game(){
 		gamePath = "C:/Program Files (x86)/Origin Games/Battlefield 4";
 		gamePlatform = "Win32";
@@ -62,8 +40,8 @@ public class Game {
 		playerHandler = new PlayerHandler();
 		
 		terrainHandler = new TerrainHandler();
-		terrainHandler.generate(0, 0);
-		terrainHandler.generate(0, 0);
+		//terrainHandler.generate(0, 0);
+		//terrainHandler.generate(0, 0);
 				
 		resourceHandler = new ResourceHandler("res/externalFileGUIDs"); //<--not needed in future
 		
@@ -74,15 +52,21 @@ public class Game {
 		resourceHandler.getCasCatManager().readCat(FileHandler.readFile(gamePath+"/Data/cas.cat"));
 		
 		
-		TocFile sb = TocManager.readSbPart(FileHandler.readFile(gamePath+"/Data/"+gamePlatform+"/Levels/MP/MP_Siege/MP_Siege.sb", 0x12, 0x3E8));
 		TocFile toc = TocManager.readToc(FileHandler.readFile(gamePath+"/Data/"+gamePlatform+"/Levels/MP/MP_Siege/MP_Siege.toc"));
+		
+		//TocFile sb = TocManager.readSbPart(FileHandler.readFile(gamePath+"/Data/"+gamePlatform+"/Levels/MP/MP_Siege/MP_Siege.sb", 0x12, 0x3E8)); 
+		//Data is now comming from Converted TOC! (DEBUG ONLY)
+		
 		ConvertedTocFile convToc = TocConverter.convertTocFile(toc);
+		TreeItem<TreeViewEntry> convTocTree = TreeViewConverter.getTreeView(convToc);
 		
 		TreeItem<TreeViewEntry> test = TreeViewConverter.getTreeView(toc);
-		TreeItem<TreeViewEntry> test2 = TreeViewConverter.getTreeView(sb);
+		
+			
+		
 		//TocFile newToc = TreeViewConverter.getTocFile(test, TocFileType.Sig);
 		//TocFile newSb = TreeViewConverter.getTocFile(test2, TocFileType.SbPart);
-		Main.getJavaFXHandler().setTreeViewStructureLeft(test);
+		Main.getJavaFXHandler().setTreeViewStructureLeft(convTocTree);
 		Main.getJavaFXHandler().getMainWindow().updateLeftRoot();
 		
 		

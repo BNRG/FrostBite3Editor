@@ -1,5 +1,7 @@
 package tk.captainsplexx.Toc;
 
+import tk.captainsplexx.Resource.FileHandler;
+
 public class TocSBLink {
 	public String name;
 	public long offset;
@@ -33,5 +35,9 @@ public class TocSBLink {
 	}
 	public void setSize(int size) {
 		this.size = size;
-	}	
+	}
+	
+	public TocFile getLinkedSBPart(String sbPath){
+		return TocManager.readSbPart(FileHandler.readFile(sbPath, (int) this.offset, this.size));
+	}
 }

@@ -15,7 +15,7 @@ public class FileHandler {
 	//READ - FileInputStream
 	public static byte[] readFile(String filepath){
 		try{
-			File file = new File(filepath);
+			File file = new File(filepath.replaceAll("//", "/"));
 			FileInputStream fin = new FileInputStream(file);
 			byte fileContent[] = new byte[(int)file.length()];	
 			fin.read(fileContent);
@@ -29,7 +29,7 @@ public class FileHandler {
 	
 	public static byte[] readFile(String filepath, int offset, int length){
 		try{
-			File file = new File(filepath);
+			File file = new File(filepath.replaceAll("//", "/"));
 			FileInputStream fin = new FileInputStream(file);
 			byte fileContent[] = new byte[length];
 			fin.skip(offset);
@@ -46,7 +46,7 @@ public class FileHandler {
 	public static InputStream getStream(String path){
 		InputStream is = null;
 		try {
-			is = new FileInputStream(path);
+			is = new FileInputStream(path.replaceAll("//", "/"));
 		} catch (FileNotFoundException e) {
 			System.err.println("Could not read ImputStream from: "+path);
 			e.printStackTrace();

@@ -97,7 +97,7 @@ public class JavaFXMainWindow extends Application{
         leftController.getExplorer().setCellFactory(new Callback<TreeView<TreeViewEntry>,TreeCell<TreeViewEntry>>(){
             @Override
             public TreeCell<TreeViewEntry> call(TreeView<TreeViewEntry> p) {
-                return new JavaFXebxTCF();
+                return new JavaFXexplorerTCF();
             }
         });
         leftController.getExplorer().setEditable(true);

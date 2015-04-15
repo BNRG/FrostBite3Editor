@@ -8,12 +8,14 @@ import tk.captainsplexx.EBX.EBXFieldDescriptor;
 import tk.captainsplexx.EBX.EBXFile;
 import tk.captainsplexx.EBX.EBXInstance;
 import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
+import tk.captainsplexx.Toc.ConvertedTocFile;
 import tk.captainsplexx.Toc.TocEntry;
 import tk.captainsplexx.Toc.TocField;
 import tk.captainsplexx.Toc.TocFile;
 import tk.captainsplexx.Toc.TocManager.TocEntryType;
 import tk.captainsplexx.Toc.TocManager.TocFieldType;
 import tk.captainsplexx.Toc.TocManager.TocFileType;
+import tk.captainsplexx.Toc.TocSBLink;
 import javafx.scene.control.TreeItem;
 import javafx.scene.image.ImageView;
 
@@ -214,4 +216,27 @@ public class TreeViewConverter {
 		return tf;
 	}
 	/*END OF TO TOC*/
+
+	/*START OF CONVERTED TOC*/
+	public static TreeItem<TreeViewEntry> getTreeView(ConvertedTocFile cTocF){
+		TreeItem<TreeViewEntry> rootnode = new TreeItem<TreeViewEntry>(new TreeViewEntry(cTocF.getName(), new ImageView(JavaFXHandler.documentIcon), null, EntryType.LIST));
+		
+		/*BUNDLES*/
+		TreeItem<TreeViewEntry> bundles = new TreeItem<TreeViewEntry>(new TreeViewEntry("bundles", new ImageView(JavaFXHandler.listIcon), null, EntryType.LIST));
+		for (TocSBLink link : cTocF.getBundles()){
+			bundles.getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry(link.getName(), new ImageView(JavaFXHandler.instanceIcon), link, EntryType.STRING)));
+		}
+		rootnode.getChildren().add(bundles);
+		
+		/*CHUNKS*/
+		TreeItem<TreeViewEntry> chunks = new TreeItem<TreeViewEntry>(new TreeViewEntry("chunks", new ImageView(JavaFXHandler.listIcon), null, EntryType.LIST));
+		for (TocSBLink link : cTocF.getChunks()){
+			chunks.getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry(link.getName(), new ImageView(JavaFXHandler.instanceIcon), link, EntryType.STRING)));
+		}
+		rootnode.getChildren().add(chunks);
+		
+		
+		return rootnode;
+	}
+	/*END OF CONVERTED TOC*/
 }

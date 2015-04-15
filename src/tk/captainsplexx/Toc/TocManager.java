@@ -18,6 +18,12 @@ public class TocManager {
 	public static enum TocFileType {
 		XORSig, Sig, None, SbPart
 	};
+	
+	/*ONLY NEEDED IF RAW FILE SHOULD SHOW UP IN EXPLORER. (DEBUG)
+	public static ConvertedTocFile getConvertedToc(byte[] toc){
+		return TocConverter.convertTocFile(readToc(toc));
+	}
+	*/
 
 	public static TocFile readToc(byte[] fileArray) {
 		FileSeeker seeker = new FileSeeker();
@@ -47,7 +53,10 @@ public class TocManager {
 		}
 		seeker = new FileSeeker();
 		while (seeker.getOffset() < data.length){ //READ ENTRIES
-			entries.add(readEntry(data, seeker));
+			TocEntry entry = readEntry(data, seeker);
+			if (entry != null){
+				entries.add(entry);
+			}
 		}//EOF
 		TocFile file = new TocFile(fileType);
 		file.getEntries().addAll(entries);
@@ -58,7 +67,10 @@ public class TocManager {
 		FileSeeker seeker = new FileSeeker();
 		ArrayList<TocEntry> entries = new ArrayList<TocEntry>();
 		while (seeker.getOffset() < part.length){ //READ ENTRIES
-			entries.add(readEntry(part, seeker));
+			TocEntry entry = readEntry(part, seeker);
+			if (entry != null){
+				entries.add(entry);
+			}
 		}//EOF
 		TocFile file = new TocFile(TocFileType.SbPart);
 		return file;
@@ -131,7 +143,4 @@ public class TocManager {
 		}
 		return field;
 	}
-
-
-
 }
