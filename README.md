@@ -5,7 +5,7 @@ Unofficial FrostBite3 Editor Tools by CAPTAINSPLEXX
 >http://goo.gl/CjfAhg quick expl. what it is!
 
 >WORK IN PROGRESS
->Main functionality ~76% done 
+>Main functionality ~77% done 
 
 Read LICENSE before using it!
 

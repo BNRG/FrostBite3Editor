@@ -8,16 +8,18 @@ public class ConvertedSBpart {
 	public ArrayList<ResourceLink> ebx;
 	public ArrayList<ResourceLink> dbx;
 	public ArrayList<ResourceLink> res;
+	public ArrayList<ResourceLink> chunks;
+	public ArrayList<ResourceLink> chunkMeta;
 	public boolean alignMembers;
 	public boolean ridSupport;
 	public boolean storeCompressedSizes;
 	public long totalSize;
 	public long dbxTotalSize;
 	
-
 	public ConvertedSBpart(String path, Integer magicSalt,
 			ArrayList<ResourceLink> ebx, ArrayList<ResourceLink> dbx,
-			ArrayList<ResourceLink> res, boolean alignMembers,
+			ArrayList<ResourceLink> res, ArrayList<ResourceLink> chunks,
+			ArrayList<ResourceLink> chunkMeta, boolean alignMembers,
 			boolean ridSupport, boolean storeCompressedSizes, long totalSize,
 			long dbxTotalSize) {
 		this.path = path;
@@ -25,6 +27,8 @@ public class ConvertedSBpart {
 		this.ebx = ebx;
 		this.dbx = dbx;
 		this.res = res;
+		this.chunks = chunks;
+		this.chunkMeta = chunkMeta;
 		this.alignMembers = alignMembers;
 		this.ridSupport = ridSupport;
 		this.storeCompressedSizes = storeCompressedSizes;
@@ -32,19 +36,28 @@ public class ConvertedSBpart {
 		this.dbxTotalSize = dbxTotalSize;
 	}
 	
-	public ConvertedSBpart(/*USING NULLCONSTRUCTOR*/){
+	public ConvertedSBpart(/*USING NULLCONSTRUCTOR*/) {
 		this.path = "";
 		this.magicSalt = 0;
 		this.ebx = new ArrayList<ResourceLink>();
 		this.dbx = new ArrayList<ResourceLink>();
 		this.res = new ArrayList<ResourceLink>();
+		this.chunks = new ArrayList<ResourceLink>();
+		this.chunkMeta = new ArrayList<ResourceLink>();
 		this.alignMembers = false;
 		this.ridSupport = false;
 		this.storeCompressedSizes = false;
 		this.totalSize = 0;
 		this.dbxTotalSize = 0;
 	}
-	
+
+	public ArrayList<ResourceLink> getChunks() {
+		return chunks;
+	}
+
+	public ArrayList<ResourceLink> getChunkMeta() {
+		return chunkMeta;
+	}
 	public String getPath() {
 		return path;
 	}

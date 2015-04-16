@@ -53,7 +53,7 @@ public class Game {
 		
 		resourceHandler.getCasCatManager().readCat(FileHandler.readFile(gamePath+"/Data/cas.cat"));
 		
-		currentTocPath = gamePath+"/Data/"+gamePlatform+"/Levels/MP/MP_Siege/MP_Siege";
+		currentTocPath = gamePath+"/Data/"+gamePlatform+"/Levels/MP/MP_Prison/MP_Prison";
 		//currentTocPath = gamePath+"/Data/"+gamePlatform+"/WeaponChunks";
 		TocFile toc = TocManager.readToc(FileHandler.readFile(currentTocPath+".toc"));
 		

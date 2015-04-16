@@ -6,6 +6,7 @@ import org.lwjgl.opengl.Display;
 
 import tk.captainsplexx.Game.Main;
 import tk.captainsplexx.JavaFX.CellFactories.JavaFXebxTCF;
+import tk.captainsplexx.JavaFX.CellFactories.JavaFXexplorer1TCF;
 import tk.captainsplexx.JavaFX.CellFactories.JavaFXexplorerTCF;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -111,7 +112,7 @@ public class JavaFXMainWindow extends Application{
         leftController.getExplorer1().setCellFactory(new Callback<TreeView<TreeViewEntry>,TreeCell<TreeViewEntry>>(){
             @Override
             public TreeCell<TreeViewEntry> call(TreeView<TreeViewEntry> p) {
-                return new JavaFXebxTCF();
+                return new JavaFXexplorer1TCF();
             }
         });
         leftController.getExplorer1().setEditable(false);

@@ -2,10 +2,8 @@ package tk.captainsplexx.JavaFX.CellFactories;
 
 import javafx.event.EventHandler;
 import javafx.scene.control.TreeCell;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import tk.captainsplexx.Game.Main;
-import tk.captainsplexx.JavaFX.JavaFXHandler;
 import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
 import tk.captainsplexx.JavaFX.TreeViewConverter;
 import tk.captainsplexx.JavaFX.TreeViewEntry;
@@ -16,8 +14,6 @@ public class JavaFXexplorerTCF extends TreeCell<TreeViewEntry> {
 	public static enum ExplorerMode {
 		TOC, FILEEXPLORER
 	};
-	
-	public static String initString = " (INITIALIZED)";
 	
 	public ExplorerMode mode;
 	
@@ -37,13 +33,18 @@ public class JavaFXexplorerTCF extends TreeCell<TreeViewEntry> {
 			public void handle(MouseEvent event) {
 				if (mode == ExplorerMode.TOC){
 					if (getTreeItem().getChildren().isEmpty() && getTreeItem().getValue().getValue() instanceof TocSBLink){
-						getTreeItem().getValue().setName(getTreeItem().getValue().getName()+initString);
-						getTreeItem().getValue().setGraphic(new ImageView(JavaFXHandler.rawIcon));
-						
-						Main.getJavaFXHandler().setTreeViewStructureLeft1(
-								TreeViewConverter.getTreeView(((TocSBLink)getTreeItem().getValue().getValue()).getLinkedSBPart(Main.getGame().getCurrentTocPath()+".sb"))
-						);
-						Main.getJavaFXHandler().getMainWindow().updateLeftRoot1();
+						if (getTreeItem().getParent().getValue().getName().startsWith("bundles")){
+							getTreeItem().getValue().setName(getTreeItem().getValue().getName());
+							
+							Main.getJavaFXHandler().setTreeViewStructureLeft1(
+									TreeViewConverter.getTreeView(
+											TocConverter.convertSBpart( //REMOVE THIS LINE TO DEBUG.
+													((TocSBLink)getTreeItem().getValue().getValue()).getLinkedSBPart(Main.getGame().getCurrentTocPath()+".sb")))
+							);
+							Main.getJavaFXHandler().getMainWindow().updateLeftRoot1();
+						}else{
+							System.err.println(getTreeItem().getParent().getValue().getName().split(" ")[0]+" are not supported yet.");
+						}
 					}
 				}else{
 					//TODO

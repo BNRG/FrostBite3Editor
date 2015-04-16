@@ -1,6 +1,7 @@
 package tk.captainsplexx.JavaFX;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 import tk.captainsplexx.EBX.EBXField;
 import tk.captainsplexx.EBX.EBXFieldDescriptor;
@@ -9,6 +10,7 @@ import tk.captainsplexx.EBX.EBXInstance;
 import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
 import tk.captainsplexx.Toc.ConvertedSBpart;
 import tk.captainsplexx.Toc.ConvertedTocFile;
+import tk.captainsplexx.Toc.ResourceLink;
 import tk.captainsplexx.Toc.TocEntry;
 import tk.captainsplexx.Toc.TocField;
 import tk.captainsplexx.Toc.TocFile;
@@ -251,7 +253,42 @@ public class TreeViewConverter {
 	
 	/*START OF CONVERTED TOCSBPart*/
 	public static TreeItem<TreeViewEntry> getTreeView(ConvertedSBpart part){
-		TreeItem<TreeViewEntry> rootnode = new TreeItem<TreeViewEntry>(new TreeViewEntry("sbPart", new ImageView(JavaFXHandler.documentIcon), null, EntryType.LIST));
+		TreeItem<TreeViewEntry> rootnode = new TreeItem<TreeViewEntry>(new TreeViewEntry(part.getPath(), new ImageView(JavaFXHandler.documentIcon), null, EntryType.LIST));
+		
+		/*EBX*/
+		TreeItem<TreeViewEntry> ebx = new TreeItem<TreeViewEntry>(new TreeViewEntry("ebx - "+part.getEbx().size()+" Children", new ImageView(JavaFXHandler.listIcon), null, EntryType.LIST));
+		for (ResourceLink link : part.getEbx()){
+			ebx.getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry(link.getName()+" ("+link.getSha1()+")", new ImageView(JavaFXHandler.structureIcon), link, EntryType.STRING)));
+		}
+		rootnode.getChildren().add(ebx);
+		
+		/*DBX*/
+		TreeItem<TreeViewEntry> dbx = new TreeItem<TreeViewEntry>(new TreeViewEntry("dbx - "+part.getDbx().size()+" Children", new ImageView(JavaFXHandler.listIcon), null, EntryType.LIST));
+		for (ResourceLink link : part.getDbx()){
+			dbx.getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry(link.getName()+" ("+link.getSha1()+")", new ImageView(JavaFXHandler.structureIcon), link, EntryType.STRING)));
+		}
+		rootnode.getChildren().add(dbx);
+		
+		/*RES*/
+		TreeItem<TreeViewEntry> res = new TreeItem<TreeViewEntry>(new TreeViewEntry("res - "+part.getRes().size()+" Children", new ImageView(JavaFXHandler.listIcon), null, EntryType.LIST));
+		for (ResourceLink link : part.getRes()){
+			res.getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry(link.getName()+" ("+link.getSha1()+", "+(link.getResType()&0xFFFFFFFF)+")", new ImageView(JavaFXHandler.resourceIcon), link, EntryType.STRING)));
+		}
+		rootnode.getChildren().add(res);
+		
+		/*CHUNKS*/
+		TreeItem<TreeViewEntry> chunks = new TreeItem<TreeViewEntry>(new TreeViewEntry("chunks - "+part.getChunks().size()+" Children", new ImageView(JavaFXHandler.listIcon), null, EntryType.LIST));
+		for (ResourceLink link : part.getChunks()){
+			chunks.getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry(link.getId()/*+" ("+link.getSha1()+")" Does they even have a sha1 ?*/, new ImageView(JavaFXHandler.instanceIcon), link, EntryType.STRING)));
+		}
+		rootnode.getChildren().add(chunks);
+		
+		/*CHUNKMETA*/
+		TreeItem<TreeViewEntry> chunkmeta = new TreeItem<TreeViewEntry>(new TreeViewEntry("chunkmeta - "+part.getChunkMeta().size()+" Children", new ImageView(JavaFXHandler.listIcon), null, EntryType.LIST));
+		for (ResourceLink link : part.getChunkMeta()){
+			chunkmeta.getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry(link.getH32()+"", new ImageView(JavaFXHandler.rawIcon), link, EntryType.RAW)));
+		}
+		rootnode.getChildren().add(chunkmeta);
 		
 		return rootnode;
 	}

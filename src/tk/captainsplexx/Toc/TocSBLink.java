@@ -41,7 +41,7 @@ public class TocSBLink {
 		try{
 			return TocManager.readSbPart(FileHandler.readFile(sbPath, (int) this.offset, this.size));
 		}catch (Exception e){
-			e.printStackTrace();
+			//e.printStackTrace();
 			System.err.println("Could not read Sb part from "+sbPath+" at "+this.offset);
 			return null;
 		}
