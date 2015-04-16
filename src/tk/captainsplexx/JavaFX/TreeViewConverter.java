@@ -25,16 +25,23 @@ public class TreeViewConverter {
 	public static TreeItem<TreeViewEntry> getTreeView(TocFile tocFile){
 		TreeItem<TreeViewEntry> root = new TreeItem<TreeViewEntry>(new TreeViewEntry("TocFile", new ImageView(JavaFXHandler.listIcon), null, EntryType.LIST));
 		for (TocEntry e : tocFile.getEntries()){
-			root.getChildren().add(readEntry(e));		
+			TreeItem<TreeViewEntry> entry = readEntry(e);
+			if (entry != null){
+				root.getChildren().add(entry);
+			}
 		}
 		return root;
 	}
 	static TreeItem<TreeViewEntry> readEntry(TocEntry tocEntry){
-		TreeItem<TreeViewEntry> entry = new TreeItem<TreeViewEntry>(new TreeViewEntry("TocEntry", new ImageView(JavaFXHandler.listIcon), null, EntryType.LIST));
-		for (TocField f : tocEntry.getFields()){
-			entry.getChildren().add(readField(f));
+		if (tocEntry != null){
+			TreeItem<TreeViewEntry> entry = new TreeItem<TreeViewEntry>(new TreeViewEntry("TocEntry", new ImageView(JavaFXHandler.listIcon), null, EntryType.LIST));
+			for (TocField f : tocEntry.getFields()){
+				entry.getChildren().add(readField(f));
+			}
+			return entry;
+		}else{
+			return null;
 		}
-		return entry;
 	}
 	@SuppressWarnings("unchecked")
 	static TreeItem<TreeViewEntry> readField(TocField tocField){
@@ -224,16 +231,16 @@ public class TreeViewConverter {
 		TreeItem<TreeViewEntry> rootnode = new TreeItem<TreeViewEntry>(new TreeViewEntry(cTocF.getName(), new ImageView(JavaFXHandler.documentIcon), null, EntryType.LIST));
 		
 		/*BUNDLES*/
-		TreeItem<TreeViewEntry> bundles = new TreeItem<TreeViewEntry>(new TreeViewEntry("bundles", new ImageView(JavaFXHandler.listIcon), null, EntryType.LIST));
+		TreeItem<TreeViewEntry> bundles = new TreeItem<TreeViewEntry>(new TreeViewEntry("bundles - "+cTocF.getBundles().size()+" Children", new ImageView(JavaFXHandler.listIcon), null, EntryType.LIST));
 		for (TocSBLink link : cTocF.getBundles()){
-			bundles.getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry(link.getName(), new ImageView(JavaFXHandler.instanceIcon), link, EntryType.STRING)));
+			bundles.getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry(link.getID(), new ImageView(JavaFXHandler.instanceIcon), link, EntryType.STRING)));
 		}
 		rootnode.getChildren().add(bundles);
 		
 		/*CHUNKS*/
-		TreeItem<TreeViewEntry> chunks = new TreeItem<TreeViewEntry>(new TreeViewEntry("chunks", new ImageView(JavaFXHandler.listIcon), null, EntryType.LIST));
+		TreeItem<TreeViewEntry> chunks = new TreeItem<TreeViewEntry>(new TreeViewEntry("chunks - "+cTocF.getChunks().size()+" Children", new ImageView(JavaFXHandler.listIcon), null, EntryType.LIST));
 		for (TocSBLink link : cTocF.getChunks()){
-			chunks.getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry(link.getName(), new ImageView(JavaFXHandler.instanceIcon), link, EntryType.STRING)));
+			chunks.getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry(link.getID(), new ImageView(JavaFXHandler.instanceIcon), link, EntryType.STRING)));
 		}
 		rootnode.getChildren().add(chunks);
 		

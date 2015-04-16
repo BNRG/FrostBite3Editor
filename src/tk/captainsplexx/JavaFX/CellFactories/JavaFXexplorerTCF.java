@@ -14,7 +14,7 @@ import tk.captainsplexx.Toc.TocSBLink;
 
 public class JavaFXexplorerTCF extends TreeCell<TreeViewEntry> {
 	public static enum ExplorerMode {
-		TOC, SB, FILEEXPLORER
+		TOC, FILEEXPLORER
 	};
 	
 	public static String initString = " (INITIALIZED)";
@@ -35,14 +35,18 @@ public class JavaFXexplorerTCF extends TreeCell<TreeViewEntry> {
 		setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				if (getTreeItem().getChildren().isEmpty() && getTreeItem().getValue().getValue() instanceof TocSBLink){
-					getTreeItem().getValue().setName(getTreeItem().getValue().getName()+initString);
-					getTreeItem().getValue().setGraphic(new ImageView(JavaFXHandler.rawIcon));
-					
-					Main.getJavaFXHandler().setTreeViewStructureLeft1(
-							TreeViewConverter.getTreeView(((TocSBLink)getTreeItem().getValue().getValue()).getLinkedSBPart(Main.getGame().getCurrentTocPath()+".sb"))
-					);
-					Main.getJavaFXHandler().getMainWindow().updateLeftRoot1();
+				if (mode == ExplorerMode.TOC){
+					if (getTreeItem().getChildren().isEmpty() && getTreeItem().getValue().getValue() instanceof TocSBLink){
+						getTreeItem().getValue().setName(getTreeItem().getValue().getName()+initString);
+						getTreeItem().getValue().setGraphic(new ImageView(JavaFXHandler.rawIcon));
+						
+						Main.getJavaFXHandler().setTreeViewStructureLeft1(
+								TreeViewConverter.getTreeView(((TocSBLink)getTreeItem().getValue().getValue()).getLinkedSBPart(Main.getGame().getCurrentTocPath()+".sb"))
+						);
+						Main.getJavaFXHandler().getMainWindow().updateLeftRoot1();
+					}
+				}else{
+					//TODO
 				}
 			}
 		});

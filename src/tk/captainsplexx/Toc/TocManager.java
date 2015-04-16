@@ -93,8 +93,12 @@ public class TocManager {
 				}
 			}
 		}else{
-			entry = new TocEntry(TocEntryType.UNKNOWN);
-			System.err.println("Unknown Type in TocManger detected: "+entryType+" at "+seeker.getOffset());
+			if (entryType != 0){
+				entry = new TocEntry(TocEntryType.UNKNOWN);
+				System.err.println("Unknown Type in TocManger detected: "+entryType+" at "+seeker.getOffset());
+			}else{
+				entry = null;
+			}
 			//TODO
 		}
 		return entry;

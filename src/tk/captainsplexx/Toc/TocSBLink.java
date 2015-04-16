@@ -3,26 +3,26 @@ package tk.captainsplexx.Toc;
 import tk.captainsplexx.Resource.FileHandler;
 
 public class TocSBLink {
-	public String name;
+	public String id;
 	public long offset;
 	public int size;
-	public TocSBLink(String name, long offset, int size) {
-		this.name = name;
+	public TocSBLink(String id, long offset, int size) {
+		this.id = id;
 		this.offset = offset;
 		this.size = size;
 	}
 	
 	public TocSBLink(/*USING NULLCONSTUCTOR*/){
-		this.name = "";
+		this.id = "";
 		this.offset = 0;
 		this.size = 0;
 	}
 	
-	public String getName() {
-		return name;
+	public String getID() {
+		return id;
 	}
-	public void setName(String name) {
-		this.name = name;
+	public void setID(String id) {
+		this.id = id;
 	}
 	public long getOffset() {
 		return offset;

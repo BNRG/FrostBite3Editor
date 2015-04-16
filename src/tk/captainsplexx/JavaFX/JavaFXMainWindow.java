@@ -180,6 +180,7 @@ public class JavaFXMainWindow extends Application{
 			@Override
 			public void run() {
 				leftController.getExplorer1().setRoot(Main.getJavaFXHandler().getTreeViewStructureLeft1());
+				leftController.getExplorer1().getRoot().setExpanded(true);
 			}
 		});	
 	}

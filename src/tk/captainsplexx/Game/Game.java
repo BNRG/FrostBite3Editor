@@ -54,6 +54,7 @@ public class Game {
 		resourceHandler.getCasCatManager().readCat(FileHandler.readFile(gamePath+"/Data/cas.cat"));
 		
 		currentTocPath = gamePath+"/Data/"+gamePlatform+"/Levels/MP/MP_Siege/MP_Siege";
+		//currentTocPath = gamePath+"/Data/"+gamePlatform+"/WeaponChunks";
 		TocFile toc = TocManager.readToc(FileHandler.readFile(currentTocPath+".toc"));
 		
 		//TocFile sb = TocManager.readSbPart(FileHandler.readFile(currentTocPath+".sb", 0x12, 0x3E8)); 
@@ -62,13 +63,13 @@ public class Game {
 		ConvertedTocFile convToc = TocConverter.convertTocFile(toc);
 		TreeItem<TreeViewEntry> convTocTree = TreeViewConverter.getTreeView(convToc);
 		
-		TreeItem<TreeViewEntry> test = TreeViewConverter.getTreeView(convToc);
+		TreeItem<TreeViewEntry> test = TreeViewConverter.getTreeView(toc);
 		
 			
 		
 		//TocFile newToc = TreeViewConverter.getTocFile(test, TocFileType.Sig);
 		//TocFile newSb = TreeViewConverter.getTocFile(test2, TocFileType.SbPart);
-		Main.getJavaFXHandler().setTreeViewStructureLeft(test);
+		Main.getJavaFXHandler().setTreeViewStructureLeft(convTocTree);
 		Main.getJavaFXHandler().getMainWindow().updateLeftRoot();
 		
 		

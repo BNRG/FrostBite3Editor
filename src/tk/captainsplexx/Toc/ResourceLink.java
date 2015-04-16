@@ -54,8 +54,6 @@ public class ResourceLink {
 	public void setSha1(String sha1) {
 		this.sha1 = sha1;
 	}
-	
-	
-	
+
 	
 }
