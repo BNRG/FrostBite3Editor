@@ -7,6 +7,7 @@ import tk.captainsplexx.Game.Main;
 import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
 import tk.captainsplexx.JavaFX.TreeViewConverter;
 import tk.captainsplexx.JavaFX.TreeViewEntry;
+import tk.captainsplexx.Resource.ResourceHandler.LinkBundleType;
 import tk.captainsplexx.Toc.TocConverter;
 import tk.captainsplexx.Toc.TocSBLink;
 
@@ -33,8 +34,8 @@ public class JavaFXexplorerTCF extends TreeCell<TreeViewEntry> {
 			public void handle(MouseEvent event) {
 				if (mode == ExplorerMode.TOC){
 					if (getTreeItem().getChildren().isEmpty() && getTreeItem().getValue().getValue() instanceof TocSBLink){
-						if (getTreeItem().getParent().getValue().getName().startsWith("bundles")){
-							getTreeItem().getValue().setName(getTreeItem().getValue().getName());
+						//if (getTreeItem().getParent().getValue().getName().startsWith("bundles")){
+						if (((TocSBLink)getTreeItem().getValue().getValue()).getType() == LinkBundleType.BUNDLES){
 							
 							Main.getJavaFXHandler().setTreeViewStructureLeft1(
 									TreeViewConverter.getTreeView(
@@ -43,7 +44,7 @@ public class JavaFXexplorerTCF extends TreeCell<TreeViewEntry> {
 							);
 							Main.getJavaFXHandler().getMainWindow().updateLeftRoot1();
 						}else{
-							System.err.println(getTreeItem().getParent().getValue().getName().split(" ")[0]+" are not supported yet.");
+							System.err.println(((TocSBLink)getTreeItem().getValue().getValue()).getType()+" are not supported yet.");
 						}
 					}
 				}else{

@@ -13,6 +13,8 @@ public class ResourceHandler {
 		SHADERDATERBASE, SHADERDB, SHADERPROGRAMDB, LUAC, UNDEFINEDSPLEXX
 	};
 	
+	public static enum LinkBundleType{BUNDLES, CHUNKS};
+	
 	public MeshChunkLoader mcL;
 	public MeshVariationDatabaseHandler mvdH;
 	public EBXHandler ebxHandler;

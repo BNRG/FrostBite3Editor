@@ -1,23 +1,35 @@
 package tk.captainsplexx.Toc;
 
 import tk.captainsplexx.Resource.FileHandler;
+import tk.captainsplexx.Resource.ResourceHandler.LinkBundleType;
 
 public class TocSBLink {
 	public String id;
 	public long offset;
 	public int size;
-	public TocSBLink(String id, long offset, int size) {
+	public LinkBundleType type;
+	public TocSBLink(String id, long offset, int size, LinkBundleType type) {
 		this.id = id;
 		this.offset = offset;
 		this.size = size;
+		this.type = type;
 	}
 	
 	public TocSBLink(/*USING NULLCONSTUCTOR*/){
 		this.id = "";
 		this.offset = 0;
 		this.size = 0;
+		this.type = null;
 	}
 	
+	public LinkBundleType getType() {
+		return type;
+	}
+
+	public void setType(LinkBundleType type) {
+		this.type = type;
+	}
+
 	public String getID() {
 		return id;
 	}

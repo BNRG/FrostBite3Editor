@@ -2,6 +2,7 @@ package tk.captainsplexx.Toc;
 
 import java.util.ArrayList;
 
+import tk.captainsplexx.Resource.ResourceHandler.LinkBundleType;
 import tk.captainsplexx.Toc.TocManager.TocFieldType;
 
 public class TocConverter {
@@ -23,6 +24,7 @@ public class TocConverter {
 					for (TocEntry entry : (ArrayList<TocEntry>) field.getObj()){
 						TocSBLink link = readTocLink(entry);
 						if (link != null){
+							link.setType(LinkBundleType.CHUNKS);
 							convToc.getChunks().add(link);
 						}
 					}
@@ -30,6 +32,7 @@ public class TocConverter {
 					for (TocEntry entry : (ArrayList<TocEntry>) field.getObj()){
 						TocSBLink link = readTocLink(entry);
 						if (link != null){
+							link.setType(LinkBundleType.BUNDLES);
 							convToc.getBundles().add(link);
 						}
 					}

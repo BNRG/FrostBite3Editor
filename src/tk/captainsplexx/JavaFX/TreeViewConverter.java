@@ -240,7 +240,10 @@ public class TreeViewConverter {
 		/*BUNDLES*/
 		TreeItem<TreeViewEntry> bundles = new TreeItem<TreeViewEntry>(new TreeViewEntry("bundles - "+cTocF.getBundles().size()+" Children", new ImageView(JavaFXHandler.listIcon), null, EntryType.LIST));
 		for (TocSBLink link : cTocF.getBundles()){
-			bundles.getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry(link.getID(), new ImageView(JavaFXHandler.instanceIcon), link, EntryType.STRING)));
+			String[] name = link.getID().split("/");
+			TreeViewEntry child = new TreeViewEntry(name[name.length-1], new ImageView(JavaFXHandler.instanceIcon), link, EntryType.STRING);
+			pathToTree(bundles, link.getID(), child);
+			//bundles.getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry(link.getID(), new ImageView(JavaFXHandler.instanceIcon), link, EntryType.STRING)));
 		}
 		rootnode.getChildren().add(bundles);
 		
