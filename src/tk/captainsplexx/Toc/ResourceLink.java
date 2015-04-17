@@ -53,7 +53,7 @@ public class ResourceLink {
 		this.name = "";
 		this.size = 0;
 		this.originalSize = 0;
-		this.type = ResourceType.UNDEFINEDSPLEXX;
+		this.type = ResourceType.UNDEFINED;
 		this.sha1 = "";
 		this.bundleType = null;
 	}

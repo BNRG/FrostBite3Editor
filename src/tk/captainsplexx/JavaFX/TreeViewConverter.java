@@ -1,13 +1,13 @@
 package tk.captainsplexx.JavaFX;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 
 import tk.captainsplexx.EBX.EBXField;
 import tk.captainsplexx.EBX.EBXFieldDescriptor;
 import tk.captainsplexx.EBX.EBXFile;
 import tk.captainsplexx.EBX.EBXInstance;
 import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
+import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Toc.ConvertedSBpart;
 import tk.captainsplexx.Toc.ConvertedTocFile;
 import tk.captainsplexx.Toc.ResourceLink;
@@ -287,7 +287,29 @@ public class TreeViewConverter {
 		TreeItem<TreeViewEntry> res = new TreeItem<TreeViewEntry>(new TreeViewEntry("res - "+part.getRes().size()+" Children", new ImageView(JavaFXHandler.listIcon), null, EntryType.LIST));
 		for (ResourceLink link : part.getRes()){
 			String[] name = link.getName().split("/");
-			TreeViewEntry child = new TreeViewEntry(name[name.length-1]+" ("+link.getSha1()+", "+(link.getResType()&0xFFFFFFFF)+")", new ImageView(JavaFXHandler.resourceIcon), link, EntryType.STRING);
+			TreeViewEntry child = new TreeViewEntry(name[name.length-1]+" ("+link.getSha1()+", "+link.getType()+")", null, link, EntryType.STRING);
+			ImageView graphic = null;
+			switch (link.getType()) {
+				case CHUNK:
+					graphic = new ImageView(JavaFXHandler.rawIcon);
+					break;
+				case ITEXTURE:
+					graphic = new ImageView(JavaFXHandler.imageIcon);
+					break;
+				case LUAC:
+					graphic = new ImageView(JavaFXHandler.luaIcon);
+					break;
+				case OCCLUDERMESH:
+					graphic = new ImageView(JavaFXHandler.geometry2Icon);
+					break;
+				case MESH:
+					graphic = new ImageView(JavaFXHandler.geometryIcon);
+					break;
+				default:
+					graphic = new ImageView(JavaFXHandler.resourceIcon);
+					break;
+			}
+			child.setGraphic(graphic);
 			pathToTree(res, link.getName(), child);
 			//res.getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry(link.getName()+" ("+link.getSha1()+", "+(link.getResType()&0xFFFFFFFF)+")", new ImageView(JavaFXHandler.resourceIcon), link, EntryType.STRING)));
 		}
@@ -296,7 +318,9 @@ public class TreeViewConverter {
 		/*CHUNKS*/
 		TreeItem<TreeViewEntry> chunks = new TreeItem<TreeViewEntry>(new TreeViewEntry("chunks - "+part.getChunks().size()+" Children", new ImageView(JavaFXHandler.listIcon), null, EntryType.LIST));
 		for (ResourceLink link : part.getChunks()){
-			chunks.getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry(link.getId()/*+" ("+link.getSha1()+")" Does they even have a sha1 ?*/, new ImageView(JavaFXHandler.instanceIcon), link, EntryType.STRING)));
+			chunks.getChildren().add(new TreeItem<TreeViewEntry>(
+					new TreeViewEntry(link.getId()+"(offset: 0x"+FileHandler.toHexInteger(link.getLogicalOffset())+" , size: 0x"+FileHandler.toHexInteger(link.getLogicalSize())+")", 
+							new ImageView(JavaFXHandler.instanceIcon), link, EntryType.STRING)));
 		}
 		rootnode.getChildren().add(chunks);
 		

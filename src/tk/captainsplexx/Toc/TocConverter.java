@@ -3,6 +3,7 @@ package tk.captainsplexx.Toc;
 import java.util.ArrayList;
 
 import tk.captainsplexx.Resource.ResourceHandler.LinkBundleType;
+import tk.captainsplexx.Resource.ResourceHandler.ResourceType;
 import tk.captainsplexx.Toc.TocManager.TocFieldType;
 
 public class TocConverter {
@@ -109,6 +110,13 @@ public class TocConverter {
 							convSB.getDbx().add(link);
 						}
 					}
+				}else if (field.getName().toLowerCase().equals("res") && field.getType() == TocFieldType.LIST){
+					for (TocEntry entry : (ArrayList<TocEntry>) field.getObj()){
+						ResourceLink link = readResourceLink(entry, ResourceBundleType.RES);
+						if (link != null){
+							convSB.getRes().add(link);
+						}
+					}
 				}else if (field.getName().toLowerCase().equals("chunks") && field.getType() == TocFieldType.LIST){
 					for (TocEntry entry : (ArrayList<TocEntry>) field.getObj()){
 						ResourceLink link = readResourceLink(entry, ResourceBundleType.CHUNKS);
@@ -200,7 +208,12 @@ public class TocConverter {
 						}else if (field.getName().toLowerCase().equals("originalsize") && field.getType() == TocFieldType.LONG){
 							link.setOriginalSize((Long) field.getObj());
 						}else if (field.getName().toLowerCase().equals("restype") && field.getType() == TocFieldType.INTEGER){
-							link.setResType((Integer) field.getObj());
+							int resType = (Integer) field.getObj();
+							
+							/*CONVERT*/
+							link.setType(toResourceType(resType));
+							
+							link.setResType(resType);
 						}else if (field.getName().toLowerCase().equals("resmeta") && field.getType() == TocFieldType.RAW){
 							link.setResMeta((byte[]) field.getObj());
 						}else if (field.getName().toLowerCase().equals("resrid") && field.getType() == TocFieldType.LONG){
@@ -214,6 +227,54 @@ public class TocConverter {
 			return link;
 		}else{
 			return null;
+		}
+	}
+	
+	public static ResourceType toResourceType(int resType){
+		switch(resType){
+			case 0x5C4954A6:
+				return ResourceType.ITEXTURE;
+			case 0x2D47A5FF:
+				return ResourceType.GFX;
+			case 0x22FE8AC8:
+				return ResourceType.UNDEFINED;
+			case 0x6BB6D7D2:
+				return ResourceType.STREAIMINGSTUB;
+			case 0x1CA38E06:
+				return ResourceType.UNDEFINED;
+			case 0x15E1F32E:
+				return ResourceType.UNDEFINED;
+			case 0x4864737B:
+				return ResourceType.HKDESTRUCTION;
+			case 0x91043F65:
+				return ResourceType.HKNONDESTRUCTION;
+			case 0x51A3C853:
+				return ResourceType.ANT;
+			case 0xD070EED1:
+				return ResourceType.ANIMTRACKDATA;
+			case 0x319D8CD0:
+				return ResourceType.RAGDOLL;
+			case 0x49B156D4:
+				return ResourceType.MESH;
+			case 0x5BDFDEFE:
+				return ResourceType.LIGHTINGSYSTEM;
+			case 0x70C5CB3E:
+				return ResourceType.ENLIGHTEN;
+			case 0xE156AF73:
+				return ResourceType.PROBESET;
+			case 0x7AEFC446:
+				return ResourceType.STATICENLIGHTEN;
+			case 0x59CEEB57:
+				return ResourceType.SHADERDATERBASE;
+			case 0x36F3F2C0:
+				return ResourceType.SHADERDB;
+			case 0x10F0E5A1:
+				return ResourceType.SHADERPROGRAMDB;
+			case 0xafecb022:
+				return ResourceType.LUAC;
+			default:
+				System.out.println("unknown ResourceType found: "+(resType&0xFFFFFFFF));
+				return ResourceType.UNDEFINED;
 		}
 	}
 }

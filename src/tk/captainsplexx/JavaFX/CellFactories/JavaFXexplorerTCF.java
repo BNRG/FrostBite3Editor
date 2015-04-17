@@ -34,7 +34,6 @@ public class JavaFXexplorerTCF extends TreeCell<TreeViewEntry> {
 			public void handle(MouseEvent event) {
 				if (mode == ExplorerMode.TOC){
 					if (getTreeItem().getChildren().isEmpty() && getTreeItem().getValue().getValue() instanceof TocSBLink){
-						//if (getTreeItem().getParent().getValue().getName().startsWith("bundles")){
 						if (((TocSBLink)getTreeItem().getValue().getValue()).getType() == LinkBundleType.BUNDLES){
 							
 							Main.getJavaFXHandler().setTreeViewStructureLeft1(
@@ -44,7 +43,7 @@ public class JavaFXexplorerTCF extends TreeCell<TreeViewEntry> {
 							);
 							Main.getJavaFXHandler().getMainWindow().updateLeftRoot1();
 						}else{
-							System.err.println(((TocSBLink)getTreeItem().getValue().getValue()).getType()+" are not supported yet.");
+							System.err.println(((TocSBLink)getTreeItem().getValue().getValue()).getType()+" are not supported yet. (Unlock 'EXTENDED DEVELOPMENT KIT' for 49.99$ on 'CaptainSpleXx.tk/Store') just kidding");
 						}
 					}
 				}else{

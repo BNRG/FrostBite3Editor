@@ -1,7 +1,5 @@
 package tk.captainsplexx.CAS;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.ArrayList;
 
 import tk.captainsplexx.Resource.FileHandler;
@@ -36,6 +34,7 @@ public class CasCatManager {
 			en.setCasFile(FileHandler.readInt(fileArray, seeker));
 			entries.add(en);
 		}//EOF
+		System.out.println(entries.size()+" entries where found.");
 		return true;
 	}
 	public byte[] getCat(){

@@ -31,6 +31,10 @@ public class JavaFXHandler {
 	public static final Image rawIcon = new Image(FileHandler.getStream("res/images/block.png"));
 	public static final Image structureIcon = new Image(FileHandler.getStream("res/images/structure.png"));
 	public static final Image resourceIcon = new Image(FileHandler.getStream("res/images/resource.png"));
+	public static final Image imageIcon = new Image(FileHandler.getStream("res/images/image.png"));
+	public static final Image geometryIcon = new Image(FileHandler.getStream("res/images/xyz.png"));
+	public static final Image geometry2Icon = new Image(FileHandler.getStream("res/images/xyz2.png"));
+	public static final Image luaIcon = new Image(FileHandler.getStream("res/images/lua.png"));
 	 
 	public static final Image pencilIcon = new Image(FileHandler.getStream("res/images/pencil.png"));
 	public static final Image removeIcon = new Image(FileHandler.getStream("res/images/cross.png"));

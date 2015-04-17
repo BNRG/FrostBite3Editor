@@ -31,7 +31,6 @@ public class Game {
 	public String currentTocPath;
 	
 		
-	@SuppressWarnings("unused")
 	public Game(){
 		gamePath = "C:/Program Files (x86)/Origin Games/Battlefield 4";
 		gamePlatform = "Win32";
@@ -56,16 +55,17 @@ public class Game {
 		currentTocPath = gamePath+"/Data/"+gamePlatform+"/Levels/MP/MP_Prison/MP_Prison";
 		//currentTocPath = gamePath+"/Data/"+gamePlatform+"/WeaponChunks";
 		TocFile toc = TocManager.readToc(FileHandler.readFile(currentTocPath+".toc"));
+		//TocFile toc2 = TocManager.readToc(FileHandler.readFile(gamePath+"/Data/"+gamePlatform+"/WeaponChunks.toc"));
 		
 		//TocFile sb = TocManager.readSbPart(FileHandler.readFile(currentTocPath+".sb", 0x12, 0x3E8)); 
 		//Data is now comming from Converted TOC! (DEBUG ONLY)
 		
 		ConvertedTocFile convToc = TocConverter.convertTocFile(toc);
+		//ConvertedTocFile convToc2 = TocConverter.convertTocFile(toc2);
 		TreeItem<TreeViewEntry> convTocTree = TreeViewConverter.getTreeView(convToc);
+		//convTocTree.getChildren().add(TreeViewConverter.getTreeView(convToc2));
 		
-		TreeItem<TreeViewEntry> test = TreeViewConverter.getTreeView(toc);
-		
-			
+		//TreeItem<TreeViewEntry> test = TreeViewConverter.getTreeView(toc);
 		
 		//TocFile newToc = TreeViewConverter.getTocFile(test, TocFileType.Sig);
 		//TocFile newSb = TreeViewConverter.getTocFile(test2, TocFileType.SbPart);

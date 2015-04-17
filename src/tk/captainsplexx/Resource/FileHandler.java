@@ -238,6 +238,13 @@ public class FileHandler {
 		return ByteBuffer.wrap(readByte(fileArray, seeker, 8)).order(order).getLong();
 	}
 	
+	public static String toHexInteger(int i, ByteOrder order) {
+		return bytesToHex(toBytes(i, order)).toUpperCase();
+	}
+	public static String toHexInteger(int i) {
+		return bytesToHex(toBytes(i, ByteOrder.LITTLE_ENDIAN)).toUpperCase();
+	}
+	
 	public static String readString(byte[] fileArray, FileSeeker seeker) {
 		String tmp = "";
 		while(true){
