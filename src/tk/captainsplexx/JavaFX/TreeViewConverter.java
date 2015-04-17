@@ -103,68 +103,73 @@ public class TreeViewConverter {
 	static TreeItem<TreeViewEntry> readField(EBXField ebxField){
 		TreeViewEntry entry = null;
 		if (ebxField != null){
-			switch(ebxField.getType()){
-				case ArrayComplex:
-					entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), new ImageView(JavaFXHandler.arrayIcon), null, EntryType.ARRAY);
-					entry.setEBXType((short) (ebxField.getFieldDescritor().getType()&0xFFFF));
-					TreeItem<TreeViewEntry> fieldArray = new TreeItem<TreeViewEntry>(entry);
-					for (EBXField eF : ebxField.getValueAsComplex().getFields()){
-						fieldArray.getChildren().add(readField(eF));
-					}
-					return fieldArray;
-				case Bool:
-					entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), new ImageView(JavaFXHandler.boolIcon), (Boolean)ebxField.getValue(), EntryType.BOOL); //0x01 == TRUE
-					break;
-				case Byte:
-					entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), new ImageView(JavaFXHandler.byteIcon), (Byte)ebxField.getValue(), EntryType.BYTE);
-					break;
-				case Complex:
-					entry = new TreeViewEntry(ebxField.getValueAsComplex().getComplexDescriptor().getName()+" "+ebxField.getFieldDescritor().getName(), new ImageView(JavaFXHandler.instanceIcon), null, EntryType.LIST);
-					entry.setEBXType((short) (ebxField.getFieldDescritor().getType()&0xFFFF));
-					TreeItem<TreeViewEntry> complexFields = new TreeItem<TreeViewEntry>(entry);
-					for (EBXField eF : ebxField.getValueAsComplex().getFields()){
-						complexFields.getChildren().add(readField(eF));
-					}
-					return complexFields;
-				case Enum:
-					if (ebxField.getValue() instanceof EBXFieldDescriptor){
-						entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), null, ((EBXFieldDescriptor)ebxField.getValue()).getName(), EntryType.ENUM);
-					}else{
-						entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), null, (String)ebxField.getValue(), EntryType.ENUM);
-					}
-					break;
-				case Float:
-					entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), new ImageView(JavaFXHandler.floatIcon), (Float)ebxField.getValue(), EntryType.FLOAT);
-					break;
-				case ChunkGuid:
-					entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), null, (String)ebxField.getValue(), EntryType.CHUNKGUID);
-					break;
-				case Guid:
-					entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), null, (String)ebxField.getValue(), EntryType.GUID);
-					break;
-				case Hex8:
-					entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), null, (String)ebxField.getValue(), EntryType.HEX8);
-					break;
-				case Integer:
-					entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), new ImageView(JavaFXHandler.integerIcon), (Integer)ebxField.getValue(), EntryType.INTEGER);
-					break;
-				case Short:
-					entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), new ImageView(JavaFXHandler.shortIcon), (Short)ebxField.getValue(), EntryType.SHORT);
-					break;
-				case String:
-					entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), new ImageView(JavaFXHandler.textIcon), (String)ebxField.getValue(), EntryType.STRING);
-					break;
-				case UInteger:
-					entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), null, (Integer)ebxField.getValue(), EntryType.UINTEGER);
-					break;
-				case Unknown:
-					break;
-				default:
-					break;
+			try{
+				switch(ebxField.getType()){
+					case ArrayComplex:
+						entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), new ImageView(JavaFXHandler.arrayIcon), null, EntryType.ARRAY);
+						entry.setEBXType((short) (ebxField.getFieldDescritor().getType()&0xFFFF));
+						TreeItem<TreeViewEntry> fieldArray = new TreeItem<TreeViewEntry>(entry);
+						for (EBXField eF : ebxField.getValueAsComplex().getFields()){
+							fieldArray.getChildren().add(readField(eF));
+						}
+						return fieldArray;
+					case Bool:
+						entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), new ImageView(JavaFXHandler.boolIcon), (Boolean)ebxField.getValue(), EntryType.BOOL); //0x01 == TRUE
+						break;
+					case Byte:
+						entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), new ImageView(JavaFXHandler.byteIcon), (Byte)ebxField.getValue(), EntryType.BYTE);
+						break;
+					case Complex:
+						entry = new TreeViewEntry(ebxField.getValueAsComplex().getComplexDescriptor().getName()+" "+ebxField.getFieldDescritor().getName(), new ImageView(JavaFXHandler.instanceIcon), null, EntryType.LIST);
+						entry.setEBXType((short) (ebxField.getFieldDescritor().getType()&0xFFFF));
+						TreeItem<TreeViewEntry> complexFields = new TreeItem<TreeViewEntry>(entry);
+						for (EBXField eF : ebxField.getValueAsComplex().getFields()){
+							complexFields.getChildren().add(readField(eF));
+						}
+						return complexFields;
+					case Enum:
+						if (ebxField.getValue() instanceof EBXFieldDescriptor){
+							entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), null, ((EBXFieldDescriptor)ebxField.getValue()).getName(), EntryType.ENUM);
+						}else{
+							entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), null, (String)ebxField.getValue(), EntryType.ENUM);
+						}
+						break;
+					case Float:
+						entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), new ImageView(JavaFXHandler.floatIcon), (Float)ebxField.getValue(), EntryType.FLOAT);
+						break;
+					case ChunkGuid:
+						entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), null, (String)ebxField.getValue(), EntryType.CHUNKGUID);
+						break;
+					case Guid:
+						entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), null, (String)ebxField.getValue(), EntryType.GUID);
+						break;
+					case Hex8:
+						entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), null, (String)ebxField.getValue(), EntryType.HEX8);
+						break;
+					case Integer:
+						entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), new ImageView(JavaFXHandler.integerIcon), (Integer)ebxField.getValue(), EntryType.INTEGER);
+						break;
+					case Short:
+						entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), new ImageView(JavaFXHandler.shortIcon), (Short)ebxField.getValue(), EntryType.SHORT);
+						break;
+					case String:
+						entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), new ImageView(JavaFXHandler.textIcon), (String)ebxField.getValue(), EntryType.STRING);
+						break;
+					case UInteger:
+						entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), null, (Integer)ebxField.getValue(), EntryType.UINTEGER);
+						break;
+					case Unknown:
+						break;
+					default:
+						break;
+				}
+				entry.setEBXType((short) (ebxField.getFieldDescritor().getType()&0xFFFF));
+				TreeItem<TreeViewEntry> field = new TreeItem<TreeViewEntry>(entry);
+				return field;
+			}catch (Exception e){
+				System.err.println("Error while converting EBXFile to TreeView. "+e.getCause());
+				return null;
 			}
-			entry.setEBXType((short) (ebxField.getFieldDescritor().getType()&0xFFFF));
-			TreeItem<TreeViewEntry> field = new TreeItem<TreeViewEntry>(entry);
-			return field;
 		}else{
 			return null;
 		}

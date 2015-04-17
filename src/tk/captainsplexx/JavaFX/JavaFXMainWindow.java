@@ -163,6 +163,7 @@ public class JavaFXMainWindow extends Application{
 			@Override
 			public void run() {
 				rightController.getEBXExplorer().setRoot(Main.getJavaFXHandler().getTreeViewStructureRight());
+				rightController.getEBXExplorer().getRoot().setExpanded(true);
 			}
 		});	
 	}
@@ -172,6 +173,7 @@ public class JavaFXMainWindow extends Application{
 			@Override
 			public void run() {
 				leftController.getExplorer().setRoot(Main.getJavaFXHandler().getTreeViewStructureLeft());
+				leftController.getExplorer().getRoot().setExpanded(true);
 			}
 		});	
 	}
