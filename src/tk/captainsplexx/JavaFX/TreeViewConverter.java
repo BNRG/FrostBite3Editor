@@ -263,21 +263,30 @@ public class TreeViewConverter {
 		/*EBX*/
 		TreeItem<TreeViewEntry> ebx = new TreeItem<TreeViewEntry>(new TreeViewEntry("ebx - "+part.getEbx().size()+" Children", new ImageView(JavaFXHandler.listIcon), null, EntryType.LIST));
 		for (ResourceLink link : part.getEbx()){
-			ebx.getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry(link.getName()+" ("+link.getSha1()+")", new ImageView(JavaFXHandler.structureIcon), link, EntryType.STRING)));
+			String[] name = link.getName().split("/");
+			TreeViewEntry child = new TreeViewEntry(name[name.length-1]+" ("+link.getSha1()+")", new ImageView(JavaFXHandler.structureIcon), link, EntryType.STRING);
+			pathToTree(ebx, link.getName(), child);
+			//ebx.getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry(link.getName()+" ("+link.getSha1()+")", new ImageView(JavaFXHandler.structureIcon), link, EntryType.STRING)));
 		}
 		rootnode.getChildren().add(ebx);
 		
 		/*DBX*/
 		TreeItem<TreeViewEntry> dbx = new TreeItem<TreeViewEntry>(new TreeViewEntry("dbx - "+part.getDbx().size()+" Children", new ImageView(JavaFXHandler.listIcon), null, EntryType.LIST));
 		for (ResourceLink link : part.getDbx()){
-			dbx.getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry(link.getName()+" ("+link.getSha1()+")", new ImageView(JavaFXHandler.structureIcon), link, EntryType.STRING)));
+			String[] name = link.getName().split("/");
+			TreeViewEntry child = new TreeViewEntry(name[name.length-1]+" ("+link.getSha1()+")", new ImageView(JavaFXHandler.structureIcon), link, EntryType.STRING);
+			pathToTree(dbx, link.getName(), child);
+			//dbx.getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry(link.getName()+" ("+link.getSha1()+")", new ImageView(JavaFXHandler.structureIcon), link, EntryType.STRING)));
 		}
 		rootnode.getChildren().add(dbx);
 		
 		/*RES*/
 		TreeItem<TreeViewEntry> res = new TreeItem<TreeViewEntry>(new TreeViewEntry("res - "+part.getRes().size()+" Children", new ImageView(JavaFXHandler.listIcon), null, EntryType.LIST));
 		for (ResourceLink link : part.getRes()){
-			res.getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry(link.getName()+" ("+link.getSha1()+", "+(link.getResType()&0xFFFFFFFF)+")", new ImageView(JavaFXHandler.resourceIcon), link, EntryType.STRING)));
+			String[] name = link.getName().split("/");
+			TreeViewEntry child = new TreeViewEntry(name[name.length-1]+" ("+link.getSha1()+", "+(link.getResType()&0xFFFFFFFF)+")", new ImageView(JavaFXHandler.resourceIcon), link, EntryType.STRING);
+			pathToTree(res, link.getName(), child);
+			//res.getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry(link.getName()+" ("+link.getSha1()+", "+(link.getResType()&0xFFFFFFFF)+")", new ImageView(JavaFXHandler.resourceIcon), link, EntryType.STRING)));
 		}
 		rootnode.getChildren().add(res);
 		
@@ -298,4 +307,56 @@ public class TreeViewConverter {
 		return rootnode;
 	}
 	/*END OF CONVERTED TOCSBPart*/
+	
+	static void pathToTree(TreeItem<TreeViewEntry> root, String path, TreeViewEntry child){
+		String[] splittedPart = path.split("/");
+		
+		TreeItem<TreeViewEntry> parentNode = null;
+		int counter = 1;
+		for (String part : splittedPart){
+			if (part.equals("")){
+				break; //DONE
+			}
+			if (parentNode == null){ //FIRST RUN
+				for (TreeItem<TreeViewEntry> rootChildren : root.getChildren()){
+					if (rootChildren.getValue().getName().equals(part) && rootChildren.getValue().getType() == EntryType.LIST){
+						parentNode = rootChildren;
+						break;
+					}
+				}
+				if (parentNode == null){
+					//NO PARENT EXISTS :(
+					TreeItem<TreeViewEntry> newNode = null;
+					if (counter>=splittedPart.length){
+						newNode = new TreeItem<TreeViewEntry>(child);
+					}else{
+						newNode = new TreeItem<TreeViewEntry>(new TreeViewEntry(part, new ImageView(JavaFXHandler.listIcon), null, EntryType.LIST));
+					}
+					root.getChildren().add(newNode);
+					parentNode = newNode;
+				}
+			}else{//PARENT DOES EXIST.
+				boolean found = false;
+				for (TreeItem<TreeViewEntry> parentChild : parentNode.getChildren()){//DOES IT HAS A EXISTING CHILD ALREADY ?
+					if (parentChild.getValue().getName().equals(part) && parentChild.getValue().getType() == EntryType.LIST){
+						parentNode = parentChild;
+						found = true;
+						break;
+					}
+				}
+				if (found == false){
+					//CHILD DOES NOT EXIST ALREADY, SO CREATE IT!
+					TreeItem<TreeViewEntry> newNode = null;
+					if (counter>=splittedPart.length){
+						newNode = new TreeItem<TreeViewEntry>(child);
+					}else{
+						newNode = new TreeItem<TreeViewEntry>(new TreeViewEntry(part, new ImageView(JavaFXHandler.listIcon), null, EntryType.LIST));
+					}
+					parentNode.getChildren().add(newNode);
+					parentNode = newNode;
+				}
+			}
+			counter++;
+		}
+	}
 }

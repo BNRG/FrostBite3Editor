@@ -1,6 +1,5 @@
 package tk.captainsplexx.Itexture;
 
-import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 
@@ -41,6 +40,8 @@ public class ItextureHandler {
         String guid = FileHandler.bytesToHex(FileHandler.readByte(itextureData, seeker, 16));
         
         String sha1 = ""; //TODO
+        
+        /*Chunks may only store GUID for reference to SHA1 ?*/
         
         byte[] data = CasDataReader.readCas(sha1, casPath, casCatEntries);
         

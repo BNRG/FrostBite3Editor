@@ -34,14 +34,14 @@ public class CasDataReader { //casPath == folderPath
 	public static byte[] convertToRAWData(byte[] encodedEntry, int procSize){ //TAKEs entries with header of type and original size.
 		FileSeeker seeker = new FileSeeker();
 		byte[] rawData = null;
-		int decompressedSize = FileHandler.readInt(encodedEntry, seeker, ByteOrder.LITTLE_ENDIAN);
+		int decompressedSize = FileHandler.readInt(encodedEntry, seeker, ByteOrder.BIG_ENDIAN);
 		int compressionType = FileHandler.readShort(encodedEntry, seeker, ByteOrder.BIG_ENDIAN);
 		int compressedSize = FileHandler.readShort(encodedEntry, seeker, ByteOrder.LITTLE_ENDIAN); //TODO maybe LEB128 encoded ??! ------------------------------------------------------
 		if (compressionType == 0x0970){//COMPRESSED
 			LZ4 lz4Handler = new LZ4();
 			rawData = lz4Handler.decompress(FileHandler.readByte(encodedEntry, seeker, procSize-seeker.getOffset()));
 			if (rawData.length<decompressedSize){
-				System.err.println("Decompressed file size does not match the CatCat given one :/");
+				System.err.println("Decompressed file size does not match the cas.cat given one. "+rawData.length+" of "+decompressedSize+" Bytes loaded.");
 			}
 			return rawData;
 		}else if (compressionType == 0x0070 || compressionType == 0x0071){//UNCOMPRESSED

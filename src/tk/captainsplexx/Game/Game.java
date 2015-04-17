@@ -77,11 +77,12 @@ public class Game {
 		//7D 28 E8 12 01 C3 03 97 FB 99 FF 3B BA 3A 75 1A E6 C0 4E 02 mesh
 		
 		
-		
+		/*
 		byte[] data = CasDataReader.readCas("76 06 C5 5F F0 95 B8 53 9A C6 A5 FC 60 0A E3 25 3D 09 5F 85", gamePath+"/Data", resourceHandler.getCasCatManager().getEntries());
 		TreeItem<TreeViewEntry> testebx = TreeViewConverter.getTreeView(resourceHandler.getEBXHandler().loadFile(data));
 		Main.getJavaFXHandler().setTreeViewStructureRight(testebx);
 		Main.getJavaFXHandler().getMainWindow().updateRightRoot();
+		*/
 		//EbxCasConverter conv = new EbxCasConverter();
 		//conv.createCAS(data);
 		
