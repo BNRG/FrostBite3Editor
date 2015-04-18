@@ -14,11 +14,8 @@
       <menus>
         <Menu mnemonicParsing="false" text="File">
           <items>
-            <MenuItem disable="true" mnemonicParsing="false" text="New" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Close" />
             <MenuItem mnemonicParsing="false" text="Save" />
-            <MenuItem mnemonicParsing="false" text="Revert" />
+            <MenuItem disable="true" mnemonicParsing="false" text="Revert" />
             <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem mnemonicParsing="false" onAction="#exit" text="Quit" />
           </items>
@@ -37,14 +34,10 @@
             <MenuItem mnemonicParsing="false" text="Unselect All" />
           </items>
         </Menu>
-            <Menu mnemonicParsing="false" text="Configuration">
-              <items>
-                <MenuItem mnemonicParsing="false" onAction="#changegamepath" text="change gamepath" />
-              </items>
-            </Menu>
+            <Menu disable="true" mnemonicParsing="false" text="Configuration" />
         <Menu mnemonicParsing="false" text="Help">
           <items>
-            <MenuItem mnemonicParsing="false" text="About FrostBite3Editor" />
+            <MenuItem mnemonicParsing="false" onAction="#about" text="About FrostBite3Editor" />
           </items>
         </Menu>
       </menus>
@@ -53,16 +46,11 @@
       <items>
         <AnchorPane prefHeight="222.0" prefWidth="277.0" SplitPane.resizableWithParent="false">
                <children>
-                  <TabPane prefHeight="136.0" prefWidth="277.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <TabPane prefWidth="277.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <tabs>
-                        <Tab text="Resource Manger">
+                        <Tab text="Resource Manager">
                           <content>
-                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                          </content>
-                        </Tab>
-                        <Tab text="EBX">
-                          <content>
-                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="64.0" prefWidth="277.0" />
                           </content>
                         </Tab>
                       <Tab text="Map">

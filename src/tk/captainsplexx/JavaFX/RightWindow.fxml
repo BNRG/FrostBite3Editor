@@ -28,7 +28,7 @@
                <content>
                   <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0">
                      <children>
-                        <TreeView fx:id="variationExplorer" prefHeight="800.0" prefWidth="265.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        <TreeView fx:id="variationExplorer" prefHeight="800.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                      </children>
                      <opaqueInsets>
                         <Insets />

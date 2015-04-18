@@ -52,7 +52,11 @@ public class Game {
 			ConvertedTocFile convToc = TocConverter.convertTocFile(toc);
 			TreeItem<TreeViewEntry> convTocTree = TreeViewConverter.getTreeView(convToc);
 			TreeViewConverter.pathToTree(explorerTree, convTocTree.getValue().getName(), convTocTree);
-			//explorerTree.getChildren().add(convTocTree);
+		}
+		for (TreeItem<TreeViewEntry> child : explorerTree.getChildren()){
+			if (child.getChildren().size()>0){
+				child.setExpanded(true);
+			}
 		}
 		Main.getJavaFXHandler().setTreeViewStructureLeft(explorerTree);
 		Main.getJavaFXHandler().getMainWindow().updateLeftRoot();
