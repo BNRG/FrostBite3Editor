@@ -1,12 +1,11 @@
 package tk.captainsplexx.Game;
 
-
 import java.io.File;
-import java.util.ArrayList;
 
 import javafx.scene.control.TreeItem;
 import tk.captainsplexx.JavaFX.TreeViewConverter;
 import tk.captainsplexx.JavaFX.TreeViewEntry;
+import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
 import tk.captainsplexx.Render.ModelHandler;
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.ResourceHandler;
@@ -25,15 +24,9 @@ public class Game {
 	public ShaderHandler shaderHandler;
 	public ItextureHandler itextureHandler;
 	public String gamePath;
-	public String gamePlatform;
-	
-	public String currentTocPath;
-	
-		
+			
 	public Game(){
 		gamePath = "C:/Program Files (x86)/Origin Games/Battlefield 4";
-		gamePlatform = "Win32";
-		currentTocPath = "";
 		
 		modelHandler = new ModelHandler();
 		
@@ -52,25 +45,20 @@ public class Game {
 		
 		resourceHandler.getCasCatManager().readCat(FileHandler.readFile(gamePath+"/Data/cas.cat"));
 		
-		currentTocPath = gamePath+"/Data/"+gamePlatform+"/Levels/MP/MP_Prison/MP_Prison";
-		//currentTocPath = gamePath+"/Data/"+gamePlatform+"/WeaponChunks";
-		TocFile toc = TocManager.readToc(FileHandler.readFile(currentTocPath+".toc"));
-		//TocFile toc2 = TocManager.readToc(FileHandler.readFile(gamePath+"/Data/"+gamePlatform+"/WeaponChunks.toc"));
-		
-		//TocFile sb = TocManager.readSbPart(FileHandler.readFile(currentTocPath+".sb", 0x12, 0x3E8)); 
-		//Data is now comming from Converted TOC! (DEBUG ONLY)
-		
-		ConvertedTocFile convToc = TocConverter.convertTocFile(toc);
-		//ConvertedTocFile convToc2 = TocConverter.convertTocFile(toc2);
-		TreeItem<TreeViewEntry> convTocTree = TreeViewConverter.getTreeView(convToc);
-		//convTocTree.getChildren().add(TreeViewConverter.getTreeView(convToc2));
-		
-		//TreeItem<TreeViewEntry> test = TreeViewConverter.getTreeView(toc);
-		
-		//TocFile newToc = TreeViewConverter.getTocFile(test, TocFileType.Sig);
-		//TocFile newSb = TreeViewConverter.getTocFile(test2, TocFileType.SbPart);
-		Main.getJavaFXHandler().setTreeViewStructureLeft(convTocTree);
+		/*Build up Explorer*/
+		TreeItem<TreeViewEntry> explorerTree = new TreeItem<TreeViewEntry>(new TreeViewEntry(gamePath+"/Data/", null, null, EntryType.LIST));
+		for (File file : FileHandler.listf(gamePath+"/Data/", ".sb")){
+			TocFile toc = TocManager.readToc(file.getAbsolutePath().replace(".sb", ""));
+			ConvertedTocFile convToc = TocConverter.convertTocFile(toc);
+			TreeItem<TreeViewEntry> convTocTree = TreeViewConverter.getTreeView(convToc);
+			TreeViewConverter.pathToTree(explorerTree, convTocTree.getValue().getName(), convTocTree);
+			//explorerTree.getChildren().add(convTocTree);
+		}
+		Main.getJavaFXHandler().setTreeViewStructureLeft(explorerTree);
 		Main.getJavaFXHandler().getMainWindow().updateLeftRoot();
+		
+		
+		
 		
 		
 		
@@ -106,21 +94,6 @@ public class Game {
 		terrainHandler.collisionUpdate(playerHandler);
 	}
 	
-	public void listf(String directoryName, ArrayList<File> files, String endsWith) {
-	    File directory = new File(directoryName);
-
-	    // get all the files from a directory
-	    File[] fList = directory.listFiles();
-	    for (File file : fList) {
-	        if (file.isFile()) {
-	        	if (file.getName().endsWith(endsWith)){
-	        		files.add(file);
-	        	}
-	        } else if (file.isDirectory()) {
-	            listf(file.getAbsolutePath(), files, endsWith);
-	        }
-	    }
-	}
 	
 	//<----------GETTER AND SETTER--------------->//
 	
@@ -164,28 +137,6 @@ public class Game {
 	public void setGamePath(String gamePath) {
 		this.gamePath = gamePath;
 	}
-
-
-	public String getGamePlatform() {
-		return gamePlatform;
-	}
-
-
-	public void setGamePlatform(String gamePlatform) {
-		this.gamePlatform = gamePlatform;
-	}
-
-
-	public String getCurrentTocPath() {
-		return currentTocPath;
-	}
-
-
-	public void setCurrentTocPath(String currentTocPath) {
-		this.currentTocPath = currentTocPath;
-	}
-	
-	
 	
 	/*End of Game*/
 	

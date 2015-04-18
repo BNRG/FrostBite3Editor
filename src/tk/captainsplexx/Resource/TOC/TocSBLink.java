@@ -5,23 +5,33 @@ import tk.captainsplexx.Resource.ResourceHandler.LinkBundleType;
 
 public class TocSBLink {
 	public String id;
+	public String sha1;
 	public long offset;
 	public int size;
+	public long sizeLong;
 	public LinkBundleType type;
-	public TocSBLink(String id, long offset, int size, LinkBundleType type) {
-		this.id = id;
-		this.offset = offset;
-		this.size = size;
-		this.type = type;
-	}
-	
+	public String sbPath;	
 	public TocSBLink(/*USING NULLCONSTUCTOR*/){
 		this.id = "";
 		this.offset = 0;
 		this.size = 0;
 		this.type = null;
+		this.sbPath = "";
+		this.sha1 = "";
+		this.sizeLong = 0;
 	}
 	
+	
+	public long getSizeLong() {
+		return sizeLong;
+	}
+
+
+	public void setSizeLong(long sizeLong) {
+		this.sizeLong = sizeLong;
+	}
+
+
 	public LinkBundleType getType() {
 		return type;
 	}
@@ -33,6 +43,15 @@ public class TocSBLink {
 	public String getID() {
 		return id;
 	}
+	
+	public String getSbPath() {
+		return sbPath;
+	}
+
+	public void setSbPath(String sbPath) {
+		this.sbPath = sbPath;
+	}
+
 	public void setID(String id) {
 		this.id = id;
 	}
@@ -49,7 +68,16 @@ public class TocSBLink {
 		this.size = size;
 	}
 	
-	public TocFile getLinkedSBPart(String sbPath){
+	
+	public String getSha1() {
+		return sha1;
+	}
+
+	public void setSha1(String sha1) {
+		this.sha1 = sha1;
+	}
+
+	public TocFile getLinkedSBPart(){
 		try{
 			return TocManager.readSbPart(FileHandler.readFile(sbPath, (int) this.offset, this.size));
 		}catch (Exception e){

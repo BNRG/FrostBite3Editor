@@ -39,8 +39,7 @@ public class JavaFXexplorerTCF extends TreeCell<TreeViewEntry> {
 							Main.getJavaFXHandler().setTreeViewStructureLeft1(
 									TreeViewConverter.getTreeView(
 											TocConverter.convertSBpart( //REMOVE THIS LINE TO DEBUG.
-													((TocSBLink)getTreeItem().getValue().getValue()).getLinkedSBPart(Main.getGame().getCurrentTocPath()+".sb")))
-							);
+													((TocSBLink)getTreeItem().getValue().getValue()).getLinkedSBPart())));
 							Main.getJavaFXHandler().getMainWindow().updateLeftRoot1();
 						}else{
 							System.err.println(((TocSBLink)getTreeItem().getValue().getValue()).getType()+" are not supported yet. (Unlock 'EXTENDED DEVELOPMENT KIT' for 49.99$ on 'CaptainSpleXx.tk/Store') just kidding");

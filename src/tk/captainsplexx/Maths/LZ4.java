@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 
+import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.FileSeeker;
 
 public class LZ4 {
@@ -77,7 +78,7 @@ public class LZ4 {
 		boolean extInc = false;
 		while (true){
 			if (first){ //Start of new LZ4 file ? - procced |..header..|
-				byte a = readByte(input, seeker);
+				byte a = FileHandler.readByte(input, seeker);
 				procced = readHeigh(a); //How many bytes should be copied directly from input ? 1111-0000
 				nextAmount = readLow(a); //Get next copy lenght.	0000-1111
 				if (nextAmount == 0x0F){
@@ -86,7 +87,7 @@ public class LZ4 {
 				nextAmount += 4; //constant of +4
 				if (procced == 0x0F){ //procced needs extra byte ?
 					while (true){
-						int b = readByte(input, seeker) & 0xFF; // get byte as unsigned int
+						int b = FileHandler.readByte(input, seeker) & 0xFF; // get byte as unsigned int
 						procced += b;
 						if (b!=0xFF){ // is not 255 ? - break out infi. loop
 							break;
@@ -97,17 +98,17 @@ public class LZ4 {
 			}
 			int amount = nextAmount; //Previus calculated copy lenght to current one.
 			while (procced>0){ //procced stack not emty
-				output.add(readByte(input, seeker));
+				output.add(FileHandler.readByte(input, seeker));
 				procced -= 1;
 			}
 			if (seeker.getOffset()>=input.length){ //EOF
 				break;
 			}
 			if (procced == 0){//begin next operation
-				int offset = readShort(input, seeker);
+				int offset = FileHandler.readShort(input, seeker, ByteOrder.LITTLE_ENDIAN);
 				if (extInc){ //is external increased copy lenght ? -> +byte after offset
 					while (true){
-						int am = readByte(input, seeker) & 0xFF; //unsigned
+						int am = FileHandler.readByte(input, seeker) & 0xFF; //unsigned
 						amount += am;
 						if (am!=0xFF){
 							break;
@@ -115,7 +116,7 @@ public class LZ4 {
 					}
 					extInc = false;
 				}
-				byte b = readByte(input, seeker);
+				byte b = FileHandler.readByte(input, seeker);
 				procced = readHeigh(b);
 				nextAmount = readLow(b);
 				if (nextAmount == 0x0F){
@@ -124,7 +125,7 @@ public class LZ4 {
 				nextAmount += 4;
 				if (procced == 0x0F){
 					while (true){
-						int a = readByte(input, seeker) & 0xFF; //unsigned
+						int a = FileHandler.readByte(input, seeker) & 0xFF; //unsigned
 						procced += a;
 						if (a!=0xFF){
 							break;
@@ -154,36 +155,4 @@ public class LZ4 {
 	int readLow(byte b){
 		return b & 0x0F;
 	}
-	
-	int readShort(byte[] input, FileSeeker seeker){
-		return ByteBuffer.wrap(readBytes(input, seeker, 2)).order(ByteOrder.LITTLE_ENDIAN).getShort();
-	}
-	
-	byte readByte(byte[] input, FileSeeker seeker){
-		byte b = 0x0;
-		try{
-			b = input[seeker.getOffset()];
-		}catch (Exception e){
-			System.err.println("ReadByte out of bounds. "+seeker.getOffset());
-		}
-		seeker.seek(1);
-		return b;
-	}
-	
-	byte[] readBytes(byte[] input, FileSeeker seeker, int len){
-		byte[] buffer = new byte[len];
-		for (int i=0; i < len; i++){
-			buffer[i] = readByte(input, seeker);
-		}
-		return buffer;
-	}
-	
-	String getHexString(byte[] b){
-		  String result = "";
-		  for (int i=0; i < b.length; i++) {
-		    result +=
-		          Integer.toString( ( b[i] & 0xff ) + 0x100, 16).substring( 1 );
-		  }
-		  return result;
-		}
 }

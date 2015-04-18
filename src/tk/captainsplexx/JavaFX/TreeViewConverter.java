@@ -246,7 +246,8 @@ public class TreeViewConverter {
 		TreeItem<TreeViewEntry> bundles = new TreeItem<TreeViewEntry>(new TreeViewEntry("bundles - "+cTocF.getBundles().size()+" Children", new ImageView(JavaFXHandler.listIcon), null, EntryType.LIST));
 		for (TocSBLink link : cTocF.getBundles()){
 			String[] name = link.getID().split("/");
-			TreeViewEntry child = new TreeViewEntry(name[name.length-1], new ImageView(JavaFXHandler.instanceIcon), link, EntryType.STRING);
+			TreeViewEntry childEntry = new TreeViewEntry(name[name.length-1], new ImageView(JavaFXHandler.instanceIcon), link, EntryType.STRING);
+			TreeItem<TreeViewEntry> child = new TreeItem<TreeViewEntry>(childEntry);
 			pathToTree(bundles, link.getID(), child);
 		}
 		rootnode.getChildren().add(bundles);
@@ -271,7 +272,8 @@ public class TreeViewConverter {
 		TreeItem<TreeViewEntry> ebx = new TreeItem<TreeViewEntry>(new TreeViewEntry("ebx - "+part.getEbx().size()+" Children", new ImageView(JavaFXHandler.listIcon), null, EntryType.LIST));
 		for (ResourceLink link : part.getEbx()){
 			String[] name = link.getName().split("/");
-			TreeViewEntry child = new TreeViewEntry(name[name.length-1]+" ("+link.getSha1()+")", new ImageView(JavaFXHandler.structureIcon), link, EntryType.STRING);
+			TreeViewEntry childEntry = new TreeViewEntry(name[name.length-1]+" ("+link.getSha1()+")", new ImageView(JavaFXHandler.structureIcon), link, EntryType.STRING);
+			TreeItem<TreeViewEntry> child = new TreeItem<TreeViewEntry>(childEntry);
 			pathToTree(ebx, link.getName(), child);
 		}
 		rootnode.getChildren().add(ebx);
@@ -280,7 +282,8 @@ public class TreeViewConverter {
 		TreeItem<TreeViewEntry> dbx = new TreeItem<TreeViewEntry>(new TreeViewEntry("dbx - "+part.getDbx().size()+" Children", new ImageView(JavaFXHandler.listIcon), null, EntryType.LIST));
 		for (ResourceLink link : part.getDbx()){
 			String[] name = link.getName().split("/");
-			TreeViewEntry child = new TreeViewEntry(name[name.length-1]+" ("+link.getSha1()+")", new ImageView(JavaFXHandler.structureIcon), link, EntryType.STRING);
+			TreeViewEntry childEntry = new TreeViewEntry(name[name.length-1]+" ("+link.getSha1()+")", new ImageView(JavaFXHandler.structureIcon), link, EntryType.STRING);
+			TreeItem<TreeViewEntry> child = new TreeItem<TreeViewEntry>(childEntry);
 			pathToTree(dbx, link.getName(), child);
 		}
 		rootnode.getChildren().add(dbx);
@@ -289,7 +292,7 @@ public class TreeViewConverter {
 		TreeItem<TreeViewEntry> res = new TreeItem<TreeViewEntry>(new TreeViewEntry("res - "+part.getRes().size()+" Children", new ImageView(JavaFXHandler.listIcon), null, EntryType.LIST));
 		for (ResourceLink link : part.getRes()){
 			String[] name = link.getName().split("/");
-			TreeViewEntry child = new TreeViewEntry(name[name.length-1]+" ("+link.getSha1()+", "+link.getType()+")", null, link, EntryType.STRING);
+			TreeViewEntry childEntry = new TreeViewEntry(name[name.length-1]+" ("+link.getSha1()+", "+link.getType()+")", null, link, EntryType.STRING);
 			ImageView graphic = null;
 			switch (link.getType()) {
 				case CHUNK:
@@ -311,7 +314,8 @@ public class TreeViewConverter {
 					graphic = new ImageView(JavaFXHandler.resourceIcon);
 					break;
 			}
-			child.setGraphic(graphic);
+			childEntry.setGraphic(graphic);
+			TreeItem<TreeViewEntry> child = new TreeItem<TreeViewEntry>(childEntry);
 			pathToTree(res, link.getName(), child);
 		}
 		rootnode.getChildren().add(res);
@@ -336,7 +340,7 @@ public class TreeViewConverter {
 	}
 	/*END OF CONVERTED TOCSBPart*/
 	
-	static void pathToTree(TreeItem<TreeViewEntry> root, String path, TreeViewEntry child){
+	public static void pathToTree(TreeItem<TreeViewEntry> root, String path, TreeItem<TreeViewEntry> child){
 		String[] splittedPart = path.split("/");
 		
 		TreeItem<TreeViewEntry> parentNode = null;
@@ -356,7 +360,7 @@ public class TreeViewConverter {
 					//NO PARENT EXISTS :(
 					TreeItem<TreeViewEntry> newNode = null;
 					if (counter>=splittedPart.length){
-						newNode = new TreeItem<TreeViewEntry>(child);
+						newNode = child;
 					}else{
 						newNode = new TreeItem<TreeViewEntry>(new TreeViewEntry(part, new ImageView(JavaFXHandler.listIcon), null, EntryType.LIST));
 					}
@@ -376,7 +380,7 @@ public class TreeViewConverter {
 					//CHILD DOES NOT EXIST ALREADY, SO CREATE IT!
 					TreeItem<TreeViewEntry> newNode = null;
 					if (counter>=splittedPart.length){
-						newNode = new TreeItem<TreeViewEntry>(child);
+						newNode = child;
 					}else{
 						newNode = new TreeItem<TreeViewEntry>(new TreeViewEntry(part, new ImageView(JavaFXHandler.listIcon), null, EntryType.LIST));
 					}

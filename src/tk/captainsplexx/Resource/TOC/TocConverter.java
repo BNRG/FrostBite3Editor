@@ -25,7 +25,7 @@ public class TocConverter {
 					convToc.setName((String)field.getObj());
 				}else if (field.getName().toLowerCase().equals("chunks") && field.getType() == TocFieldType.LIST){
 					for (TocEntry entry : (ArrayList<TocEntry>) field.getObj()){
-						TocSBLink link = readTocLink(entry);
+						TocSBLink link = readTocLink(entry, toc.getSBPath());
 						if (link != null){
 							link.setType(LinkBundleType.CHUNKS);
 							convToc.getChunks().add(link);
@@ -33,7 +33,7 @@ public class TocConverter {
 					}
 				}else if (field.getName().toLowerCase().equals("bundles") && field.getType() == TocFieldType.LIST){
 					for (TocEntry entry : (ArrayList<TocEntry>) field.getObj()){
-						TocSBLink link = readTocLink(entry);
+						TocSBLink link = readTocLink(entry, toc.getSBPath());
 						if (link != null){
 							link.setType(LinkBundleType.BUNDLES);
 							convToc.getBundles().add(link);
@@ -55,7 +55,7 @@ public class TocConverter {
 		}
 	}
 	
-	static TocSBLink readTocLink(TocEntry entry){
+	static TocSBLink readTocLink(TocEntry entry, String pathSb){
 		TocSBLink link = new TocSBLink(/*USING NULLCONSTUCTOR*/);
 		if (entry != null){
 			for (TocField field :  entry.getFields()){
@@ -63,14 +63,19 @@ public class TocConverter {
 					link.setID((String) field.getObj());
 				}else if (field.getName().toLowerCase().equals("id") && field.getType() == TocFieldType.GUID){ //WHATS ABOUT CHUNKS? //TODO
 					link.setID((String) field.getObj());
+				}else if (field.getName().toLowerCase().equals("sha1") && field.getType() == TocFieldType.SHA1){
+					link.setSha1((String) field.getObj());
 				}else if (field.getName().toLowerCase().equals("offset") && field.getType() == TocFieldType.LONG){
 					link.setOffset((long) field.getObj());
 				}else if (field.getName().toLowerCase().equals("size") && field.getType() == TocFieldType.INTEGER){
 					link.setSize((int) field.getObj());
+				}else if (field.getName().toLowerCase().equals("size") && field.getType() == TocFieldType.LONG){
+					link.setSizeLong((long) field.getObj());
 				}else{
-					System.err.println("unexpected field (link) found in toc file while converting: "+field.getName());
+					System.err.println("unexpected field (link) found in toc file while converting: "+field.getName()+" as type "+field.getType());
 				}
 			}
+			link.setSbPath(pathSb);
 			return link;
 		}else{
 			return null;

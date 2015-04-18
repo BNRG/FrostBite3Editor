@@ -24,8 +24,11 @@ public class TocManager {
 		return TocConverter.convertTocFile(readToc(toc));
 	}
 	*/
+	public static TocFile readToc(String path){
+		return readToc(FileHandler.readFile(path+".toc"),path+".sb");
+	}
 
-	public static TocFile readToc(byte[] fileArray) {
+	public static TocFile readToc(byte[] fileArray, String sbPath) {
 		FileSeeker seeker = new FileSeeker();
 		ArrayList<TocEntry> entries = new ArrayList<TocEntry>();
 		byte[] data;
@@ -58,7 +61,7 @@ public class TocManager {
 				entries.add(entry);
 			}
 		}//EOF
-		TocFile file = new TocFile(fileType);
+		TocFile file = new TocFile(fileType, sbPath);
 		file.getEntries().addAll(entries);
 		return file;
 	}

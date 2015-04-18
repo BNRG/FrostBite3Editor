@@ -262,6 +262,37 @@ public class FileHandler {
 		return tmp;
 	}
 	
-	
+	/*FILEFINDER*/
+	public static ArrayList<File> listf(String directoryName, String endsWith) {
+	    File directory = new File(directoryName);
+	    ArrayList<File> files = new ArrayList<File>();
+	    // get all the files from a directory
+	    File[] fList = directory.listFiles();
+	    for (File file : fList) {
+	        if (file.isFile()) {
+	        	if (file.getName().endsWith(endsWith)){
+	        		files.add(file);
+	        	}
+	        } else if (file.isDirectory()) {
+	        	listfdir(file.getAbsolutePath(), files, endsWith);
+	        }
+	    }
+	    return files;
+	}
+	static void listfdir(String directoryName, ArrayList<File> files , String endsWith) {
+	    File directory = new File(directoryName);
+	    // get all the files from a directory
+	    File[] fList = directory.listFiles();
+	    for (File file : fList) {
+	        if (file.isFile()) {
+	        	if (file.getName().endsWith(endsWith)){
+	        		files.add(file);
+	        	}
+	        } else if (file.isDirectory()) {
+	        	listfdir(file.getAbsolutePath(), files, endsWith);
+	        }
+	    }
+	}
+	/*END OF FINDER*/
 	
 }
