@@ -4,14 +4,14 @@ import javafx.event.EventHandler;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.input.MouseEvent;
-import tk.captainsplexx.CAS.CasDataReader;
 import tk.captainsplexx.Game.Game;
 import tk.captainsplexx.Game.Main;
 import tk.captainsplexx.JavaFX.TreeViewConverter;
 import tk.captainsplexx.JavaFX.TreeViewEntry;
 import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
-import tk.captainsplexx.Toc.ResourceLink;
-import tk.captainsplexx.Toc.TocConverter.ResourceBundleType;
+import tk.captainsplexx.Resource.CAS.CasDataReader;
+import tk.captainsplexx.Resource.TOC.ResourceLink;
+import tk.captainsplexx.Resource.TOC.TocConverter.ResourceBundleType;
 
 public class JavaFXexplorer1TCF extends TreeCell<TreeViewEntry> {
 	

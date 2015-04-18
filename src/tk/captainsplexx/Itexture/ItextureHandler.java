@@ -3,10 +3,10 @@ package tk.captainsplexx.Itexture;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 
-import tk.captainsplexx.CAS.CasCatEntry;
-import tk.captainsplexx.CAS.CasDataReader;
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.FileSeeker;
+import tk.captainsplexx.Resource.CAS.CasCatEntry;
+import tk.captainsplexx.Resource.CAS.CasDataReader;
 
 public class ItextureHandler {
 	

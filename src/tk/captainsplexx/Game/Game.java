@@ -5,17 +5,16 @@ import java.io.File;
 import java.util.ArrayList;
 
 import javafx.scene.control.TreeItem;
-import tk.captainsplexx.CAS.CasDataReader;
 import tk.captainsplexx.Itexture.ItextureHandler;
 import tk.captainsplexx.JavaFX.TreeViewConverter;
 import tk.captainsplexx.JavaFX.TreeViewEntry;
 import tk.captainsplexx.Render.ModelHandler;
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.ResourceHandler;
-import tk.captainsplexx.Toc.ConvertedTocFile;
-import tk.captainsplexx.Toc.TocConverter;
-import tk.captainsplexx.Toc.TocFile;
-import tk.captainsplexx.Toc.TocManager;
+import tk.captainsplexx.Resource.TOC.ConvertedTocFile;
+import tk.captainsplexx.Resource.TOC.TocConverter;
+import tk.captainsplexx.Resource.TOC.TocFile;
+import tk.captainsplexx.Resource.TOC.TocManager;
 
 public class Game {
 	public ModelHandler modelHandler;

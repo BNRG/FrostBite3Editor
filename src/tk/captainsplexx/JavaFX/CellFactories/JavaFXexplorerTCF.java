@@ -8,8 +8,8 @@ import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
 import tk.captainsplexx.JavaFX.TreeViewConverter;
 import tk.captainsplexx.JavaFX.TreeViewEntry;
 import tk.captainsplexx.Resource.ResourceHandler.LinkBundleType;
-import tk.captainsplexx.Toc.TocConverter;
-import tk.captainsplexx.Toc.TocSBLink;
+import tk.captainsplexx.Resource.TOC.TocConverter;
+import tk.captainsplexx.Resource.TOC.TocSBLink;
 
 public class JavaFXexplorerTCF extends TreeCell<TreeViewEntry> {
 	public static enum ExplorerMode {

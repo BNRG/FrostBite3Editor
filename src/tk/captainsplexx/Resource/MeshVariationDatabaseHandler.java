@@ -2,10 +2,11 @@ package tk.captainsplexx.Resource;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import tk.captainsplexx.EBX.EBXComplex;
-import tk.captainsplexx.EBX.EBXField;
-import tk.captainsplexx.EBX.EBXHandler;
-import tk.captainsplexx.EBX.EBXInstance;
+
+import tk.captainsplexx.Resource.EBX.EBXComplex;
+import tk.captainsplexx.Resource.EBX.EBXField;
+import tk.captainsplexx.Resource.EBX.EBXHandler;
+import tk.captainsplexx.Resource.EBX.EBXInstance;
 
 public class MeshVariationDatabaseHandler {
 	public HashMap<String, MeshVariationDatabaseCollection> entries;

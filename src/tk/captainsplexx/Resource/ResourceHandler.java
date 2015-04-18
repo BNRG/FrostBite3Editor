@@ -1,8 +1,8 @@
 package tk.captainsplexx.Resource;
 
-import tk.captainsplexx.CAS.CasCatManager;
-import tk.captainsplexx.EBX.EBXHandler;
 import tk.captainsplexx.Render.TextureHandler;
+import tk.captainsplexx.Resource.CAS.CasCatManager;
+import tk.captainsplexx.Resource.EBX.EBXHandler;
 
 public class ResourceHandler {
 	//public String chunkFolderPath;

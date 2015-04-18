@@ -2,22 +2,22 @@ package tk.captainsplexx.JavaFX;
 
 import java.util.ArrayList;
 
-import tk.captainsplexx.EBX.EBXField;
-import tk.captainsplexx.EBX.EBXFieldDescriptor;
-import tk.captainsplexx.EBX.EBXFile;
-import tk.captainsplexx.EBX.EBXInstance;
 import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
 import tk.captainsplexx.Resource.FileHandler;
-import tk.captainsplexx.Toc.ConvertedSBpart;
-import tk.captainsplexx.Toc.ConvertedTocFile;
-import tk.captainsplexx.Toc.ResourceLink;
-import tk.captainsplexx.Toc.TocEntry;
-import tk.captainsplexx.Toc.TocField;
-import tk.captainsplexx.Toc.TocFile;
-import tk.captainsplexx.Toc.TocManager.TocEntryType;
-import tk.captainsplexx.Toc.TocManager.TocFieldType;
-import tk.captainsplexx.Toc.TocManager.TocFileType;
-import tk.captainsplexx.Toc.TocSBLink;
+import tk.captainsplexx.Resource.EBX.EBXField;
+import tk.captainsplexx.Resource.EBX.EBXFieldDescriptor;
+import tk.captainsplexx.Resource.EBX.EBXFile;
+import tk.captainsplexx.Resource.EBX.EBXInstance;
+import tk.captainsplexx.Resource.TOC.ConvertedSBpart;
+import tk.captainsplexx.Resource.TOC.ConvertedTocFile;
+import tk.captainsplexx.Resource.TOC.ResourceLink;
+import tk.captainsplexx.Resource.TOC.TocEntry;
+import tk.captainsplexx.Resource.TOC.TocField;
+import tk.captainsplexx.Resource.TOC.TocFile;
+import tk.captainsplexx.Resource.TOC.TocSBLink;
+import tk.captainsplexx.Resource.TOC.TocManager.TocEntryType;
+import tk.captainsplexx.Resource.TOC.TocManager.TocFieldType;
+import tk.captainsplexx.Resource.TOC.TocManager.TocFileType;
 import javafx.scene.control.TreeItem;
 import javafx.scene.image.ImageView;
 
