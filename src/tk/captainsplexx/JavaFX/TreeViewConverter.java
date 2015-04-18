@@ -167,7 +167,12 @@ public class TreeViewConverter {
 				TreeItem<TreeViewEntry> field = new TreeItem<TreeViewEntry>(entry);
 				return field;
 			}catch (Exception e){
-				System.err.println("Error while converting EBXFile to TreeView. "+e.getCause());
+				if (ebxField.getType() == null){
+					System.err.println("EBXFile to TreeView: Field does not have a type defined.");
+				}else{
+					e.printStackTrace();
+					System.err.println("Error while converting EBXFile to TreeView.");
+				}
 				return null;
 			}
 		}else{
@@ -196,38 +201,38 @@ public class TreeViewConverter {
 		tocEntry.getFields().addAll(fields);
 		return tocEntry;
 	}
-	@SuppressWarnings("incomplete-switch")
+	@SuppressWarnings("incomplete-switch") //Toc files only handle these fields.
 	static TocField getTocField(TreeItem<TreeViewEntry> field){
 		TocField tf = null;
 		switch(field.getValue().getType()){
-		case BOOL:
-			tf = new TocField(field.getValue().getValue(), TocFieldType.BOOL, field.getValue().getName());
-			break;
-		case GUID:
-			tf = new TocField(field.getValue().getValue(), TocFieldType.GUID, field.getValue().getName());
-			break;
-		case INTEGER:
-			tf = new TocField(field.getValue().getValue(), TocFieldType.INTEGER, field.getValue().getName());
-			break;
-		case LIST:
-			ArrayList<TocEntry> tocEntries = new ArrayList<TocEntry>();
-			for (TreeItem<TreeViewEntry> item : field.getChildren()){
-				tocEntries.add(getTocEntry(item, TocEntryType.ORDINARY));
-			}
-			tf = new TocField(tocEntries, TocFieldType.LIST, field.getValue().getName());
-			break;
-		case LONG:
-			tf = new TocField(field.getValue().getValue(), TocFieldType.LONG, field.getValue().getName());
-			break;
-		case SHA1:
-			tf = new TocField(field.getValue().getValue(), TocFieldType.SHA1, field.getValue().getName());
-			break;
-		case STRING:
-			tf = new TocField(field.getValue().getValue(), TocFieldType.STRING, field.getValue().getName());
-			break;
-		case RAW:
-			tf = new TocField(field.getValue().getValue(), TocFieldType.RAW, field.getValue().getName());
-			break; 
+			case BOOL:
+				tf = new TocField(field.getValue().getValue(), TocFieldType.BOOL, field.getValue().getName());
+				break;
+			case GUID:
+				tf = new TocField(field.getValue().getValue(), TocFieldType.GUID, field.getValue().getName());
+				break;
+			case INTEGER:
+				tf = new TocField(field.getValue().getValue(), TocFieldType.INTEGER, field.getValue().getName());
+				break;
+			case LIST:
+				ArrayList<TocEntry> tocEntries = new ArrayList<TocEntry>();
+				for (TreeItem<TreeViewEntry> item : field.getChildren()){
+					tocEntries.add(getTocEntry(item, TocEntryType.ORDINARY));
+				}
+				tf = new TocField(tocEntries, TocFieldType.LIST, field.getValue().getName());
+				break;
+			case LONG:
+				tf = new TocField(field.getValue().getValue(), TocFieldType.LONG, field.getValue().getName());
+				break;
+			case SHA1:
+				tf = new TocField(field.getValue().getValue(), TocFieldType.SHA1, field.getValue().getName());
+				break;
+			case STRING:
+				tf = new TocField(field.getValue().getValue(), TocFieldType.STRING, field.getValue().getName());
+				break;
+			case RAW:
+				tf = new TocField(field.getValue().getValue(), TocFieldType.RAW, field.getValue().getName());
+				break; 
 		}
 		return tf;
 	}
@@ -243,7 +248,6 @@ public class TreeViewConverter {
 			String[] name = link.getID().split("/");
 			TreeViewEntry child = new TreeViewEntry(name[name.length-1], new ImageView(JavaFXHandler.instanceIcon), link, EntryType.STRING);
 			pathToTree(bundles, link.getID(), child);
-			//bundles.getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry(link.getID(), new ImageView(JavaFXHandler.instanceIcon), link, EntryType.STRING)));
 		}
 		rootnode.getChildren().add(bundles);
 		
@@ -269,7 +273,6 @@ public class TreeViewConverter {
 			String[] name = link.getName().split("/");
 			TreeViewEntry child = new TreeViewEntry(name[name.length-1]+" ("+link.getSha1()+")", new ImageView(JavaFXHandler.structureIcon), link, EntryType.STRING);
 			pathToTree(ebx, link.getName(), child);
-			//ebx.getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry(link.getName()+" ("+link.getSha1()+")", new ImageView(JavaFXHandler.structureIcon), link, EntryType.STRING)));
 		}
 		rootnode.getChildren().add(ebx);
 		
@@ -279,7 +282,6 @@ public class TreeViewConverter {
 			String[] name = link.getName().split("/");
 			TreeViewEntry child = new TreeViewEntry(name[name.length-1]+" ("+link.getSha1()+")", new ImageView(JavaFXHandler.structureIcon), link, EntryType.STRING);
 			pathToTree(dbx, link.getName(), child);
-			//dbx.getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry(link.getName()+" ("+link.getSha1()+")", new ImageView(JavaFXHandler.structureIcon), link, EntryType.STRING)));
 		}
 		rootnode.getChildren().add(dbx);
 		
@@ -311,7 +313,6 @@ public class TreeViewConverter {
 			}
 			child.setGraphic(graphic);
 			pathToTree(res, link.getName(), child);
-			//res.getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry(link.getName()+" ("+link.getSha1()+", "+(link.getResType()&0xFFFFFFFF)+")", new ImageView(JavaFXHandler.resourceIcon), link, EntryType.STRING)));
 		}
 		rootnode.getChildren().add(res);
 		

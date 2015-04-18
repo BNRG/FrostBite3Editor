@@ -5,12 +5,12 @@ import java.io.File;
 import java.util.ArrayList;
 
 import javafx.scene.control.TreeItem;
-import tk.captainsplexx.Itexture.ItextureHandler;
 import tk.captainsplexx.JavaFX.TreeViewConverter;
 import tk.captainsplexx.JavaFX.TreeViewEntry;
 import tk.captainsplexx.Render.ModelHandler;
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.ResourceHandler;
+import tk.captainsplexx.Resource.ITEXTURE.ItextureHandler;
 import tk.captainsplexx.Resource.TOC.ConvertedTocFile;
 import tk.captainsplexx.Resource.TOC.TocConverter;
 import tk.captainsplexx.Resource.TOC.TocFile;
@@ -39,6 +39,7 @@ public class Game {
 		
 		playerHandler = new PlayerHandler();
 		
+		/*DO NOT CARE ABOUT IN THE MOMENT*/
 		terrainHandler = new TerrainHandler();
 		//terrainHandler.generate(0, 0);
 		//terrainHandler.generate(0, 0);

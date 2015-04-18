@@ -30,7 +30,7 @@ public class JavaFXexplorer1TCF extends TreeCell<TreeViewEntry> {
 							Main.getJavaFXHandler().setTreeViewStructureRight(ebx);
 							Main.getJavaFXHandler().getMainWindow().updateRightRoot();
 						}else if (i.getParent().getValue().getType() == EntryType.LIST){
-							System.out.println(((ResourceLink)i.getValue().getValue()).getBundleType()+" is currently not supported. (Buy the DLC for 9.99$. Just kidding :P)");
+							System.out.println(((ResourceLink)i.getValue().getValue()).getBundleType()+" is currently not supported.");
 						}
 					}
 				}

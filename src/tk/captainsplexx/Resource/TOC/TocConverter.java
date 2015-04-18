@@ -1,7 +1,9 @@
 package tk.captainsplexx.Resource.TOC;
 
+import java.nio.ByteOrder;
 import java.util.ArrayList;
 
+import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.ResourceHandler.LinkBundleType;
 import tk.captainsplexx.Resource.ResourceHandler.ResourceType;
 import tk.captainsplexx.Resource.TOC.TocManager.TocFieldType;
@@ -254,6 +256,8 @@ public class TocConverter {
 				return ResourceType.ANIMTRACKDATA;
 			case 0x319D8CD0:
 				return ResourceType.RAGDOLL;
+			case 0x30B4A553:
+				return ResourceType.OCCLUDERMESH;
 			case 0x49B156D4:
 				return ResourceType.MESH;
 			case 0x5BDFDEFE:
@@ -272,8 +276,14 @@ public class TocConverter {
 				return ResourceType.SHADERPROGRAMDB;
 			case 0xafecb022:
 				return ResourceType.LUAC;
+			case 0x957C32B1:
+				return ResourceType.UNDEFINED;
+			case 0xC6CD3286:
+				return ResourceType.UNDEFINED;
+			case 0xA23E75DB:
+				return ResourceType.UNDEFINED;
 			default:
-				System.out.println("unknown ResourceType found: "+(resType&0xFFFFFFFF));
+				System.out.println("unknown ResourceType found in TocConverter: "+FileHandler.toHexInteger((resType&0xFFFFFFFF), ByteOrder.BIG_ENDIAN));
 				return ResourceType.UNDEFINED;
 		}
 	}

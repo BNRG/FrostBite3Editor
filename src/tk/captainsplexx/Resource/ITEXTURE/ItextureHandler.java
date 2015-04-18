@@ -1,4 +1,4 @@
-package tk.captainsplexx.Itexture;
+package tk.captainsplexx.Resource.ITEXTURE;
 
 import java.nio.ByteOrder;
 import java.util.ArrayList;
