@@ -3,6 +3,8 @@ package tk.captainsplexx.Game;
 import java.io.File;
 
 import javafx.scene.control.TreeItem;
+import javafx.scene.image.ImageView;
+import tk.captainsplexx.JavaFX.JavaFXHandler;
 import tk.captainsplexx.JavaFX.TreeViewConverter;
 import tk.captainsplexx.JavaFX.TreeViewEntry;
 import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
@@ -10,10 +12,6 @@ import tk.captainsplexx.Render.ModelHandler;
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.ResourceHandler;
 import tk.captainsplexx.Resource.ITEXTURE.ItextureHandler;
-import tk.captainsplexx.Resource.TOC.ConvertedTocFile;
-import tk.captainsplexx.Resource.TOC.TocConverter;
-import tk.captainsplexx.Resource.TOC.TocFile;
-import tk.captainsplexx.Resource.TOC.TocManager;
 
 public class Game {
 	public ModelHandler modelHandler;
@@ -27,6 +25,7 @@ public class Game {
 			
 	public Game(){
 		gamePath = "C:/Program Files (x86)/Origin Games/Battlefield 4";
+		//gamePath = "D:/Battlefield Hardline Digital Deluxe";
 		
 		modelHandler = new ModelHandler();
 		
@@ -44,25 +43,8 @@ public class Game {
 		
 		
 		resourceHandler.getCasCatManager().readCat(FileHandler.readFile(gamePath+"/Data/cas.cat"));
-		
-		/*Build up Explorer*/
-		TreeItem<TreeViewEntry> explorerTree = new TreeItem<TreeViewEntry>(new TreeViewEntry(gamePath+"/Data/", null, null, EntryType.LIST));
-		for (File file : FileHandler.listf(gamePath+"/Data/", ".sb")){
-			TocFile toc = TocManager.readToc(file.getAbsolutePath().replace(".sb", ""));
-			ConvertedTocFile convToc = TocConverter.convertTocFile(toc);
-			TreeItem<TreeViewEntry> convTocTree = TreeViewConverter.getTreeView(convToc);
-			TreeViewConverter.pathToTree(explorerTree, convTocTree.getValue().getName(), convTocTree);
-		}
-		for (TreeItem<TreeViewEntry> child : explorerTree.getChildren()){
-			if (child.getChildren().size()>0){
-				child.setExpanded(true);
-			}
-		}
-		Main.getJavaFXHandler().setTreeViewStructureLeft(explorerTree);
-		Main.getJavaFXHandler().getMainWindow().updateLeftRoot();
-		
-		
-		
+			
+		buildExplorerTree();
 		
 		
 		
@@ -96,6 +78,24 @@ public class Game {
 	public void update(){
 		playerHandler.update();	
 		terrainHandler.collisionUpdate(playerHandler);
+	}
+	
+	public void buildExplorerTree(){
+		/*Build up Explorer*/
+		TreeItem<TreeViewEntry> explorerTree = new TreeItem<TreeViewEntry>(new TreeViewEntry(gamePath+"/Data/", null, null, EntryType.LIST));
+		for (File file : FileHandler.listf(gamePath+"/Data/", ".sb")){
+			String relPath = file.getAbsolutePath().replace("\\", "/").replace(".sb", "").replace(gamePath+"/Data/", "");
+			String[] fileName = relPath.split("/");
+			TreeItem<TreeViewEntry> convTocTree = new TreeItem<TreeViewEntry>(new TreeViewEntry(fileName[fileName.length-1], new ImageView(JavaFXHandler.documentIcon), file, EntryType.LIST)); 
+			TreeViewConverter.pathToTree(explorerTree, relPath, convTocTree);
+		}
+		for (TreeItem<TreeViewEntry> child : explorerTree.getChildren()){
+			if (child.getChildren().size()>0){
+				child.setExpanded(true);
+			}
+		}
+		Main.getJavaFXHandler().setTreeViewStructureLeft(explorerTree);
+		Main.getJavaFXHandler().getMainWindow().updateLeftRoot();
 	}
 	
 	

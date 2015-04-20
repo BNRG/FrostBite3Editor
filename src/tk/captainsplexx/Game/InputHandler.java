@@ -1,7 +1,5 @@
 package tk.captainsplexx.Game;
 
-import javax.swing.ComboBoxEditor;
-import javax.swing.JComboBox;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;

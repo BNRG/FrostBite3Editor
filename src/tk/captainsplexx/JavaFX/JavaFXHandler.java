@@ -39,6 +39,7 @@ public class JavaFXHandler {
 	public static final Image pencilIcon = new Image(FileHandler.getStream("res/images/pencil.png"));
 	public static final Image removeIcon = new Image(FileHandler.getStream("res/images/cross.png"));
 	public static final Image documentIcon = new Image(FileHandler.getStream("res/images/folder-open-document.png"));
+	public static final Image leftArrowIcon = new Image(FileHandler.getStream("res/images/arrow-000.png"));
 	
 	
 	public JavaFXHandler(){

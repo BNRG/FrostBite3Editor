@@ -15,9 +15,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.TreeCell;
-import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
-import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
@@ -33,10 +31,15 @@ public class JavaFXMainWindow extends Application{
 	public static enum WorkDropType { DROP_INTO, REORDER };
 
 	public FXMLLoader leftLoader;
+	public FXMLLoader resToolsLoader;
 	public FXMLLoader rightLoader;
 	public LeftController leftController;
 	public RightController rightController;
-		
+	public ResToolsController resToolsController;
+	public Stage stageLeft;
+	public Stage stageRight;
+	public Stage stageResTools;
+
 	public FXMLLoader getLeftLoader() {
 		return leftLoader;
 	}
@@ -51,8 +54,16 @@ public class JavaFXMainWindow extends Application{
 
 	public RightController getRightController() {
 		return rightController;
+	}	
+
+	public FXMLLoader getResToolsLoader() {
+		return resToolsLoader;
 	}
-	
+
+	public ResToolsController getResToolsController() {
+		return resToolsController;
+	}
+
 	/*---------START--------------*/
 	public void runApplication(){
 		new Thread(new Runnable() {
@@ -62,15 +73,15 @@ public class JavaFXMainWindow extends Application{
 			}
 		}).start();
 	}
-	
 		
 	void launchApplication(){
-		launch(); //Runs until window closes.
-		System.exit(0); //TODO
+		launch();
+		System.err.println("JavaFX Application closed.");
 	}
 
 	@Override
 	public void start(Stage stageLeft) {
+		this.stageLeft = stageLeft;
 		Main.getJavaFXHandler().setMainWindow(this); //Stupid thread bypass.
 		Parent leftroot = null;
 		/*LEFT*/
@@ -129,7 +140,7 @@ public class JavaFXMainWindow extends Application{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-        Stage stageRight = new Stage();
+        stageRight = new Stage();
         Scene sceneRight = new Scene(rightroot, 275, 700);
         stageRight.setTitle("EBX Tools");
         stageRight.setX(Display.getDesktopDisplayMode().getWidth()*0.985f-sceneLeft.getWidth());
@@ -156,8 +167,33 @@ public class JavaFXMainWindow extends Application{
         rightController.getEBXExplorer().setPrefWidth(Display.getDesktopDisplayMode().getWidth());
         rightController.getEBXExplorer().setPrefHeight(Display.getDesktopDisplayMode().getHeight());
         /*END OF EBX-EXPLORER*/
+        
+        /*RES TOOLS*/
+        Parent resToolsRoot = null;
+		try { 
+			resToolsLoader = new FXMLLoader(getClass().getResource("ResToolsWindow.fxml")); //not static to access controller class
+			resToolsRoot = resToolsLoader.load();
+			resToolsController = resToolsLoader.getController();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+        stageResTools = new Stage();
+        Scene sceneResTools = new Scene(resToolsRoot, 275, 275);
+        stageResTools.setTitle("Resource Tools");
+        stageResTools.setScene(sceneResTools);
+        stageResTools.getIcons().add(JavaFXHandler.applicationIcon16);
+        stageResTools.getIcons().add(JavaFXHandler.applicationIcon32);
+        stageResTools.hide();
+        stageResTools.setOnCloseRequest(new EventHandler<WindowEvent>() {
+			@Override
+			public void handle(WindowEvent e) {
+				e.consume();
+			}
+		});
+        /*END OF RES TOOLS*/
 	}
 
+	/*UPDATE METHODS*/
 	public void updateRightRoot(){
 		Platform.runLater(new Runnable() {
 			@Override
@@ -173,6 +209,7 @@ public class JavaFXMainWindow extends Application{
 			@Override
 			public void run() {
 				leftController.getExplorer().setRoot(Main.getJavaFXHandler().getTreeViewStructureLeft());
+				leftController.getExplorer().scrollTo(0);
 				leftController.getExplorer().getRoot().setExpanded(true);
 			}
 		});	
@@ -187,4 +224,44 @@ public class JavaFXMainWindow extends Application{
 			}
 		});	
 	}
+	
+	public void toggleRightVisibility(){
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				if (stageRight.isShowing()){
+					stageRight.hide();
+				}else{
+					stageRight.show();
+				}
+			}
+		});	
+	}
+	
+	public void toggleLeftVisibility(){
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				if (stageLeft.isShowing()){
+					stageLeft.hide();
+				}else{
+					stageLeft.show();
+				}
+			}
+		});	
+	}
+	
+	public void toggleResToolsVisibility(){
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				if (stageResTools.isShowing()){
+					stageResTools.hide();
+				}else{
+					stageResTools.show();
+				}
+			}
+		});	
+	}
+	/*END OF UPDATE METHODS*/
 }
