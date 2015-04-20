@@ -13,6 +13,7 @@ import tk.captainsplexx.JavaFX.JavaFXHandler;
 import tk.captainsplexx.JavaFX.TreeViewConverter;
 import tk.captainsplexx.JavaFX.TreeViewEntry;
 import tk.captainsplexx.Resource.ResourceHandler.LinkBundleType;
+import tk.captainsplexx.Resource.TOC.ConvertedSBpart;
 import tk.captainsplexx.Resource.TOC.ConvertedTocFile;
 import tk.captainsplexx.Resource.TOC.TocConverter;
 import tk.captainsplexx.Resource.TOC.TocFile;
@@ -28,20 +29,21 @@ public class JavaFXexplorerTCF extends TreeCell<TreeViewEntry> {
 					//TOC MODE
 					if (((TocSBLink)getTreeItem().getValue().getValue()).getType() == LinkBundleType.BUNDLES){
 						
-						Main.getJavaFXHandler().setTreeViewStructureLeft1(
-								TreeViewConverter.getTreeView(
-										TocConverter.convertSBpart( //REMOVE THIS LINE TO DEBUG.
-												((TocSBLink)getTreeItem().getValue().getValue()).getLinkedSBPart())));
+						ConvertedSBpart sbpart = TocConverter.convertSBpart(((TocSBLink)getTreeItem().getValue().getValue()).getLinkedSBPart());
+						TreeItem<TreeViewEntry> tree = TreeViewConverter.getTreeView(sbpart);
+						Main.getJavaFXHandler().setTreeViewStructureLeft1(tree);
 						Main.getJavaFXHandler().getMainWindow().updateLeftRoot1();
 					}else{
 						System.err.println(((TocSBLink)getTreeItem().getValue().getValue()).getType()+" are not supported yet.");
 					}
 				}else if (getTreeItem().getChildren().isEmpty() && getTreeItem().getValue().getValue() instanceof File){
 					//EXPLORER MODE
-					TocFile toc = TocManager.readToc(((File)getTreeItem().getValue().getValue()).getAbsolutePath().replace(".sb", ""));
+					Main.getGame().setCurrentFile(((File)getTreeItem().getValue().getValue()).getAbsolutePath().replace(".sb", ""));
+					TocFile toc = TocManager.readToc(Main.getGame().getCurrentFile());
 					ConvertedTocFile convToc = TocConverter.convertTocFile(toc);
 					TreeItem<TreeViewEntry> masterTree = new TreeItem<TreeViewEntry>(new TreeViewEntry("BACK (Click)", new ImageView(JavaFXHandler.leftArrowIcon), "GO BACK", EntryType.LIST));
 					TreeItem<TreeViewEntry> convTocTree = TreeViewConverter.getTreeView(convToc);
+					convTocTree.setExpanded(true);
 					masterTree.getChildren().add(convTocTree);
 					masterTree.setExpanded(true);
 					Main.getJavaFXHandler().setTreeViewStructureLeft(masterTree);

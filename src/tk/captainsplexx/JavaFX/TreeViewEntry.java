@@ -8,6 +8,7 @@ import javafx.scene.image.ImageView;
 public class TreeViewEntry implements Cloneable{
 
 	public String name;
+	public String tooltip;
 	public ImageView graphic;
 	public Object value;
 	public EntryType type;
@@ -19,8 +20,23 @@ public class TreeViewEntry implements Cloneable{
 		this.value = value;
 		this.type = type;
 		this.ebxType = 0;
+		this.tooltip = "";
 	}
 	
+	
+	
+	public String getTooltip() {
+		return tooltip;
+	}
+
+
+
+	public void setTooltip(String tooltip) {
+		this.tooltip = tooltip;
+	}
+
+
+
 	public String getName() {
 		return name;
 	}

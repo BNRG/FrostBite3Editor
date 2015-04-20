@@ -116,7 +116,7 @@ public class JavaFXMainWindow extends Application{
         });
         leftController.getExplorer().setEditable(false);
         leftController.getExplorer().setPrefWidth(Display.getDesktopDisplayMode().getWidth());
-        leftController.getExplorer().setPrefHeight(Display.getDesktopDisplayMode().getHeight());
+        leftController.getExplorer().setPrefHeight(Display.getDesktopDisplayMode().getHeight()); //Back to top in TCF or what ?
         /*END OF EXPLORER 0*/
         
         /*EXPLORER 1*/

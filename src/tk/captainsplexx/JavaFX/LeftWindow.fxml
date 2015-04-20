@@ -86,12 +86,12 @@
                </children></AnchorPane>
         <ScrollPane prefHeight="350.0" prefWidth="277.0">
           <content>
-            <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0" prefHeight="814.0" prefWidth="265.0">
+            <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0">
                      <opaqueInsets>
                         <Insets />
                      </opaqueInsets>
                      <children>
-                        <TreeView fx:id="explorer" prefHeight="800.0" />
+                        <TreeView fx:id="explorer" />
                      </children>
             </AnchorPane>
           </content>

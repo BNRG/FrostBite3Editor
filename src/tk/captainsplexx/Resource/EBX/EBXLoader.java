@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
+import tk.captainsplexx.Game.Main;
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.FileSeeker;
 import tk.captainsplexx.Resource.EBX.EBXHandler.FieldValueType;
@@ -14,7 +15,7 @@ import tk.captainsplexx.Resource.EBX.EBXHandler.FieldValueType;
 public class EBXLoader {
 	public byte[] ebxFileBytes;
 	public String guidTablePath;
-	public HashMap<Integer, Integer> numDict = new HashMap<Integer, Integer>();
+	//public HashMap<Integer, Integer> numDict = new HashMap<Integer, Integer>();
 	public HashMap<Integer, String> keywordDict;
 	
 
@@ -49,6 +50,11 @@ public class EBXLoader {
 	
 	public String getTrueFilename(){
 		return trueFilename;
+	}
+	
+	public static String getGUID(byte[] ebxFile){
+		//4Bytes Magic + 36Bytes Header == FileGUID Offset at 40. Byte (0x28)
+		return FileHandler.bytesToHex(FileHandler.readByte(ebxFile, 0x28, 16)).toUpperCase();
 	}
 
 	public void loadEBX(byte[] ebxFileBytes){
@@ -259,15 +265,15 @@ public class EBXLoader {
 					}
 				}
 			}
-		}else if (fieldDesc.getType()== (short) 0xC15D){ //GUID CHUNK ??
+		}else if (fieldDesc.getType()== (short) 0xC15D){ //GUID CHUNK
 			field.setValue(FileHandler.bytesToHex(FileHandler.readByte(ebxFileBytes, seeker,16)), FieldValueType.ChunkGuid);
 		}else if (fieldDesc.getType()== (short) 0x417D){ //8HEX
 			field.setValue(FileHandler.bytesToHex(FileHandler.readByte(ebxFileBytes,seeker, 8)), FieldValueType.Hex8);
 		}else if (fieldDesc.getType()==(short) 0xC13D){//FLOAT
 			field.setValue(FileHandler.readFloat(ebxFileBytes, seeker), FieldValueType.Float);
-		}else if (fieldDesc.getType()==(short) 0xC10D){//uint ===???
+		}else if (fieldDesc.getType()==(short) 0xC10D){//uint
 			field.setValue((FileHandler.readInt(ebxFileBytes, seeker, order) & 0xffffffff), FieldValueType.UInteger);
-		}else if(fieldDesc.getType() == (short) 0xc0fd){ // signed int ?=??
+		}else if(fieldDesc.getType() == (short) 0xc0fd){ //signed int
 			field.setValue(FileHandler.readInt(ebxFileBytes, seeker), FieldValueType.Integer);
 		}else if (fieldDesc.getType() == (short) 0xc0ad){//BOOL
 			field.setValue(((FileHandler.readByte(ebxFileBytes, seeker))!=0x0), FieldValueType.Bool);
@@ -278,11 +284,14 @@ public class EBXLoader {
 		}else if(fieldDesc.getType() == (short) 0x0035){ // #guid
 			int tempValue = FileHandler.readInt(ebxFileBytes, seeker);
 			if(((tempValue>>31) & 0xFFFFFFFF) == -1){
-				//System.err.println("EXTER");
 				EBXExternalGUID guid = externalGUIDs[(tempValue & 0x7fffffff)];
-				field.setValue(guid.getFileGUID()+"/"+guid.getInstanceGUID(), FieldValueType.Guid);
+				String fileGUID = Main.getGame().getEBXFileGUIDs().get(guid.getFileGUID().toUpperCase());
+				if (fileGUID != null){
+					field.setValue(fileGUID+"/"+guid.getInstanceGUID(), FieldValueType.Guid);
+				}else{
+					field.setValue(guid.getFileGUID()+"/"+guid.getInstanceGUID(), FieldValueType.Guid);
+				}
 			}else if (tempValue == 0x0){
-				//System.err.println("NULL");
 				field.setValue("*nullGUID*", FieldValueType.Guid);
 			}else{
 				//System.err.println("INT"); //TODO WE NEED A RECURSE!
@@ -355,6 +364,7 @@ public class EBXLoader {
 
 	// Constructor
 	public EBXLoader() {
+		/*
 		numDict.put(0xC12D, 8);
 		numDict.put(0xc0cd, 1);
 		numDict.put(0x0035, 4);
@@ -366,5 +376,6 @@ public class EBXLoader {
 		numDict.put(0xc0ed, 2);
 		numDict.put(0xc0dd, 2);
 		numDict.put(0xc13d, 4);
+		*/
 	}
 }

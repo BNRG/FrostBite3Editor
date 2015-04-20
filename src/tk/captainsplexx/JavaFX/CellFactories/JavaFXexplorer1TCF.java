@@ -1,6 +1,7 @@
 package tk.captainsplexx.JavaFX.CellFactories;
 
 import javafx.event.EventHandler;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.input.MouseEvent;
@@ -22,25 +23,31 @@ public class JavaFXexplorer1TCF extends TreeCell<TreeViewEntry> {
 			@Override
 			public void handle(MouseEvent event) {
 				TreeItem<TreeViewEntry> i = getTreeItem();
-				if (i.getParent()!=null){
-					if (i.getValue().getValue() != null){
-						if (((ResourceLink)i.getValue().getValue()).getBundleType() == ResourceBundleType.EBX){
-							Game game = Main.getGame();
-							ResourceLink link = (ResourceLink) i.getValue().getValue();
-							byte[] data = CasDataReader.readCas(link.getSha1(), game.getGamePath()+"/Data", game.getResourceHandler().getCasCatManager().getEntries());
-							TreeItem<TreeViewEntry> ebx = TreeViewConverter.getTreeView(game.getResourceHandler().getEBXHandler().loadFile(data));
-							Main.getJavaFXHandler().setTreeViewStructureRight(ebx);
-							Main.getJavaFXHandler().getMainWindow().updateRightRoot();
-						}else if (((ResourceLink)i.getValue().getValue()).getBundleType() == ResourceBundleType.RES){
-							Game game = Main.getGame();
-							ResourceLink link = (ResourceLink) i.getValue().getValue();
-							if (link.getType() == ResourceType.ITEXTURE){
-								System.out.println(link.getSha1());
-								System.out.println(FileHandler.bytesToHex(CasDataReader.readCas(link.getSha1(), game.getGamePath()+"/Data", game.getResourceHandler().getCasCatManager().getEntries())));
+				if (i != null){
+					if (i.getParent()!=null){
+						if (i.getValue().getValue() != null){
+							if (((ResourceLink)i.getValue().getValue()).getBundleType() == ResourceBundleType.EBX){
+								Game game = Main.getGame();
+								ResourceLink link = (ResourceLink) i.getValue().getValue();
+								byte[] data = CasDataReader.readCas(link.getSha1(), game.getGamePath()+"/Data", game.getResourceHandler().getCasCatManager().getEntries());
+								TreeItem<TreeViewEntry> ebx = TreeViewConverter.getTreeView(game.getResourceHandler().getEBXHandler().loadFile(data));
+								Main.getJavaFXHandler().setTreeViewStructureRight(ebx);
+								Main.getJavaFXHandler().getMainWindow().updateRightRoot();
+								/*
+								for (String s : Main.getGame().getEBXFileGUIDs().keySet()){
+									System.out.println(s+" "+Main.getGame().getEBXFileGUIDs().get(s));
+								}*/
+							}else if (((ResourceLink)i.getValue().getValue()).getBundleType() == ResourceBundleType.RES){
+								Game game = Main.getGame();
+								ResourceLink link = (ResourceLink) i.getValue().getValue();
+								if (link.getType() == ResourceType.ITEXTURE){
+									System.out.println(link.getSha1());
+									System.out.println(FileHandler.bytesToHex(CasDataReader.readCas(link.getSha1(), game.getGamePath()+"/Data", game.getResourceHandler().getCasCatManager().getEntries())));
+								}
+								Main.getJavaFXHandler().getMainWindow().toggleResToolsVisibility();
+							}else if (i.getParent().getValue().getType() == EntryType.LIST){
+								System.out.println(((ResourceLink)i.getValue().getValue()).getBundleType()+" is currently not supported.");
 							}
-							Main.getJavaFXHandler().getMainWindow().toggleResToolsVisibility();
-						}else if (i.getParent().getValue().getType() == EntryType.LIST){
-							System.out.println(((ResourceLink)i.getValue().getValue()).getBundleType()+" is currently not supported.");
 						}
 					}
 				}
@@ -60,6 +67,7 @@ public class JavaFXexplorer1TCF extends TreeCell<TreeViewEntry> {
     	}else {
 	    	setText(item.getName());
 		    setGraphic(item.getGraphic());
+		    setTooltip(new Tooltip(item.getTooltip()));
 	    }
 	}
 }

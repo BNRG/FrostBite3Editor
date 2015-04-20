@@ -2,6 +2,7 @@ package tk.captainsplexx.JavaFX;
 
 import java.util.ArrayList;
 
+import tk.captainsplexx.Game.Main;
 import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.EBX.EBXField;
@@ -141,7 +142,7 @@ public class TreeViewConverter {
 						entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), null, (String)ebxField.getValue(), EntryType.CHUNKGUID);
 						break;
 					case Guid:
-						entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), null, (String)ebxField.getValue(), EntryType.GUID);
+						entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), new ImageView(JavaFXHandler.structureIcon), (String)ebxField.getValue(), EntryType.GUID);
 						break;
 					case Hex8:
 						entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), null, (String)ebxField.getValue(), EntryType.HEX8);
@@ -273,6 +274,11 @@ public class TreeViewConverter {
 		for (ResourceLink link : part.getEbx()){
 			String[] name = link.getName().split("/");
 			TreeViewEntry childEntry = new TreeViewEntry(name[name.length-1]+" ("+link.getSha1()+")", new ImageView(JavaFXHandler.structureIcon), link, EntryType.STRING);
+			String isReferenced = "";
+			if (Main.getGame().getEBXFileGUIDs().get(link.getEbxFileGUID().toUpperCase()) != null){
+				isReferenced += " (referenced) ";
+			}
+			childEntry.setTooltip("GUID: "+link.getEbxFileGUID()+isReferenced);
 			TreeItem<TreeViewEntry> child = new TreeItem<TreeViewEntry>(childEntry);
 			pathToTree(ebx, link.getName(), child);
 		}

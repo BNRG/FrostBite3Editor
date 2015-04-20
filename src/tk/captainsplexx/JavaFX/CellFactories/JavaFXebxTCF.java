@@ -34,7 +34,7 @@ public class JavaFXebxTCF extends TreeCell<TreeViewEntry> {
         private WorkDropType dropType;
         private ContextMenu contextMenu = new ContextMenu();
         public TreeItem<TreeViewEntry> draggedTreeItem;
-        private MenuItem addText, addFloat, addDouble, addArray, addInteger, addBool, addList, addLong, addByte, addShort, remove, rename;
+        private MenuItem addText, addFloat, addDouble, addArray, addInteger, addBool, addList, addLong, addByte, addShort, remove, rename, follow;
         public JavaFXebxTCF() {
         	
             addText = new MenuItem("Add Text");
@@ -145,6 +145,14 @@ public class JavaFXebxTCF extends TreeCell<TreeViewEntry> {
                 	if (getTreeItem().getParent()!=null){
                 		getTreeItem().getParent().getChildren().remove(getTreeItem());
                 	}
+                }
+            });
+            
+            follow = new MenuItem("Follow");
+            follow.setGraphic(new ImageView(JavaFXHandler.rightArrowIcon));
+            follow.setOnAction(new EventHandler<ActionEvent>() {
+                public void handle(ActionEvent t) {
+                	System.out.println("FOLLOW GUID");
                 }
             });
             
@@ -271,7 +279,7 @@ public class JavaFXebxTCF extends TreeCell<TreeViewEntry> {
 	                setText(null);
 	                setGraphic(textField);
 	            } else {
-	            	if (item != null){ //TODO TEST
+	            	if (item != null){
 		               if (item.getType() == EntryType.ARRAY || item.getType() == EntryType.LIST){
 		                	setText(item.getName()+":"+item.getType().toString());
 		                }else{
@@ -284,6 +292,8 @@ public class JavaFXebxTCF extends TreeCell<TreeViewEntry> {
 		                contextMenu.getItems().clear();
 		                if (getTreeItem().getValue().getType()==EntryType.ARRAY||getTreeItem().getValue().getType()==EntryType.LIST){
 		                  	contextMenu.getItems().addAll(addText, addFloat, addDouble, addInteger, addLong, addByte, addBool, addArray, addList, remove);
+		                }else if (getTreeItem().getValue().getType()==EntryType.GUID){
+		                  	contextMenu.getItems().addAll(follow ,rename, remove);
 		                }else if (getTreeItem()!= null){
 		                  	contextMenu.getItems().addAll(rename, remove);
 		                }

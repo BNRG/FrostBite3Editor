@@ -25,6 +25,6 @@ public class EBXGUIDHandler {
 	}
 	
 	public String getFileName(String guid){
-		return guids.get(guid);
+		return guids.get(guid.toUpperCase());
 	}
 }

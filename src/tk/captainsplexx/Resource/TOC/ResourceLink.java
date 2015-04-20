@@ -26,29 +26,12 @@ public class ResourceLink {
 	public int h32;
 	public byte[] meta;
 	
+	//**EBX EXTRA
+	public String ebxFileGUID;
+	
 	//additional
 	public ResourceBundleType bundleType;
 	
-	public ResourceLink(String name, long size, long originalSize,
-			ResourceType type, String sha1, int resType, byte[] resMeta,
-			long resRid, byte[] idata, String id, int logicalOffset,
-			int logicalSize, int h32, byte[] meta) {
-		this.name = name;
-		this.size = size;
-		this.originalSize = originalSize;
-		this.type = type;
-		this.sha1 = sha1;
-		this.resType = resType;
-		this.resMeta = resMeta;
-		this.resRid = resRid;
-		this.idata = idata;
-		this.id = id;
-		this.logicalOffset = logicalOffset;
-		this.logicalSize = logicalSize;
-		this.h32 = h32;
-		this.meta = meta;
-	}
-
 	public ResourceLink(/*USING NULLCONSTRUCTOR*/) {
 		this.name = "";
 		this.size = 0;
@@ -56,9 +39,23 @@ public class ResourceLink {
 		this.type = ResourceType.UNDEFINED;
 		this.sha1 = "";
 		this.bundleType = null;
+		ebxFileGUID = "";
 	}
+
 	
 	
+	public String getEbxFileGUID() {
+		return ebxFileGUID;
+	}
+
+
+
+	public void setEbxFileGUID(String ebxFileGUID) {
+		this.ebxFileGUID = ebxFileGUID;
+	}
+
+
+
 	public ResourceBundleType getBundleType() {
 		return bundleType;
 	}

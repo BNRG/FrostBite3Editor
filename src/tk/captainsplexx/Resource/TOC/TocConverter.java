@@ -3,9 +3,12 @@ package tk.captainsplexx.Resource.TOC;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 
+import tk.captainsplexx.Game.Main;
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.ResourceHandler.LinkBundleType;
 import tk.captainsplexx.Resource.ResourceHandler.ResourceType;
+import tk.captainsplexx.Resource.CAS.CasDataReader;
+import tk.captainsplexx.Resource.EBX.EBXLoader;
 import tk.captainsplexx.Resource.TOC.TocManager.TocFieldType;
 
 public class TocConverter {
@@ -202,6 +205,15 @@ public class TocConverter {
 						}else if (field.getName().toLowerCase().equals("originalsize") && field.getType() == TocFieldType.LONG){
 							link.setOriginalSize((Long) field.getObj());
 						}
+					}
+					try{
+						link.setEbxFileGUID(
+								EBXLoader.getGUID(CasDataReader.readCas(link.getSha1(),
+										Main.getGame().getGamePath()+"/Data", Main.getGame().getResourceHandler().getCasCatManager().getEntries())));
+						
+						Main.getGame().getEBXFileGUIDs().put(link.getEbxFileGUID(), link.getName());
+					}catch (Exception e){
+						//Timeout in JavaFX Thread ??
 					}
 					break;
 				case RES:

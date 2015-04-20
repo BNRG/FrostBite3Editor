@@ -1,6 +1,7 @@
 package tk.captainsplexx.Game;
 
 import java.io.File;
+import java.util.HashMap;
 
 import javafx.scene.control.TreeItem;
 import javafx.scene.image.ImageView;
@@ -22,6 +23,8 @@ public class Game {
 	public ShaderHandler shaderHandler;
 	public ItextureHandler itextureHandler;
 	public String gamePath;
+	public String currentFile;
+	public HashMap<String, String> ebxFileGUIDs;
 			
 	public Game(){
 		gamePath = "C:/Program Files (x86)/Origin Games/Battlefield 4";
@@ -43,7 +46,7 @@ public class Game {
 		
 		
 		resourceHandler.getCasCatManager().readCat(FileHandler.readFile(gamePath+"/Data/cas.cat"));
-			
+		ebxFileGUIDs = new HashMap<String, String>();
 		buildExplorerTree();
 		
 		
@@ -141,6 +144,22 @@ public class Game {
 	public void setGamePath(String gamePath) {
 		this.gamePath = gamePath;
 	}
+
+
+	public String getCurrentFile() {
+		return currentFile;
+	}
+
+
+	public void setCurrentFile(String currentFile) {
+		this.currentFile = currentFile;
+	}
+
+
+	public HashMap<String, String> getEBXFileGUIDs() {
+		return ebxFileGUIDs;
+	}
+	
 	
 	/*End of Game*/
 	

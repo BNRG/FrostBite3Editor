@@ -98,6 +98,16 @@ public class FileHandler {
 		return buffer;
 	}
 	
+	public static byte[] readByte(byte[] input, int offset, int len) {
+		byte[] buffer = new byte[len];
+		FileSeeker seeker = new FileSeeker();
+		seeker.seek(offset);
+		for (int i = 0; i < len; i++) {
+			buffer[i] = readByte(input, seeker);
+		}
+		return buffer;
+	}
+	
 	public static byte[] hexStringToByteArray(String s) {
 	    int len = s.length();
 	    byte[] data = new byte[len / 2];
