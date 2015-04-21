@@ -168,7 +168,8 @@ public class TreeViewConverter {
 				TreeItem<TreeViewEntry> field = new TreeItem<TreeViewEntry>(entry);
 				return field;
 			}catch (Exception e){
-				if (ebxField.getType() == null){
+				if (ebxField.getType() == null && ebxField.getFieldDescritor() != null){
+					System.out.println(ebxField.getFieldDescritor().getName());
 					System.err.println("EBXFile to TreeView: Field does not have a type defined.");
 				}else{
 					e.printStackTrace();

@@ -30,6 +30,7 @@ public class JavaFXexplorerTCF extends TreeCell<TreeViewEntry> {
 					if (((TocSBLink)getTreeItem().getValue().getValue()).getType() == LinkBundleType.BUNDLES){
 						
 						ConvertedSBpart sbpart = TocConverter.convertSBpart(((TocSBLink)getTreeItem().getValue().getValue()).getLinkedSBPart());
+						Main.getGame().setCurrentSB(sbpart);
 						TreeItem<TreeViewEntry> tree = TreeViewConverter.getTreeView(sbpart);
 						Main.getJavaFXHandler().setTreeViewStructureLeft1(tree);
 						Main.getJavaFXHandler().getMainWindow().updateLeftRoot1();
@@ -41,6 +42,7 @@ public class JavaFXexplorerTCF extends TreeCell<TreeViewEntry> {
 					Main.getGame().setCurrentFile(((File)getTreeItem().getValue().getValue()).getAbsolutePath().replace(".sb", ""));
 					TocFile toc = TocManager.readToc(Main.getGame().getCurrentFile());
 					ConvertedTocFile convToc = TocConverter.convertTocFile(toc);
+					Main.getGame().setCurrentToc(convToc);
 					TreeItem<TreeViewEntry> masterTree = new TreeItem<TreeViewEntry>(new TreeViewEntry("BACK (Click)", new ImageView(JavaFXHandler.leftArrowIcon), "GO BACK", EntryType.LIST));
 					TreeItem<TreeViewEntry> convTocTree = TreeViewConverter.getTreeView(convToc);
 					convTocTree.setExpanded(true);

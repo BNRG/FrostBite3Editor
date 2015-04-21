@@ -260,8 +260,9 @@ public class EBXLoader {
 				field.setValue("*nullEnum*", FieldValueType.Enum);
 			}else{
 				for (int index=0; index<enumComplex.getNumField(); index++){ //TODO check ??
-					if (fieldDescriptors[index].getOffset()==compareValue){
-						field.setValue(fieldDescriptors[index], FieldValueType.Enum);
+					if (fieldDescriptors[enumComplex.getFieldStartIndex()+index].getOffset()==compareValue){
+						field.setValue(fieldDescriptors[enumComplex.getFieldStartIndex()+index], FieldValueType.Enum);
+						break;
 					}
 				}
 			}
@@ -287,9 +288,9 @@ public class EBXLoader {
 				EBXExternalGUID guid = externalGUIDs[(tempValue & 0x7fffffff)];
 				String fileGUID = Main.getGame().getEBXFileGUIDs().get(guid.getFileGUID().toUpperCase());
 				if (fileGUID != null){
-					field.setValue(fileGUID+"/"+guid.getInstanceGUID(), FieldValueType.Guid);
+					field.setValue(fileGUID+" "+guid.getInstanceGUID(), FieldValueType.Guid);
 				}else{
-					field.setValue(guid.getFileGUID()+"/"+guid.getInstanceGUID(), FieldValueType.Guid);
+					field.setValue(guid.getFileGUID()+" "+guid.getInstanceGUID(), FieldValueType.Guid);
 				}
 			}else if (tempValue == 0x0){
 				field.setValue("*nullGUID*", FieldValueType.Guid);

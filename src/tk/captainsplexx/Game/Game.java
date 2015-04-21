@@ -13,6 +13,8 @@ import tk.captainsplexx.Render.ModelHandler;
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.ResourceHandler;
 import tk.captainsplexx.Resource.ITEXTURE.ItextureHandler;
+import tk.captainsplexx.Resource.TOC.ConvertedSBpart;
+import tk.captainsplexx.Resource.TOC.ConvertedTocFile;
 
 public class Game {
 	public ModelHandler modelHandler;
@@ -24,11 +26,14 @@ public class Game {
 	public ItextureHandler itextureHandler;
 	public String gamePath;
 	public String currentFile;
+	public ConvertedTocFile currentToc;
+	public ConvertedSBpart currentSB;
 	public HashMap<String, String> ebxFileGUIDs;
 			
 	public Game(){
 		gamePath = "C:/Program Files (x86)/Origin Games/Battlefield 4";
 		//gamePath = "D:/Battlefield Hardline Digital Deluxe";
+		
 		
 		modelHandler = new ModelHandler();
 		
@@ -84,6 +89,9 @@ public class Game {
 	}
 	
 	public void buildExplorerTree(){
+		currentToc = null;
+		currentSB = null;
+		
 		/*Build up Explorer*/
 		TreeItem<TreeViewEntry> explorerTree = new TreeItem<TreeViewEntry>(new TreeViewEntry(gamePath+"/Data/", null, null, EntryType.LIST));
 		for (File file : FileHandler.listf(gamePath+"/Data/", ".sb")){
@@ -99,6 +107,12 @@ public class Game {
 		}
 		Main.getJavaFXHandler().setTreeViewStructureLeft(explorerTree);
 		Main.getJavaFXHandler().getMainWindow().updateLeftRoot();
+		
+		Main.getJavaFXHandler().setTreeViewStructureLeft1(null);
+		Main.getJavaFXHandler().getMainWindow().updateLeftRoot1();
+		
+		Main.getJavaFXHandler().setTreeViewStructureRight(null);
+		Main.getJavaFXHandler().getMainWindow().updateRightRoot();
 	}
 	
 	
@@ -159,6 +173,27 @@ public class Game {
 	public HashMap<String, String> getEBXFileGUIDs() {
 		return ebxFileGUIDs;
 	}
+
+
+	public ConvertedTocFile getCurrentToc() {
+		return currentToc;
+	}
+
+
+	public void setCurrentToc(ConvertedTocFile currentToc) {
+		this.currentToc = currentToc;
+	}
+
+
+	public ConvertedSBpart getCurrentSB() {
+		return currentSB;
+	}
+
+
+	public void setCurrentSB(ConvertedSBpart currentSB) {
+		this.currentSB = currentSB;
+	}
+	
 	
 	
 	/*End of Game*/

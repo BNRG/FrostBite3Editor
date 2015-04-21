@@ -2,11 +2,16 @@ package tk.captainsplexx.JavaFX.CellFactories;
 
 import java.nio.ByteOrder;
 
+import tk.captainsplexx.Game.Game;
+import tk.captainsplexx.Game.Main;
 import tk.captainsplexx.JavaFX.JavaFXHandler;
+import tk.captainsplexx.JavaFX.TreeViewConverter;
 import tk.captainsplexx.JavaFX.TreeViewEntry;
 import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
 import tk.captainsplexx.JavaFX.JavaFXMainWindow.WorkDropType;
 import tk.captainsplexx.Resource.FileHandler;
+import tk.captainsplexx.Resource.CAS.CasDataReader;
+import tk.captainsplexx.Resource.TOC.ResourceLink;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
@@ -152,7 +157,23 @@ public class JavaFXebxTCF extends TreeCell<TreeViewEntry> {
             follow.setGraphic(new ImageView(JavaFXHandler.rightArrowIcon));
             follow.setOnAction(new EventHandler<ActionEvent>() {
                 public void handle(ActionEvent t) {
-                	System.out.println("FOLLOW GUID");
+                	try{
+	                	String[] target = ((String)getTreeItem().getValue().getValue()).split(" ");
+	                	if (target.length>1 && target[0].contains("/")){ //IS NOT AT NULL GUID OR IS NOT REFERENCED
+	                		Game game = Main.getGame();
+	                		for (ResourceLink ebxLink : game.getCurrentSB().getEbx()){
+	                			if (ebxLink.getName().toLowerCase().equals(target[0].toLowerCase())){
+									byte[] data = CasDataReader.readCas(ebxLink.getSha1(), game.getGamePath()+"/Data", game.getResourceHandler().getCasCatManager().getEntries());
+									TreeItem<TreeViewEntry> ebx = TreeViewConverter.getTreeView(game.getResourceHandler().getEBXHandler().loadFile(data));
+									Main.getJavaFXHandler().setTreeViewStructureRight(ebx);
+									Main.getJavaFXHandler().getMainWindow().updateRightRoot();
+	                				break;
+	                			}
+	                		}
+	                	}
+                	}catch (Exception e){
+                		System.out.println("Invaild link to follow.");
+                	}
                 }
             });
             

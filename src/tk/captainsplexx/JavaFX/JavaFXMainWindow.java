@@ -199,7 +199,9 @@ public class JavaFXMainWindow extends Application{
 			@Override
 			public void run() {
 				rightController.getEBXExplorer().setRoot(Main.getJavaFXHandler().getTreeViewStructureRight());
-				rightController.getEBXExplorer().getRoot().setExpanded(true);
+				if (rightController.getEBXExplorer().getRoot() != null){
+					rightController.getEBXExplorer().getRoot().setExpanded(true);
+				}
 			}
 		});	
 	}
@@ -210,7 +212,9 @@ public class JavaFXMainWindow extends Application{
 			public void run() {
 				leftController.getExplorer().setRoot(Main.getJavaFXHandler().getTreeViewStructureLeft());
 				leftController.getExplorer().scrollTo(0);
-				leftController.getExplorer().getRoot().setExpanded(true);
+				if (leftController.getExplorer().getRoot() != null){
+					leftController.getExplorer().getRoot().setExpanded(true);
+				}
 			}
 		});	
 	}
@@ -220,7 +224,9 @@ public class JavaFXMainWindow extends Application{
 			@Override
 			public void run() {
 				leftController.getExplorer1().setRoot(Main.getJavaFXHandler().getTreeViewStructureLeft1());
-				leftController.getExplorer1().getRoot().setExpanded(true);
+				if (leftController.getExplorer1().getRoot() != null){
+					leftController.getExplorer1().getRoot().setExpanded(true);
+				}
 			}
 		});	
 	}
