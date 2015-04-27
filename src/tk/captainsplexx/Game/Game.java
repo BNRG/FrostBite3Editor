@@ -32,8 +32,8 @@ public class Game {
 	public HashMap<String, String> chunkGUIDSHA1;
 			
 	public Game(){
-		//gamePath = "C:/Program Files (x86)/Origin Games/Battlefield 4";
-		gamePath = "C:/Program Files (x86)/Origin Games/Battlefield 4 CTE";
+		gamePath = "C:/Program Files (x86)/Origin Games/Battlefield 4";
+		//gamePath = "C:/Program Files (x86)/Origin Games/Battlefield 4 CTE";
 		//gamePath = "D:/Battlefield Hardline Digital Deluxe";
 		
 		
