@@ -13,6 +13,7 @@ import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.ResourceHandler.ResourceType;
 import tk.captainsplexx.Resource.CAS.CasDataReader;
+import tk.captainsplexx.Resource.ITEXTURE.ItextureHandler;
 import tk.captainsplexx.Resource.TOC.ResourceLink;
 import tk.captainsplexx.Resource.TOC.TocConverter.ResourceBundleType;
 
@@ -41,8 +42,9 @@ public class JavaFXexplorer1TCF extends TreeCell<TreeViewEntry> {
 								Game game = Main.getGame();
 								ResourceLink link = (ResourceLink) i.getValue().getValue();
 								if (link.getType() == ResourceType.ITEXTURE){
-									System.out.println(link.getSha1());
-									System.out.println(FileHandler.bytesToHex(CasDataReader.readCas(link.getSha1(), game.getGamePath()+"/Data", game.getResourceHandler().getCasCatManager().getEntries())));
+									byte[] itexture = CasDataReader.readCas(link.getSha1(), game.getGamePath()+"/Data", game.getResourceHandler().getCasCatManager().getEntries());
+									System.out.println("Itexture: "+FileHandler.bytesToHex(itexture));
+									FileHandler.writeFile("D:/TEST.dds", ItextureHandler.getDSS(itexture, game.getGamePath()+"/Data", game.getResourceHandler().getCasCatManager().getEntries()));
 								}
 								Main.getJavaFXHandler().getMainWindow().toggleResToolsVisibility();
 							}else if (i.getParent().getValue().getType() == EntryType.LIST){
@@ -67,7 +69,10 @@ public class JavaFXexplorer1TCF extends TreeCell<TreeViewEntry> {
     	}else {
 	    	setText(item.getName());
 		    setGraphic(item.getGraphic());
-		    setTooltip(new Tooltip(item.getTooltip()));
+		    String tooltip = item.getTooltip();
+		    if (tooltip != null){
+		    	 setTooltip(new Tooltip(tooltip));
+		    }
 	    }
 	}
 }

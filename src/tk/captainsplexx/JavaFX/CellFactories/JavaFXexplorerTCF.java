@@ -25,35 +25,37 @@ public class JavaFXexplorerTCF extends TreeCell<TreeViewEntry> {
 		setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				if (getTreeItem().getChildren().isEmpty() && getTreeItem().getValue().getValue() instanceof TocSBLink){
-					//TOC MODE
-					if (((TocSBLink)getTreeItem().getValue().getValue()).getType() == LinkBundleType.BUNDLES){
-						
-						ConvertedSBpart sbpart = TocConverter.convertSBpart(((TocSBLink)getTreeItem().getValue().getValue()).getLinkedSBPart());
-						Main.getGame().setCurrentSB(sbpart);
-						TreeItem<TreeViewEntry> tree = TreeViewConverter.getTreeView(sbpart);
-						Main.getJavaFXHandler().setTreeViewStructureLeft1(tree);
-						Main.getJavaFXHandler().getMainWindow().updateLeftRoot1();
-					}else{
-						System.err.println(((TocSBLink)getTreeItem().getValue().getValue()).getType()+" are not supported yet.");
-					}
-				}else if (getTreeItem().getChildren().isEmpty() && getTreeItem().getValue().getValue() instanceof File){
-					//EXPLORER MODE
-					Main.getGame().setCurrentFile(((File)getTreeItem().getValue().getValue()).getAbsolutePath().replace(".sb", ""));
-					TocFile toc = TocManager.readToc(Main.getGame().getCurrentFile());
-					ConvertedTocFile convToc = TocConverter.convertTocFile(toc);
-					Main.getGame().setCurrentToc(convToc);
-					TreeItem<TreeViewEntry> masterTree = new TreeItem<TreeViewEntry>(new TreeViewEntry("BACK (Click)", new ImageView(JavaFXHandler.leftArrowIcon), "GO BACK", EntryType.LIST));
-					TreeItem<TreeViewEntry> convTocTree = TreeViewConverter.getTreeView(convToc);
-					convTocTree.setExpanded(true);
-					masterTree.getChildren().add(convTocTree);
-					masterTree.setExpanded(true);
-					Main.getJavaFXHandler().setTreeViewStructureLeft(masterTree);
-					Main.getJavaFXHandler().getMainWindow().updateLeftRoot();
-				}else if (getTreeItem().getValue().getValue() instanceof String){
-					if (((String)getTreeItem().getValue().getValue()).equals("GO BACK")){
-						//BACK
-						Main.getGame().buildExplorerTree();
+				if (getTreeItem() != null){
+					if (getTreeItem().getChildren().isEmpty() && getTreeItem().getValue().getValue() instanceof TocSBLink){
+						//TOC MODE
+						if (((TocSBLink)getTreeItem().getValue().getValue()).getType() == LinkBundleType.BUNDLES){
+							
+							ConvertedSBpart sbpart = TocConverter.convertSBpart(((TocSBLink)getTreeItem().getValue().getValue()).getLinkedSBPart());
+							Main.getGame().setCurrentSB(sbpart);
+							TreeItem<TreeViewEntry> tree = TreeViewConverter.getTreeView(sbpart);
+							Main.getJavaFXHandler().setTreeViewStructureLeft1(tree);
+							Main.getJavaFXHandler().getMainWindow().updateLeftRoot1();
+						}else{
+							System.err.println(((TocSBLink)getTreeItem().getValue().getValue()).getType()+" are not supported yet.");
+						}
+					}else if (getTreeItem().getChildren().isEmpty() && getTreeItem().getValue().getValue() instanceof File){
+						//EXPLORER MODE
+						Main.getGame().setCurrentFile(((File)getTreeItem().getValue().getValue()).getAbsolutePath().replace(".sb", ""));
+						TocFile toc = TocManager.readToc(Main.getGame().getCurrentFile());
+						ConvertedTocFile convToc = TocConverter.convertTocFile(toc);
+						Main.getGame().setCurrentToc(convToc);
+						TreeItem<TreeViewEntry> masterTree = new TreeItem<TreeViewEntry>(new TreeViewEntry("BACK (Click)", new ImageView(JavaFXHandler.leftArrowIcon), "GO BACK", EntryType.LIST));
+						TreeItem<TreeViewEntry> convTocTree = TreeViewConverter.getTreeView(convToc);
+						convTocTree.setExpanded(true);
+						masterTree.getChildren().add(convTocTree);
+						masterTree.setExpanded(true);
+						Main.getJavaFXHandler().setTreeViewStructureLeft(masterTree);
+						Main.getJavaFXHandler().getMainWindow().updateLeftRoot();
+					}else if (getTreeItem().getValue().getValue() instanceof String){
+						if (((String)getTreeItem().getValue().getValue()).equals("GO BACK")){
+							//BACK
+							Main.getGame().buildExplorerTree();
+						}
 					}
 				}
 			}

@@ -8,6 +8,11 @@ public class EBXComplexDescriptor{
 	short type;
 	short size;
 	short secondarySize;
+	public EBXComplexDescriptor(String name){
+		this.name = name;
+		this.size = 0;
+	}
+	
 	public EBXComplexDescriptor(String name, int fieldStartIndex, char numField,
 			char alignment, short type, short size, short secondarySize) {
 		this.name = name;

@@ -29,9 +29,11 @@ public class Game {
 	public ConvertedTocFile currentToc;
 	public ConvertedSBpart currentSB;
 	public HashMap<String, String> ebxFileGUIDs;
+	public HashMap<String, String> chunkGUIDSHA1;
 			
 	public Game(){
-		gamePath = "C:/Program Files (x86)/Origin Games/Battlefield 4";
+		//gamePath = "C:/Program Files (x86)/Origin Games/Battlefield 4";
+		gamePath = "C:/Program Files (x86)/Origin Games/Battlefield 4 CTE";
 		//gamePath = "D:/Battlefield Hardline Digital Deluxe";
 		
 		
@@ -52,6 +54,7 @@ public class Game {
 		
 		resourceHandler.getCasCatManager().readCat(FileHandler.readFile(gamePath+"/Data/cas.cat"));
 		ebxFileGUIDs = new HashMap<String, String>();
+		chunkGUIDSHA1 = new HashMap<String, String>();
 		buildExplorerTree();
 		
 		
@@ -193,6 +196,12 @@ public class Game {
 	public void setCurrentSB(ConvertedSBpart currentSB) {
 		this.currentSB = currentSB;
 	}
+
+
+	public HashMap<String, String> getChunkGUIDSHA1() {
+		return chunkGUIDSHA1;
+	}
+	
 	
 	
 	

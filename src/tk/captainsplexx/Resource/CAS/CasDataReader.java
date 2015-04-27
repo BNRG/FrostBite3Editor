@@ -9,47 +9,65 @@ import tk.captainsplexx.Resource.FileSeeker;
 
 public class CasDataReader { //casPath == folderPath
 	public static byte[] readCas(String SHA1, String casFolderPath, ArrayList<CasCatEntry> casCatEntries){
-		SHA1 = SHA1.replaceAll("\\s","");
-		for (CasCatEntry e : casCatEntries){
-			//SKIP IF NOT SHA1
-			if (!e.getSHA1().equals(SHA1.toLowerCase())){continue;}
-			
-			//CONVERT casPath and number TO casFilePath!
-			String casFile = "";
-			if (e.getCasFile()<10){casFile+="0";}
-			int nr = e.getCasFile();
-			casFile += nr + "";
-			String casFilePath = casFolderPath;
-			if (!casFilePath.endsWith("/")){casFilePath+="/";}
-			casFilePath += "cas_"+ casFile + ".cas";
-			
-			System.out.println("Reading CAS: "+ casFilePath+" for SHA1: "+SHA1);
-			
-			return convertToRAWData(FileHandler.readFile(casFilePath, e.getOffset(), e.getProcSize()), e.getProcSize());
-			//DONE
+		try{
+			SHA1 = SHA1.replaceAll("\\s","");
+			for (CasCatEntry e : casCatEntries){
+				if (!e.getSHA1().equals(SHA1.toLowerCase())){continue;}
+				
+				String casFile = "";
+				if (e.getCasFile()<10){casFile+="0";}
+				casFile += e.getCasFile() + "";
+				String casFilePath = casFolderPath;
+				if (!casFilePath.endsWith("/")){casFilePath+="/";}
+				casFilePath += "cas_"+ casFile + ".cas";
+				
+				System.out.println("Reading CAS: "+ casFilePath+" for SHA1: "+SHA1);
+				if (e.getProcSize()>=0x010000){
+					System.out.println("WARNING: Decompress each block and glue the decompressed parts together to obtain the file.");
+				}
+				
+				//TODO -----------------------------------------------------------------------------------------------------------------------WRONG
+				return convertToRAWData(FileHandler.readFile(casFilePath, e.getOffset(), e.getProcSize()));
+				//DONE
+			}
+			return null;
+		}catch (NullPointerException e){
+			return null;
 		}
-		return null;
 	}
 	
-	public static byte[] convertToRAWData(byte[] encodedEntry, int procSize){ //TAKEs entries with header of type and original size.
+	static byte[] convertToRAWData(byte[] data){
 		FileSeeker seeker = new FileSeeker();
-		byte[] rawData = null;
+		ArrayList<Byte> output = new ArrayList<Byte>();
+		while(seeker.getOffset()<data.length){
+			byte[] decompressedBlock = readBlock(data, seeker);
+			if (decompressedBlock != null){
+				for (Byte b : decompressedBlock){
+					output.add(b);
+				}
+			}
+		}//End of InputStream
+		return FileHandler.convertFromList(output);
+	}
+	
+	public static byte[] readBlock(byte[] encodedEntry, FileSeeker seeker){
 		int decompressedSize = FileHandler.readInt(encodedEntry, seeker, ByteOrder.BIG_ENDIAN);
 		int compressionType = FileHandler.readShort(encodedEntry, seeker, ByteOrder.BIG_ENDIAN);
-		int compressedSize = FileHandler.readShort(encodedEntry, seeker, ByteOrder.LITTLE_ENDIAN); //TODO maybe LEB128 encoded ??! ------------------------------------------------------
+		int compressedSize = FileHandler.readShort(encodedEntry, seeker, ByteOrder.BIG_ENDIAN) & 0xFFFF;
 		if (compressionType == 0x0970){//COMPRESSED
-			LZ4 lz4Handler = new LZ4();
-			rawData = lz4Handler.decompress(FileHandler.readByte(encodedEntry, seeker, procSize-seeker.getOffset()));
+			//rawData = LZ4.decompress(FileHandler.readByte(encodedEntry, seeker, procSize-seeker.getOffset()));
+			byte[] rawData = LZ4.decompress(FileHandler.readByte(encodedEntry, seeker, compressedSize));
 			if (rawData.length<decompressedSize){
 				System.err.println("Decompressed file size does not match the cas.cat given one. "+rawData.length+" of "+decompressedSize+" Bytes loaded.");
 			}
 			return rawData;
 		}else if (compressionType == 0x0070 || compressionType == 0x0071){//UNCOMPRESSED
-			return FileHandler.readByte(encodedEntry, seeker, procSize-seeker.getOffset());
+			//return FileHandler.readByte(encodedEntry, seeker, procSize-seeker.getOffset());
+			return FileHandler.readByte(encodedEntry, seeker, compressedSize);
 		}else{ // 0x0000 - emty payload
-			seeker.setOffset(seeker.getOffset()-2); //NULL compressionSize
+			//seeker.setOffset(seeker.getOffset()-2); //NULL compressionSize
 			System.err.println("CasDataReader needs some help. 0x0000 emty payload"); //TODO
+			return FileHandler.readByte(encodedEntry, seeker, compressedSize);
 		}
-		return rawData;
 	}
 }

@@ -84,14 +84,14 @@
                     </tabs>
                   </TabPane>
                </children></AnchorPane>
-        <ScrollPane prefHeight="350.0" prefWidth="277.0">
+        <ScrollPane prefHeight="600.0" prefWidth="277.0">
           <content>
             <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0">
                      <opaqueInsets>
                         <Insets />
                      </opaqueInsets>
                      <children>
-                        <TreeView fx:id="explorer" />
+                        <TreeView fx:id="explorer" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                      </children>
             </AnchorPane>
           </content>

@@ -118,11 +118,15 @@ public class FileHandler {
 	    return data;
 	}
 	public static String bytesToHex(byte[] in) {
-		final StringBuilder builder = new StringBuilder();
-		for (byte b : in) {
-			builder.append(String.format("%02x", b));
+		try{
+			final StringBuilder builder = new StringBuilder();
+			for (byte b : in) {
+				builder.append(String.format("%02x", b));
+			}
+			return builder.toString();
+		}catch (NullPointerException e){
+			return "";
 		}
-		return builder.toString();
 	}
 	public static int readInt(byte[] fileArray, FileSeeker seeker) {
 		return ByteBuffer.wrap(readByte(fileArray, seeker, 4))
@@ -134,7 +138,7 @@ public class FileHandler {
 		return bytesToHex(readByte(fileArray, seeker, 20));
 	}
 	
-	public static byte[] convertToBytes(int value, ByteOrder order)
+	public static byte[] toBytes(int value, ByteOrder order)
     {
         byte[] byteArray = new byte[4];
         int shift = 0;
@@ -150,9 +154,18 @@ public class FileHandler {
         }
         return byteArray;
  
+        
     }
 	
-	public static byte[] convertToBytes(short value, ByteOrder order){ //TODO not tested
+	public static int readHeigh(byte b){
+		return b >> 4 & 0xF;
+	}
+	
+	public static int readLow(byte b){
+		return b & 0x0F;
+	}
+	
+	public static byte[] toBytes(short value, ByteOrder order){ //TODO not tested
 		byte[] bytes = new byte[2];
 		
 		if (order == ByteOrder.BIG_ENDIAN){
@@ -172,31 +185,7 @@ public class FileHandler {
 		}
 		return output;
 	}
-	
-	public static byte[] toBytes(int i, ByteOrder order)
-	{
-	  byte[] result = new byte[4];
-
-	  result[0] = (byte) (i >> 24);
-	  result[1] = (byte) (i >> 16);
-	  result[2] = (byte) (i >> 8);
-	  result[3] = (byte) (i /*>> 0*/);
-	  return ByteBuffer.wrap(result).order(order).array();
-	}
-	
-	public static byte[] toBytes(short s, ByteOrder order){
-		byte[] bArray = new byte[2];
-		byte[] sArray = toBytes((int) s, order);
-		if (order == ByteOrder.BIG_ENDIAN){
-			bArray[0] = sArray[2];
-			bArray[1] = sArray[3];
-		}else{
-			bArray[0] = sArray[0];
-			bArray[1] = sArray[1];
-		}
-		return bArray;
-	}
-	
+			
 	public static byte[] toByteArray(ArrayList<Byte> in) {
 	    final int n = in.size();
 	    byte ret[] = new byte[n];

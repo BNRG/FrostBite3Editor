@@ -22,8 +22,10 @@ public class JavaFXHandler {
 	public static final Image doubleIcon = new Image(FileHandler.getStream("res/images/document-attribute-d.png"));
 	public static final Image floatIcon = new Image(FileHandler.getStream("res/images/document-attribute-f.png"));
 	public static final Image integerIcon = new Image(FileHandler.getStream("res/images/document-attribute-i.png"));
+	public static final Image uintegerIcon = new Image(FileHandler.getStream("res/images/document-attribute-i_unsigned.png"));
 	public static final Image longIcon = new Image(FileHandler.getStream("res/images/document-attribute-l.png"));
 	public static final Image shortIcon = new Image(FileHandler.getStream("res/images/document-attribute-s.png"));
+	public static final Image ushortIcon = new Image(FileHandler.getStream("res/images/document-attribute-s_unsigned.png"));
 	public static final Image arrayIcon = new Image(FileHandler.getStream("res/images/edit-code.png"));
 	public static final Image instanceIcon = new Image(FileHandler.getStream("res/images/box.png"));
 	public static final Image listIcon = new Image(FileHandler.getStream("res/images/wooden-box.png"));
@@ -35,6 +37,7 @@ public class JavaFXHandler {
 	public static final Image geometryIcon = new Image(FileHandler.getStream("res/images/xyz.png"));
 	public static final Image geometry2Icon = new Image(FileHandler.getStream("res/images/xyz2.png"));
 	public static final Image luaIcon = new Image(FileHandler.getStream("res/images/lua.png"));
+	public static final Image enumIcon = new Image(FileHandler.getStream("res/images/enum.png"));
 	 
 	public static final Image pencilIcon = new Image(FileHandler.getStream("res/images/pencil.png"));
 	public static final Image removeIcon = new Image(FileHandler.getStream("res/images/cross.png"));

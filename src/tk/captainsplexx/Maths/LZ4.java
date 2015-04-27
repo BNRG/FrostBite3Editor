@@ -6,13 +6,8 @@ import java.util.ArrayList;
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.FileSeeker;
 
-public class LZ4 {
-	public ArrayList<Byte> output;
-	private FileSeeker seeker;
-	private int procced;
-	private boolean first;
-	
-	public byte[] decompress(byte[] input){
+public class LZ4 {	
+	public static byte[] decompress(byte[] input){
 		/*
 		All individual files are compressed with an LZ77 algorithm.
 
@@ -68,18 +63,19 @@ public class LZ4 {
 			Copy length: 2 + 4 = 6
 			
 		*/
+
 		
-		this.seeker = new FileSeeker(); //Keep track of current offset in input file!
-		this.output = new ArrayList<Byte>(); //return element
-		this.procced = 0;
-		first = true;
+		FileSeeker seeker = new FileSeeker(); //Keep track of current offset in input file!
+		ArrayList<Byte> output = new ArrayList<Byte>(); //return element
+		int procced = 0;
+		boolean first = true;
 		int nextAmount = 0;
 		boolean extInc = false;
 		while (true){
 			if (first){ //Start of new LZ4 file ? - procced |..header..|
 				byte a = FileHandler.readByte(input, seeker);
-				procced = readHeigh(a); //How many bytes should be copied directly from input ? 1111-0000
-				nextAmount = readLow(a); //Get next copy lenght.	0000-1111
+				procced = FileHandler.readHeigh(a); //How many bytes should be copied directly from input ? 1111-0000
+				nextAmount = FileHandler.readLow(a); //Get next copy lenght.	0000-1111
 				if (nextAmount == 0x0F){
 					extInc = true; //copy lenght is bigger as 15 -> add byte after offset for next operation.
 				}
@@ -104,7 +100,7 @@ public class LZ4 {
 				break;
 			}
 			if (procced == 0){//begin next operation
-				int offset = FileHandler.readShort(input, seeker, ByteOrder.LITTLE_ENDIAN);
+				int offset = FileHandler.readShort(input, seeker, ByteOrder.LITTLE_ENDIAN) & 0xFFFF;
 				if (extInc){ //is external increased copy lenght ? -> +byte after offset
 					while (true){
 						int am = FileHandler.readByte(input, seeker) & 0xFF; //unsigned
@@ -116,8 +112,8 @@ public class LZ4 {
 					extInc = false;
 				}
 				byte b = FileHandler.readByte(input, seeker);
-				procced = readHeigh(b);
-				nextAmount = readLow(b);
+				procced = FileHandler.readHeigh(b);
+				nextAmount = FileHandler.readLow(b);
 				if (nextAmount == 0x0F){
 					extInc = true;
 				}
@@ -134,24 +130,17 @@ public class LZ4 {
 				if (!first){ //decompression
 					int offsetBuffer = output.size()-offset;
 					for (int i=0; i <amount; i++){
-						output.add(output.get(offsetBuffer+(i%offset)));
+						try{
+							output.add(output.get(offsetBuffer+(i%offset)));
+						}catch (IndexOutOfBoundsException e){
+							System.err.println("Current Index is out of bounds in LZ4 Decompression. Index: "+(offsetBuffer+(i%offset))+" Size: "+output.size());
+							break;
+						}
 					}
 				}
 			}
 		}
-		
-		byte[] data = new byte[output.size()];
-		for (int i = 0; i < data.length; i++) {
-		    data[i] = (byte) output.get(i);
-		}
-		return data;		
+		return FileHandler.toByteArray(output);		
 	}
 	
-	int readHeigh(byte b){
-		return b >> 4 & 0xF;
-	}
-	
-	int readLow(byte b){
-		return b & 0x0F;
-	}
 }

@@ -159,7 +159,9 @@ public class TocConverter {
 			switch(type){
 				case CHUNKS:
 					for (TocField field :  entry.getFields()){
-						if (field.getName().toLowerCase().equals("sha1") && field.getType() == TocFieldType.STRING){
+						if (field.getName().toLowerCase().equals("sha1") && field.getType() == TocFieldType.SHA1){
+							link.setSha1((String) field.getObj());
+						}else if (field.getName().toLowerCase().equals("sha1") && field.getType() == TocFieldType.STRING){
 							link.setSha1((String) field.getObj());
 						}else if (field.getName().toLowerCase().equals("id") && field.getType() == TocFieldType.GUID){
 							link.setId((String) field.getObj());
@@ -171,6 +173,7 @@ public class TocConverter {
 							link.setLogicalSize((Integer) field.getObj());
 						}
 					}
+					Main.getGame().getChunkGUIDSHA1().put(link.getId().toLowerCase(), link.getSha1());
 					break;
 				case CHUNKMETA:
 					for (TocField field :  entry.getFields()){

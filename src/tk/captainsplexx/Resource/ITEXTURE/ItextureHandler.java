@@ -3,6 +3,7 @@ package tk.captainsplexx.Resource.ITEXTURE;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 
+import tk.captainsplexx.Game.Main;
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.FileSeeker;
 import tk.captainsplexx.Resource.CAS.CasCatEntry;
@@ -39,55 +40,67 @@ public class ItextureHandler {
         seeker.setOffset(28);
         String guid = FileHandler.bytesToHex(FileHandler.readByte(itextureData, seeker, 16));
         
-        String sha1 = ""; //TODO
+        String sha1 = Main.getGame().getChunkGUIDSHA1().get(guid.toLowerCase());
         
-        /*Chunks may only store GUID for reference to SHA1 ?*/
+        /*for (String key :  Main.getGame().getChunkGUIDSHA1().keySet()){
+        	System.err.println("GUID: "+key+" Sha1: "+Main.getGame().getChunkGUIDSHA1().get(key));
+        }*/
+        if (sha1 == null){
+        	//SHA1 could not found in 'CHUNK GUID -> SHA1' DB :(
+        	return null;
+        }     
         
         byte[] data = CasDataReader.readCas(sha1, casPath, casCatEntries);
         
-        ArrayList<Byte> output = new ArrayList<Byte>();
+        FileHandler.writeFile("D:/TEST_raw_data.dds", data);
         
-        for(byte b : dds_template) {
-        	output.add(new Byte(b));
-        }
-        for(byte b : FileHandler.convertToBytes(dds_height, ByteOrder.LITTLE_ENDIAN)) {
-        	output.add(new Byte(b));
-        }
-        for(byte b : FileHandler.convertToBytes(dds_width, ByteOrder.LITTLE_ENDIAN)) {
-        	output.add(new Byte(b));
-        }
-        for(byte b : dds_template1) {
-        	output.add(new Byte(b));
-        }
-        
-        
-        /* TYPES */ 
-        if (dds_type == 0 || dds_type == 20){
-	        for(byte b : dds_DXT1) {
+        if (data != null){
+	        ArrayList<Byte> output = new ArrayList<Byte>();
+	        
+	        for(byte b : dds_template) {
 	        	output.add(new Byte(b));
 	        }
-        }else if (dds_type == 19){
-	        for(byte b : dds_ATI2) {
+	        for(byte b : FileHandler.toBytes((int)dds_height, ByteOrder.LITTLE_ENDIAN)) {
 	        	output.add(new Byte(b));
 	        }
-        }else if (dds_type == 3){
-	        for(byte b : dds_DXT5) {
+	        for(byte b : FileHandler.toBytes((int)dds_width, ByteOrder.LITTLE_ENDIAN)) {
 	        	output.add(new Byte(b));
 	        }
+	        for(byte b : dds_template1) {
+	        	output.add(new Byte(b));
+	        }
+	        
+	        
+	        /* TYPES */ 
+	        if (dds_type == 0 || dds_type == 20){
+		        for(byte b : dds_DXT1) {
+		        	output.add(new Byte(b));
+		        }
+	        }else if (dds_type == 19){
+		        for(byte b : dds_ATI2) {
+		        	output.add(new Byte(b));
+		        }
+	        }else if (dds_type == 3){
+		        for(byte b : dds_DXT5) {
+		        	output.add(new Byte(b));
+		        }
+	        }
+	        /* End of TYPTES */
+	        
+	        
+	        
+	        for(byte b : dds_template2) {
+	        	output.add(new Byte(b));
+	        }
+	        for(byte b : data) {
+	        	output.add(new Byte(b));
+	        }        	
+	                
+	        
+	        return FileHandler.convertFromList(output);
+        }else{
+        	return null;
         }
-        /* End of TYPTES */
-        
-        
-        
-        for(byte b : dds_template2) {
-        	output.add(new Byte(b));
-        }
-        for(byte b : data) {
-        	output.add(new Byte(b));
-        }        	
-                
-        
-        return FileHandler.convertFromList(output);
 	}
 	
 }

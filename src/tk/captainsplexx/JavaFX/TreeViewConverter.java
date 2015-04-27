@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import tk.captainsplexx.Game.Main;
 import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
 import tk.captainsplexx.Resource.FileHandler;
+import tk.captainsplexx.Resource.EBX.EBXComplex;
+import tk.captainsplexx.Resource.EBX.EBXComplexDescriptor;
 import tk.captainsplexx.Resource.EBX.EBXField;
 import tk.captainsplexx.Resource.EBX.EBXFieldDescriptor;
 import tk.captainsplexx.Resource.EBX.EBXFile;
@@ -130,9 +132,9 @@ public class TreeViewConverter {
 						return complexFields;
 					case Enum:
 						if (ebxField.getValue() instanceof EBXFieldDescriptor){
-							entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), null, ((EBXFieldDescriptor)ebxField.getValue()).getName(), EntryType.ENUM);
+							entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), new ImageView(JavaFXHandler.enumIcon), ((EBXFieldDescriptor)ebxField.getValue()).getName(), EntryType.ENUM);
 						}else{
-							entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), null, (String)ebxField.getValue(), EntryType.ENUM);
+							entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), new ImageView(JavaFXHandler.enumIcon), (String)ebxField.getValue(), EntryType.ENUM);
 						}
 						break;
 					case Float:
@@ -157,14 +159,16 @@ public class TreeViewConverter {
 						entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), new ImageView(JavaFXHandler.textIcon), (String)ebxField.getValue(), EntryType.STRING);
 						break;
 					case UInteger:
-						entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), null, (Integer)ebxField.getValue(), EntryType.UINTEGER);
+						entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), new ImageView(JavaFXHandler.uintegerIcon), (Integer)ebxField.getValue(), EntryType.UINTEGER);
 						break;
 					case Unknown:
 						break;
 					default:
 						break;
 				}
-				entry.setEBXType((short) (ebxField.getFieldDescritor().getType()&0xFFFF));
+				if (entry != null){
+					entry.setEBXType((short) (ebxField.getFieldDescritor().getType()&0xFFFF));
+				}
 				TreeItem<TreeViewEntry> field = new TreeItem<TreeViewEntry>(entry);
 				return field;
 			}catch (Exception e){
@@ -182,6 +186,96 @@ public class TreeViewConverter {
 		}
 	}
 	/*END OF EBX*/
+	
+	/*ENCODE TO EBX*/
+	public static EBXFile getEBXFile(TreeItem<TreeViewEntry> rootEntry){
+		try{
+			ArrayList<EBXInstance> instances = new ArrayList<>();
+			for (TreeItem<TreeViewEntry> instance : rootEntry.getChildren()){
+				EBXInstance ebxInstance = getEBXInstance(instance);
+				if (ebxInstance != null){
+					instances.add(ebxInstance);
+				}
+			}
+			EBXFile file = new EBXFile(rootEntry.getValue().getName(), instances);
+			return file;
+		}catch (Exception e){
+			e.printStackTrace();
+			System.err.println("Error while converting TreeViewStructure to EBXFile.");
+		}
+		return null;
+	}
+	
+	static EBXInstance getEBXInstance(TreeItem<TreeViewEntry> childEntry){
+		try{
+			EBXComplex complex = getEBXComplex(childEntry);
+			EBXInstance ebxInstance = new EBXInstance(childEntry.getValue().getName().split(" ")[1], complex);
+			return ebxInstance;
+		}catch (Exception e){
+			e.printStackTrace();
+			System.out.println("Error while converting TreeViewStructure to EBXInstance.");
+			return null;
+		}
+		
+	}
+	
+	static EBXComplex getEBXComplex(TreeItem<TreeViewEntry> complexEntry){
+		try{
+			EBXComplexDescriptor complexDescriptor = new EBXComplexDescriptor(complexEntry.getValue().getName().split(" ")[0]);
+			//complexDescriptor.setType(type);
+			EBXComplex complex = new EBXComplex(complexDescriptor);
+			return complex;
+		}catch (Exception e){
+			e.printStackTrace();
+			System.out.println("Error while converting TreeViewStructure to EBXComplex.");
+			return null;
+		}
+	}
+	
+	static EBXField getEBXField(TreeItem<TreeViewEntry> fieldEntry){
+		switch (fieldEntry.getValue().getType()) {
+			case ARRAY:
+				break;
+			case BOOL:
+				break;
+			case BYTE:
+				break;
+			case CHUNKGUID:
+				break;
+			case DOUBLE:
+				break;
+			case ENUM:
+				break;
+			case FLOAT:
+				break;
+			case GUID:
+				break;
+			case HEX8:
+				break;
+			case INTEGER:
+				break;
+			case LIST:
+				break;
+			case LONG:
+				break;
+			case NULL:
+				break;
+			case RAW:
+				break;
+			case SHA1:
+				break;
+			case SHORT:
+				break;
+			case STRING:
+				break;
+			case UINTEGER:
+				break;
+			default:
+				break;
+			}
+		return null;
+	}
+	/*END OF ENCODE TO EBX*/
 	
 	/*ENCODE TO TOC*/
 	public static TocFile getTocFile(TreeItem<TreeViewEntry> rootEntry, TocFileType type){
@@ -331,7 +425,7 @@ public class TreeViewConverter {
 		TreeItem<TreeViewEntry> chunks = new TreeItem<TreeViewEntry>(new TreeViewEntry("chunks - "+part.getChunks().size()+" Children", new ImageView(JavaFXHandler.listIcon), null, EntryType.LIST));
 		for (ResourceLink link : part.getChunks()){
 			chunks.getChildren().add(new TreeItem<TreeViewEntry>(
-					new TreeViewEntry(link.getId()+"(offset: 0x"+FileHandler.toHexInteger(link.getLogicalOffset())+" , size: 0x"+FileHandler.toHexInteger(link.getLogicalSize())+")", 
+					new TreeViewEntry(link.getId()+" SHA1: "+link.getSha1()+" (offset: 0x"+FileHandler.toHexInteger(link.getLogicalOffset())+" , size: 0x"+FileHandler.toHexInteger(link.getLogicalSize())+")", 
 							new ImageView(JavaFXHandler.instanceIcon), link, EntryType.STRING)));
 		}
 		rootnode.getChildren().add(chunks);

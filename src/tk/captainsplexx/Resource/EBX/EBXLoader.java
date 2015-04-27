@@ -265,6 +265,7 @@ public class EBXLoader {
 						break;
 					}
 				}
+				field.setValue("ERROR ENUM", FieldValueType.Enum);
 			}
 		}else if (fieldDesc.getType()== (short) 0xC15D){ //GUID CHUNK
 			field.setValue(FileHandler.bytesToHex(FileHandler.readByte(ebxFileBytes, seeker,16)), FieldValueType.ChunkGuid);

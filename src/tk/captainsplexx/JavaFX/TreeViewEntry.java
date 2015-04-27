@@ -20,7 +20,7 @@ public class TreeViewEntry implements Cloneable{
 		this.value = value;
 		this.type = type;
 		this.ebxType = 0;
-		this.tooltip = "";
+		this.tooltip = null;
 	}
 	
 	
