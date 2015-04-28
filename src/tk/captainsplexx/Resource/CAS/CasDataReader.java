@@ -37,7 +37,7 @@ public class CasDataReader { //casPath == folderPath
 	}
 	
 	static byte[] convertToRAWData(byte[] data){
-		FileSeeker seeker = new FileSeeker();
+		FileSeeker seeker = new FileSeeker("CasDataReader");
 		ArrayList<Byte> output = new ArrayList<Byte>();
 		while(seeker.getOffset()<data.length){
 			byte[] decompressedBlock = readBlock(data, seeker);
@@ -45,6 +45,8 @@ public class CasDataReader { //casPath == folderPath
 				for (Byte b : decompressedBlock){
 					output.add(b);
 				}
+			}else{
+				System.err.println("Could not read from given block!");
 			}
 		}//End of InputStream
 		return FileHandler.convertFromList(output);

@@ -62,7 +62,11 @@ public class FileHandler {
 			fos.write(arr);
 			fos.close();
 			return true;
-		} catch (Exception e) {
+		} catch (NullPointerException e) {
+			System.err.println("could not write data to file: "+filepath+" because of nullpointer.");
+			return false;
+		}catch (Exception e) {
+			e.printStackTrace();
 			System.err.println("could not write data to file: "+filepath);
 			return false;
 		}	
@@ -84,8 +88,11 @@ public class FileHandler {
 		try {
 			b = input[seeker.getOffset()];
 		} catch (Exception e) {
-			e.printStackTrace();
-			System.err.println("ReadByte out of bounds. " + seeker.getOffset());
+			String out = "Exception while reader byte from inputStream at " + seeker.getOffset();
+			if (seeker.getDescription()!=null){
+				out+=" ("+seeker.getDescription()+")";
+			}
+			System.err.println(out);
 		}
 		seeker.seek(1);
 		return b;
@@ -153,8 +160,24 @@ public class FileHandler {
             byteArray[i] = (byte) (value >>> shift);
         }
         return byteArray;
+    }
+	
+	public static byte[] toBytes(long value, ByteOrder order)
+    {
+		//TODO not tested.
+        byte[] byteArray = new byte[8];
+        int shift = 0;
+        for (int i = 0; i < byteArray.length;
+             i++) {
  
-        
+            if (order == ByteOrder.BIG_ENDIAN)
+                shift = (byteArray.length - 1 - i) * 16;
+            else
+                shift = i * 16;
+ 
+            byteArray[i] = (byte) (value >>> shift);
+        }
+        return byteArray;
     }
 	
 	public static int readHeigh(byte b){
@@ -195,7 +218,8 @@ public class FileHandler {
 	    return ret;
 	}
 	
-	public static int readLEB128(byte[] fileArray, FileSeeker seeker){ //Read the next few bytes as LEB128/7bit encoding and return an integer.
+	public static int readLEB128(byte[] fileArray, FileSeeker seeker){
+		//Read the next few bytes as LEB128/7bit encoding and return an integer.
 		int result = 0;
 		int shift = 0;
 		while(true){
@@ -206,6 +230,23 @@ public class FileHandler {
 			}
 			shift += 7;
 		}
+	}
+	
+	public static ArrayList<Byte> toLEB128List(int uinteger) {
+        ArrayList<Byte> out = new ArrayList<Byte>();
+		int remaining = uinteger >>> 7;
+
+        while (remaining != 0) {
+        	out.add(((byte) ((uinteger & 0x7f) | 0x80)));
+            uinteger = remaining;
+            remaining >>>= 7;
+        }
+        out.add((byte) (uinteger & 0x7f));
+        return out;
+    }
+	
+	public static byte[] toLEB128Bytes(int uinteger){
+		return FileHandler.toByteArray(FileHandler.toLEB128List(uinteger));
 	}
 	
 	public static float convertHalfToFloat(short half) {

@@ -43,7 +43,7 @@ public class JavaFXexplorer1TCF extends TreeCell<TreeViewEntry> {
 								ResourceLink link = (ResourceLink) i.getValue().getValue();
 								if (link.getType() == ResourceType.ITEXTURE){
 									byte[] itexture = CasDataReader.readCas(link.getSha1(), game.getGamePath()+"/Data", game.getResourceHandler().getCasCatManager().getEntries());
-									System.out.println("Itexture: "+FileHandler.bytesToHex(itexture));
+									//System.out.println("Itexture: "+FileHandler.bytesToHex(itexture));
 									FileHandler.writeFile("D:/TEST.dds", ItextureHandler.getDSS(itexture, game.getGamePath()+"/Data", game.getResourceHandler().getCasCatManager().getEntries()));
 								}
 								Main.getJavaFXHandler().getMainWindow().toggleResToolsVisibility();

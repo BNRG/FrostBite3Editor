@@ -6,6 +6,7 @@ import tk.captainsplexx.Resource.TOC.TocManager.TocFileType;
 
 public class TocFile {
 	public ArrayList<TocEntry> entries;
+	//entries could be only one root entry, but may needed in other frostbite games :)
 	public TocFileType type;
 	public String sbpath;
 	

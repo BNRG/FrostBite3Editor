@@ -134,7 +134,7 @@ public class LZ4 {
 							output.add(output.get(offsetBuffer+(i%offset)));
 						}catch (IndexOutOfBoundsException e){
 							System.err.println("Current Index is out of bounds in LZ4 Decompression. Index: "+(offsetBuffer+(i%offset))+" Size: "+output.size());
-							break;
+							return null;
 						}
 					}
 				}

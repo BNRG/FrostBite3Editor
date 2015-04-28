@@ -43,7 +43,7 @@ public class TocConverter {
 						}
 					}
 				}else if (field.getName().toLowerCase().equals("tag") && field.getType() == TocFieldType.GUID){
-					convToc.setName((String)field.getObj());
+					convToc.setTag((String)field.getObj());
 				}else if (field.getName().toLowerCase().equals("totalsize") && field.getType() == TocFieldType.LONG){
 					convToc.setTotalSize((Long)field.getObj());
 				}else{
@@ -240,7 +240,7 @@ public class TocConverter {
 							link.setResMeta((byte[]) field.getObj());
 						}else if (field.getName().toLowerCase().equals("resrid") && field.getType() == TocFieldType.LONG){
 							link.setResRid((long) field.getObj());
-						}else if (field.getName().toLowerCase().equals("idata") && field.getType() == TocFieldType.RAW){
+						}else if (field.getName().toLowerCase().equals("idata") && field.getType() == TocFieldType.RAW2){
 							link.setIdata((byte[]) field.getObj());
 						}
 					}

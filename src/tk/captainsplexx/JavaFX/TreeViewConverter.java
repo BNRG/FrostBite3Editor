@@ -80,6 +80,9 @@ public class TreeViewConverter {
 			case RAW:
 				entry = new TreeViewEntry(tocField.getName(), new ImageView(JavaFXHandler.rawIcon), tocField.getObj(), EntryType.RAW);
 				break;
+			case RAW2:
+				entry = new TreeViewEntry(tocField.getName(), new ImageView(JavaFXHandler.rawIcon), tocField.getObj(), EntryType.RAW2);
+				break;
 		}
 		TreeItem<TreeViewEntry> field = new TreeItem<TreeViewEntry>(entry);
 		return field;

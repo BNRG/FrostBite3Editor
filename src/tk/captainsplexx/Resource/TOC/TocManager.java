@@ -8,7 +8,7 @@ import tk.captainsplexx.Resource.FileSeeker;
 
 public class TocManager {
 	public static enum TocFieldType {
-		STRING, BOOL, INTEGER, LONG, GUID, SHA1, LIST, RAW
+		STRING, BOOL, INTEGER, LONG, GUID, SHA1, LIST, RAW, RAW2
 	};
 	
 	public static enum TocEntryType {
@@ -37,7 +37,7 @@ public class TocManager {
 		if (header == 0x00D1CE00 || header == 0x00D1CE01) { //#the file is XOR encrypted and has a signature
 			fileType = TocFileType.XORSig;
 			data = null;
-			System.out.println("TODO: XOR Decryption TOC Files!"); //TODO
+			System.out.println("TODO: XOR Decryption with TOC Files!"); //TODO
 			/*
 			 *  seek(296) #skip the signature
 		     *  key=[ord(f.read(1))^123 for i in xrange(260)] #bytes 257 258 259 are not used; XOR the key with 123 right away
@@ -136,9 +136,13 @@ public class TocManager {
 				bool = true;
 			}
 			field = new TocField(bool, TocFieldType.BOOL, name);
-		}else if ((fieldType == 0x02) || (fieldType == 0x13)){ //sbTocFile -> RES -> ENTRY: idata 0x13 //TODO What is the diffrence ?
+		}else if (fieldType == 0x02){ 
 			int length = FileHandler.readLEB128(data, seeker);
 			field = new TocField(FileHandler.readByte(data, seeker, length), TocFieldType.RAW, name);
+		}else if (fieldType == 0x13){ 
+			int length = FileHandler.readLEB128(data, seeker);
+			field = new TocField(FileHandler.readByte(data, seeker, length), TocFieldType.RAW2, name);
+			//sbTocFile -> RES -> ENTRY: idata 0x13 //TODO What is the diffrence ?
 		}else if (fieldType == 0x10){ //SHA1 stored as HEXSTRING
 			field = new TocField(FileHandler.bytesToHex(FileHandler.readByte(data, seeker, 20)), TocFieldType.SHA1, name);
 		}else if (fieldType == 0x07){ // #string, length (including trailing null) prefixed as 7bit int

@@ -52,7 +52,7 @@ public class ItextureHandler {
         
         byte[] data = CasDataReader.readCas(sha1, casPath, casCatEntries);
         
-        FileHandler.writeFile("D:/TEST_raw_data.dds", data);
+        //FileHandler.writeFile("D:/TEST_raw_data.dds", data);
         
         if (data != null){
 	        ArrayList<Byte> output = new ArrayList<Byte>();
