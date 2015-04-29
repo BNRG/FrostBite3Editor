@@ -344,7 +344,13 @@ public class TreeViewConverter {
 		/*BUNDLES*/
 		TreeItem<TreeViewEntry> bundles = new TreeItem<TreeViewEntry>(new TreeViewEntry("bundles - "+cTocF.getBundles().size()+" Children", new ImageView(JavaFXHandler.listIcon), null, EntryType.LIST));
 		for (TocSBLink link : cTocF.getBundles()){
-			String[] name = link.getID().split("/");
+			String[] name  = null;
+			if (!link.getID().equals("")){
+				name = link.getID().split("/");
+			}
+			if (!link.getGuid().equals("")){
+				name = link.getGuid().split("/");
+			}
 			TreeViewEntry childEntry = new TreeViewEntry(name[name.length-1], new ImageView(JavaFXHandler.instanceIcon), link, EntryType.STRING);
 			TreeItem<TreeViewEntry> child = new TreeItem<TreeViewEntry>(childEntry);
 			pathToTree(bundles, link.getID(), child);
@@ -354,7 +360,14 @@ public class TreeViewConverter {
 		/*CHUNKS*/
 		TreeItem<TreeViewEntry> chunks = new TreeItem<TreeViewEntry>(new TreeViewEntry("chunks - "+cTocF.getChunks().size()+" Children", new ImageView(JavaFXHandler.listIcon), null, EntryType.LIST));
 		for (TocSBLink link : cTocF.getChunks()){
-			chunks.getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry(link.getID(), new ImageView(JavaFXHandler.instanceIcon), link, EntryType.STRING)));
+			String name = "";
+			if (!link.getID().equals("")){
+				name = link.getID();
+			}
+			if (!link.getGuid().equals("")){
+				name = link.getGuid();
+			}
+			chunks.getChildren().add(new TreeItem<TreeViewEntry>(new TreeViewEntry(name, new ImageView(JavaFXHandler.instanceIcon), link, EntryType.STRING)));
 		}
 		rootnode.getChildren().add(chunks);
 		

@@ -54,5 +54,7 @@ public class ConvertedTocFile {
 		this.alwaysEmitSuperBundle = false;
 		this.bundles = new ArrayList<TocSBLink>();
 		this.chunks = new ArrayList<TocSBLink>();
+		this.tag = "";
+		this.totalSize = -1;
 	}	
 }

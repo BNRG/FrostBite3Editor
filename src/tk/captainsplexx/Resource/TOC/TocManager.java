@@ -8,7 +8,8 @@ import tk.captainsplexx.Resource.FileSeeker;
 
 public class TocManager {
 	public static enum TocFieldType {
-		STRING, BOOL, INTEGER, LONG, GUID, SHA1, LIST, RAW, RAW2
+		STRING, BOOL, INTEGER, LONG, GUID, SHA1, LIST, RAW, RAW2, 
+		ENTRY // ENTRY IS ONLY FOR RECREATION!
 	};
 	
 	public static enum TocEntryType {

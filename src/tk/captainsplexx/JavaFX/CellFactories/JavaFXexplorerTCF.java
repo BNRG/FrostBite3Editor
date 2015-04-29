@@ -45,11 +45,13 @@ public class JavaFXexplorerTCF extends TreeCell<TreeViewEntry> {
 						Main.getGame().setCurrentFile(((File)getTreeItem().getValue().getValue()).getAbsolutePath().replace(".sb", ""));
 						TocFile toc = TocManager.readToc(Main.getGame().getCurrentFile());
 						ConvertedTocFile convToc = TocConverter.convertTocFile(toc);
-						/*DEBUG FOR TOC FILE RECREATION*/
+						
+						/*DEBUG FOR TOC FILE RECREATION
 						System.out.println("DEBUG: TocCreator || sysout in JavaFXExplorer");
 						System.out.println(FileHandler.bytesToHex(TocCreator.createTocFile(convToc)));
 						
-						/*END OF DEBUG*/
+						END OF DEBUG*/
+						
 						Main.getGame().setCurrentToc(convToc);
 						TreeItem<TreeViewEntry> masterTree = new TreeItem<TreeViewEntry>(new TreeViewEntry("BACK (Click)", new ImageView(JavaFXHandler.leftArrowIcon), "GO BACK", EntryType.LIST));
 						TreeItem<TreeViewEntry> convTocTree = TreeViewConverter.getTreeView(convToc);

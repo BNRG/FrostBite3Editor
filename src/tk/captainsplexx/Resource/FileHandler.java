@@ -162,22 +162,20 @@ public class FileHandler {
         return byteArray;
     }
 	
-	public static byte[] toBytes(long value, ByteOrder order)
-    {
-		//TODO not tested.
-        byte[] byteArray = new byte[8];
-        int shift = 0;
-        for (int i = 0; i < byteArray.length;
-             i++) {
- 
-            if (order == ByteOrder.BIG_ENDIAN)
-                shift = (byteArray.length - 1 - i) * 16;
-            else
-                shift = i * 16;
- 
-            byteArray[i] = (byte) (value >>> shift);
+	public static byte[] toBytes(long l, ByteOrder order) {
+        byte[] bytesp = new byte[8];
+        if (order == ByteOrder.LITTLE_ENDIAN){
+	        for (int i=0; i<bytesp.length; i++){
+	        	bytesp[i]=((byte) (l % (0xff + 1)));
+	            l = l >> 8;
+	        }
+        }else{
+        	for (int i=7; i>=0; i--){
+            	bytesp[i]=((byte) (l % (0xff + 1)));
+                l = l >> 8;
+            }
         }
-        return byteArray;
+        return bytesp;
     }
 	
 	public static int readHeigh(byte b){

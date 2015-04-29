@@ -64,8 +64,8 @@ public class TocConverter {
 			for (TocField field :  entry.getFields()){
 				if (field.getName().toLowerCase().equals("id") && field.getType() == TocFieldType.STRING){
 					link.setID((String) field.getObj());
-				}else if (field.getName().toLowerCase().equals("id") && field.getType() == TocFieldType.GUID){ //WHATS ABOUT CHUNKS? //TODO
-					link.setID((String) field.getObj());
+				}else if (field.getName().toLowerCase().equals("id") && field.getType() == TocFieldType.GUID){
+					link.setGuid((String) field.getObj());
 				}else if (field.getName().toLowerCase().equals("sha1") && field.getType() == TocFieldType.SHA1){
 					link.setSha1((String) field.getObj());
 				}else if (field.getName().toLowerCase().equals("offset") && field.getType() == TocFieldType.LONG){

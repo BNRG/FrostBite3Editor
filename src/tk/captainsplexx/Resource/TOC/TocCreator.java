@@ -15,35 +15,65 @@ public class TocCreator {
 		byte[] header = FileHandler.readFile("res/toc/header.hex");
 		for (byte b : header){file.add(b);}
 		
-		//Entries
-		TocEntry bundleEntry = new TocEntry(TocEntryType.ORDINARY);
-		for (TocSBLink link : cToc.getBundles()){
-			TocField fieldID = new TocField(link.getID(), TocFieldType.STRING, "id");
-			bundleEntry.getFields().add(fieldID);
-			//TODO add all values from SBLink
-		}
-		TocField bundles = new TocField(bundleEntry, TocFieldType.LIST, "bundles");
-		
-		TocEntry chunkEntry = new TocEntry(TocEntryType.ORDINARY);
-		for (TocSBLink link : cToc.getChunks()){
-			TocField fieldID = new TocField(link.getID(), TocFieldType.STRING, "id");
-			chunkEntry.getFields().add(fieldID);
-			//TODO add all values from SBLink
-		}
-		TocField chunks = new TocField(chunkEntry, TocFieldType.LIST, "chunks");
-		
-		TocField cas = new TocField(cToc.isCas(), TocFieldType.BOOL, "cas");
-		TocField name = new TocField(cToc.getName(), TocFieldType.STRING, "name");
-		TocField emitSuperBundle = new TocField(cToc.isAlwaysEmitSuperBundle(), TocFieldType.BOOL, "alwaysEmitSuperbundle");
 		
 		TocEntry rootEntry = new TocEntry(TocEntryType.ORDINARY);
 		
-		//no observable list for adding as elements :(
+		//Entries
+		if (!cToc.getTag().equals("")){
+			TocField tag = new TocField(cToc.getTag(), TocFieldType.GUID, "tag");
+			rootEntry.getFields().add(tag);
+		}
+		
+		TocEntry bundleEntry = new TocEntry(TocEntryType.ORDINARY);
+		for (TocSBLink link : cToc.getBundles()){
+			TocEntry linkEntry = new TocEntry(TocEntryType.ORDINARY);
+			
+			TocField fieldID = new TocField(link.getID(), TocFieldType.STRING, "id");
+			linkEntry.getFields().add(fieldID);
+			TocField fieldOffset = new TocField(link.getOffset(), TocFieldType.LONG, "offset");
+			linkEntry.getFields().add(fieldOffset);
+			TocField fieldSize = new TocField(link.getSize(), TocFieldType.INTEGER, "size");
+			linkEntry.getFields().add(fieldSize);
+				
+			TocField linkField = new TocField(linkEntry, TocFieldType.ENTRY, null);
+			bundleEntry.getFields().add(linkField);
+		}
+		TocField bundles = new TocField(bundleEntry, TocFieldType.LIST, "bundles");
 		rootEntry.getFields().add(bundles);
+		
+		TocEntry chunkEntry = new TocEntry(TocEntryType.ORDINARY);
+		for (TocSBLink link : cToc.getChunks()){
+			TocEntry linkEntry = new TocEntry(TocEntryType.ORDINARY);
+			
+			TocField fieldID = new TocField(link.getGuid(), TocFieldType.GUID, "id");
+			linkEntry.getFields().add(fieldID);
+			TocField fieldOffset = new TocField(link.getOffset(), TocFieldType.LONG, "offset");
+			linkEntry.getFields().add(fieldOffset);
+			TocField fieldSize = new TocField(link.getSize(), TocFieldType.INTEGER, "size");
+			linkEntry.getFields().add(fieldSize);
+				
+			TocField linkField = new TocField(linkEntry, TocFieldType.ENTRY, null);
+			chunkEntry.getFields().add(linkField);
+		}
+		TocField chunks = new TocField(chunkEntry, TocFieldType.LIST, "chunks");
 		rootEntry.getFields().add(chunks);
-		rootEntry.getFields().add(cas);
+		
+		if (cToc.isCas()){
+			TocField cas = new TocField(cToc.isCas(), TocFieldType.BOOL, "cas");
+			rootEntry.getFields().add(cas);
+		}
+		
+		if (!(cToc.getTotalSize() == -1)){
+			TocField totalsize = new TocField(cToc.getTotalSize(), TocFieldType.LONG, "totalSize");
+			rootEntry.getFields().add(totalsize);
+		}
+		
+		TocField name = new TocField(cToc.getName(), TocFieldType.STRING, "name");
 		rootEntry.getFields().add(name);
+				
+		TocField emitSuperBundle = new TocField(cToc.isAlwaysEmitSuperBundle(), TocFieldType.BOOL, "alwaysEmitSuperbundle");
 		rootEntry.getFields().add(emitSuperBundle);
+		
 		
 		file.addAll(createEntry(rootEntry));
 		
@@ -60,7 +90,7 @@ public class TocCreator {
 					ArrayList<Byte> data = createField(field);
 					entryData.addAll(data);
 				}
-				entry.addAll(FileHandler.toLEB128List(entryData.size() & 0xFFFFFFFF));
+				entry.addAll(FileHandler.toLEB128List((entryData.size()+1) & 0xFFFFFFFF));
 				for (byte b : entryData){
 					entry.add(b);
 				}
@@ -117,9 +147,20 @@ public class TocCreator {
 			case LIST:
 				data.add((byte) 0x01);
 				data.addAll(nameBytes);
-				ArrayList<Byte> entry = createEntry((TocEntry) field.getObj());
-				data.addAll(FileHandler.toLEB128List(entry.size() & 0xFFFFFFFF));
-				data.addAll(entry);
+				TocEntry entries = (TocEntry) field.getObj();
+				ArrayList<Byte> list = new ArrayList<Byte>();
+				for (TocField f : entries.getFields()){
+					if (f.getType() == TocFieldType.ENTRY){
+						TocEntry fieldEntry = (TocEntry) f.getObj();
+						ArrayList<Byte> entry = createEntry(fieldEntry);
+						list.addAll(entry);
+					}else{
+						ArrayList<Byte> entry = createField(f);
+						list.addAll(entry);
+					}
+				}
+				data.addAll(FileHandler.toLEB128List((list.size()+1) & 0xFFFFFFFF));
+				data.addAll(list);
 				data.add((byte) 0x00);
 				break;
 			case LONG:
@@ -167,6 +208,11 @@ public class TocCreator {
 				}
 				data.add((byte) 0x00);
 				break;
+			case ENTRY:
+					System.err.println("ONLY USED FOR RECREATION, NORMALY THIS SHOULD NOT HAPPEN :(");
+				break;
+		default:
+			break;
 		}
 		return data;
 	}

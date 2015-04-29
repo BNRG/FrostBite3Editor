@@ -5,23 +5,36 @@ import tk.captainsplexx.Resource.ResourceHandler.LinkBundleType;
 
 public class TocSBLink {
 	public String id;
+	public String guid;
 	public String sha1;
 	public long offset;
 	public int size;
 	public long sizeLong;
 	public LinkBundleType type;
 	public String sbPath;	
+	
 	public TocSBLink(/*USING NULLCONSTUCTOR*/){
 		this.id = "";
-		this.offset = 0;
-		this.size = 0;
+		this.offset = -1;
+		this.size = -1;
 		this.type = null;
 		this.sbPath = "";
 		this.sha1 = "";
-		this.sizeLong = 0;
+		this.sizeLong = -1;
+		this.guid = "";
 	}
 	
 	
+	public String getGuid() {
+		return guid;
+	}
+
+
+	public void setGuid(String guid) {
+		this.guid = guid;
+	}
+
+
 	public long getSizeLong() {
 		return sizeLong;
 	}
