@@ -48,7 +48,7 @@ public class Main {
 		
 		try {
             Display.setDisplayMode(new DisplayMode(DISPLAY_WIDTH, DISPLAY_HEIGHT));
-            Display.setTitle("Unofficial FrostBite3 Editor by CaptainSpleXx.TK");
+            Display.setTitle("Unofficial FrostBite3Editor by CaptainSpleXx.TK");
             Display.setResizable(true);
             Display.create();
             Display.setIcon(new ByteBuffer[] {

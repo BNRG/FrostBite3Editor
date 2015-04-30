@@ -60,6 +60,7 @@ public class FileHandler {
 		try {
 			fos = new FileOutputStream(filepath);
 			fos.write(arr);
+			System.out.println("Write: "+filepath+"!");
 			fos.close();
 			return true;
 		} catch (NullPointerException e) {

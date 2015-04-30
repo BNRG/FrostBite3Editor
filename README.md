@@ -1,7 +1,5 @@
 # Unofficial FrostBite3 Editor Tools by CAPTAINSPLEXX
 
--LZ4 Decompression fix (unsigned short)
--Image extraction alpha to 'D:\TEST.dds'
 
 >http://goo.gl/CjfAhg quick expl. what it is!
 
@@ -11,6 +9,7 @@
 Read LICENSE before using it!
 
 Binary build (as jar) run, *.bat file.
+(outdated)
 
 >Roadmap: http://i.imgur.com/rGUma38.jpg
 

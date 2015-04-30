@@ -48,7 +48,7 @@ public class TreeViewConverter {
 			return null;
 		}
 	}
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "incomplete-switch" })
 	static TreeItem<TreeViewEntry> readField(TocField tocField){
 		TreeViewEntry entry = null;
 		switch(tocField.getType()){
@@ -421,7 +421,7 @@ public class TreeViewConverter {
 				case LUAC:
 					graphic = new ImageView(JavaFXHandler.luaIcon);
 					break;
-				case OCCLUDERMESH:
+				case OCCLUSIONMESH:
 					graphic = new ImageView(JavaFXHandler.geometry2Icon);
 					break;
 				case MESH:

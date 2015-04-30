@@ -21,10 +21,13 @@ public class ResourceLink {
 	public String id;
 	public int logicalOffset;
 	public int logicalSize;
+	public int rangeStart;
+	public int rangeEnd;
 	
 	//++chunksMeta
 	public int h32;
 	public byte[] meta;
+	public int firstMip;
 	
 	//**EBX EXTRA
 	public String ebxFileGUID;
@@ -46,6 +49,42 @@ public class ResourceLink {
 	
 	public String getEbxFileGUID() {
 		return ebxFileGUID;
+	}
+
+
+
+	public int getRangeStart() {
+		return rangeStart;
+	}
+
+
+
+	public void setRangeStart(int rangeStart) {
+		this.rangeStart = rangeStart;
+	}
+
+
+
+	public int getFirstMip() {
+		return firstMip;
+	}
+
+
+
+	public void setFirstMip(int firstMip) {
+		this.firstMip = firstMip;
+	}
+
+
+
+	public int getRangeEnd() {
+		return rangeEnd;
+	}
+
+
+
+	public void setRangeEnd(int rangeEnd) {
+		this.rangeEnd = rangeEnd;
 	}
 
 

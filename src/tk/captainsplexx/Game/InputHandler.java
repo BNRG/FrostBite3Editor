@@ -46,6 +46,19 @@ public class InputHandler {
 	    	pe.velY -= pe.jumpStrength*speedMultipShift;
 	    }
 	    
+	    
+	    
+	    
+	    if (Keyboard.isKeyDown(Keyboard.KEY_ADD))
+	    {
+	    	Main.getRender().updateProjectionMatrix(Main.FOV+1, Main.DISPLAY_WIDTH, Main.DISPLAY_HEIGHT, Main.zNear, Main.zFar);
+	    }
+	    
+	    if (Keyboard.isKeyDown(Keyboard.KEY_SUBTRACT))
+	    {
+	    	Main.getRender().updateProjectionMatrix(Main.FOV-1, Main.DISPLAY_WIDTH, Main.DISPLAY_HEIGHT, Main.zNear, Main.zFar);
+	    }
+	    
 	    //JComboBox comboBox = Main.getJFrameHandler().getComboBox();
 	    /*
 	    if (Keyboard.isKeyDown(Keyboard.KEY_ADD))//KEY_ADD down

@@ -80,6 +80,196 @@ public class TocCreator {
 		return FileHandler.toByteArray(file);
 	}
 	
+	public static byte[] createSBpart(ConvertedSBpart part){
+		ArrayList<Byte> out = new ArrayList<>();
+		
+		TocEntry rootEntry = new TocEntry(TocEntryType.ORDINARY);
+		
+		TocField path = new TocField(part.getPath(), TocFieldType.STRING, "path");
+		rootEntry.getFields().add(path);
+		
+		TocField magicSalt = new TocField(part.getMagicSalt(), TocFieldType.INTEGER, "magicSalt");
+		rootEntry.getFields().add(magicSalt);
+		
+		//EBX
+		TocEntry ebxEntry = new TocEntry(TocEntryType.ORDINARY);
+		for (ResourceLink link : part.getEbx()){
+			TocEntry linkEntry = new TocEntry(TocEntryType.ORDINARY);
+			
+			TocField name = new TocField(link.getName(), TocFieldType.STRING, "name");
+			linkEntry.getFields().add(name);
+			
+			TocField sha1 = new TocField(link.getSha1(), TocFieldType.SHA1, "sha1");
+			linkEntry.getFields().add(sha1);
+			
+			TocField size = new TocField(link.getSize(), TocFieldType.LONG, "size");
+			linkEntry.getFields().add(size);
+			
+			TocField originalSize = new TocField(link.getOriginalSize(), TocFieldType.LONG, "originalSize");
+			linkEntry.getFields().add(originalSize);
+			
+			
+			TocField linkField = new TocField(linkEntry, TocFieldType.ENTRY, null);
+			ebxEntry.getFields().add(linkField);
+		}
+		TocField ebxs = new TocField(ebxEntry, TocFieldType.LIST, "ebx");
+		rootEntry.getFields().add(ebxs);
+		
+		//DBX
+		TocEntry dbxEntry = new TocEntry(TocEntryType.ORDINARY);
+		for (ResourceLink link : part.getDbx()){
+			TocEntry linkEntry = new TocEntry(TocEntryType.ORDINARY);
+			
+			TocField name = new TocField(link.getName(), TocFieldType.STRING, "name");
+			linkEntry.getFields().add(name);
+			
+			TocField sha1 = new TocField(link.getSha1(), TocFieldType.SHA1, "sha1");
+			linkEntry.getFields().add(sha1);
+			
+			TocField size = new TocField(link.getSize(), TocFieldType.LONG, "size");
+			linkEntry.getFields().add(size);
+			
+			TocField originalSize = new TocField(link.getOriginalSize(), TocFieldType.LONG, "originalSize");
+			linkEntry.getFields().add(originalSize);
+				
+			TocField linkField = new TocField(linkEntry, TocFieldType.ENTRY, null);
+			dbxEntry.getFields().add(linkField);
+		}
+		TocField dbxs = new TocField(ebxEntry, TocFieldType.LIST, "dbx");
+		rootEntry.getFields().add(dbxs);
+		
+		//RES
+		TocEntry resEntry = new TocEntry(TocEntryType.ORDINARY);
+		for (ResourceLink link : part.getDbx()){
+			TocEntry linkEntry = new TocEntry(TocEntryType.ORDINARY);
+			
+			TocField name = new TocField(link.getName(), TocFieldType.STRING, "name");
+			linkEntry.getFields().add(name);
+			
+			TocField sha1 = new TocField(link.getSha1(), TocFieldType.SHA1, "sha1");
+			linkEntry.getFields().add(sha1);
+			
+			TocField size = new TocField(link.getSize(), TocFieldType.LONG, "size");
+			linkEntry.getFields().add(size);
+						
+			TocField originalSize = new TocField(link.getOriginalSize(), TocFieldType.LONG, "originalSize");
+			linkEntry.getFields().add(originalSize);			
+			
+			//RES-SPEC
+			TocField resType = new TocField(link.getResType(), TocFieldType.INTEGER, "resType");
+			linkEntry.getFields().add(resType);		
+			
+			TocField resMeta = new TocField(link.getResMeta(), TocFieldType.RAW2, "resMeta");
+			linkEntry.getFields().add(resMeta);	
+			
+			TocField resRid = new TocField(link.getResRid(), TocFieldType.LONG, "resRid");
+			linkEntry.getFields().add(resRid);	
+			
+			TocField idata = new TocField(link.getIdata(), TocFieldType.RAW2, "idata");
+			linkEntry.getFields().add(idata);	
+			
+						
+			TocField linkField = new TocField(linkEntry, TocFieldType.ENTRY, null);
+			resEntry.getFields().add(linkField);
+		}
+		TocField ress = new TocField(ebxEntry, TocFieldType.LIST, "res");
+		rootEntry.getFields().add(ress);
+				
+		//CHUNKS
+		TocEntry chunksEntry = new TocEntry(TocEntryType.ORDINARY);
+		for (ResourceLink link : part.getDbx()){
+			TocEntry linkEntry = new TocEntry(TocEntryType.ORDINARY);
+			TocField name = new TocField(link.getName(), TocFieldType.STRING, "name");
+			linkEntry.getFields().add(name);
+			
+			TocField sha1 = new TocField(link.getSha1(), TocFieldType.SHA1, "sha1");
+			linkEntry.getFields().add(sha1);
+			
+			TocField size = new TocField(link.getSize(), TocFieldType.LONG, "size");
+			linkEntry.getFields().add(size);
+						
+			TocField originalSize = new TocField(link.getOriginalSize(), TocFieldType.LONG, "originalSize");
+			linkEntry.getFields().add(originalSize);			
+			
+			//CHNUNKS-SPEC
+			
+			TocField id = new TocField(link.getId(), TocFieldType.GUID, "id");
+			linkEntry.getFields().add(id);
+			
+			TocField rangeStart = new TocField(link.getRangeStart(), TocFieldType.INTEGER, "rangeStart");
+			linkEntry.getFields().add(rangeStart);
+			
+			TocField rangeEnd = new TocField(link.getRangeEnd(), TocFieldType.INTEGER, "rangEnd");
+			linkEntry.getFields().add(rangeEnd);
+			
+			TocField logicalOffset = new TocField(link.getLogicalOffset(), TocFieldType.INTEGER, "logicalOffset");
+			linkEntry.getFields().add(logicalOffset);
+			
+			TocField logicalSize = new TocField(link.getLogicalSize(), TocFieldType.INTEGER, "logicalSize");
+			linkEntry.getFields().add(logicalSize);
+			
+
+			
+			TocField linkField = new TocField(linkEntry, TocFieldType.ENTRY, null);
+			chunksEntry.getFields().add(linkField);
+		}
+		TocField chunks = new TocField(ebxEntry, TocFieldType.LIST, "chunks");
+		rootEntry.getFields().add(chunks);
+		
+		//CHUNKMETA
+		TocEntry chunkMetaEntry = new TocEntry(TocEntryType.ORDINARY);
+		for (ResourceLink link : part.getDbx()){
+			TocEntry linkEntry = new TocEntry(TocEntryType.ORDINARY);
+			TocField name = new TocField(link.getName(), TocFieldType.STRING, "name");
+			linkEntry.getFields().add(name);
+			
+			TocField sha1 = new TocField(link.getSha1(), TocFieldType.SHA1, "sha1");
+			linkEntry.getFields().add(sha1);
+			
+			TocField size = new TocField(link.getSize(), TocFieldType.LONG, "size");
+			linkEntry.getFields().add(size);
+						
+			TocField originalSize = new TocField(link.getOriginalSize(), TocFieldType.LONG, "originalSize");
+			linkEntry.getFields().add(originalSize);
+			
+			//CHUNKMETA-SPEC
+			
+			TocField h32 = new TocField(link.getH32(), TocFieldType.INTEGER, "h32");
+			linkEntry.getFields().add(h32);
+			
+			TocField meta = new TocField(link.getMeta(), TocFieldType.RAW, "meta");
+			linkEntry.getFields().add(meta);
+			
+			TocField firstMip = new TocField(link.getFirstMip(), TocFieldType.INTEGER, "firstMip");
+			linkEntry.getFields().add(firstMip);
+										
+			TocField linkField = new TocField(linkEntry, TocFieldType.ENTRY, null);
+			chunkMetaEntry.getFields().add(linkField);
+		}
+		TocField chunkMetas = new TocField(ebxEntry, TocFieldType.LIST, "chunkMeta");
+		rootEntry.getFields().add(chunkMetas);
+		
+		//FIELDS
+		TocField alignMembers = new TocField(part.isAlignMembers(), TocFieldType.BOOL, "alignMembers");
+		rootEntry.getFields().add(alignMembers);
+		
+		TocField ridSupport = new TocField(part.isRidSupport(), TocFieldType.BOOL, "ridSupport");
+		rootEntry.getFields().add(ridSupport);
+		
+		TocField storeCompressedSizes = new TocField(part.isRidSupport(), TocFieldType.BOOL, "storeCompressedSizes");
+		rootEntry.getFields().add(storeCompressedSizes);
+		
+		TocField totalSize = new TocField(part.getTotalSize(), TocFieldType.LONG, "totalSize");
+		rootEntry.getFields().add(totalSize);
+		
+		TocField dbxTotalSize = new TocField(part.getDbxTotalSize(), TocFieldType.LONG, "dbxTotalSize");
+		rootEntry.getFields().add(dbxTotalSize);
+		
+		//PAYLOAD
+		out.addAll(createEntry(rootEntry));
+		return FileHandler.toByteArray(out);
+	}
+	
 	static ArrayList<Byte> createEntry(TocEntry tocE){
 		ArrayList<Byte> entry = new ArrayList<>();
 		switch(tocE.getType()){

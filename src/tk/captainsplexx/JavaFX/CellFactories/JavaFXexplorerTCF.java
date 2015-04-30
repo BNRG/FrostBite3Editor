@@ -33,6 +33,11 @@ public class JavaFXexplorerTCF extends TreeCell<TreeViewEntry> {
 						if (((TocSBLink)getTreeItem().getValue().getValue()).getType() == LinkBundleType.BUNDLES){
 							
 							ConvertedSBpart sbpart = TocConverter.convertSBpart(((TocSBLink)getTreeItem().getValue().getValue()).getLinkedSBPart());
+							
+							/*DEBUG FOR SB PART RECREATION*/
+							FileHandler.writeFile("output/"+sbpart.getPath().replace('/', '_'), TocCreator.createSBpart(sbpart));							
+							/*END OF DEBUG*/
+							
 							Main.getGame().setCurrentSB(sbpart);
 							TreeItem<TreeViewEntry> tree = TreeViewConverter.getTreeView(sbpart);
 							Main.getJavaFXHandler().setTreeViewStructureLeft1(tree);

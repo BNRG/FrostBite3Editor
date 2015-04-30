@@ -11,7 +11,6 @@ import tk.captainsplexx.JavaFX.TreeViewEntry;
 import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
 import tk.captainsplexx.Render.ModelHandler;
 import tk.captainsplexx.Resource.FileHandler;
-import tk.captainsplexx.Resource.FileSeeker;
 import tk.captainsplexx.Resource.ResourceHandler;
 import tk.captainsplexx.Resource.ITEXTURE.ItextureHandler;
 import tk.captainsplexx.Resource.TOC.ConvertedSBpart;
@@ -44,8 +43,8 @@ public class Game {
 		
 		/*DO NOT CARE ABOUT IN THE MOMENT*/
 		terrainHandler = new TerrainHandler();
-		//terrainHandler.generate(0, 0);
-		//terrainHandler.generate(0, 0);
+		terrainHandler.generate(0, 0);
+		terrainHandler.generate(0, 0);
 				
 		resourceHandler = new ResourceHandler("res/externalFileGUIDs"); //<--not needed in future
 		
@@ -57,25 +56,13 @@ public class Game {
 		ebxFileGUIDs = new HashMap<String, String>();
 		chunkGUIDSHA1 = new HashMap<String, String>();
 		buildExplorerTree();
-				
-		
-		//7D 28 E8 12 01 C3 03 97 FB 99 FF 3B BA 3A 75 1A E6 C0 4E 02 mesh
-		
 		
 		/*
 		byte[] data = CasDataReader.readCas("76 06 C5 5F F0 95 B8 53 9A C6 A5 FC 60 0A E3 25 3D 09 5F 85", gamePath+"/Data", resourceHandler.getCasCatManager().getEntries());
-		TreeItem<TreeViewEntry> testebx = TreeViewConverter.getTreeView(resourceHandler.getEBXHandler().loadFile(data));
-		Main.getJavaFXHandler().setTreeViewStructureRight(testebx);
-		Main.getJavaFXHandler().getMainWindow().updateRightRoot();
+		EbxCasConverter conv = new EbxCasConverter();
+		conv.createCAS(data);
 		*/
-		//EbxCasConverter conv = new EbxCasConverter();
-		//conv.createCAS(data);
-		
-		/*guid to sha1 -> sb converter first*/
-		//byte[] ddsTexture = ItextureHandler.getDSS(FileHandler.readFile("D:/dump_bf4_fs/bundles_more_info/res/objects/architecture/apartmentbuilding_modules/t_apartmentbuilding_modules_04_d 2495893419b2e1d1 0b000000030000000000000000000000.itexture"), gamePath+"/Data", cCatManager.getEntries());
-		
-		
-		
+				
 		
 		/*Main.getEventHander().addEvent(new Event(1, -1, new Runnable() {
 		void run() {
@@ -94,8 +81,7 @@ public class Game {
 	public void buildExplorerTree(){
 		currentToc = null;
 		currentSB = null;
-		
-		/*Build up Explorer*/
+
 		TreeItem<TreeViewEntry> explorerTree = new TreeItem<TreeViewEntry>(new TreeViewEntry(gamePath+"/Data/", null, null, EntryType.LIST));
 		for (File file : FileHandler.listf(gamePath+"/Data/", ".sb")){
 			String relPath = file.getAbsolutePath().replace("\\", "/").replace(".sb", "").replace(gamePath+"/Data/", "");

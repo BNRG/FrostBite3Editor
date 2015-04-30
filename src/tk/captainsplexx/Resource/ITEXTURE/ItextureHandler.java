@@ -46,7 +46,7 @@ public class ItextureHandler {
         	System.err.println("GUID: "+key+" Sha1: "+Main.getGame().getChunkGUIDSHA1().get(key));
         }*/
         if (sha1 == null){
-        	//SHA1 could not found in 'CHUNK GUID -> SHA1' DB :(
+        	System.err.println("SHA1 could not found in 'CHUNK GUID -> SHA1' DB :(");
         	return null;
         }     
         
@@ -99,6 +99,7 @@ public class ItextureHandler {
 	        
 	        return FileHandler.convertFromList(output);
         }else{
+        	System.err.println("Could not get data from cas.");
         	return null;
         }
 	}

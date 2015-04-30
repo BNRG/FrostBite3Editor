@@ -171,6 +171,10 @@ public class TocConverter {
 							link.setLogicalOffset((Integer) field.getObj());
 						}else if (field.getName().toLowerCase().equals("logicalsize") && field.getType() == TocFieldType.INTEGER){
 							link.setLogicalSize((Integer) field.getObj());
+						}else if (field.getName().toLowerCase().equals("rangestart") && field.getType() == TocFieldType.INTEGER){
+							link.setRangeStart((Integer) field.getObj());
+						}else if (field.getName().toLowerCase().equals("rangeend") && field.getType() == TocFieldType.INTEGER){
+							link.setRangeEnd((Integer) field.getObj());
 						}
 					}
 					Main.getGame().getChunkGUIDSHA1().put(link.getId().toLowerCase(), link.getSha1());
@@ -181,6 +185,8 @@ public class TocConverter {
 							link.setH32((Integer) field.getObj());
 						}else if (field.getName().toLowerCase().equals("meta") && field.getType() == TocFieldType.RAW){
 							link.setMeta((byte[]) field.getObj());
+						}else if (field.getName().toLowerCase().equals("firstmip") && field.getType() == TocFieldType.INTEGER){
+							link.setFirstMip((Integer) field.getObj());
 						}
 					}
 					break;
@@ -236,7 +242,7 @@ public class TocConverter {
 							link.setType(toResourceType(resType));
 							
 							link.setResType(resType);
-						}else if (field.getName().toLowerCase().equals("resmeta") && field.getType() == TocFieldType.RAW){
+						}else if (field.getName().toLowerCase().equals("resmeta") && field.getType() == TocFieldType.RAW2){
 							link.setResMeta((byte[]) field.getObj());
 						}else if (field.getName().toLowerCase().equals("resrid") && field.getType() == TocFieldType.LONG){
 							link.setResRid((long) field.getObj());
@@ -277,7 +283,7 @@ public class TocConverter {
 			case 0x319D8CD0:
 				return ResourceType.RAGDOLL;
 			case 0x30B4A553:
-				return ResourceType.OCCLUDERMESH;
+				return ResourceType.OCCLUSIONMESH;
 			case 0x49B156D4:
 				return ResourceType.MESH;
 			case 0x5BDFDEFE:
