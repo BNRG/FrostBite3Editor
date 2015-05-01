@@ -35,8 +35,11 @@ public class Main {
 	public static int currentTick = -1;
 	public static int currentTime = 0;
 	public static int oldTime = -1;
+	
+	public static String gamePath;
 		
 	public static void main(String[] args){
+		gamePath = null;
 		TICK_RATE = 20;
 		
 		DISPLAY_WIDTH = 1280; DISPLAY_HEIGHT = 720;

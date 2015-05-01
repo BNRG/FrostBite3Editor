@@ -37,7 +37,7 @@ public class MeshVariationDatabaseHandler {
 			 for (EBXField field1 : instance.getComplex().getField(1).getValueAsComplex().getFields()){ // for each member in Entries
 				 MeshVariationDatabaseEntry entry = new MeshVariationDatabaseEntry();
 				 EBXComplex member = field1.getValueAsComplex(); //member(n)::MeshVariationDatabaseEntry
-				 entry.setName(ebxHandler.getGUIDHandler().getFileName(member.getField(0).getValue().toString()));
+		//		 //entry.setName(ebxHandler.getGUIDHandler().getFileName(member.getField(0).getValue().toString()));
 				 entry.setVariationAssetNameHash((long) member.getField(1).getValue());
 				 EBXComplex material = member.getField(2).getValueAsComplex();
 				 for (EBXField materialMemberField : material.getFields()){ //Materials::array
@@ -46,7 +46,8 @@ public class MeshVariationDatabaseHandler {
 					 for (EBXField textureParameters : materialMemberComplex.getFieldAsComplex(2).getFields()){ //TextureParameters::array
 						 EBXComplex textureShaderParameter = textureParameters.getValueAsComplex(); //member(n)::TextureShaderParameter
 						 if (((String) textureShaderParameter.getField(0).getValue()).equals("Diffuse")){
-							 String name = ebxHandler.getGUIDHandler().getFileName((String) textureShaderParameter.getField(1).getValue());
+		//					// String name = ebxHandler.getGUIDHandler().getFileName((String) textureShaderParameter.getField(1).getValue());
+							 String name = ""; //TODO
 							 if (name!=null && name.contains("/")){
 								 String[] splitname = name.split("/");
 								 String small_name = "";

@@ -4,19 +4,19 @@ import java.util.HashMap;
 
 
 public class EBXHandler {
-	public String guidTablePath;
+	//public String guidTablePath;
 	public EBXLoader loader;
-	public EBXGUIDHandler guidHandler;
+	//public EBXGUIDHandler guidHandler;
 	public HashMap<String, EBXFile> files;
 	
 	public enum FieldValueType{
 		Complex, ArrayComplex, String, Enum, ExternalGuid, Hex8, Unknown,/*Field,*/ Float, Integer, Bool, Short, Byte, UInteger, ChunkGuid, Guid
 	}
 	
-	public EBXHandler(String guidTablePath){
-		this.guidTablePath = guidTablePath;
+	public EBXHandler(/*String guidTablePath*/){
+		//this.guidTablePath = guidTablePath;
 		this.loader = new EBXLoader();
-		this.guidHandler = new EBXGUIDHandler(guidTablePath);
+		//this.guidHandler = new EBXGUIDHandler(guidTablePath);
 		this.files = new HashMap<String, EBXFile>();
 	}
 
@@ -37,10 +37,10 @@ public class EBXHandler {
 		files.put(loader.getTrueFilename(), newFile);
 		return newFile;
 	}
-	
+	/*
 	public EBXGUIDHandler getGUIDHandler(){
 		return guidHandler;
-	}
+	}*/
 
 	public EBXLoader getLoader() {
 		return loader;

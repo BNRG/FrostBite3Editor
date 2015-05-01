@@ -218,7 +218,7 @@ public class TocConverter {
 					try{
 						link.setEbxFileGUID(
 								EBXLoader.getGUID(CasDataReader.readCas(link.getSha1(),
-										Main.getGame().getGamePath()+"/Data", Main.getGame().getResourceHandler().getCasCatManager().getEntries())));
+										Main.gamePath+"/Data", Main.getGame().getResourceHandler().getCasCatManager().getEntries())));
 						
 						Main.getGame().getEBXFileGUIDs().put(link.getEbxFileGUID(), link.getName());
 					}catch (Exception e){

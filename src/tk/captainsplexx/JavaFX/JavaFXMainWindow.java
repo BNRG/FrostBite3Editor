@@ -1,5 +1,6 @@
 package tk.captainsplexx.JavaFX;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.lwjgl.opengl.Display;
@@ -16,6 +17,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeView;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
@@ -270,4 +272,23 @@ public class JavaFXMainWindow extends Application{
 		});	
 	}
 	/*END OF UPDATE METHODS*/
+	
+	public void selectGamePath(){
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				final DirectoryChooser directoryChooser = new DirectoryChooser();
+				directoryChooser.setTitle("Select a game root directory!");
+				final File selectedDirectory = directoryChooser.showDialog(new Stage());
+				if (selectedDirectory != null) {
+					String path = selectedDirectory.getAbsolutePath().replace('\\', '/');
+					System.out.println("Selected "+path+" as gamePath.");
+					Main.gamePath = path;
+				}else{
+					System.err.println("Nothing selected.");
+					System.exit(0);
+				}
+			}
+		});
+	}
 }

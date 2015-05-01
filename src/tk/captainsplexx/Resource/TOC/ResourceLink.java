@@ -4,38 +4,38 @@ import tk.captainsplexx.Resource.ResourceHandler.ResourceType;
 import tk.captainsplexx.Resource.TOC.TocConverter.ResourceBundleType;
 
 public class ResourceLink {
-	//Global
+	// Global
 	public String name;
 	public long size;
 	public long originalSize;
 	public ResourceType type;
 	public String sha1;
-	
-	//++res
+
+	// ++res
 	public int resType;
-	public byte[] resMeta;
+	public byte[] resMeta; // 0x13 RAW2
 	public long resRid;
-	public byte[] idata;
-	
-	//++chunks
+	public byte[] idata; // 0x13 RAW2
+
+	// ++chunks
 	public String id;
 	public int logicalOffset;
 	public int logicalSize;
 	public int rangeStart;
 	public int rangeEnd;
-	
-	//++chunksMeta
+
+	// ++chunksMeta
 	public int h32;
-	public byte[] meta;
+	public byte[] meta; // 0x02 RAW1
 	public int firstMip;
-	
-	//**EBX EXTRA
+
+	// **EBX EXTRA
 	public String ebxFileGUID;
-	
-	//additional
+
+	// additional
 	public ResourceBundleType bundleType;
-	
-	public ResourceLink(/*USING NULLCONSTRUCTOR*/) {
+
+	public ResourceLink(/* USING NULLCONSTRUCTOR */) {
 		this.name = "";
 		this.size = 0;
 		this.originalSize = 0;
@@ -45,55 +45,37 @@ public class ResourceLink {
 		ebxFileGUID = "";
 	}
 
-	
-	
 	public String getEbxFileGUID() {
 		return ebxFileGUID;
 	}
-
-
 
 	public int getRangeStart() {
 		return rangeStart;
 	}
 
-
-
 	public void setRangeStart(int rangeStart) {
 		this.rangeStart = rangeStart;
 	}
-
-
 
 	public int getFirstMip() {
 		return firstMip;
 	}
 
-
-
 	public void setFirstMip(int firstMip) {
 		this.firstMip = firstMip;
 	}
-
-
 
 	public int getRangeEnd() {
 		return rangeEnd;
 	}
 
-
-
 	public void setRangeEnd(int rangeEnd) {
 		this.rangeEnd = rangeEnd;
 	}
 
-
-
 	public void setEbxFileGUID(String ebxFileGUID) {
 		this.ebxFileGUID = ebxFileGUID;
 	}
-
-
 
 	public ResourceBundleType getBundleType() {
 		return bundleType;
@@ -106,30 +88,39 @@ public class ResourceLink {
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	public long getSize() {
 		return size;
 	}
+
 	public void setSize(long size) {
 		this.size = size;
 	}
+
 	public long getOriginalSize() {
 		return originalSize;
 	}
+
 	public void setOriginalSize(long originalSize) {
 		this.originalSize = originalSize;
 	}
+
 	public ResourceType getType() {
 		return type;
 	}
+
 	public void setType(ResourceType type) {
 		this.type = type;
 	}
+
 	public String getSha1() {
 		return sha1;
 	}
+
 	public void setSha1(String sha1) {
 		this.sha1 = sha1;
 	}
@@ -206,6 +197,4 @@ public class ResourceLink {
 		this.meta = meta;
 	}
 
-	
-	
 }

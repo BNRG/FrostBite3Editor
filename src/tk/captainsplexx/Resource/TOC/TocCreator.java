@@ -148,26 +148,26 @@ public class TocCreator {
 			
 			TocField sha1 = new TocField(link.getSha1(), TocFieldType.SHA1, "sha1");
 			linkEntry.getFields().add(sha1);
-			
+
 			TocField size = new TocField(link.getSize(), TocFieldType.LONG, "size");
 			linkEntry.getFields().add(size);
-						
+
 			TocField originalSize = new TocField(link.getOriginalSize(), TocFieldType.LONG, "originalSize");
 			linkEntry.getFields().add(originalSize);			
-			
+
 			//RES-SPEC
 			TocField resType = new TocField(link.getResType(), TocFieldType.INTEGER, "resType");
 			linkEntry.getFields().add(resType);		
-			
+
 			TocField resMeta = new TocField(link.getResMeta(), TocFieldType.RAW2, "resMeta");
 			linkEntry.getFields().add(resMeta);	
-			
+
 			TocField resRid = new TocField(link.getResRid(), TocFieldType.LONG, "resRid");
 			linkEntry.getFields().add(resRid);	
-			
+
 			TocField idata = new TocField(link.getIdata(), TocFieldType.RAW2, "idata");
 			linkEntry.getFields().add(idata);	
-			
+				
 						
 			TocField linkField = new TocField(linkEntry, TocFieldType.ENTRY, null);
 			resEntry.getFields().add(linkField);

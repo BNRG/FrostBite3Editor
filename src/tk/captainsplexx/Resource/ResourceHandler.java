@@ -21,10 +21,10 @@ public class ResourceHandler {
 	public TextureHandler textureHandler;
 	public CasCatManager cCatManager; 
 
-	public ResourceHandler(/*String chunkFolderPath,*/ String guidTablePath) {
+	public ResourceHandler(/*String chunkFolderPath, String guidTablePath*/) {
 		//this.chunkFolderPath = chunkFolderPath;
 		this.mcL = new MeshChunkLoader();
-		this.ebxHandler = new EBXHandler(guidTablePath);
+		this.ebxHandler = new EBXHandler(/*guidTablePath*/);
 		this.mvdH = new MeshVariationDatabaseHandler(this.ebxHandler);
 		this.textureHandler = new TextureHandler();
 		this.cCatManager = new CasCatManager();

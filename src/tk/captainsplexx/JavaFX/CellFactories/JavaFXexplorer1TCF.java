@@ -30,7 +30,7 @@ public class JavaFXexplorer1TCF extends TreeCell<TreeViewEntry> {
 							if (((ResourceLink)i.getValue().getValue()).getBundleType() == ResourceBundleType.EBX){
 								Game game = Main.getGame();
 								ResourceLink link = (ResourceLink) i.getValue().getValue();
-								byte[] data = CasDataReader.readCas(link.getSha1(), game.getGamePath()+"/Data", game.getResourceHandler().getCasCatManager().getEntries());
+								byte[] data = CasDataReader.readCas(link.getSha1(), Main.gamePath+"/Data", game.getResourceHandler().getCasCatManager().getEntries());
 								TreeItem<TreeViewEntry> ebx = TreeViewConverter.getTreeView(game.getResourceHandler().getEBXHandler().loadFile(data));
 								Main.getJavaFXHandler().setTreeViewStructureRight(ebx);
 								Main.getJavaFXHandler().getMainWindow().updateRightRoot();
@@ -42,9 +42,9 @@ public class JavaFXexplorer1TCF extends TreeCell<TreeViewEntry> {
 								Game game = Main.getGame();
 								ResourceLink link = (ResourceLink) i.getValue().getValue();
 								if (link.getType() == ResourceType.ITEXTURE){
-									byte[] itexture = CasDataReader.readCas(link.getSha1(), game.getGamePath()+"/Data", game.getResourceHandler().getCasCatManager().getEntries());
+									byte[] itexture = CasDataReader.readCas(link.getSha1(), Main.gamePath+"/Data", game.getResourceHandler().getCasCatManager().getEntries());
 									//System.out.println("Itexture: "+FileHandler.bytesToHex(itexture));
-									FileHandler.writeFile("output/"+link.getName().replace('/', '_')+".dds", ItextureHandler.getDSS(itexture, game.getGamePath()+"/Data", game.getResourceHandler().getCasCatManager().getEntries()));
+									FileHandler.writeFile("output/"+link.getName().replace('/', '_')+".dds", ItextureHandler.getDSS(itexture, Main.gamePath+"/Data", game.getResourceHandler().getCasCatManager().getEntries()));
 								}
 								Main.getJavaFXHandler().getMainWindow().toggleResToolsVisibility();
 							}else if (i.getParent().getValue().getType() == EntryType.LIST){

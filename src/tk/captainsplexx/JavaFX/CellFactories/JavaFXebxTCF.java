@@ -163,7 +163,7 @@ public class JavaFXebxTCF extends TreeCell<TreeViewEntry> {
 	                		Game game = Main.getGame();
 	                		for (ResourceLink ebxLink : game.getCurrentSB().getEbx()){
 	                			if (ebxLink.getName().toLowerCase().equals(target[0].toLowerCase())){
-									byte[] data = CasDataReader.readCas(ebxLink.getSha1(), game.getGamePath()+"/Data", game.getResourceHandler().getCasCatManager().getEntries());
+									byte[] data = CasDataReader.readCas(ebxLink.getSha1(), Main.gamePath+"/Data", game.getResourceHandler().getCasCatManager().getEntries());
 									TreeItem<TreeViewEntry> ebx = TreeViewConverter.getTreeView(game.getResourceHandler().getEBXHandler().loadFile(data));
 									Main.getJavaFXHandler().setTreeViewStructureRight(ebx);
 									Main.getJavaFXHandler().getMainWindow().updateRightRoot();

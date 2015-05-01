@@ -24,7 +24,6 @@ public class Game {
 	public EntityHandler entityHandler;
 	public ShaderHandler shaderHandler;
 	public ItextureHandler itextureHandler;
-	public String gamePath;
 	public String currentFile;
 	public ConvertedTocFile currentToc;
 	public ConvertedSBpart currentSB;
@@ -32,11 +31,6 @@ public class Game {
 	public HashMap<String, String> chunkGUIDSHA1;
 			
 	public Game(){
-		gamePath = "C:/Program Files (x86)/Origin Games/Battlefield 4";
-		//gamePath = "C:/Program Files (x86)/Origin Games/Battlefield 4 CTE";
-		//gamePath = "D:/Battlefield Hardline Digital Deluxe";
-		
-		
 		modelHandler = new ModelHandler();
 		
 		playerHandler = new PlayerHandler();
@@ -46,13 +40,28 @@ public class Game {
 		terrainHandler.generate(0, 0);
 		terrainHandler.generate(0, 0);
 				
-		resourceHandler = new ResourceHandler("res/externalFileGUIDs"); //<--not needed in future
+		resourceHandler = new ResourceHandler();
 		
 		shaderHandler = new ShaderHandler();
 		entityHandler = new EntityHandler(modelHandler, resourceHandler);
 		
-		
-		resourceHandler.getCasCatManager().readCat(FileHandler.readFile(gamePath+"/Data/cas.cat"));
+		System.out.println("Please select a gamepath like this 'C:/Program Files (x86)/Origin Games/Battlefield 4'!");
+		Main.getJavaFXHandler().getMainWindow().selectGamePath();
+
+		while (true){
+			//wait
+			System.out.print(""); //Why this has to be here ? Otherwise not working :(
+			if (!(Main.gamePath == null)){
+				break;
+			}
+		}
+		System.out.println("Building up FrostBite Editor!");
+		buildEditor();
+	}
+	
+	
+	public void buildEditor(){
+		resourceHandler.getCasCatManager().readCat(FileHandler.readFile(Main.gamePath+"/Data/cas.cat"));
 		ebxFileGUIDs = new HashMap<String, String>();
 		chunkGUIDSHA1 = new HashMap<String, String>();
 		buildExplorerTree();
@@ -62,14 +71,6 @@ public class Game {
 		EbxCasConverter conv = new EbxCasConverter();
 		conv.createCAS(data);
 		*/
-				
-		
-		/*Main.getEventHander().addEvent(new Event(1, -1, new Runnable() {
-		void run() {
-			Entity e = entityHandler.getEntities().get(0);
-			e.setRotation(new Vector3f(0.0f,e.getRotation().getY()+0.25f,0.0f));
-		}
-		})); */
 	}
 
 	
@@ -82,9 +83,9 @@ public class Game {
 		currentToc = null;
 		currentSB = null;
 
-		TreeItem<TreeViewEntry> explorerTree = new TreeItem<TreeViewEntry>(new TreeViewEntry(gamePath+"/Data/", null, null, EntryType.LIST));
-		for (File file : FileHandler.listf(gamePath+"/Data/", ".sb")){
-			String relPath = file.getAbsolutePath().replace("\\", "/").replace(".sb", "").replace(gamePath+"/Data/", "");
+		TreeItem<TreeViewEntry> explorerTree = new TreeItem<TreeViewEntry>(new TreeViewEntry(Main.gamePath+"/Data/", null, null, EntryType.LIST));
+		for (File file : FileHandler.listf(Main.gamePath+"/Data/", ".sb")){
+			String relPath = file.getAbsolutePath().replace("\\", "/").replace(".sb", "").replace(Main.gamePath+"/Data/", "");
 			String[] fileName = relPath.split("/");
 			TreeItem<TreeViewEntry> convTocTree = new TreeItem<TreeViewEntry>(new TreeViewEntry(fileName[fileName.length-1], new ImageView(JavaFXHandler.documentIcon), file, EntryType.LIST)); 
 			TreeViewConverter.pathToTree(explorerTree, relPath, convTocTree);
@@ -139,15 +140,6 @@ public class Game {
 	
 	
 	/*Game*/
-	public String getGamePath() {
-		return gamePath;
-	}
-
-
-	public void setGamePath(String gamePath) {
-		this.gamePath = gamePath;
-	}
-
 
 	public String getCurrentFile() {
 		return currentFile;
