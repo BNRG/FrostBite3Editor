@@ -65,7 +65,7 @@ public class Loader {
 			return textures.get(path);
 		}else{
 			try {
-				texture = TextureLoader.getTexture("JPG", new FileInputStream(path));
+				texture = TextureLoader.getTexture("PNG", new FileInputStream(path));
 				textures.put(path, texture.getTextureID());
 				return texture.getTextureID();
 			} catch (IOException e) {

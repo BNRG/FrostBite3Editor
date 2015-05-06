@@ -3,6 +3,7 @@ package tk.captainsplexx.JavaFX.CellFactories;
 import java.io.File;
 
 import javafx.event.EventHandler;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.image.ImageView;
@@ -12,7 +13,6 @@ import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
 import tk.captainsplexx.JavaFX.JavaFXHandler;
 import tk.captainsplexx.JavaFX.TreeViewConverter;
 import tk.captainsplexx.JavaFX.TreeViewEntry;
-import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.ResourceHandler.LinkBundleType;
 import tk.captainsplexx.Resource.TOC.ConvertedSBpart;
 import tk.captainsplexx.Resource.TOC.ConvertedTocFile;
@@ -35,7 +35,7 @@ public class JavaFXexplorerTCF extends TreeCell<TreeViewEntry> {
 							ConvertedSBpart sbpart = TocConverter.convertSBpart(((TocSBLink)getTreeItem().getValue().getValue()).getLinkedSBPart());
 							
 							/*DEBUG FOR SB PART RECREATION*/
-							FileHandler.writeFile("output/"+sbpart.getPath().replace('/', '_'), TocCreator.createSBpart(sbpart));							
+							TocCreator.createModifiedSBFile(Main.getGame().getCurrentToc(), sbpart/*REPLACE WITH MODIF1*/, false, "output/"+sbpart.getPath().replace('/', '_')+"_splexx", true);				
 							/*END OF DEBUG*/
 							
 							Main.getGame().setCurrentSB(sbpart);
@@ -92,6 +92,9 @@ public class JavaFXexplorerTCF extends TreeCell<TreeViewEntry> {
 	    		setText(item.getName());
 	    	}else{
 	    		setText(item.getName()+" with undefined type for explorerTCF: "+item.getType());
+	    	}
+	    	if (item.getTooltip()!=null){
+	    		setTooltip(new Tooltip(item.getTooltip()));
 	    	}
 		    setGraphic(item.getGraphic());
 	    }

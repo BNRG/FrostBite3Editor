@@ -1,6 +1,0 @@
-Core.LogLevel FatalAssert
-
-server.endRound 1
-sleep 90
-
-main.playCommands Scripts/Debug/eorLevel

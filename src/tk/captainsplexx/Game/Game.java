@@ -15,6 +15,7 @@ import tk.captainsplexx.Resource.ResourceHandler;
 import tk.captainsplexx.Resource.ITEXTURE.ItextureHandler;
 import tk.captainsplexx.Resource.TOC.ConvertedSBpart;
 import tk.captainsplexx.Resource.TOC.ConvertedTocFile;
+import tk.captainsplexx.Resource.TOC.TocCreator;
 
 public class Game {
 	public ModelHandler modelHandler;
@@ -45,7 +46,7 @@ public class Game {
 		shaderHandler = new ShaderHandler();
 		entityHandler = new EntityHandler(modelHandler, resourceHandler);
 		
-		System.out.println("Please select a gamepath like this 'C:/Program Files (x86)/Origin Games/Battlefield 4'!");
+		System.out.println("Please select a game root directory like this one: 'C:/Program Files (x86)/Origin Games/Battlefield Hardline Digital Deluxe'!");
 		Main.getJavaFXHandler().getMainWindow().selectGamePath();
 
 		while (true){
@@ -65,6 +66,7 @@ public class Game {
 		ebxFileGUIDs = new HashMap<String, String>();
 		chunkGUIDSHA1 = new HashMap<String, String>();
 		buildExplorerTree();
+		
 		
 		/*
 		byte[] data = CasDataReader.readCas("76 06 C5 5F F0 95 B8 53 9A C6 A5 FC 60 0A E3 25 3D 09 5F 85", gamePath+"/Data", resourceHandler.getCasCatManager().getEntries());

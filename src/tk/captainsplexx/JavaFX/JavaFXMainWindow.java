@@ -282,7 +282,7 @@ public class JavaFXMainWindow extends Application{
 				final File selectedDirectory = directoryChooser.showDialog(new Stage());
 				if (selectedDirectory != null) {
 					String path = selectedDirectory.getAbsolutePath().replace('\\', '/');
-					System.out.println("Selected "+path+" as gamePath.");
+					System.out.println("Selected '"+path+"' as gamepath.");
 					Main.gamePath = path;
 				}else{
 					System.err.println("Nothing selected.");

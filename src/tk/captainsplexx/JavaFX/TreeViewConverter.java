@@ -1,5 +1,6 @@
 package tk.captainsplexx.JavaFX;
 
+import java.nio.ByteOrder;
 import java.util.ArrayList;
 
 import tk.captainsplexx.Game.Main;
@@ -353,6 +354,8 @@ public class TreeViewConverter {
 			}
 			TreeViewEntry childEntry = new TreeViewEntry(name[name.length-1], new ImageView(JavaFXHandler.instanceIcon), link, EntryType.STRING);
 			TreeItem<TreeViewEntry> child = new TreeItem<TreeViewEntry>(childEntry);
+			childEntry.setTooltip("Offset: 0x"+FileHandler.bytesToHex(FileHandler.toBytes(link.getOffset(), ByteOrder.BIG_ENDIAN))+
+					" Size: 0x"+FileHandler.bytesToHex(FileHandler.toBytes(link.getSize(), ByteOrder.BIG_ENDIAN)));
 			pathToTree(bundles, link.getID(), child);
 		}
 		rootnode.getChildren().add(bundles);

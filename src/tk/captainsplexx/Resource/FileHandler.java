@@ -1,9 +1,11 @@
 package tk.captainsplexx.Resource;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
@@ -27,7 +29,7 @@ public class FileHandler {
 		}
 	}
 	
-	public static byte[] readFile(String filepath, int offset, int length){
+	public static byte[] readFile(String filepath, long offset, int length){
 		try{
 			File file = new File(filepath.replaceAll("//", "/"));
 			FileInputStream fin = new FileInputStream(file);
@@ -55,10 +57,10 @@ public class FileHandler {
 	}
 	
 	//WRITE - FileOutputStream
-	public static boolean writeFile(String filepath, byte[] arr){
+	public static boolean writeFile(String filepath, byte[] arr, boolean append){
 		FileOutputStream fos;
 		try {
-			fos = new FileOutputStream(filepath);
+			fos = new FileOutputStream(filepath, append);
 			fos.write(arr);
 			System.out.println("Write: "+filepath+"!");
 			fos.close();
@@ -71,6 +73,34 @@ public class FileHandler {
 			System.err.println("could not write data to file: "+filepath);
 			return false;
 		}	
+	}
+	
+	public static boolean writeFile(String filepath, byte[] arr){
+		return writeFile(filepath, arr, false);
+	}
+	
+	public static boolean writeFileFromFile(String sourceFile, long sourceOffset, long sourceSize, String targetFile, FileSeeker targetSeeker){
+		try{
+			File file = new File(sourceFile.replaceAll("//", "/"));
+			FileInputStream fin = new FileInputStream(file);
+			fin.skip(sourceOffset);
+			
+			FileOutputStream fos = new FileOutputStream(targetFile, true);
+			
+			byte[] data = new byte[1];
+			for (int i=0; i<sourceSize; i++){
+				fin.read(data);
+				fos.write(data, 0x0, 1);
+				targetSeeker.seek(1);
+			}
+			
+			fin.close();
+			fos.close();
+			return true;
+		}catch (Exception e){
+			e.printStackTrace();
+			return false;
+		}
 	}
 	
 	
