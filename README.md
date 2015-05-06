@@ -9,7 +9,7 @@
 Read LICENSE before using it!
 
 Binary build (as jar) run, *.bat file.
-(outdated)
+(updated 2015/05/06: folder chooser)
 
 >Roadmap: http://i.imgur.com/rGUma38.jpg
 
