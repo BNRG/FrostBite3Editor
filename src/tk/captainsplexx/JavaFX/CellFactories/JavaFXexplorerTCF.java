@@ -17,7 +17,6 @@ import tk.captainsplexx.Resource.ResourceHandler.LinkBundleType;
 import tk.captainsplexx.Resource.TOC.ConvertedSBpart;
 import tk.captainsplexx.Resource.TOC.ConvertedTocFile;
 import tk.captainsplexx.Resource.TOC.TocConverter;
-import tk.captainsplexx.Resource.TOC.TocCreator;
 import tk.captainsplexx.Resource.TOC.TocFile;
 import tk.captainsplexx.Resource.TOC.TocManager;
 import tk.captainsplexx.Resource.TOC.TocSBLink;
@@ -35,7 +34,7 @@ public class JavaFXexplorerTCF extends TreeCell<TreeViewEntry> {
 							ConvertedSBpart sbpart = TocConverter.convertSBpart(((TocSBLink)getTreeItem().getValue().getValue()).getLinkedSBPart());
 							
 							/*DEBUG FOR SB PART RECREATION*/
-							TocCreator.createModifiedSBFile(Main.getGame().getCurrentToc(), sbpart/*REPLACE WITH MODIF1*/, false, "output/"+sbpart.getPath().replace('/', '_')+"_splexx", true);				
+							//TocCreator.createModifiedSBFile(Main.getGame().getCurrentToc(), sbpart/*REPLACE WITH MODIF. 1*/, false, "output/"+sbpart.getPath().replace('/', '_')+"_splexx", true);				
 							/*END OF DEBUG*/
 							
 							Main.getGame().setCurrentSB(sbpart);
@@ -51,20 +50,27 @@ public class JavaFXexplorerTCF extends TreeCell<TreeViewEntry> {
 						TocFile toc = TocManager.readToc(Main.getGame().getCurrentFile());
 						ConvertedTocFile convToc = TocConverter.convertTocFile(toc);
 						
+						if (convToc.isCas()){
+							Main.getGame().setCurrentToc(convToc);
+							TreeItem<TreeViewEntry> masterTree = new TreeItem<TreeViewEntry>(new TreeViewEntry("BACK (Click)", new ImageView(JavaFXHandler.leftArrowIcon), "GO BACK", EntryType.LIST));
+							TreeItem<TreeViewEntry> convTocTree = TreeViewConverter.getTreeView(convToc);
+							convTocTree.setExpanded(true);
+							masterTree.getChildren().add(convTocTree);
+							masterTree.setExpanded(true);
+							Main.getJavaFXHandler().setTreeViewStructureLeft(masterTree);
+							Main.getJavaFXHandler().getMainWindow().updateLeftRoot();
+						}else{
+							System.err.println("NON CAS DETECTED!! NO SUPPORT YET. MAYBE NEVER, BECAUSE OF LEGAL RESTRICTIONS :X");
+							getTreeItem().getParent().getChildren().remove(getTreeItem());
+						}
+						
 						/*DEBUG FOR TOC FILE RECREATION
 						System.out.println("DEBUG: TocCreator || sysout in JavaFXExplorer");
 						System.out.println(FileHandler.bytesToHex(TocCreator.createTocFile(convToc)));
 						
 						END OF DEBUG*/
 						
-						Main.getGame().setCurrentToc(convToc);
-						TreeItem<TreeViewEntry> masterTree = new TreeItem<TreeViewEntry>(new TreeViewEntry("BACK (Click)", new ImageView(JavaFXHandler.leftArrowIcon), "GO BACK", EntryType.LIST));
-						TreeItem<TreeViewEntry> convTocTree = TreeViewConverter.getTreeView(convToc);
-						convTocTree.setExpanded(true);
-						masterTree.getChildren().add(convTocTree);
-						masterTree.setExpanded(true);
-						Main.getJavaFXHandler().setTreeViewStructureLeft(masterTree);
-						Main.getJavaFXHandler().getMainWindow().updateLeftRoot();
+						
 					}else if (getTreeItem().getValue().getValue() instanceof String){
 						if (((String)getTreeItem().getValue().getValue()).equals("GO BACK")){
 							//BACK

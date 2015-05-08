@@ -119,7 +119,7 @@ public class FileHandler {
 		try {
 			b = input[seeker.getOffset()];
 		} catch (Exception e) {
-			String out = "Exception while reader byte from inputStream at " + seeker.getOffset();
+			String out = "Exception while reade byte from inputStream at " + seeker.getOffset();
 			if (seeker.getDescription()!=null){
 				out+=" ("+seeker.getDescription()+")";
 			}

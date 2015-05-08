@@ -10,6 +10,9 @@ public class ResourceLink {
 	public long originalSize;
 	public ResourceType type;
 	public String sha1;
+	public int casPatchType; //2 if patched
+	public String baseSha1;
+	public String deltaSha1;
 
 	// ++res
 	public int resType;
@@ -43,10 +46,38 @@ public class ResourceLink {
 		this.sha1 = "";
 		this.bundleType = null;
 		ebxFileGUID = "";
+		this.casPatchType = 0;
+		this.baseSha1 = null;
+		this.deltaSha1 = null;
 	}
 
 	public String getEbxFileGUID() {
 		return ebxFileGUID;
+	}
+	
+
+	public String getBaseSha1() {
+		return baseSha1;
+	}
+
+	public void setBaseSha1(String baseSha1) {
+		this.baseSha1 = baseSha1;
+	}
+
+	public String getDeltaSha1() {
+		return deltaSha1;
+	}
+
+	public void setDeltaSha1(String deltaSha1) {
+		this.deltaSha1 = deltaSha1;
+	}
+
+	public int getCasPatchType() {
+		return casPatchType;
+	}
+
+	public void setCasPatchType(int casPatchType) {
+		this.casPatchType = casPatchType;
 	}
 
 	public int getRangeStart() {

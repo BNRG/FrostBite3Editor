@@ -30,6 +30,9 @@ public class JavaFXexplorer1TCF extends TreeCell<TreeViewEntry> {
 							if (((ResourceLink)i.getValue().getValue()).getBundleType() == ResourceBundleType.EBX){
 								Game game = Main.getGame();
 								ResourceLink link = (ResourceLink) i.getValue().getValue();
+								System.out.println("Delta SHA1: "+link.getDeltaSha1());
+								System.out.println("Base SHA1: "+link.getBaseSha1());
+								/*
 								byte[] data = CasDataReader.readCas(link.getSha1(), Main.gamePath+"/Data", game.getResourceHandler().getCasCatManager().getEntries());
 								TreeItem<TreeViewEntry> ebx = TreeViewConverter.getTreeView(game.getResourceHandler().getEBXHandler().loadFile(data));
 								Main.getJavaFXHandler().setTreeViewStructureRight(ebx);

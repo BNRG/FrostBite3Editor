@@ -11,7 +11,7 @@ public class ConvertedTocFile {
 	public ArrayList<TocSBLink> chunks;
 	public long totalSize;
 	
-	
+
 	public long getTotalSize() {
 		return totalSize;
 	}

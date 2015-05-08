@@ -341,7 +341,7 @@ public class TreeViewConverter {
 	/*START OF CONVERTED TOC*/
 	public static TreeItem<TreeViewEntry> getTreeView(ConvertedTocFile cTocF){
 		TreeItem<TreeViewEntry> rootnode = new TreeItem<TreeViewEntry>(new TreeViewEntry(cTocF.getName(), new ImageView(JavaFXHandler.documentIcon), null, EntryType.LIST));
-		
+				
 		/*BUNDLES*/
 		TreeItem<TreeViewEntry> bundles = new TreeItem<TreeViewEntry>(new TreeViewEntry("bundles - "+cTocF.getBundles().size()+" Children", new ImageView(JavaFXHandler.listIcon), null, EntryType.LIST));
 		for (TocSBLink link : cTocF.getBundles()){

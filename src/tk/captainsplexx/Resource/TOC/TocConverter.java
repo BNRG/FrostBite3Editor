@@ -7,8 +7,6 @@ import tk.captainsplexx.Game.Main;
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.ResourceHandler.LinkBundleType;
 import tk.captainsplexx.Resource.ResourceHandler.ResourceType;
-import tk.captainsplexx.Resource.CAS.CasDataReader;
-import tk.captainsplexx.Resource.EBX.EBXLoader;
 import tk.captainsplexx.Resource.TOC.TocManager.TocFieldType;
 
 public class TocConverter {
@@ -74,6 +72,10 @@ public class TocConverter {
 					link.setSize((int) field.getObj());
 				}else if (field.getName().toLowerCase().equals("size") && field.getType() == TocFieldType.LONG){
 					link.setSizeLong((long) field.getObj());
+				}else if (field.getName().toLowerCase().equals("delta") && field.getType() == TocFieldType.BOOL){
+					link.setDelta((boolean) field.getObj());
+				}else if (field.getName().toLowerCase().equals("base") && field.getType() == TocFieldType.BOOL){
+					link.setBase((boolean) field.getObj());
 				}else{
 					System.err.println("unexpected field (link) found in toc file while converting: "+field.getName()+" as type "+field.getType());
 				}
@@ -175,6 +177,14 @@ public class TocConverter {
 							link.setRangeStart((Integer) field.getObj());
 						}else if (field.getName().toLowerCase().equals("rangeend") && field.getType() == TocFieldType.INTEGER){
 							link.setRangeEnd((Integer) field.getObj());
+						}else if (field.getName().toLowerCase().equals("caspatchtype") && field.getType() == TocFieldType.INTEGER){
+							link.setCasPatchType((Integer) field.getObj());
+						}else if (field.getName().toLowerCase().equals("basesha1") && field.getType() == TocFieldType.SHA1){
+							link.setBaseSha1((String) field.getObj());
+						}else if (field.getName().toLowerCase().equals("deltasha1") && field.getType() == TocFieldType.SHA1){
+							link.setDeltaSha1((String) field.getObj());
+						}else{
+							typeNotHandled(field);
 						}
 					}
 					Main.getGame().getChunkGUIDSHA1().put(link.getId().toLowerCase(), link.getSha1());
@@ -187,6 +197,14 @@ public class TocConverter {
 							link.setMeta((byte[]) field.getObj());
 						}else if (field.getName().toLowerCase().equals("firstmip") && field.getType() == TocFieldType.INTEGER){
 							link.setFirstMip((Integer) field.getObj());
+						}else if (field.getName().toLowerCase().equals("caspatchtype") && field.getType() == TocFieldType.INTEGER){
+							link.setCasPatchType((Integer) field.getObj());
+						}else if (field.getName().toLowerCase().equals("basesha1") && field.getType() == TocFieldType.SHA1){
+							link.setBaseSha1((String) field.getObj());
+						}else if (field.getName().toLowerCase().equals("deltasha1") && field.getType() == TocFieldType.SHA1){
+							link.setDeltaSha1((String) field.getObj());
+						}else{
+							typeNotHandled(field);
 						}
 					}
 					break;
@@ -200,6 +218,14 @@ public class TocConverter {
 							link.setSize((Long) field.getObj());
 						}else if (field.getName().toLowerCase().equals("originalsize") && field.getType() == TocFieldType.LONG){
 							link.setOriginalSize((Long) field.getObj());
+						}else if (field.getName().toLowerCase().equals("caspatchtype") && field.getType() == TocFieldType.INTEGER){
+							link.setCasPatchType((Integer) field.getObj());
+						}else if (field.getName().toLowerCase().equals("basesha1") && field.getType() == TocFieldType.SHA1){
+							link.setBaseSha1((String) field.getObj());
+						}else if (field.getName().toLowerCase().equals("deltasha1") && field.getType() == TocFieldType.SHA1){
+							link.setDeltaSha1((String) field.getObj());
+						}else{
+							typeNotHandled(field);
 						}
 					}
 					break;
@@ -213,14 +239,24 @@ public class TocConverter {
 							link.setSize((Long) field.getObj());
 						}else if (field.getName().toLowerCase().equals("originalsize") && field.getType() == TocFieldType.LONG){
 							link.setOriginalSize((Long) field.getObj());
+						}else if (field.getName().toLowerCase().equals("caspatchtype") && field.getType() == TocFieldType.INTEGER){
+							link.setCasPatchType((Integer) field.getObj());
+						}else if (field.getName().toLowerCase().equals("basesha1") && field.getType() == TocFieldType.SHA1){
+							link.setBaseSha1((String) field.getObj());
+						}else if (field.getName().toLowerCase().equals("deltasha1") && field.getType() == TocFieldType.SHA1){
+							link.setDeltaSha1((String) field.getObj());
+						}else{
+							typeNotHandled(field);
 						}
 					}
 					try{
+						/*//TODO DISABLED UNTIL PATCH SYSTEM IMPEMENTED!
 						link.setEbxFileGUID(
 								EBXLoader.getGUID(CasDataReader.readCas(link.getSha1(),
 										Main.gamePath+"/Data", Main.getGame().getResourceHandler().getCasCatManager().getEntries())));
 						
 						Main.getGame().getEBXFileGUIDs().put(link.getEbxFileGUID(), link.getName());
+						*/
 					}catch (Exception e){
 						//Timeout in JavaFX Thread ??
 					}
@@ -237,10 +273,7 @@ public class TocConverter {
 							link.setOriginalSize((Long) field.getObj());
 						}else if (field.getName().toLowerCase().equals("restype") && field.getType() == TocFieldType.INTEGER){
 							int resType = (Integer) field.getObj();
-							
-							/*CONVERT*/
 							link.setType(toResourceType(resType));
-							
 							link.setResType(resType);
 						}else if (field.getName().toLowerCase().equals("resmeta") && field.getType() == TocFieldType.RAW2){
 							link.setResMeta((byte[]) field.getObj());
@@ -248,6 +281,14 @@ public class TocConverter {
 							link.setResRid((long) field.getObj());
 						}else if (field.getName().toLowerCase().equals("idata") && field.getType() == TocFieldType.RAW2){
 							link.setIdata((byte[]) field.getObj());
+						}else if (field.getName().toLowerCase().equals("caspatchtype") && field.getType() == TocFieldType.INTEGER){
+							link.setCasPatchType((Integer) field.getObj());
+						}else if (field.getName().toLowerCase().equals("basesha1") && field.getType() == TocFieldType.SHA1){
+							link.setBaseSha1((String) field.getObj());
+						}else if (field.getName().toLowerCase().equals("deltasha1") && field.getType() == TocFieldType.SHA1){
+							link.setDeltaSha1((String) field.getObj());
+						}else{
+							typeNotHandled(field);
 						}
 					}
 					break;
@@ -256,6 +297,10 @@ public class TocConverter {
 		}else{
 			return null;
 		}
+	}
+	
+	public static void typeNotHandled(TocField entry){
+		System.err.println("TocConverter found a not handled Field. Type: "+entry.getType()+" Name: "+entry.getName());
 	}
 	
 	public static ResourceType toResourceType(int resType){

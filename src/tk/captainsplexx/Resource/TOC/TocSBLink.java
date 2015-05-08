@@ -11,7 +11,9 @@ public class TocSBLink {
 	public int size;
 	public long sizeLong;
 	public LinkBundleType type;
-	public String sbPath;	
+	public String sbPath;
+	public boolean delta;
+	public boolean base;
 	
 	public TocSBLink(/*USING NULLCONSTUCTOR*/){
 		this.id = "";
@@ -22,9 +24,31 @@ public class TocSBLink {
 		this.sha1 = "";
 		this.sizeLong = -1;
 		this.guid = "";
+		this.delta = false;
+		this.base = false;
 	}
 	
 	
+	public boolean isBase() {
+		return base;
+	}
+
+
+	public void setBase(boolean base) {
+		this.base = base;
+	}
+
+
+	public boolean isDelta() {
+		return delta;
+	}
+
+
+	public void setDelta(boolean delta) {
+		this.delta = delta;
+	}
+
+
 	public String getGuid() {
 		return guid;
 	}

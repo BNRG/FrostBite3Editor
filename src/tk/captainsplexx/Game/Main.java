@@ -59,7 +59,7 @@ public class Main {
                 new ImageIOImageData().imageToByteBuffer(ImageIO.read(new File("res/icon/32.png")), false, false, null)
             });
             Mouse.setClipMouseCoordinatesToWindow(true);
-            Mouse.setGrabbed(true);
+            //Mouse.setGrabbed(true);
         } catch (Exception e) {
             e.printStackTrace();
             Display.destroy();
