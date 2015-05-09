@@ -14,13 +14,14 @@ public class Patcher {
 			return null;
 		}
 		int procSize = 0;
+		int patchedSize = 0;
 		
 		FileSeeker baseSeeker = new FileSeeker("BASE SEEKER | PATCHER");
 		FileSeeker deltaSeeker = new FileSeeker("DELTA SEEKER | PATCHER");
 		
 		deltaSeeker.seek(2); // SKIP FIRST 2 BYTES (IDK WHAT THIS IS :X)
 		procSize = FileHandler.readShort(delta, deltaSeeker, ByteOrder.BIG_ENDIAN);
-		deltaSeeker.seek(2); //NOT NEEDED BECAUSE USING LIST INSTEAD OF ARRAY (CONTAINS PATCHED SIZE)
+		patchedSize = FileHandler.readShort(delta, deltaSeeker, ByteOrder.BIG_ENDIAN); // (CONTAINS PATCHED SIZE)
 		ArrayList<Byte> patchedData = new ArrayList<>();
 		
 		int offset = 0;
@@ -49,6 +50,16 @@ public class Patcher {
 			for (int patchIndex=0; patchIndex<addBytes; patchIndex++){
 				patchedData.add(FileHandler.readByte(delta, deltaSeeker));
 			}	
+		}
+		
+		if (patchedData.size()<patchedSize){
+			if (baseSeeker.getOffset() < decompressedBase.length){
+				while (baseSeeker.getOffset() < decompressedBase.length){
+					patchedData.add(FileHandler.readByte(decompressedBase, baseSeeker));
+				}
+			}else{
+				System.err.println("Patched size is smaller as given one :(");
+			}
 		}
 		
 		return FileHandler.convertFromList(patchedData);
