@@ -29,9 +29,11 @@ public class Patcher {
 		int addBytes = 0;
 		
 		int procOffset = deltaSeeker.getOffset();
+		
+		//fill spaces - patch data
 		while(deltaSeeker.getOffset()<procOffset+procSize){
 			
-			//*MAY USING LEB128*//
+			//*MAY USING LEB128 (DOES EVEN BIG_END. ENCODING EXIST ?)*//
 			offset = FileHandler.readShort(delta, deltaSeeker, ByteOrder.BIG_ENDIAN);
 			removeBytes = FileHandler.readByte(delta, deltaSeeker);
 			addBytes = FileHandler.readByte(delta, deltaSeeker);
@@ -52,13 +54,14 @@ public class Patcher {
 			}	
 		}
 		
+		//fill up left over data
 		if (patchedData.size()<patchedSize){
 			if (baseSeeker.getOffset() < decompressedBase.length){
 				while (baseSeeker.getOffset() < decompressedBase.length){
 					patchedData.add(FileHandler.readByte(decompressedBase, baseSeeker));
 				}
 			}else{
-				System.err.println("Patched size is smaller as given one :(");
+				System.err.println("Patched size is smaller as given one :( ["+patchedData.size()+"/"+patchedSize+"]");
 			}
 		}
 		
