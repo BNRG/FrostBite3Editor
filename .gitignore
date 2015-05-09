@@ -2,7 +2,5 @@ bin/
 lib/jar/slick-util-src.zip
 tools/
 output/
-
-//dist will be hosted externaly via adf.ly :)
 dist.jar
 run_dist.bat
