@@ -30,26 +30,36 @@ public class JavaFXexplorer1TCF extends TreeCell<TreeViewEntry> {
 							if (((ResourceLink)i.getValue().getValue()).getBundleType() == ResourceBundleType.EBX){
 								Game game = Main.getGame();
 								ResourceLink link = (ResourceLink) i.getValue().getValue();
-								//System.out.println("Delta SHA1: "+link.getDeltaSha1());
-								//System.out.println("Base SHA1: "+link.getBaseSha1());
+								System.out.println("Delta SHA1: "+link.getDeltaSha1());
+								System.out.println("Base SHA1: "+link.getBaseSha1());
+								System.out.println("SHA1: "+link.getSha1());
 								
-								byte[] data = CasDataReader.readCas(link.getSha1(), Main.gamePath+"/Data", game.getResourceHandler().getCasCatManager().getEntries());
-								TreeItem<TreeViewEntry> ebx = TreeViewConverter.getTreeView(game.getResourceHandler().getEBXHandler().loadFile(data));
-								Main.getJavaFXHandler().setTreeViewStructureRight(ebx);
-								Main.getJavaFXHandler().getMainWindow().updateRightRoot();
-								/*
-								for (String s : Main.getGame().getEBXFileGUIDs().keySet()){
-									System.out.println(s+" "+Main.getGame().getEBXFileGUIDs().get(s));
-								}*/
+								if (link.getBaseSha1() == null){
+								
+									byte[] data = CasDataReader.readCas(link.getSha1(), Main.gamePath+"/Data", game.getResourceHandler().getCasCatManager().getEntries());
+									TreeItem<TreeViewEntry> ebx = TreeViewConverter.getTreeView(game.getResourceHandler().getEBXHandler().loadFile(data));
+									Main.getJavaFXHandler().setTreeViewStructureRight(ebx);
+									Main.getJavaFXHandler().getMainWindow().updateRightRoot();
+									/*
+									for (String s : Main.getGame().getEBXFileGUIDs().keySet()){
+										System.out.println(s+" "+Main.getGame().getEBXFileGUIDs().get(s));
+									}*/
+								}else{
+									System.err.println("Patched data found. WIP.");
+								}
 							}else if (((ResourceLink)i.getValue().getValue()).getBundleType() == ResourceBundleType.RES){
 								Game game = Main.getGame();
 								ResourceLink link = (ResourceLink) i.getValue().getValue();
-								if (link.getType() == ResourceType.ITEXTURE){
-									byte[] itexture = CasDataReader.readCas(link.getSha1(), Main.gamePath+"/Data", game.getResourceHandler().getCasCatManager().getEntries());
-									//System.out.println("Itexture: "+FileHandler.bytesToHex(itexture));
-									FileHandler.writeFile("output/"+link.getName().replace('/', '_')+".dds", ItextureHandler.getDSS(itexture, Main.gamePath+"/Data", game.getResourceHandler().getCasCatManager().getEntries()));
+								if (link.getBaseSha1() == null){
+									if (link.getType() == ResourceType.ITEXTURE){
+										byte[] itexture = CasDataReader.readCas(link.getSha1(), Main.gamePath+"/Data", game.getResourceHandler().getCasCatManager().getEntries());
+										//System.out.println("Itexture: "+FileHandler.bytesToHex(itexture));
+										FileHandler.writeFile("output/"+link.getName().replace('/', '_')+".dds", ItextureHandler.getDSS(itexture, Main.gamePath+"/Data", game.getResourceHandler().getCasCatManager().getEntries()));
+									}
+									Main.getJavaFXHandler().getMainWindow().toggleResToolsVisibility();
+								}else{
+									System.err.println("Patched data found. WIP.");
 								}
-								Main.getJavaFXHandler().getMainWindow().toggleResToolsVisibility();
 							}else if (i.getParent().getValue().getType() == EntryType.LIST){
 								System.out.println(((ResourceLink)i.getValue().getValue()).getBundleType()+" is currently not supported.");
 							}

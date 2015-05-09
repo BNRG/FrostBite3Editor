@@ -11,3 +11,5 @@ Read LICENSE before using it!
 >Youtube: https://www.youtube.com/channel/UCNSVft8rtEmWSYZ_OeyPyBg
 
 >Twitter & Reddit: @CaptainSpleXx - Lastest news on Editor :)
+
+'TEMP' GET CLEANED UP - DO NOT PLACE ANY FILES/FOLDERS IN THERE!

@@ -1,6 +1,6 @@
 bin/
+temp/images/
 lib/jar/slick-util-src.zip
 tools/
-output/
 dist.jar
 run_dist.bat

@@ -11,9 +11,9 @@ import tk.captainsplexx.JavaFX.TreeViewEntry;
 import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
 import tk.captainsplexx.Maths.Patcher;
 import tk.captainsplexx.Render.ModelHandler;
+import tk.captainsplexx.Resource.DDSConverter;
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.ResourceHandler;
-import tk.captainsplexx.Resource.CAS.CasDataReader;
 import tk.captainsplexx.Resource.ITEXTURE.ItextureHandler;
 import tk.captainsplexx.Resource.TOC.ConvertedSBpart;
 import tk.captainsplexx.Resource.TOC.ConvertedTocFile;
@@ -31,6 +31,9 @@ public class Game {
 	public ConvertedSBpart currentSB;
 	public HashMap<String, String> ebxFileGUIDs;
 	public HashMap<String, String> chunkGUIDSHA1;
+	
+	public int MIP_MAP_LEVEL = 0;
+	//Value between 0 and 7//
 			
 	public Game(){
 		modelHandler = new ModelHandler();
@@ -54,6 +57,15 @@ public class Game {
 		);
 		FileHandler.writeFile("output/patched_data", patchedData);
 		/*END OF TEST*/
+		
+		/*DDS Conv. test*/
+		byte[] splexxDDStest = FileHandler.readFile("res/notFound.dds");
+		
+		File tga = DDSConverter.storeDDSasTGA(splexxDDStest, "splexxDDStest");
+		if (tga != null){
+			System.out.println("TGA Success: "+tga.getAbsolutePath());
+		}
+		/*END OF DDS TEST*/
 		
 		System.out.println("Please select a game root directory like this one: 'C:/Program Files (x86)/Origin Games/Battlefield Hardline Digital Deluxe'!");
 		Main.getJavaFXHandler().getMainWindow().selectGamePath();
@@ -97,9 +109,9 @@ public class Game {
 		currentToc = null;
 		currentSB = null;
 
-		TreeItem<TreeViewEntry> explorerTree = new TreeItem<TreeViewEntry>(new TreeViewEntry(Main.gamePath+"/Data/", null, null, EntryType.LIST));
-		for (File file : FileHandler.listf(Main.gamePath+"/Data/", ".sb")){
-			String relPath = file.getAbsolutePath().replace("\\", "/").replace(".sb", "").replace(Main.gamePath+"/Data/", "");
+		TreeItem<TreeViewEntry> explorerTree = new TreeItem<TreeViewEntry>(new TreeViewEntry(Main.gamePath+"/Update/Patch/Data/", null, null, EntryType.LIST));
+		for (File file : FileHandler.listf(Main.gamePath+"/Update/Patch/Data/", ".sb")){
+			String relPath = file.getAbsolutePath().replace("\\", "/").replace(".sb", "").replace(Main.gamePath+"/Update/Patch/Data/", "");
 			String[] fileName = relPath.split("/");
 			TreeItem<TreeViewEntry> convTocTree = new TreeItem<TreeViewEntry>(new TreeViewEntry(fileName[fileName.length-1], new ImageView(JavaFXHandler.documentIcon), file, EntryType.LIST)); 
 			TreeViewConverter.pathToTree(explorerTree, relPath, convTocTree);

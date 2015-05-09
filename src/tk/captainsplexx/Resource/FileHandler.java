@@ -59,6 +59,7 @@ public class FileHandler {
 	//WRITE - FileOutputStream
 	public static boolean writeFile(String filepath, byte[] arr, boolean append){
 		FileOutputStream fos;
+		prepareDir(filepath);
 		try {
 			fos = new FileOutputStream(filepath, append);
 			fos.write(arr);
@@ -73,6 +74,23 @@ public class FileHandler {
 			System.err.println("could not write data to file: "+filepath);
 			return false;
 		}	
+	}
+	
+	public static boolean prepareDir(String filepath){
+		String[] split = filepath.split("/");
+		String currPath = "";
+		for (int index=0; index<split.length-1;index++){
+			currPath += split[index]+"/";
+			File folder = new File(currPath);
+			if (folder.isDirectory()){
+				//System.out.println(folder.getName());
+				continue;
+			}else{
+				//System.err.println(folder.getName());
+				folder.mkdir();
+			}
+		}
+		return false;
 	}
 	
 	public static boolean writeFile(String filepath, byte[] arr){
@@ -342,6 +360,9 @@ public class FileHandler {
 	/*FILEFINDER*/
 	public static ArrayList<File> listf(String directoryName, String endsWith) {
 	    File directory = new File(directoryName);
+	    if (!directory.isDirectory()){
+	    	return new ArrayList<File>();
+	    }
 	    ArrayList<File> files = new ArrayList<File>();
 	    // get all the files from a directory
 	    File[] fList = directory.listFiles();
@@ -358,16 +379,18 @@ public class FileHandler {
 	}
 	static void listfdir(String directoryName, ArrayList<File> files , String endsWith) {
 	    File directory = new File(directoryName);
-	    // get all the files from a directory
-	    File[] fList = directory.listFiles();
-	    for (File file : fList) {
-	        if (file.isFile()) {
-	        	if (file.getName().endsWith(endsWith)){
-	        		files.add(file);
-	        	}
-	        } else if (file.isDirectory()) {
-	        	listfdir(file.getAbsolutePath(), files, endsWith);
-	        }
+	    if (directory.isDirectory()){
+	    	// get all the files from a directory
+		    File[] fList = directory.listFiles();
+		    for (File file : fList) {
+		        if (file.isFile()) {
+		        	if (file.getName().endsWith(endsWith)){
+		        		files.add(file);
+		        	}
+		        } else if (file.isDirectory()) {
+		        	listfdir(file.getAbsolutePath(), files, endsWith);
+		        }
+		    }
 	    }
 	}
 	/*END OF FINDER*/

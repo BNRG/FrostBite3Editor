@@ -13,6 +13,7 @@ import org.newdawn.slick.opengl.ImageIOImageData;
 import tk.captainsplexx.Event.EventHandler;
 import tk.captainsplexx.JavaFX.JavaFXHandler;
 import tk.captainsplexx.Render.Render;
+import tk.captainsplexx.Resource.FileHandler;
 
 
 public class Main {
@@ -39,6 +40,12 @@ public class Main {
 	public static String gamePath;
 		
 	public static void main(String[] args){
+		
+		//clean up folder.
+		for (File f : FileHandler.listf("temp/images", "")){
+			f.delete();
+		}
+		
 		gamePath = null;
 		TICK_RATE = 20;
 		
