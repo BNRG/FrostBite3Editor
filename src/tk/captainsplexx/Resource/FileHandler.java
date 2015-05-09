@@ -119,7 +119,7 @@ public class FileHandler {
 		try {
 			b = input[seeker.getOffset()];
 		} catch (Exception e) {
-			String out = "Exception while reade byte from inputStream at " + seeker.getOffset();
+			String out = "Exception while read byte from inputStream at " + seeker.getOffset();
 			if (seeker.getDescription()!=null){
 				out+=" ("+seeker.getDescription()+")";
 			}
@@ -144,6 +144,14 @@ public class FileHandler {
 			buffer[i] = readByte(input, seeker);
 		}
 		return buffer;
+	}
+	
+	public static ArrayList<Byte> toArrayList(byte[] data){
+		ArrayList<Byte> list = new ArrayList<>();
+		for (Byte b : data){
+			list.add(b);
+		}
+		return list;
 	}
 	
 	public static byte[] hexStringToByteArray(String s) {

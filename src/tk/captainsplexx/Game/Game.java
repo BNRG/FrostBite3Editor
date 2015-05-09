@@ -9,6 +9,7 @@ import tk.captainsplexx.JavaFX.JavaFXHandler;
 import tk.captainsplexx.JavaFX.TreeViewConverter;
 import tk.captainsplexx.JavaFX.TreeViewEntry;
 import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
+import tk.captainsplexx.Maths.Patcher;
 import tk.captainsplexx.Render.ModelHandler;
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.ResourceHandler;
@@ -45,6 +46,14 @@ public class Game {
 		
 		shaderHandler = new ShaderHandler();
 		entityHandler = new EntityHandler(modelHandler, resourceHandler);
+		
+		/*TEST FOR PATCHING BASEDATA USING DELTA*/
+		byte[] patchedData = Patcher.getPatchedData(
+				FileHandler.readFile("__DOCUMENTATION__/patch_system/decompressed_base"),
+				FileHandler.readFile("__DOCUMENTATION__/patch_system/delta")
+		);
+		FileHandler.writeFile("output/patched_data", patchedData);
+		/*END OF TEST*/
 		
 		System.out.println("Please select a game root directory like this one: 'C:/Program Files (x86)/Origin Games/Battlefield Hardline Digital Deluxe'!");
 		Main.getJavaFXHandler().getMainWindow().selectGamePath();
