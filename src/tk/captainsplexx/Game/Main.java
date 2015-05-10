@@ -46,6 +46,10 @@ public class Main {
 			f.delete();
 		}
 		
+		for (File f : FileHandler.listf("output", "")){
+			f.delete();
+		}
+		
 		gamePath = null;
 		TICK_RATE = 20;
 		

@@ -31,11 +31,17 @@ public class Game {
 	public ConvertedSBpart currentSB;
 	public HashMap<String, String> ebxFileGUIDs;
 	public HashMap<String, String> chunkGUIDSHA1;
-	
-	public int MIP_MAP_LEVEL = 0;
-	//Value between 0 and 7//
-			
+				
 	public Game(){
+		/*LEVEL OF DETAIL
+		 * 0=100%
+		 * 1=50%
+		 * 2=25%
+		 * 3=12.5%
+		 * ....
+		 */
+		DDSConverter.MIP_MAP_LEVEL = 0;
+		
 		modelHandler = new ModelHandler();
 		
 		playerHandler = new PlayerHandler();
@@ -57,16 +63,7 @@ public class Game {
 		);
 		FileHandler.writeFile("output/patched_data", patchedData);
 		/*END OF TEST*/
-		
-		/*DDS Conv. test*/
-		byte[] splexxDDStest = FileHandler.readFile("res/notFound.dds");
-		
-		File tga = DDSConverter.storeDDSasTGA(splexxDDStest, "splexxDDStest");
-		if (tga != null){
-			System.out.println("TGA Success: "+tga.getAbsolutePath());
-		}
-		/*END OF DDS TEST*/
-		
+				
 		System.out.println("Please select a game root directory like this one: 'C:/Program Files (x86)/Origin Games/Battlefield Hardline Digital Deluxe'!");
 		Main.getJavaFXHandler().getMainWindow().selectGamePath();
 
@@ -109,13 +106,24 @@ public class Game {
 		currentToc = null;
 		currentSB = null;
 
-		TreeItem<TreeViewEntry> explorerTree = new TreeItem<TreeViewEntry>(new TreeViewEntry(Main.gamePath+"/Update/Patch/Data/", null, null, EntryType.LIST));
-		for (File file : FileHandler.listf(Main.gamePath+"/Update/Patch/Data/", ".sb")){
-			String relPath = file.getAbsolutePath().replace("\\", "/").replace(".sb", "").replace(Main.gamePath+"/Update/Patch/Data/", "");
-			String[] fileName = relPath.split("/");
-			TreeItem<TreeViewEntry> convTocTree = new TreeItem<TreeViewEntry>(new TreeViewEntry(fileName[fileName.length-1], new ImageView(JavaFXHandler.documentIcon), file, EntryType.LIST)); 
-			TreeViewConverter.pathToTree(explorerTree, relPath, convTocTree);
+		TreeItem<TreeViewEntry> explorerTree = new TreeItem<TreeViewEntry>(new TreeViewEntry(Main.gamePath, null, null, EntryType.LIST));
+		for (File file : FileHandler.listf(Main.gamePath+"/Data/", ".sb")){
+			File patched = new File(file.getAbsolutePath().replace("\\", "/").replace(Main.gamePath, Main.gamePath+"/Update/Patch"));
+			if (!patched.exists()){
+				String relPath = file.getAbsolutePath().replace("\\", "/").replace(".sb", "").replace(Main.gamePath+"/", "");
+				//System.out.println("NOPATCH "+relPath);
+				String[] fileName = relPath.split("/");
+				TreeItem<TreeViewEntry> convTocTree = new TreeItem<TreeViewEntry>(new TreeViewEntry(fileName[fileName.length-1], new ImageView(JavaFXHandler.documentIcon), file, EntryType.LIST)); 
+				TreeViewConverter.pathToTree(explorerTree, relPath, convTocTree);
+			}else{
+				String relPath = patched.getAbsolutePath().replace("\\", "/").replace(".sb", "").replace(Main.gamePath+"/", "");
+				//System.out.println("PATCH "+relPath);
+				String[] fileName = relPath.split("/");
+				TreeItem<TreeViewEntry> convTocTree = new TreeItem<TreeViewEntry>(new TreeViewEntry(fileName[fileName.length-1], new ImageView(JavaFXHandler.documentIcon), patched, EntryType.LIST)); 
+				TreeViewConverter.pathToTree(explorerTree, relPath, convTocTree);
+			}
 		}
+		explorerTree.getValue();
 		for (TreeItem<TreeViewEntry> child : explorerTree.getChildren()){
 			if (child.getChildren().size()>0){
 				child.setExpanded(true);
@@ -205,7 +213,7 @@ public class Game {
 	public HashMap<String, String> getChunkGUIDSHA1() {
 		return chunkGUIDSHA1;
 	}
-	
+
 	
 	
 	

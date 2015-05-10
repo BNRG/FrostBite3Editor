@@ -1,5 +1,6 @@
 package tk.captainsplexx.Render;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.FloatBuffer;
@@ -16,6 +17,7 @@ import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 
 import tk.captainsplexx.Model.RawModel;
+import tk.captainsplexx.Resource.DDSConverter;
 
 public class Loader {
 	public ArrayList<Integer> vaos = new ArrayList<Integer>();
@@ -52,7 +54,7 @@ public class Loader {
 	}
 	
 	public Loader(){
-		notFoundID = loadTexture("res/notFound.png");
+		notFoundID = loadTexture("res/notFound/notFound.dds");
 	}
 	
 	public int getNotFoundID() {
@@ -65,7 +67,12 @@ public class Loader {
 			return textures.get(path);
 		}else{
 			try {
-				texture = TextureLoader.getTexture("PNG", new FileInputStream(path));
+				if (path.endsWith(".dds")){
+					File tga = DDSConverter.convertToTGA(new File(path));
+					texture = TextureLoader.getTexture("TGA", new FileInputStream(tga.getAbsolutePath()));
+				}else{
+					texture = TextureLoader.getTexture("PNG", new FileInputStream(path));
+				}
 				textures.put(path, texture.getTextureID());
 				return texture.getTextureID();
 			} catch (IOException e) {

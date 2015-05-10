@@ -1,5 +1,7 @@
 package tk.captainsplexx.JavaFX.CellFactories;
 
+import java.io.File;
+
 import javafx.event.EventHandler;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeCell;
@@ -10,6 +12,7 @@ import tk.captainsplexx.Game.Main;
 import tk.captainsplexx.JavaFX.TreeViewConverter;
 import tk.captainsplexx.JavaFX.TreeViewEntry;
 import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
+import tk.captainsplexx.Resource.DDSConverter;
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.ResourceHandler.ResourceType;
 import tk.captainsplexx.Resource.CAS.CasDataReader;
@@ -55,6 +58,7 @@ public class JavaFXexplorer1TCF extends TreeCell<TreeViewEntry> {
 										byte[] itexture = CasDataReader.readCas(link.getSha1(), Main.gamePath+"/Data", game.getResourceHandler().getCasCatManager().getEntries());
 										//System.out.println("Itexture: "+FileHandler.bytesToHex(itexture));
 										FileHandler.writeFile("output/"+link.getName().replace('/', '_')+".dds", ItextureHandler.getDSS(itexture, Main.gamePath+"/Data", game.getResourceHandler().getCasCatManager().getEntries()));
+										DDSConverter.convertToTGA(new File("output/"+link.getName().replace('/', '_')+".dds"));
 									}
 									Main.getJavaFXHandler().getMainWindow().toggleResToolsVisibility();
 								}else{
