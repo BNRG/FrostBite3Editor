@@ -301,7 +301,7 @@ public class EBXLoader {
 				//field.setValue(internalGUIDs.get(tempValue-1), FieldValueType.Guid);
 			}
 		}else{
-			System.err.println("Unknown field type: "+Integer.toHexString(fieldDesc.getType())+" File name: "+filePath);
+			System.err.println("(EBXLoader) Unknown field type: "+Integer.toHexString(fieldDesc.getType())+" File name: "+filePath);
 			field.setValue("*unknown field type*", FieldValueType.Unknown);
 			/*
 			 try:

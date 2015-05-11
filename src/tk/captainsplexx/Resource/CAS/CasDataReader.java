@@ -3,11 +3,53 @@ package tk.captainsplexx.Resource.CAS;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 
+import tk.captainsplexx.Game.Game;
+import tk.captainsplexx.Game.Main;
 import tk.captainsplexx.Maths.LZ4;
+import tk.captainsplexx.Maths.Patcher;
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.FileSeeker;
+import tk.captainsplexx.Resource.ResourceHandler;
 
 public class CasDataReader { //casPath == folderPath
+	
+	public static byte[] readCas(String baseSHA1, String deltaSHA1, String SHA1, Integer patchType){
+		Game game = Main.getGame();
+		ResourceHandler rs = game.getResourceHandler();
+		if (patchType == 2){
+			//Patched using delta
+			byte[] base = CasDataReader.readCas(baseSHA1, Main.gamePath+"/Data", rs.getCasCatManager().getEntries());
+			byte[] delta = CasDataReader.readCas(deltaSHA1, Main.gamePath+"/Update/Patch/Data", rs.getPatchedCasCatManager().getEntries());
+			
+			byte[] data = Patcher.getPatchedData(base, delta);
+			if (data != null){
+				return data;
+			}else{
+				System.err.println("null data... in CasDataReader (patched data useing delta)");
+				return null;
+			}
+		}else if(patchType == 1){
+			//Patched using data from update cas
+			byte[] data = CasDataReader.readCas(SHA1, Main.gamePath+"/Update/Patch/Data", rs.getPatchedCasCatManager().getEntries());
+			if (data != null){
+				return data;
+			}else{
+				System.err.println("null data... in CasDataReader (patched data replacement)");
+				return null;
+			}
+		}else{
+			//Unpatched
+			byte[] data = CasDataReader.readCas(SHA1, Main.gamePath+"/Data", rs.getCasCatManager().getEntries());
+			if (data != null){
+				return data;
+			}else{
+				System.err.println("null data... in CasDataReader (unpatched data)");
+				return null;
+			}
+		}
+	}
+	
+	
 	public static byte[] readCas(String SHA1, String casFolderPath, ArrayList<CasCatEntry> casCatEntries){
 		try{
 			SHA1 = SHA1.replaceAll("\\s","");

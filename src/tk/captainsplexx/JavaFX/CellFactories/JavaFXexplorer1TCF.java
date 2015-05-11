@@ -1,7 +1,5 @@
 package tk.captainsplexx.JavaFX.CellFactories;
 
-import java.io.File;
-
 import javafx.event.EventHandler;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeCell;
@@ -9,11 +7,11 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.input.MouseEvent;
 import tk.captainsplexx.Game.Game;
 import tk.captainsplexx.Game.Main;
+import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
 import tk.captainsplexx.JavaFX.TreeViewConverter;
 import tk.captainsplexx.JavaFX.TreeViewEntry;
-import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
-import tk.captainsplexx.Resource.DDSConverter;
 import tk.captainsplexx.Resource.FileHandler;
+import tk.captainsplexx.Resource.ResourceHandler;
 import tk.captainsplexx.Resource.ResourceHandler.ResourceType;
 import tk.captainsplexx.Resource.CAS.CasDataReader;
 import tk.captainsplexx.Resource.ITEXTURE.ItextureHandler;
@@ -30,39 +28,33 @@ public class JavaFXexplorer1TCF extends TreeCell<TreeViewEntry> {
 				if (i != null){
 					if (i.getParent()!=null){
 						if (i.getValue().getValue() != null){
-							if (((ResourceLink)i.getValue().getValue()).getBundleType() == ResourceBundleType.EBX){
-								Game game = Main.getGame();
-								ResourceLink link = (ResourceLink) i.getValue().getValue();
-								System.out.println("Delta SHA1: "+link.getDeltaSha1());
-								System.out.println("Base SHA1: "+link.getBaseSha1());
-								System.out.println("SHA1: "+link.getSha1());
-								
-								if (link.getBaseSha1() == null){
-								
-									byte[] data = CasDataReader.readCas(link.getSha1(), Main.gamePath+"/Data", game.getResourceHandler().getCasCatManager().getEntries());
+							Game game = Main.getGame();
+							ResourceHandler rs = game.getResourceHandler();
+							ResourceLink link = (ResourceLink) i.getValue().getValue();
+							if (link.getBundleType() == ResourceBundleType.EBX){
+								byte[] data = CasDataReader.readCas(link.getBaseSha1(), link.getDeltaSha1(), link.getSha1(), link.getCasPatchType());
+								if (data != null){
 									TreeItem<TreeViewEntry> ebx = TreeViewConverter.getTreeView(game.getResourceHandler().getEBXHandler().loadFile(data));
 									Main.getJavaFXHandler().setTreeViewStructureRight(ebx);
 									Main.getJavaFXHandler().getMainWindow().updateRightRoot();
-									/*
-									for (String s : Main.getGame().getEBXFileGUIDs().keySet()){
-										System.out.println(s+" "+Main.getGame().getEBXFileGUIDs().get(s));
-									}*/
 								}else{
-									System.err.println("Patched data found. WIP.");
+									System.err.println("Could not build EBX Explorer because of missing data.");
 								}
-							}else if (((ResourceLink)i.getValue().getValue()).getBundleType() == ResourceBundleType.RES){
-								Game game = Main.getGame();
-								ResourceLink link = (ResourceLink) i.getValue().getValue();
-								if (link.getBaseSha1() == null){
+							}else if (link.getBundleType() == ResourceBundleType.RES){
+								byte[] data = CasDataReader.readCas(link.getBaseSha1(), link.getDeltaSha1(), link.getSha1(), link.getCasPatchType());
+								if (data != null){
 									if (link.getType() == ResourceType.ITEXTURE){
-										byte[] itexture = CasDataReader.readCas(link.getSha1(), Main.gamePath+"/Data", game.getResourceHandler().getCasCatManager().getEntries());
+										byte[] itexture = CasDataReader.readCas(link.getSha1(), Main.gamePath+"/Data", rs.getCasCatManager().getEntries());
 										//System.out.println("Itexture: "+FileHandler.bytesToHex(itexture));
-										FileHandler.writeFile("output/"+link.getName().replace('/', '_')+".dds", ItextureHandler.getDSS(itexture, Main.gamePath+"/Data", game.getResourceHandler().getCasCatManager().getEntries()));
-										DDSConverter.convertToTGA(new File("output/"+link.getName().replace('/', '_')+".dds"));
+										FileHandler.writeFile("output/"+link.getName().replace('/', '_')+".dds", ItextureHandler.getDSS(itexture, Main.gamePath+"/Data", rs.getCasCatManager().getEntries()));
+										//DDSConverter.convertToTGA(new File("output/"+link.getName().replace('/', '_')+".dds"));
+									}else{
+										System.err.println("Type not supported yet.");
+										FileHandler.writeFile("output/"+link.getName().replace('/', '_')+"."+link.getType(), data);
 									}
 									Main.getJavaFXHandler().getMainWindow().toggleResToolsVisibility();
 								}else{
-									System.err.println("Patched data found. WIP.");
+									System.err.println("Could not find data.");
 								}
 							}else if (i.getParent().getValue().getType() == EntryType.LIST){
 								System.out.println(((ResourceLink)i.getValue().getValue()).getBundleType()+" is currently not supported.");

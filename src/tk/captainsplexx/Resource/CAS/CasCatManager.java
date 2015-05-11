@@ -15,8 +15,8 @@ public class CasCatManager {
 	public FileSeeker seeker;
 	public byte[] cat;
 	
-	public boolean readCat(byte[] fileArray) {
-		System.out.println("Reading cas.cat file!");
+	public boolean readCat(byte[] fileArray, String description) {
+		System.out.println("Reading "+description+" cas.cat file!");
 		for (int i = 0; i <header.length; i++){
 			if (header[i] != fileArray[i]){
 				System.err.println("given fileArray does not match header of cat.cas file :/");
