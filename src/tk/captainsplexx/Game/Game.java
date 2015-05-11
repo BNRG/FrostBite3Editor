@@ -80,11 +80,7 @@ public class Game {
 	
 	
 	public void buildEditor(){
-		resourceHandler.getCasCatManager().readCat(FileHandler.readFile(Main.gamePath+"/Data/cas.cat"), "normal");
-		File patchedCasCat = new File(Main.gamePath+"/Update/Patch/Data/cas.cat");
-		if (patchedCasCat.exists()){
-			resourceHandler.getPatchedCasCatManager().readCat(FileHandler.readFile(patchedCasCat.getAbsolutePath()), "patched");
-		}
+		resourceHandler.getCasCatManager().readCat(FileHandler.readFile(Main.gamePath+"/Data/cas.cat"));
 		ebxFileGUIDs = new HashMap<String, String>();
 		chunkGUIDSHA1 = new HashMap<String, String>();
 		buildExplorerTree();

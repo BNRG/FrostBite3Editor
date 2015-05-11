@@ -136,15 +136,13 @@ public class TocConverter {
 							convSB.getChunks().add(link);
 						}
 					}
-				}else if (field.getName().toLowerCase().equals("chunkmeta") && field.getType() == TocFieldType.LIST){ //chunk(only singular)Meta!
+				}else if (field.getName().toLowerCase().equals("chunkMeta") && field.getType() == TocFieldType.LIST){ //chunk(only singular)Meta!
 					for (TocEntry entry : (ArrayList<TocEntry>) field.getObj()){
 						ResourceLink link = readResourceLink(entry, ResourceBundleType.CHUNKMETA);
 						if (link != null){
 							convSB.getChunkMeta().add(link);
 						}
 					}
-				}else{
-					System.err.println(field.getName()+" "+field.getType());
 				}
 			}
 			return convSB;

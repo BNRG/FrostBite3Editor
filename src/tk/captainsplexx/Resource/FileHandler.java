@@ -6,7 +6,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
@@ -18,7 +17,7 @@ public class FileHandler {
 	//READ - FileInputStream
 	public static byte[] readFile(String filepath){
 		try{
-			File file = new File(filepath.replaceAll("//", "/").replace("\\", "/"));
+			File file = new File(filepath.replaceAll("//", "/"));
 			FileInputStream fin = new FileInputStream(file);
 			byte fileContent[] = new byte[(int)file.length()];	
 			fin.read(fileContent);
@@ -32,7 +31,7 @@ public class FileHandler {
 	
 	public static byte[] readFile(String filepath, long offset, int length){
 		try{
-			File file = new File(filepath.replaceAll("//", "/").replace("\\", "/"));
+			File file = new File(filepath.replaceAll("//", "/"));
 			FileInputStream fin = new FileInputStream(file);
 			byte fileContent[] = new byte[length];
 			fin.skip(offset);
@@ -49,7 +48,7 @@ public class FileHandler {
 	public static InputStream getStream(String path){
 		InputStream is = null;
 		try {
-			is = new FileInputStream(path.replaceAll("//", "/").replace("\\", "/"));
+			is = new FileInputStream(path.replaceAll("//", "/"));
 		} catch (FileNotFoundException e) {
 			System.err.println("Could not read ImputStream from: "+path);
 			e.printStackTrace();

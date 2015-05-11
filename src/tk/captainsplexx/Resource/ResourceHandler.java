@@ -20,7 +20,6 @@ public class ResourceHandler {
 	public EBXHandler ebxHandler;
 	public TextureHandler textureHandler;
 	public CasCatManager cCatManager; 
-	public CasCatManager patchedCasCatManager;
 
 	public ResourceHandler(/*String chunkFolderPath, String guidTablePath*/) {
 		//this.chunkFolderPath = chunkFolderPath;
@@ -29,14 +28,8 @@ public class ResourceHandler {
 		this.mvdH = new MeshVariationDatabaseHandler(this.ebxHandler);
 		this.textureHandler = new TextureHandler();
 		this.cCatManager = new CasCatManager();
-		this.patchedCasCatManager = new CasCatManager();
 	}
 	
-	
-	public CasCatManager getPatchedCasCatManager() {
-		return patchedCasCatManager;
-	}
-
 
 	public MeshChunkLoader getMeshChunkLoader() {
 		return mcL;

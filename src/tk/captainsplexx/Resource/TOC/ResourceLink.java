@@ -64,7 +64,6 @@ public class ResourceLink {
 		this.baseSha1 = baseSha1;
 	}
 
-
 	public String getDeltaSha1() {
 		return deltaSha1;
 	}
