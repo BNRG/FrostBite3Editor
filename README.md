@@ -6,7 +6,7 @@
 	</tr>
 	<tr>
 		<td>Done:</td>
-		<td>Mainpilepine 85 percent.</td>
+		<td>Mainpipeline 85 percent.</td>
 	</tr>
 </table>
 <h1>Description</h1>
@@ -22,10 +22,10 @@
 
   His engine tricks Battlefield into receiving the altered map files,
   making the game think it’s an official patch. From there, on private servers,
-  CaptainSpleXx is free to play his modded maps." ~PCGamesN 2015</p>
+  CaptainSpleXx is free to play his modded maps."</p><p> ~PCGamesN 2015</p>
   
 <h1>Caution</h1>
-<p style="color: rgb(255, 0, 0);">--&gt;&gt;Read
+<p>--&gt;&gt;Read
 LICENSE before using it!&lt;&lt;--</p><br><p>
 'TEMP' GET CLEANED UP - DO NOT PLACE ANY FILES/FOLDERS IN THERE!</p>
 
