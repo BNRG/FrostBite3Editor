@@ -38,8 +38,10 @@ public class Main {
 	public static int oldTime = -1;
 	
 	public static String gamePath;
+	public static boolean keepAlive;
 		
 	public static void main(String[] args){
+		keepAlive = true;
 		
 		//clean up folder.
 		for (File f : FileHandler.listf("temp/images", "")){
@@ -84,7 +86,7 @@ public class Main {
 		render = new Render(game);	
 		inputHandler = new InputHandler();
 		
-		while(!Display.isCloseRequested()){
+		while(!Display.isCloseRequested() && keepAlive){
 			currentTime = (int) (System.currentTimeMillis()%1000/(1000/TICK_RATE));
 			if (currentTime != oldTime){
 				oldTime = currentTime;
@@ -100,6 +102,9 @@ public class Main {
 		}
 		game.modelHandler.loader.cleanUp(); //CleanUp GPU-Memory!
 		game.shaderHandler.getStaticShader().cleanUp();
+		
+		//Thank u for using...
+		
 		System.exit(0);
 	}	
 	

@@ -77,6 +77,11 @@ public class Game {
 				break;
 			}
 		}
+		File cascat = new File(Main.gamePath+"/Data/cas.cat");
+		if (!cascat.exists()){
+			System.err.println("Invalid gamepath selected.");
+			Main.keepAlive = false;
+		}
 		System.out.println("Building up FrostBite Editor!");
 		buildEditor();
 	}

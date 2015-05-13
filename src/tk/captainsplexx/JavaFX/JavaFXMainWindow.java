@@ -286,7 +286,7 @@ public class JavaFXMainWindow extends Application{
 					Main.gamePath = path;
 				}else{
 					System.err.println("Nothing selected.");
-					System.exit(0);
+					Main.keepAlive = false;
 				}
 			}
 		});
