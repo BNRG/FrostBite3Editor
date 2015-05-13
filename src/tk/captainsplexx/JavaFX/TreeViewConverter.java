@@ -388,6 +388,9 @@ public class TreeViewConverter {
 		for (ResourceLink link : part.getEbx()){
 			String[] name = link.getName().split("/");
 			TreeViewEntry childEntry = new TreeViewEntry(name[name.length-1]+" ("+link.getSha1()+")", new ImageView(JavaFXHandler.structureIcon), link, EntryType.STRING);
+			if (link.getCasPatchType()!=0){
+				childEntry.setName(childEntry.getName()+"_(Patched: "+link.getCasPatchType()+")");
+			}
 			String isReferenced = "";
 			if (Main.getGame().getEBXFileGUIDs().get(link.getEbxFileGUID().toUpperCase()) != null){
 				isReferenced += " (referenced) ";

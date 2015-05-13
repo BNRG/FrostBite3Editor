@@ -10,6 +10,7 @@ import tk.captainsplexx.JavaFX.TreeViewConverter;
 import tk.captainsplexx.JavaFX.TreeViewEntry;
 import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
 import tk.captainsplexx.Maths.Patcher;
+import tk.captainsplexx.Modif.Client;
 import tk.captainsplexx.Render.ModelHandler;
 import tk.captainsplexx.Resource.DDSConverter;
 import tk.captainsplexx.Resource.FileHandler;
@@ -64,6 +65,8 @@ public class Game {
 		FileHandler.writeFile("output/patched_data", patchedData);
 		/*END OF TEST*/
 				
+		//Client.createModifClient("C:/Program Files (x86)/Origin Games/Battlefield 4/", "Battlefield 4 SPLEXX");
+		
 		System.out.println("Please select a game root directory like this one: 'C:/Program Files (x86)/Origin Games/Battlefield Hardline Digital Deluxe'!");
 		Main.getJavaFXHandler().getMainWindow().selectGamePath();
 
@@ -88,7 +91,7 @@ public class Game {
 		ebxFileGUIDs = new HashMap<String, String>();
 		chunkGUIDSHA1 = new HashMap<String, String>();
 		buildExplorerTree();
-		
+				
 		//byte[] data = CasDataReader.readCas("A2C97156565E4C3A9B71F900B37C61EA3D5CE66B", Main.gamePath+"/Data", getResourceHandler().getCasCatManager().getEntries());
 		//FileHandler.writeFile("output/decompressed_ebx", data);
 		

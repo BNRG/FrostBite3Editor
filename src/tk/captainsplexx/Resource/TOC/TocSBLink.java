@@ -1,5 +1,8 @@
 package tk.captainsplexx.Resource.TOC;
 
+import java.io.File;
+
+import tk.captainsplexx.Game.Main;
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.ResourceHandler.LinkBundleType;
 
@@ -28,11 +31,42 @@ public class TocSBLink {
 		this.base = false;
 	}
 	
+	public TocFile getLinkedSBPart(){
+		try{
+			byte[] data = null;
+			if (!delta && base){
+				System.out.println("Delta: "+delta+" Base: "+base);
+				//Link to unpached
+				File unpatched = new File(sbPath.replace("Update/Patch/", ""));
+				String normPath = FileHandler.normalizePath(unpatched.getAbsolutePath());
+				if (!unpatched.exists()){
+					System.err.println("Could not found unpatched file. ("+normPath+")");
+					return null;
+				}
+				data = FileHandler.readFile(normPath, (int) this.offset, this.size);
+			}else{
+				//In current sb file exists.
+				System.out.println("Delta: "+delta+" Base: "+base);
+				data = FileHandler.readFile(sbPath, (int) this.offset, this.size);
+			}
+			
+			if (data==null){
+				return null;
+			}
+			return TocManager.readSbPart(data);
+		}catch (Exception e){
+			//e.printStackTrace();
+			System.err.println("Could not read Sb part from "+sbPath+" at "+this.offset);
+			return null;
+		}
+	}
+	
+	
+	/*GETTER AND SETTER*/
 	
 	public boolean isBase() {
 		return base;
 	}
-
 
 	public void setBase(boolean base) {
 		this.base = base;
@@ -112,15 +146,5 @@ public class TocSBLink {
 
 	public void setSha1(String sha1) {
 		this.sha1 = sha1;
-	}
-
-	public TocFile getLinkedSBPart(){
-		try{
-			return TocManager.readSbPart(FileHandler.readFile(sbPath, (int) this.offset, this.size));
-		}catch (Exception e){
-			//e.printStackTrace();
-			System.err.println("Could not read Sb part from "+sbPath+" at "+this.offset);
-			return null;
-		}
 	}
 }

@@ -17,6 +17,7 @@ import tk.captainsplexx.Resource.ResourceHandler.LinkBundleType;
 import tk.captainsplexx.Resource.TOC.ConvertedSBpart;
 import tk.captainsplexx.Resource.TOC.ConvertedTocFile;
 import tk.captainsplexx.Resource.TOC.TocConverter;
+import tk.captainsplexx.Resource.TOC.TocCreator;
 import tk.captainsplexx.Resource.TOC.TocFile;
 import tk.captainsplexx.Resource.TOC.TocManager;
 import tk.captainsplexx.Resource.TOC.TocSBLink;
@@ -28,13 +29,22 @@ public class JavaFXexplorerTCF extends TreeCell<TreeViewEntry> {
 			public void handle(MouseEvent event) {
 				if (getTreeItem() != null){
 					if (getTreeItem().getChildren().isEmpty() && getTreeItem().getValue().getValue() instanceof TocSBLink){
+						TocSBLink link = ((TocSBLink)getTreeItem().getValue().getValue());
 						//TOC MODE
-						if (((TocSBLink)getTreeItem().getValue().getValue()).getType() == LinkBundleType.BUNDLES){
-							
-							ConvertedSBpart sbpart = TocConverter.convertSBpart(((TocSBLink)getTreeItem().getValue().getValue()).getLinkedSBPart());
+						if (link.getType() == LinkBundleType.BUNDLES){
+							TocFile part = link.getLinkedSBPart();
+							ConvertedSBpart sbpart = TocConverter.convertSBpart(part);
 							
 							/*DEBUG FOR SB PART RECREATION*/
-							//TocCreator.createModifiedSBFile(Main.getGame().getCurrentToc(), sbpart/*REPLACE WITH MODIF. 1*/, false, "output/"+sbpart.getPath().replace('/', '_')+"_splexx", true);				
+							if (link.isBase() && !link.isDelta()){
+								System.err.println("Do not create ModifiedSB! Part is linked to unpatched!");
+							}else{
+								/* THIS CREATOR DOES CHANGE CURRENT TOC
+								 * OFFSETS TO NEW ONE. THIS WILL AND CAN NOT BE HERE!
+								 * ONLY FOR DEBUG! - ENABLED, NO COMPARE TO ORIGINAL DATA POSSIBLE!
+								 */
+								//TocCreator.createModifiedSBFile(Main.getGame().getCurrentToc(), sbpart/*REPLACE WITH MODIF. 1*/, false, "output/"+sbpart.getPath().replace('/', '_')+"_splexx", true);				
+							}
 							/*END OF DEBUG*/
 							
 							Main.getGame().setCurrentSB(sbpart);

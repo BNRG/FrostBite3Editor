@@ -66,6 +66,18 @@ public class TocCreator {
 			linkEntry.getFields().add(fieldOffset);
 			TocField fieldSize = new TocField(link.getSize(), TocFieldType.INTEGER, "size");
 			linkEntry.getFields().add(fieldSize);
+			
+
+			if (link.isBase()){
+				TocField base = new TocField(link.isBase(), TocFieldType.BOOL, "base");
+				linkEntry.getFields().add(base);
+			}
+			
+			if (link.isDelta()){
+				TocField delta = new TocField(link.isDelta(), TocFieldType.BOOL, "delta");
+				linkEntry.getFields().add(delta);
+			}
+			
 
 			TocField linkField = new TocField(linkEntry, TocFieldType.ENTRY, null);
 			chunkEntry.getFields().add(linkField);
@@ -92,8 +104,6 @@ public class TocCreator {
 
 		file.addAll(createEntry(rootEntry));
 		
-		
-		//TODO DELTA - BASE ??
 		return FileHandler.toByteArray(file);
 	}
 
@@ -494,12 +504,14 @@ public class TocCreator {
 		return data;
 	}
 
-	public static boolean createModifiedSBFile(ConvertedTocFile toc, ConvertedSBpart newBundlePart, boolean existAlready, String destination, boolean override){
+	public static boolean createModifiedSBFile(ConvertedTocFile toc, ConvertedSBpart newBundlePart, boolean isNew, String destination, boolean override){
+		System.out.println("Creating ModifiedSBFile!");
 		FileSeeker seeker = new FileSeeker();
+		destination = FileHandler.normalizePath(destination);
 		File destFile = new File(destination);
 		if (destFile.exists()){
 			if (!override){
-				System.err.println("Can't create a modifieded SB file. File does already exists.");
+				System.err.println("Can't create a modified SB file. File does already exists.");
 				return false;
 			}else{
 				System.out.println("File already exist. Using overriding on: "+destination);
@@ -508,40 +520,53 @@ public class TocCreator {
 		}
 		destFile = null;//Not needed anymore, freeUp memory!
 
-		if (existAlready){
+		if (isNew){
 			TocSBLink link = new TocSBLink();
 			link.setID(newBundlePart.getPath());
 			link.setType(LinkBundleType.BUNDLES);
 			toc.getBundles().add(link);
 		}
-
 		for (TocSBLink bundle : toc.getBundles()){
 			long currentOffset = seeker.getOffset();
 			if (bundle.getID().equals(newBundlePart.getPath())){
 				System.out.println("Bundle replace/add: "+bundle.getID());
 				byte[] newBundleBytes = TocCreator.createSBpart(newBundlePart);
-				FileHandler.writeFile(bundle.getSbPath(), newBundleBytes, true);
+				if (newBundleBytes.length == 0){
+					System.err.println("zero length");
+				}
+				FileHandler.writeFile(destination, newBundleBytes, true);
 				bundle.setOffset(currentOffset);
 				bundle.setSize(newBundleBytes.length);
+				seeker.seek(newBundleBytes.length);
 			}else{
-				boolean success = FileHandler.writeFileFromFile(bundle.getSbPath(), bundle.getOffset(), bundle.getSize(), destination, seeker);
-				if (!success){
-					System.err.println("Abort: Something went wrong while creating modifited sb file :( (BUNDLES)");
-					return false;
+				if (bundle.isBase() && !bundle.isDelta()){
+					System.out.println("Bundle link: "+bundle.getID());
 				}else{
-					bundle.setOffset(currentOffset);
+					System.out.println("Bundle copy: "+bundle.getID());
+					boolean success = FileHandler.extendFileFromFile(bundle.getSbPath(), bundle.getOffset(), bundle.getSize(), destination, seeker);
+					if (!success){
+						System.err.println("Abort: something went wrong while creating modified sb file :( (BUNDLES)");
+						return false;
+					}else{
+						bundle.setOffset(currentOffset);
+					}
 				}
 			}
 		}
 		
 		for (TocSBLink chunk : toc.getChunks()){
 			long currentOffset = seeker.getOffset();
-			boolean success = FileHandler.writeFileFromFile(chunk.getSbPath(), chunk.getOffset(), chunk.getSizeLong(), destination, seeker);
-			if (!success){
-				System.err.println("Abort: Something went wrong while creating modifited sb file :( (CHUNKS)");
-				return false;
+			if (chunk.isBase() && !chunk.isDelta()){
+				System.out.println("Chunk link: "+chunk.getID());
 			}else{
-				chunk.setOffset(currentOffset);
+				System.out.println("Chunk copy: "+chunk.getID());
+				boolean success = FileHandler.extendFileFromFile(chunk.getSbPath(), chunk.getOffset(), chunk.getSizeLong(), destination, seeker);
+				if (!success){
+					System.err.println("Abort: something went wrong while creating modified sb file :( (CHUNKS)");
+					return false;
+				}else{
+					chunk.setOffset(currentOffset);
+				}
 			}
 		}
 		return true;

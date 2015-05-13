@@ -80,7 +80,7 @@ public class TocConverter {
 					System.err.println("unexpected field (link) found in toc file while converting: "+field.getName()+" as type "+field.getType());
 				}
 			}
-			link.setSbPath(pathSb);
+			link.setSbPath(FileHandler.normalizePath(pathSb));
 			return link;
 		}else{
 			return null;

@@ -1,11 +1,9 @@
 package tk.captainsplexx.Resource;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -18,7 +16,7 @@ public class FileHandler {
 	//READ - FileInputStream
 	public static byte[] readFile(String filepath){
 		try{
-			File file = new File(filepath.replaceAll("//", "/").replace("\\", "/"));
+			File file = new File(normalizePath(filepath));
 			FileInputStream fin = new FileInputStream(file);
 			byte fileContent[] = new byte[(int)file.length()];	
 			fin.read(fileContent);
@@ -32,7 +30,7 @@ public class FileHandler {
 	
 	public static byte[] readFile(String filepath, long offset, int length){
 		try{
-			File file = new File(filepath.replaceAll("//", "/").replace("\\", "/"));
+			File file = new File(normalizePath(filepath));
 			FileInputStream fin = new FileInputStream(file);
 			byte fileContent[] = new byte[length];
 			fin.skip(offset);
@@ -49,13 +47,33 @@ public class FileHandler {
 	public static InputStream getStream(String path){
 		InputStream is = null;
 		try {
-			is = new FileInputStream(path.replaceAll("//", "/").replace("\\", "/"));
+			is = new FileInputStream(normalizePath(path));
 		} catch (FileNotFoundException e) {
 			System.err.println("Could not read ImputStream from: "+path);
 			e.printStackTrace();
 		}
 		return is;
 	}
+	
+	public static boolean createLink(String newLink, String source){
+		File sourceFile = new File(normalizePath(source));
+		File newLinkFile = new File(normalizePath(newLink));
+		if (sourceFile.exists() && !newLinkFile.exists()){
+			String[] commands = {"cmd.exe","/r","mklink", "/H", newLink, source};
+			try {
+				Process p = Runtime.getRuntime().exec(commands);
+				p.waitFor();
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println("Something went wrong while creating a new hardlink.");
+				return false;
+			}
+			return true;
+		}
+		System.out.println("Link Creator: SOURCE may not exist or LINK does already exist");
+		return false;
+	}
+	
 	
 	//WRITE - FileOutputStream
 	public static boolean writeFile(String filepath, byte[] arr, boolean append){
@@ -77,7 +95,13 @@ public class FileHandler {
 		}	
 	}
 	
+	public static String normalizePath(String filepath){
+		filepath = filepath.replace("\\", "/").replace("//", "/");
+		return filepath;
+	}
+	
 	public static boolean prepareDir(String filepath){
+		filepath = normalizePath(filepath);
 		String[] split = filepath.split("/");
 		String currPath = "";
 		for (int index=0; index<split.length-1;index++){
@@ -98,13 +122,13 @@ public class FileHandler {
 		return writeFile(filepath, arr, false);
 	}
 	
-	public static boolean writeFileFromFile(String sourceFile, long sourceOffset, long sourceSize, String targetFile, FileSeeker targetSeeker){
+	public static boolean extendFileFromFile(String sourceFile, long sourceOffset, long sourceSize, String targetFile, FileSeeker targetSeeker){
 		try{
-			File file = new File(sourceFile.replaceAll("//", "/"));
+			File file = new File(normalizePath(sourceFile));
 			FileInputStream fin = new FileInputStream(file);
 			fin.skip(sourceOffset);
 			
-			FileOutputStream fos = new FileOutputStream(targetFile, true);
+			FileOutputStream fos = new FileOutputStream(normalizePath(targetFile), true);
 			
 			byte[] data = new byte[1];
 			for (int i=0; i<sourceSize; i++){
