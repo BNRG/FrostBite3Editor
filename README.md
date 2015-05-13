@@ -1,12 +1,19 @@
 >http://goo.gl/CjfAhg quick expl. what it is!
 
 
- | Status:   | Under Development                 |
- | Done:  | Mainpipeline 85%                     |
-
-* Description
-
-  "EA dropped mod support from their games almost a decade ago,
+<h1>Unofficial FrostBite3 Editor Tools by CAPTAINSPLEXX</h1>
+<table>
+	<tr>
+		<td>Status:</td>
+		<td>Under Development</td>
+	</tr>
+	<tr>
+		<td>Done:</td>
+		<td>Mainpilepine 85 percent.</td>
+	</tr>
+</table>
+<h1>Description</h1>
+<p>"EA dropped mod support from their games almost a decade ago,
   long before they adopted the Frostbite Engine as their main development tool.
   For years modders have been asking for access to gain the ability to add to the Battlefield games.
 
@@ -18,8 +25,7 @@
 
   His engine tricks Battlefield into receiving the altered map files,
   making the game think it’s an official patch. From there, on private servers,
-  CaptainSpleXx is free to play his modded maps." ~PCGamesN 2015
-
+  CaptainSpleXx is free to play his modded maps." ~PCGamesN 2015</p>
 
 Read LICENSE before using it!
 
