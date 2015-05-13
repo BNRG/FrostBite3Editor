@@ -15,8 +15,8 @@ Read LICENSE before using it!
 'TEMP' GET CLEANED UP - DO NOT PLACE ANY FILES/FOLDERS IN THERE!
 
 
-```html
-<h2>Example of code</h2>
+
+<h2>TEST</h2>
 
 <pre>
     <div class="container">
@@ -28,4 +28,3 @@ Read LICENSE before using it!
         </div>
     </div>
 </pre>
-```
