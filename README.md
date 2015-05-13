@@ -45,12 +45,7 @@ LICENSE before using it!&lt;&lt;--</p><br><p>
 <p>Currently I'm 17 and spend a lot of my freetime on developing this tool, 
 to give the community the chance to make games AMAZING!</p>
 <p>If you’d like to make a donation for all the hard work, I’d appreciate it.</p>
-<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-<input type="hidden" name="cmd" value="_s-xclick">
-<input type="hidden" name="hosted_button_id" value="BJXCGQRKK8PXL">
-<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG_global.gif" border="0" name="submit" alt="PayPal – The safer, easier way to pay online.">
-<img alt="" border="0" src="https://www.paypalobjects.com/de_DE/i/scr/pixel.gif" width="1" height="1">
-</form>
+<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=BJXCGQRKK8PXL">Donate via PayPal.</a>
 
 >Roadmap: http://i.imgur.com/rGUma38.jpg (outdated)
 
