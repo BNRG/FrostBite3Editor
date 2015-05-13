@@ -1,4 +1,12 @@
-# Unofficial FrostBite3 Editor Tools by CAPTAINSPLEXX
+#+TITLE:     Unofficial FrostBite3 Editor Tools by CAPTAINSPLEXX
+#+AUTHOR:    Jannik Lundershausen
+#+LANGUAGE:  en
+#+OPTIONS:   H:3 num:t toc:nil \n:nil @:t ::t |:t ^:t -:t f:t *:t <:t
+#+OPTIONS:   TeX:t LaTeX:nil skip:nil d:nil todo:nil pri:nil tags:not-in-toc
+#+EXPORT_EXCLUDE_TAGS: exclude
+#+STARTUP:    showall
+
+
 >http://goo.gl/CjfAhg quick expl. what it is!
 
 
