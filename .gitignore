@@ -2,5 +2,4 @@ bin/
 temp/images/
 lib/jar/slick-util-src.zip
 tools/
-dist.jar
-run_dist.bat
+build_binary.bat

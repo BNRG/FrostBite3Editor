@@ -41,7 +41,22 @@ LICENSE before using it!&lt;&lt;--</p><br><p>
 	</tr>
 </table>
 
-<h1>Help developent</h1>
+<h1>Download</h1>
+<p>Run "run_binary.bat" to launch.</p>
+<table>
+	<tr>
+		<td>Supported using AdF.ly (NO SURVEY))</td>
+		<td><p>Wait 5 Seconds and click "SKIP AD>" in the upper right corner. </p>
+			<a href="http://adf.ly/1HDqyS">http://adf.ly/1HDqyS</a>
+		</td>
+	</tr>
+	<tr>
+		<td>Direct</td>
+		<td><p>No free support :( - You should donate instead. </p><a href="https://github.com/CaptainSpleXx/FrostBite3Editor/archive/master.zip">Klick here (via. github.com)</a></td>
+	</tr>
+</table>
+
+<h1>Help development</h1>
 <p>Currently I'm 17 and spend a lot of my freetime on developing this tool, 
 to give the community the chance to make games AMAZING!</p>
 <p>If you’d like to make a donation for all the hard work, I’d appreciate it.</p>
