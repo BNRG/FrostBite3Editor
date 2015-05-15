@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<BorderPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tk.captainsplexx.JavaFX.ModLoaderController">
+   <top>
+      <VBox alignment="CENTER" style="-fx-background-color: #DDDDDD;" BorderPane.alignment="CENTER">
+         <children>
+            <HBox alignment="CENTER">
+               <children>
+                  <Pane prefHeight="47.0" prefWidth="224.0" />
+                  <Label text="FrostBite 3 ModLoader">
+                     <font>
+                        <Font size="32.0" />
+                     </font>
+                  </Label>
+                  <Pane layoutX="134.0" layoutY="10.0" prefHeight="47.0" prefWidth="182.0" />
+                  <Button mnemonicParsing="false" onAction="#runEditor" text="Editor" />
+               </children>
+            </HBox>
+            <Separator prefWidth="200.0" />
+         </children>
+      </VBox>
+   </top>
+   <left>
+      <VBox prefHeight="550.0" prefWidth="194.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label prefHeight="17.0" prefWidth="195.0" text="Mods:">
+               <padding>
+                  <Insets left="7.0" />
+               </padding>
+            </Label>
+            <ListView prefHeight="532.0" prefWidth="194.0" />
+         </children>
+      </VBox>
+   </left>
+   <center>
+      <BorderPane BorderPane.alignment="CENTER">
+         <top>
+            <HBox alignment="CENTER_RIGHT" BorderPane.alignment="CENTER">
+               <children>
+                  <VBox prefHeight="128.0" prefWidth="368.0">
+                     <children>
+                        <Label text="Mod Name">
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                           <font>
+                              <Font size="22.0" />
+                           </font>
+                        </Label>
+                        <Label alignment="CENTER" text="Creator Name">
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </Label>
+                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="340.0">
+                           <children>
+                              <ImageView fitHeight="32.0" fitWidth="128.0" pickOnBounds="true" preserveRatio="true">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="15.0" right="5.0" top="10.0" />
+                                 </HBox.margin>
+                              </ImageView>
+                              <Button mnemonicParsing="false" prefHeight="32.0" prefWidth="128.0" text="Button">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="10.0" />
+                                 </HBox.margin>
+                              </Button>
+                           </children></HBox>
+                     </children>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                  </VBox>
+                  <Separator orientation="VERTICAL" />
+                  <ImageView fitHeight="128.0" fitWidth="256.0" pickOnBounds="true" smooth="false" />
+               </children>
+            </HBox>
+         </top>
+         <bottom>
+            <Label alignment="CENTER_RIGHT" contentDisplay="TOP" opacity="0.82" prefHeight="17.0" prefWidth="608.0" style="-fx-background-color: #CCCCCC;" text="\@CaptainSpleXx" BorderPane.alignment="CENTER" />
+         </bottom>
+         <center>
+            <TextArea editable="false" BorderPane.alignment="CENTER">
+               <cursor>
+                  <Cursor fx:constant="DISAPPEAR" />
+               </cursor>
+            </TextArea>
+         </center>
+         <left>
+            <Pane prefWidth="12.0" BorderPane.alignment="CENTER" />
+         </left>
+         <right>
+            <Pane prefWidth="12.0" BorderPane.alignment="CENTER" />
+         </right>
+      </BorderPane>
+   </center>
+</BorderPane>

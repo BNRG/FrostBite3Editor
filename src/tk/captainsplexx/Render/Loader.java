@@ -54,6 +54,9 @@ public class Loader {
 	}
 	
 	public Loader(){
+		notFoundID = 0;
+	}
+	public void init(){
 		notFoundID = loadTexture("res/notFound/notFound.dds");
 	}
 	

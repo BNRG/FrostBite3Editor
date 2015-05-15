@@ -5,6 +5,10 @@ public class ShaderHandler {
 	public StaticShader staticShader;
 	
 	public ShaderHandler(){
+		this.staticShader = null;
+	}
+	
+	public void init(){
 		this.staticShader = new StaticShader();
 	}
 

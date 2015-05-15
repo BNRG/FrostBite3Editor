@@ -9,8 +9,8 @@ import tk.captainsplexx.JavaFX.JavaFXHandler;
 import tk.captainsplexx.JavaFX.TreeViewConverter;
 import tk.captainsplexx.JavaFX.TreeViewEntry;
 import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
+import tk.captainsplexx.Loader.Client;
 import tk.captainsplexx.Maths.Patcher;
-import tk.captainsplexx.Modif.Client;
 import tk.captainsplexx.Render.ModelHandler;
 import tk.captainsplexx.Resource.DDSConverter;
 import tk.captainsplexx.Resource.FileHandler;
@@ -95,7 +95,6 @@ public class Game {
 		}
 		ebxFileGUIDs = new HashMap<String, String>();
 		chunkGUIDSHA1 = new HashMap<String, String>();
-		buildExplorerTree();
 				
 		//byte[] data = CasDataReader.readCas("A2C97156565E4C3A9B71F900B37C61EA3D5CE66B", Main.gamePath+"/Data", getResourceHandler().getCasCatManager().getEntries());
 		//FileHandler.writeFile("output/decompressed_ebx", data);

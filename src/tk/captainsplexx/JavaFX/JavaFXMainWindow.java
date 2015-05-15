@@ -35,12 +35,15 @@ public class JavaFXMainWindow extends Application{
 	public FXMLLoader leftLoader;
 	public FXMLLoader resToolsLoader;
 	public FXMLLoader rightLoader;
+	public FXMLLoader modLoaderLoader;
 	public LeftController leftController;
 	public RightController rightController;
 	public ResToolsController resToolsController;
+	public ModLoaderController modLoaderController;
 	public Stage stageLeft;
 	public Stage stageRight;
 	public Stage stageResTools;
+	public Stage stageModLoader;
 
 	public FXMLLoader getLeftLoader() {
 		return leftLoader;
@@ -66,6 +69,14 @@ public class JavaFXMainWindow extends Application{
 		return resToolsController;
 	}
 
+	public ModLoaderController getModLoaderController() {
+		return modLoaderController;
+	}
+
+	public void setModLoaderController(ModLoaderController modLoaderController) {
+		this.modLoaderController = modLoaderController;
+	}
+
 	/*---------START--------------*/
 	public void runApplication(){
 		new Thread(new Runnable() {
@@ -86,7 +97,11 @@ public class JavaFXMainWindow extends Application{
 		this.stageLeft = stageLeft;
 		Main.getJavaFXHandler().setMainWindow(this); //Stupid thread bypass.
 		Parent leftroot = null;
-		/*LEFT*/
+		/*
+		 * 
+		 * LEFT
+		 * 
+		 * */
 		try {
 			leftLoader = new FXMLLoader(getClass().getResource("LeftWindow.fxml")); //not static to access controller class
 			leftroot = leftLoader.load();
@@ -94,7 +109,6 @@ public class JavaFXMainWindow extends Application{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		//Scene sceneLeft = new Scene(leftroot, 275, 700);
 		Scene sceneLeft = new Scene(leftroot, 275, 700);
 		stageLeft.setX(Display.getDesktopDisplayMode().getWidth()*0.01f);
 		stageLeft.setY(Display.getDesktopDisplayMode().getHeight()/2-(sceneLeft.getHeight()/2));
@@ -102,14 +116,13 @@ public class JavaFXMainWindow extends Application{
 		stageLeft.getIcons().add(JavaFXHandler.applicationIcon16);
 		stageLeft.getIcons().add(JavaFXHandler.applicationIcon32);
 		stageLeft.setScene(sceneLeft);
-		stageLeft.show();
+		stageLeft.hide();
 		stageLeft.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			@Override
 			public void handle(WindowEvent e) {
 				e.consume();
 			}
 		});
-        /*EXPLORER 0*/
         leftController.getExplorer().setCellFactory(new Callback<TreeView<TreeViewEntry>,TreeCell<TreeViewEntry>>(){
             @Override
             public TreeCell<TreeViewEntry> call(TreeView<TreeViewEntry> p) {
@@ -119,9 +132,7 @@ public class JavaFXMainWindow extends Application{
         leftController.getExplorer().setEditable(false);
         leftController.getExplorer().setPrefWidth(Display.getDesktopDisplayMode().getWidth());
         leftController.getExplorer().setPrefHeight(Display.getDesktopDisplayMode().getHeight()); //Back to top in TCF or what ?
-        /*END OF EXPLORER 0*/
-        
-        /*EXPLORER 1*/
+
         leftController.getExplorer1().setCellFactory(new Callback<TreeView<TreeViewEntry>,TreeCell<TreeViewEntry>>(){
             @Override
             public TreeCell<TreeViewEntry> call(TreeView<TreeViewEntry> p) {
@@ -131,9 +142,12 @@ public class JavaFXMainWindow extends Application{
         leftController.getExplorer1().setEditable(false);
         leftController.getExplorer1().setPrefWidth(Display.getDesktopDisplayMode().getWidth());
         leftController.getExplorer1().setPrefHeight(Display.getDesktopDisplayMode().getHeight());
-        /*END OF EXPLORER 1*/
         
-        /*RIGHT*/
+        /*
+         * 
+         * RIGHT
+         * 
+         * */
         Parent rightroot = null;
 		try { 
 			rightLoader = new FXMLLoader(getClass().getResource("RightWindow.fxml")); //not static to access controller class
@@ -150,7 +164,7 @@ public class JavaFXMainWindow extends Application{
         stageRight.setScene(sceneRight);
         stageRight.getIcons().add(JavaFXHandler.applicationIcon16);
         stageRight.getIcons().add(JavaFXHandler.applicationIcon32);
-        stageRight.show();
+        stageRight.hide();
         stageRight.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			@Override
 			public void handle(WindowEvent e) {
@@ -158,7 +172,6 @@ public class JavaFXMainWindow extends Application{
 			}
 		});
         
-        /*EBX-EXPLORER*/
         rightController.getEBXExplorer().setCellFactory(new Callback<TreeView<TreeViewEntry>,TreeCell<TreeViewEntry>>(){
             @Override
             public TreeCell<TreeViewEntry> call(TreeView<TreeViewEntry> p) {
@@ -168,9 +181,12 @@ public class JavaFXMainWindow extends Application{
         rightController.getEBXExplorer().setEditable(true);
         rightController.getEBXExplorer().setPrefWidth(Display.getDesktopDisplayMode().getWidth());
         rightController.getEBXExplorer().setPrefHeight(Display.getDesktopDisplayMode().getHeight());
-        /*END OF EBX-EXPLORER*/
         
-        /*RES TOOLS*/
+        /*
+         * 
+         * RES TOOLS
+         * 
+         * */
         Parent resToolsRoot = null;
 		try { 
 			resToolsLoader = new FXMLLoader(getClass().getResource("ResToolsWindow.fxml")); //not static to access controller class
@@ -192,7 +208,33 @@ public class JavaFXMainWindow extends Application{
 				e.consume();
 			}
 		});
-        /*END OF RES TOOLS*/
+        
+        /*
+         * 
+         * MOD LOADER
+         * 
+         * */
+        Parent modLoaderRoot = null;
+		try { 
+			modLoaderLoader = new FXMLLoader(getClass().getResource("ModLoaderWindow.fxml")); //not static to access controller class
+			modLoaderRoot = modLoaderLoader.load();
+			modLoaderController = modLoaderLoader.getController();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+        stageModLoader = new Stage();
+        Scene sceneModLoader = new Scene(modLoaderRoot, 800, 600);
+        stageModLoader.setTitle("-");
+        stageModLoader.setScene(sceneModLoader);
+        stageModLoader.getIcons().add(JavaFXHandler.applicationIcon16);
+        stageModLoader.getIcons().add(JavaFXHandler.applicationIcon32);
+        stageModLoader.show();
+        stageModLoader.setOnCloseRequest(new EventHandler<WindowEvent>() {
+			@Override
+			public void handle(WindowEvent e) {
+				System.exit(0);
+			}
+		});
 	}
 
 	/*UPDATE METHODS*/
@@ -267,6 +309,19 @@ public class JavaFXMainWindow extends Application{
 					stageResTools.hide();
 				}else{
 					stageResTools.show();
+				}
+			}
+		});	
+	}
+	
+	public void toggleModLoaderVisibility(){
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				if (stageModLoader.isShowing()){
+					stageModLoader.hide();
+				}else{
+					stageModLoader.show();
 				}
 			}
 		});	

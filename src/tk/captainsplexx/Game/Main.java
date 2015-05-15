@@ -39,9 +39,11 @@ public class Main {
 	
 	public static String gamePath;
 	public static boolean keepAlive;
+	public static boolean runEditor;
 		
 	public static void main(String[] args){
 		keepAlive = true;
+		runEditor = false;
 		
 		//clean up folder.
 		for (File f : FileHandler.listf("temp/images", "")){
@@ -62,50 +64,63 @@ public class Main {
 		zFar = 25000f;
 		FOV = 60f;
 		
-		try {
-            Display.setDisplayMode(new DisplayMode(DISPLAY_WIDTH, DISPLAY_HEIGHT));
-            Display.setTitle("Unofficial FrostBite3Editor by CaptainSpleXx.TK");
-            Display.setResizable(true);
-            Display.create();
-            Display.setIcon(new ByteBuffer[] {
-            	new ImageIOImageData().imageToByteBuffer(ImageIO.read(new File("res/icon/16.png")), false, false, null),
-                new ImageIOImageData().imageToByteBuffer(ImageIO.read(new File("res/icon/32.png")), false, false, null)
-            });
-            Mouse.setClipMouseCoordinatesToWindow(true);
-            //Mouse.setGrabbed(true);
-        } catch (Exception e) {
-            e.printStackTrace();
-            Display.destroy();
-            System.exit(1);
-        }
-		
 		jfxHandler = new JavaFXHandler();
-		
 		eventHandler = new EventHandler();
 		game = new Game();
-		render = new Render(game);	
-		inputHandler = new InputHandler();
 		
-		while(!Display.isCloseRequested() && keepAlive){
-			currentTime = (int) (System.currentTimeMillis()%1000/(1000/TICK_RATE));
-			if (currentTime != oldTime){
-				oldTime = currentTime;
-				currentTick++;
+		while (true){
+			//Wait for starting editor
+			System.out.print("");
+			if (runEditor){
+				jfxHandler.getMainWindow().toggleLeftVisibility();
+				jfxHandler.getMainWindow().toggleRightVisibility();
 				
-				//update at rate
-				game.update();
-				eventHandler.listen();
+				jfxHandler.getMainWindow().toggleModLoaderVisibility();
+				
+				try {
+		            Display.setDisplayMode(new DisplayMode(DISPLAY_WIDTH, DISPLAY_HEIGHT));
+		            Display.setTitle("Unofficial FrostBite3Editor by CaptainSpleXx.TK");
+		            Display.setResizable(true);
+		            Display.create();
+		            Display.setIcon(new ByteBuffer[] {
+		            	new ImageIOImageData().imageToByteBuffer(ImageIO.read(new File("res/icon/16.png")), false, false, null),
+		                new ImageIOImageData().imageToByteBuffer(ImageIO.read(new File("res/icon/32.png")), false, false, null)
+		            });
+		            Mouse.setClipMouseCoordinatesToWindow(true);
+		            //Mouse.setGrabbed(true);
+		        } catch (Exception e) {
+		            e.printStackTrace();
+		            Display.destroy();
+		            System.exit(1);
+		        }
+				game.getModelHandler().getLoader().init();
+				game.getShaderHandler().init();
+				game.buildExplorerTree();
+				render = new Render(game);	
+				inputHandler = new InputHandler();
+				
+				while(!Display.isCloseRequested() && keepAlive){
+					currentTime = (int) (System.currentTimeMillis()%1000/(1000/TICK_RATE));
+					if (currentTime != oldTime){
+						oldTime = currentTime;
+						currentTick++;
+						
+						//update at rate
+						game.update();
+						eventHandler.listen();
+					}
+					//update instantly
+					inputHandler.listen();
+					render.update();
+				}
+				game.modelHandler.loader.cleanUp(); //CleanUp GPU-Memory!
+				game.shaderHandler.getStaticShader().cleanUp();
+				
+				//Thank u for using...
+				
+				System.exit(0);
 			}
-			//update instantly
-			inputHandler.listen();
-			render.update();
 		}
-		game.modelHandler.loader.cleanUp(); //CleanUp GPU-Memory!
-		game.shaderHandler.getStaticShader().cleanUp();
-		
-		//Thank u for using...
-		
-		System.exit(0);
 	}	
 	
 	public static Game getGame(){
