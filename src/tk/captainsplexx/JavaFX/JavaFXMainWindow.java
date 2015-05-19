@@ -9,12 +9,17 @@ import tk.captainsplexx.Game.Main;
 import tk.captainsplexx.JavaFX.CellFactories.JavaFXebxTCF;
 import tk.captainsplexx.JavaFX.CellFactories.JavaFXexplorer1TCF;
 import tk.captainsplexx.JavaFX.CellFactories.JavaFXexplorerTCF;
+import tk.captainsplexx.JavaFX.CellFactories.ModLoaderListFactory;
+import tk.captainsplexx.Mod.Mod;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeView;
 import javafx.stage.DirectoryChooser;
@@ -224,17 +229,25 @@ public class JavaFXMainWindow extends Application{
 		}
         stageModLoader = new Stage();
         Scene sceneModLoader = new Scene(modLoaderRoot, 800, 600);
-        stageModLoader.setTitle("-");
+        stageModLoader.setTitle("FrostBite 3 Tools "+Main.buildVersion);
         stageModLoader.setScene(sceneModLoader);
         stageModLoader.getIcons().add(JavaFXHandler.applicationIcon16);
         stageModLoader.getIcons().add(JavaFXHandler.applicationIcon32);
-        stageModLoader.show();
+        stageModLoader.hide();
+        stageModLoader.setResizable(false);
         stageModLoader.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			@Override
 			public void handle(WindowEvent e) {
 				System.exit(0);
 			}
 		});
+        
+        modLoaderController.getList().setCellFactory(new Callback<ListView<Mod>, ListCell<Mod>>() {
+	        @Override 
+	        public ListCell<Mod> call(ListView<Mod> list) {
+	            return new ModLoaderListFactory();
+	        }
+        });
 	}
 
 	/*UPDATE METHODS*/
@@ -259,6 +272,17 @@ public class JavaFXMainWindow extends Application{
 				if (leftController.getExplorer().getRoot() != null){
 					leftController.getExplorer().getRoot().setExpanded(true);
 				}
+			}
+		});	
+	}
+	
+	public void updateModsList(){
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				ObservableList<Mod> mods = modLoaderController.getList().getItems();
+				mods.clear();
+				mods.addAll(Main.getModTools().getMods());
 			}
 		});	
 	}
@@ -329,21 +353,28 @@ public class JavaFXMainWindow extends Application{
 	/*END OF UPDATE METHODS*/
 	
 	public void selectGamePath(){
-		Platform.runLater(new Runnable() {
-			@Override
-			public void run() {
-				final DirectoryChooser directoryChooser = new DirectoryChooser();
-				directoryChooser.setTitle("Select a game root directory!");
-				final File selectedDirectory = directoryChooser.showDialog(new Stage());
-				if (selectedDirectory != null) {
-					String path = selectedDirectory.getAbsolutePath().replace('\\', '/');
-					System.out.println("Selected '"+path+"' as gamepath.");
-					Main.gamePath = path;
-				}else{
-					System.err.println("Nothing selected.");
-					Main.keepAlive = false;
+		try{
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					final DirectoryChooser directoryChooser = new DirectoryChooser();
+					directoryChooser.setTitle("Select a game root directory!");
+					final File selectedDirectory = directoryChooser.showDialog(new Stage());
+					if (selectedDirectory != null) {
+						String path = selectedDirectory.getAbsolutePath().replace('\\', '/');
+						System.out.println("Selected '"+path+"' as gamepath.");
+						Main.gamePath = path;
+					}else{
+						System.err.println("Nothing selected.");
+						Main.keepAlive = false;
+					}
 				}
-			}
-		});
+			});
+		}catch(IllegalStateException e){
+			System.out.println("Waiting for Toolkit...");
+			//JavaFX is threaded and may take a while to work.
+			//java.lang.IllegalStateException: Toolkit not initialized
+			selectGamePath();
+		}
 	}
 }

@@ -6,11 +6,12 @@ import java.util.HashMap;
 import javafx.scene.control.TreeItem;
 import javafx.scene.image.ImageView;
 import tk.captainsplexx.JavaFX.JavaFXHandler;
+import tk.captainsplexx.JavaFX.JavaFXMainWindow;
 import tk.captainsplexx.JavaFX.TreeViewConverter;
 import tk.captainsplexx.JavaFX.TreeViewEntry;
 import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
-import tk.captainsplexx.Loader.Client;
 import tk.captainsplexx.Maths.Patcher;
+import tk.captainsplexx.Mod.Mod;
 import tk.captainsplexx.Render.ModelHandler;
 import tk.captainsplexx.Resource.DDSConverter;
 import tk.captainsplexx.Resource.FileHandler;
@@ -32,8 +33,10 @@ public class Game {
 	public ConvertedSBpart currentSB;
 	public HashMap<String, String> ebxFileGUIDs;
 	public HashMap<String, String> chunkGUIDSHA1;
+	public Mod currentMod;
 				
 	public Game(){
+		currentMod = null;
 		/*LEVEL OF DETAIL
 		 * 0=100%
 		 * 1=50%
@@ -77,10 +80,13 @@ public class Game {
 				break;
 			}
 		}
+		JavaFXMainWindow mainWindow = Main.getJavaFXHandler().getMainWindow();
+		mainWindow.getModLoaderController().setGamepath(FileHandler.normalizePath(Main.gamePath));
+		mainWindow.toggleModLoaderVisibility();
 		File cascat = new File(Main.gamePath+"/Data/cas.cat");
 		if (!cascat.exists()){
 			System.err.println("Invalid gamepath selected.");
-			Main.keepAlive = false;
+			System.exit(0);
 		}
 		System.out.println("Building up FrostBite Editor!");
 		buildEditor();
@@ -224,6 +230,17 @@ public class Game {
 	public HashMap<String, String> getChunkGUIDSHA1() {
 		return chunkGUIDSHA1;
 	}
+
+
+	public Mod getCurrentMod() {
+		return currentMod;
+	}
+
+
+	public void setCurrentMod(Mod currentMod) {
+		this.currentMod = currentMod;
+	}
+	
 
 	
 	

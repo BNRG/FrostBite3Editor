@@ -74,6 +74,13 @@ public class FileHandler {
 		return false;
 	}
 	
+	public static boolean cleanFolder(String folderPath){
+		for (File f : FileHandler.listf(folderPath, "")){
+			f.delete();
+		}
+		return true;
+	}
+	
 	
 	//WRITE - FileOutputStream
 	public static boolean writeFile(String filepath, byte[] arr, boolean append){

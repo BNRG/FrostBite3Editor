@@ -135,6 +135,11 @@ public class TocCreator {
 			TocField originalSize = new TocField(link.getOriginalSize(), TocFieldType.LONG, "originalSize");
 			linkEntry.getFields().add(originalSize);
 			
+			if (link.getCasPatchType() != 0){
+				TocField casPatchType = new TocField(link.getCasPatchType(), TocFieldType.INTEGER, "casPatchType");
+				linkEntry.getFields().add(casPatchType);
+			}
+
 			if (link.getBaseSha1() != null){
 				TocField baseSha1 = new TocField(link.getBaseSha1(), TocFieldType.SHA1, "baseSha1");
 				linkEntry.getFields().add(baseSha1);
@@ -143,18 +148,15 @@ public class TocCreator {
 				TocField deltaSha1 = new TocField(link.getDeltaSha1(), TocFieldType.SHA1, "deltaSha1");
 				linkEntry.getFields().add(deltaSha1);
 			}
-			
-			if (link.getCasPatchType() != 0){
-				TocField casPatchType = new TocField(link.getCasPatchType(), TocFieldType.INTEGER, "casPatchType");
-				linkEntry.getFields().add(casPatchType);
-			}
 
 
 			TocField linkField = new TocField(linkEntry, TocFieldType.ENTRY, null);
 			ebxEntry.getFields().add(linkField);
 		}
-		TocField ebxs = new TocField(ebxEntry, TocFieldType.LIST, "ebx");
-		rootEntry.getFields().add(ebxs);
+		if (ebxEntry.getFields().size()>0){
+			TocField ebxs = new TocField(ebxEntry, TocFieldType.LIST, "ebx");
+			rootEntry.getFields().add(ebxs);
+		}
 
 		//DBX
 		TocEntry dbxEntry = new TocEntry(TocEntryType.ORDINARY);
@@ -173,6 +175,11 @@ public class TocCreator {
 			TocField originalSize = new TocField(link.getOriginalSize(), TocFieldType.LONG, "originalSize");
 			linkEntry.getFields().add(originalSize);
 			
+			if (link.getCasPatchType() != 0){
+				TocField casPatchType = new TocField(link.getCasPatchType(), TocFieldType.INTEGER, "casPatchType");
+				linkEntry.getFields().add(casPatchType);
+			}
+
 			if (link.getBaseSha1() != null){
 				TocField baseSha1 = new TocField(link.getBaseSha1(), TocFieldType.SHA1, "baseSha1");
 				linkEntry.getFields().add(baseSha1);
@@ -182,20 +189,17 @@ public class TocCreator {
 				linkEntry.getFields().add(deltaSha1);
 			}
 			
-			if (link.getCasPatchType() != 0){
-				TocField casPatchType = new TocField(link.getCasPatchType(), TocFieldType.INTEGER, "casPatchType");
-				linkEntry.getFields().add(casPatchType);
-			}
-
 			TocField linkField = new TocField(linkEntry, TocFieldType.ENTRY, null);
 			dbxEntry.getFields().add(linkField);
 		}
-		TocField dbxs = new TocField(ebxEntry, TocFieldType.LIST, "dbx");
-		rootEntry.getFields().add(dbxs);
+		if (dbxEntry.getFields().size()>0){
+			TocField dbxs = new TocField(dbxEntry, TocFieldType.LIST, "dbx");
+			rootEntry.getFields().add(dbxs);
+		}
 
 		//RES
 		TocEntry resEntry = new TocEntry(TocEntryType.ORDINARY);
-		for (ResourceLink link : part.getDbx()){
+		for (ResourceLink link : part.getRes()){
 			TocEntry linkEntry = new TocEntry(TocEntryType.ORDINARY);
 
 			TocField name = new TocField(link.getName(), TocFieldType.STRING, "name");
@@ -210,19 +214,7 @@ public class TocCreator {
 			TocField originalSize = new TocField(link.getOriginalSize(), TocFieldType.LONG, "originalSize");
 			linkEntry.getFields().add(originalSize);	
 			
-			if (link.getBaseSha1() != null){
-				TocField baseSha1 = new TocField(link.getBaseSha1(), TocFieldType.SHA1, "baseSha1");
-				linkEntry.getFields().add(baseSha1);
-			}
-			if (link.getDeltaSha1() != null){
-				TocField deltaSha1 = new TocField(link.getDeltaSha1(), TocFieldType.SHA1, "deltaSha1");
-				linkEntry.getFields().add(deltaSha1);
-			}
 			
-			if (link.getCasPatchType() != 0){
-				TocField casPatchType = new TocField(link.getCasPatchType(), TocFieldType.INTEGER, "casPatchType");
-				linkEntry.getFields().add(casPatchType);
-			}
 
 			//RES-SPEC
 			TocField resType = new TocField(link.getResType(), TocFieldType.INTEGER, "resType");
@@ -234,56 +226,62 @@ public class TocCreator {
 			TocField resRid = new TocField(link.getResRid(), TocFieldType.LONG, "resRid");
 			linkEntry.getFields().add(resRid);	
 
-			TocField idata = new TocField(link.getIdata(), TocFieldType.RAW2, "idata");
-			linkEntry.getFields().add(idata);	
-
-
-			TocField linkField = new TocField(linkEntry, TocFieldType.ENTRY, null);
-			resEntry.getFields().add(linkField);
-		}
-		TocField ress = new TocField(ebxEntry, TocFieldType.LIST, "res");
-		rootEntry.getFields().add(ress);
-
-		//CHUNKS
-		TocEntry chunksEntry = new TocEntry(TocEntryType.ORDINARY);
-		for (ResourceLink link : part.getDbx()){
-			TocEntry linkEntry = new TocEntry(TocEntryType.ORDINARY);
-			TocField name = new TocField(link.getName(), TocFieldType.STRING, "name");
-			linkEntry.getFields().add(name);
-
-			TocField sha1 = new TocField(link.getSha1(), TocFieldType.SHA1, "sha1");
-			linkEntry.getFields().add(sha1);
-
-			TocField size = new TocField(link.getSize(), TocFieldType.LONG, "size");
-			linkEntry.getFields().add(size);
-
-			TocField originalSize = new TocField(link.getOriginalSize(), TocFieldType.LONG, "originalSize");
-			linkEntry.getFields().add(originalSize);		
+			if (link.getIdata() != null){
+				TocField idata = new TocField(link.getIdata(), TocFieldType.RAW2, "idata");
+				linkEntry.getFields().add(idata);
+			}
+			
+			//DEFAULT
+			if (link.getCasPatchType() != 0){
+				TocField casPatchType = new TocField(link.getCasPatchType(), TocFieldType.INTEGER, "casPatchType");
+				linkEntry.getFields().add(casPatchType);
+			}
 			
 			if (link.getBaseSha1() != null){
 				TocField baseSha1 = new TocField(link.getBaseSha1(), TocFieldType.SHA1, "baseSha1");
 				linkEntry.getFields().add(baseSha1);
 			}
+			
 			if (link.getDeltaSha1() != null){
 				TocField deltaSha1 = new TocField(link.getDeltaSha1(), TocFieldType.SHA1, "deltaSha1");
 				linkEntry.getFields().add(deltaSha1);
 			}
+
+
+			TocField linkField = new TocField(linkEntry, TocFieldType.ENTRY, null);
+			resEntry.getFields().add(linkField);
+		}
+		if (resEntry.getFields().size()>0){
+			TocField ress = new TocField(resEntry, TocFieldType.LIST, "res");
+			rootEntry.getFields().add(ress);
+		}
+
+		//CHUNKS
+		TocEntry chunksEntry = new TocEntry(TocEntryType.ORDINARY);
+		for (ResourceLink link : part.getChunks()){
+			TocEntry linkEntry = new TocEntry(TocEntryType.ORDINARY);
 			
-			if (link.getCasPatchType() != 0){
-				TocField casPatchType = new TocField(link.getCasPatchType(), TocFieldType.INTEGER, "casPatchType");
-				linkEntry.getFields().add(casPatchType);
-			}
-
-			//CHNUNKS-SPEC
-
 			TocField id = new TocField(link.getId(), TocFieldType.GUID, "id");
 			linkEntry.getFields().add(id);
+			
+			TocField sha1 = new TocField(link.getSha1(), TocFieldType.SHA1, "sha1");
+			linkEntry.getFields().add(sha1);
 
-			TocField rangeStart = new TocField(link.getRangeStart(), TocFieldType.INTEGER, "rangeStart");
-			linkEntry.getFields().add(rangeStart);
-
-			TocField rangeEnd = new TocField(link.getRangeEnd(), TocFieldType.INTEGER, "rangEnd");
-			linkEntry.getFields().add(rangeEnd);
+			TocField size = new TocField(link.getSize(), TocFieldType.LONG, "size");
+			linkEntry.getFields().add(size);
+			
+			if (link.getOriginalSize()!=0){
+				TocField originalSize = new TocField(link.getOriginalSize(), TocFieldType.LONG, "originalSize");
+				linkEntry.getFields().add(originalSize);
+			}
+			if (link.getRangeStart()>=0){
+				TocField rangeStart = new TocField(link.getRangeStart(), TocFieldType.INTEGER, "rangeStart");
+				linkEntry.getFields().add(rangeStart);
+			}
+			if (link.getRangeEnd()>=0){
+				TocField rangeEnd = new TocField(link.getRangeEnd(), TocFieldType.INTEGER, "rangeEnd");
+				linkEntry.getFields().add(rangeEnd);
+			}
 
 			TocField logicalOffset = new TocField(link.getLogicalOffset(), TocFieldType.INTEGER, "logicalOffset");
 			linkEntry.getFields().add(logicalOffset);
@@ -291,30 +289,52 @@ public class TocCreator {
 			TocField logicalSize = new TocField(link.getLogicalSize(), TocFieldType.INTEGER, "logicalSize");
 			linkEntry.getFields().add(logicalSize);
 
+			if (link.getCasPatchType() != 0){
+				TocField casPatchType = new TocField(link.getCasPatchType(), TocFieldType.INTEGER, "casPatchType");
+				linkEntry.getFields().add(casPatchType);
+			}
+			if (link.getBaseSha1() != null){
+				TocField baseSha1 = new TocField(link.getBaseSha1(), TocFieldType.SHA1, "baseSha1");
+				linkEntry.getFields().add(baseSha1);
+			}
+			if (link.getDeltaSha1() != null){
+				TocField deltaSha1 = new TocField(link.getDeltaSha1(), TocFieldType.SHA1, "deltaSha1");
+				linkEntry.getFields().add(deltaSha1);
+			}
 
 
 			TocField linkField = new TocField(linkEntry, TocFieldType.ENTRY, null);
 			chunksEntry.getFields().add(linkField);
 		}
-		TocField chunks = new TocField(ebxEntry, TocFieldType.LIST, "chunks");
-		rootEntry.getFields().add(chunks);
+		if (chunksEntry.getFields().size()>0){
+			TocField chunks = new TocField(chunksEntry, TocFieldType.LIST, "chunks");
+			rootEntry.getFields().add(chunks);
+		}
 
 		//CHUNKMETA
 		TocEntry chunkMetaEntry = new TocEntry(TocEntryType.ORDINARY);
-		for (ResourceLink link : part.getDbx()){
+		for (ResourceLink link : part.getChunkMeta()){
 			TocEntry linkEntry = new TocEntry(TocEntryType.ORDINARY);
-			TocField name = new TocField(link.getName(), TocFieldType.STRING, "name");
-			linkEntry.getFields().add(name);
+						
+			//CHUNKMETA-SPEC
 
-			TocField sha1 = new TocField(link.getSha1(), TocFieldType.SHA1, "sha1");
-			linkEntry.getFields().add(sha1);
+			TocField h32 = new TocField(link.getH32(), TocFieldType.INTEGER, "h32");
+			linkEntry.getFields().add(h32);
 
-			TocField size = new TocField(link.getSize(), TocFieldType.LONG, "size");
-			linkEntry.getFields().add(size);
+			TocField meta = new TocField(link.getMeta(), TocFieldType.RAW, "meta");
+			linkEntry.getFields().add(meta);
+			if (link.getFirstMip()!=-1){
+				TocField firstMip = new TocField(link.getFirstMip(), TocFieldType.INTEGER, "firstMip");
+				linkEntry.getFields().add(firstMip);
+			}
 
-			TocField originalSize = new TocField(link.getOriginalSize(), TocFieldType.LONG, "originalSize");
-			linkEntry.getFields().add(originalSize);
 			
+			//DEFAULT does it even exist here ?
+			if (link.getCasPatchType() != 0){
+				TocField casPatchType = new TocField(link.getCasPatchType(), TocFieldType.INTEGER, "casPatchType");
+				linkEntry.getFields().add(casPatchType);
+			}
+
 			if (link.getBaseSha1() != null){
 				TocField baseSha1 = new TocField(link.getBaseSha1(), TocFieldType.SHA1, "baseSha1");
 				linkEntry.getFields().add(baseSha1);
@@ -324,27 +344,14 @@ public class TocCreator {
 				linkEntry.getFields().add(deltaSha1);
 			}
 			
-			if (link.getCasPatchType() != 0){
-				TocField casPatchType = new TocField(link.getCasPatchType(), TocFieldType.INTEGER, "casPatchType");
-				linkEntry.getFields().add(casPatchType);
-			}
-
-			//CHUNKMETA-SPEC
-
-			TocField h32 = new TocField(link.getH32(), TocFieldType.INTEGER, "h32");
-			linkEntry.getFields().add(h32);
-
-			TocField meta = new TocField(link.getMeta(), TocFieldType.RAW, "meta");
-			linkEntry.getFields().add(meta);
-
-			TocField firstMip = new TocField(link.getFirstMip(), TocFieldType.INTEGER, "firstMip");
-			linkEntry.getFields().add(firstMip);
-
 			TocField linkField = new TocField(linkEntry, TocFieldType.ENTRY, null);
 			chunkMetaEntry.getFields().add(linkField);
+			
 		}
-		TocField chunkMetas = new TocField(ebxEntry, TocFieldType.LIST, "chunkMeta");
-		rootEntry.getFields().add(chunkMetas);
+		if (chunkMetaEntry.getFields().size()>0){
+			TocField chunkMetas = new TocField(chunkMetaEntry, TocFieldType.LIST, "chunkMeta");
+			rootEntry.getFields().add(chunkMetas);
+		}
 
 		//FIELDS
 		TocField alignMembers = new TocField(part.isAlignMembers(), TocFieldType.BOOL, "alignMembers");
@@ -353,7 +360,7 @@ public class TocCreator {
 		TocField ridSupport = new TocField(part.isRidSupport(), TocFieldType.BOOL, "ridSupport");
 		rootEntry.getFields().add(ridSupport);
 
-		TocField storeCompressedSizes = new TocField(part.isRidSupport(), TocFieldType.BOOL, "storeCompressedSizes");
+		TocField storeCompressedSizes = new TocField(part.isStoreCompressedSizes(), TocFieldType.BOOL, "storeCompressedSizes");
 		rootEntry.getFields().add(storeCompressedSizes);
 
 		TocField totalSize = new TocField(part.getTotalSize(), TocFieldType.LONG, "totalSize");
@@ -471,6 +478,9 @@ public class TocCreator {
 			data.add((byte) 0x13);
 			data.addAll(nameBytes);
 			byte[] raw2 = (byte[]) field.getObj();
+			if (raw2 == null){
+				System.err.println("NULL RAW2 FOUND :/");
+			}
 			data.addAll(FileHandler.toLEB128List(raw2.length));
 			for (byte b : raw2){
 				data.add(b);
@@ -530,14 +540,23 @@ public class TocCreator {
 			long currentOffset = seeker.getOffset();
 			if (bundle.getID().equals(newBundlePart.getPath())){
 				System.out.println("Bundle replace/add: "+bundle.getID());
-				byte[] newBundleBytes = TocCreator.createSBpart(newBundlePart);
+				byte[] newBundleBytes = createSBpart(newBundlePart);
 				if (newBundleBytes.length == 0){
 					System.err.println("zero length");
 				}
 				FileHandler.writeFile(destination, newBundleBytes, true);
+				
+				/*DEBUG*/
+				FileHandler.writeFile(destination+"_replaced_part", newBundleBytes, false);
+				/*You have seen nothing !*/
+				
 				bundle.setOffset(currentOffset);
 				bundle.setSize(newBundleBytes.length);
 				seeker.seek(newBundleBytes.length);
+				
+				//TODO --> NO BASE: IS DELTA ?
+				//bundle.setBase ?
+				
 			}else{
 				if (bundle.isBase() && !bundle.isDelta()){
 					System.out.println("Bundle link: "+bundle.getID());

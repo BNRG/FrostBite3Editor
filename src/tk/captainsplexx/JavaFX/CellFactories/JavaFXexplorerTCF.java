@@ -13,6 +13,7 @@ import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
 import tk.captainsplexx.JavaFX.JavaFXHandler;
 import tk.captainsplexx.JavaFX.TreeViewConverter;
 import tk.captainsplexx.JavaFX.TreeViewEntry;
+import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.ResourceHandler.LinkBundleType;
 import tk.captainsplexx.Resource.TOC.ConvertedSBpart;
 import tk.captainsplexx.Resource.TOC.ConvertedTocFile;
@@ -43,7 +44,7 @@ public class JavaFXexplorerTCF extends TreeCell<TreeViewEntry> {
 								 * OFFSETS TO NEW ONE. THIS WILL AND CAN NOT BE HERE!
 								 * ONLY FOR DEBUG! - ENABLED, NO COMPARE TO ORIGINAL DATA POSSIBLE!
 								 */
-								//TocCreator.createModifiedSBFile(Main.getGame().getCurrentToc(), sbpart/*REPLACE WITH MODIF. 1*/, false, "output/"+sbpart.getPath().replace('/', '_')+"_splexx", true);				
+								TocCreator.createModifiedSBFile(Main.getGame().getCurrentToc(), sbpart/*REPLACE WITH MODIF. 1*/, false, "output/"+sbpart.getPath().replace('/', '_')+"_sb_splexx", true);	
 							}
 							/*END OF DEBUG*/
 							

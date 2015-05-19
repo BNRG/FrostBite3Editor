@@ -49,6 +49,9 @@ public class ResourceLink {
 		this.casPatchType = 0;
 		this.baseSha1 = null;
 		this.deltaSha1 = null;
+		this.rangeStart = -1; //This can be 0, so we choose a negative value
+		this.rangeEnd = -1;
+		this.firstMip = -1;
 	}
 
 	public String getEbxFileGUID() {

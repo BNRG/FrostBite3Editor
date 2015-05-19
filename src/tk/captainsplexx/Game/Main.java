@@ -12,6 +12,8 @@ import org.newdawn.slick.opengl.ImageIOImageData;
 
 import tk.captainsplexx.Event.EventHandler;
 import tk.captainsplexx.JavaFX.JavaFXHandler;
+import tk.captainsplexx.Maths.Hash;
+import tk.captainsplexx.Mod.ModTools;
 import tk.captainsplexx.Render.Render;
 import tk.captainsplexx.Resource.FileHandler;
 
@@ -21,6 +23,7 @@ public class Main {
 	public static Render render;
 	public static EventHandler eventHandler;
 	public static InputHandler inputHandler;
+	public static ModTools modTools;
 	public static JavaFXHandler jfxHandler;
 	
 	public static int DISPLAY_WIDTH;
@@ -40,23 +43,21 @@ public class Main {
 	public static String gamePath;
 	public static boolean keepAlive;
 	public static boolean runEditor;
+	
+	public static String buildVersion;
 		
 	public static void main(String[] args){
+		buildVersion = "0.01A";
 		keepAlive = true;
 		runEditor = false;
 		
-		//clean up folder.
-		for (File f : FileHandler.listf("temp/images", "")){
-			f.delete();
-		}
-		
-		for (File f : FileHandler.listf("output", "")){
-			f.delete();
-		}
+		FileHandler.cleanFolder("temp/mods");
+		FileHandler.cleanFolder("temp/images");
+		FileHandler.cleanFolder("output");
 		
 		gamePath = null;
 		TICK_RATE = 20;
-		
+				
 		DISPLAY_WIDTH = 1280; DISPLAY_HEIGHT = 720;
 		DISPLAY_RATE = 60;
 		
@@ -67,10 +68,16 @@ public class Main {
 		jfxHandler = new JavaFXHandler();
 		eventHandler = new EventHandler();
 		game = new Game();
+		modTools = new ModTools();
 		
 		while (true){
 			//Wait for starting editor
 			System.out.print("");
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}
 			if (runEditor){
 				jfxHandler.getMainWindow().toggleLeftVisibility();
 				jfxHandler.getMainWindow().toggleRightVisibility();
@@ -79,7 +86,7 @@ public class Main {
 				
 				try {
 		            Display.setDisplayMode(new DisplayMode(DISPLAY_WIDTH, DISPLAY_HEIGHT));
-		            Display.setTitle("Unofficial FrostBite3Editor by CaptainSpleXx.TK");
+		            Display.setTitle("Unofficial FrostBite 3 Editor "+buildVersion);
 		            Display.setResizable(true);
 		            Display.create();
 		            Display.setIcon(new ByteBuffer[] {
@@ -138,5 +145,10 @@ public class Main {
 	public static JavaFXHandler getJavaFXHandler() {
 		return jfxHandler;
 	}
+
+	public static ModTools getModTools() {
+		return modTools;
+	}
+	
 	
 }
