@@ -7,14 +7,16 @@ public class Mod {
 	String tempFolder;
 	String desc;
 	String game;
+	String folderName;
 	
-	public Mod(String name, String author, String game, String path){
+	public Mod(String name, String author, String game, String path, String folderName){
 		this.name = name;
 		this.author = author;
 		this.path = path;
 		this.game = game;
 		this.tempFolder = "";
 		this.desc = "";
+		this.folderName = folderName;
 	}
 	
 	public Mod(){
@@ -22,6 +24,14 @@ public class Mod {
 	}
 	
 	
+	public String getFolderName() {
+		return folderName;
+	}
+
+	public void setFolderName(String folderName) {
+		this.folderName = folderName;
+	}
+
 	public String getGame() {
 		return game;
 	}

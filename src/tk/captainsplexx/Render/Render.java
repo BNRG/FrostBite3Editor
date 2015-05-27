@@ -1,5 +1,20 @@
 package tk.captainsplexx.Render;
 
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
+import static org.lwjgl.opengl.GL11.GL_LINE_STRIP;
+import static org.lwjgl.opengl.GL11.GL_MODELVIEW;
+import static org.lwjgl.opengl.GL11.glBegin;
+import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.opengl.GL11.glClearColor;
+import static org.lwjgl.opengl.GL11.glColor3f;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glEnd;
+import static org.lwjgl.opengl.GL11.glLoadIdentity;
+import static org.lwjgl.opengl.GL11.glMatrixMode;
+import static org.lwjgl.opengl.GL11.glVertex3f;
+
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
@@ -9,17 +24,16 @@ import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 
-import static org.lwjgl.opengl.GL11.*;
 import tk.captainsplexx.Camera.FPCameraController;
 import tk.captainsplexx.Entity.Entity;
 import tk.captainsplexx.Entity.PlayerEntity;
 import tk.captainsplexx.Game.Game;
 import tk.captainsplexx.Game.Main;
 import tk.captainsplexx.Game.Point;
+import tk.captainsplexx.Maths.Matrices;
 import tk.captainsplexx.Model.RawModel;
 import tk.captainsplexx.Model.TexturedModel;
 import tk.captainsplexx.Terrain.Terrain;
-import tk.captainsplexx.Maths.Matrices;
 
 ;
 

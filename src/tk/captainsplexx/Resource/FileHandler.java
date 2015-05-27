@@ -1,12 +1,15 @@
 package tk.captainsplexx.Resource;
 
+import java.awt.Desktop;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
@@ -43,6 +46,31 @@ public class FileHandler {
 			return null;
 		}
 	}
+	public static boolean openFolder(String path){
+		Desktop desktop = Desktop.getDesktop();
+	    File dirToOpen = null;
+	    try {
+	        dirToOpen = new File(normalizePath(path));
+	        desktop.open(dirToOpen);
+	        return true;
+	    } catch (Exception iae) {
+	        System.out.println("Folder not found.");
+	        return false;
+	    }
+	}
+	
+	public static boolean openURL(String URL){
+		Desktop desktop = Desktop.getDesktop();
+	    try {
+	    	URI oURL = new URI(URL);
+	        desktop.browse(oURL);
+	        return true;
+	    } catch (Exception iae) {
+	        return false;
+	    }
+	}
+	
+	
 	
 	public static InputStream getStream(String path){
 		InputStream is = null;
@@ -53,6 +81,25 @@ public class FileHandler {
 			e.printStackTrace();
 		}
 		return is;
+	}
+	
+	public static boolean writeLine(ArrayList<String> lines, File file){
+		try{
+			prepareDir(file.getAbsolutePath());
+			FileOutputStream fos = new FileOutputStream(file);
+			 
+			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
+			for (String str : lines){
+				bw.write(str+"\n");
+			}
+			bw.close();
+			fos.close();
+			return true;
+		}catch (Exception e){
+			e.printStackTrace();
+			System.err.println("Could not write line. "+file.getAbsolutePath());
+			return false;
+		}
 	}
 	
 	public static boolean createLink(String newLink, String source){
@@ -387,6 +434,30 @@ public class FileHandler {
 			}
 		}
 		return tmp;
+	}
+	
+	public static boolean addBytes(byte[] arr, ArrayList<Byte> list){
+		try{
+			for (Byte b : arr){
+				list.add(b);
+			}
+			return true;
+		}catch (Exception e){
+			System.err.println("Something wrent wrong while adding byte's from array to list.");
+			return false;
+		}
+	}
+	
+	public static boolean addBytes(byte[] arr, ArrayList<Byte> list, int startIdx, int length){
+		try{
+			for (int i=startIdx; i<(startIdx+length);i++){
+				list.add(arr[i]);
+			}
+			return true;
+		}catch (Exception e){
+			System.err.println("Something wrent wrong while adding byte's from array to list.");
+			return false;
+		}
 	}
 	
 	/*FILEFINDER*/

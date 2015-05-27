@@ -9,8 +9,8 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import tk.captainsplexx.Game.Main;
-import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
 import tk.captainsplexx.JavaFX.JavaFXHandler;
+import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
 import tk.captainsplexx.JavaFX.TreeViewConverter;
 import tk.captainsplexx.JavaFX.TreeViewEntry;
 import tk.captainsplexx.Resource.FileHandler;
@@ -18,7 +18,6 @@ import tk.captainsplexx.Resource.ResourceHandler.LinkBundleType;
 import tk.captainsplexx.Resource.TOC.ConvertedSBpart;
 import tk.captainsplexx.Resource.TOC.ConvertedTocFile;
 import tk.captainsplexx.Resource.TOC.TocConverter;
-import tk.captainsplexx.Resource.TOC.TocCreator;
 import tk.captainsplexx.Resource.TOC.TocFile;
 import tk.captainsplexx.Resource.TOC.TocManager;
 import tk.captainsplexx.Resource.TOC.TocSBLink;
@@ -36,17 +35,13 @@ public class JavaFXexplorerTCF extends TreeCell<TreeViewEntry> {
 							TocFile part = link.getLinkedSBPart();
 							ConvertedSBpart sbpart = TocConverter.convertSBpart(part);
 							
-							/*DEBUG FOR SB PART RECREATION*/
-							if (link.isBase() && !link.isDelta()){
-								System.err.println("Do not create ModifiedSB! Part is linked to unpatched!");
-							}else{
-								/* THIS CREATOR DOES CHANGE CURRENT TOC
-								 * OFFSETS TO NEW ONE. THIS WILL AND CAN NOT BE HERE!
-								 * ONLY FOR DEBUG! - ENABLED, NO COMPARE TO ORIGINAL DATA POSSIBLE!
-								 */
-								TocCreator.createModifiedSBFile(Main.getGame().getCurrentToc(), sbpart/*REPLACE WITH MODIF. 1*/, false, "output/"+sbpart.getPath().replace('/', '_')+"_sb_splexx", true);	
-							}
-							/*END OF DEBUG*/
+							/* THIS CREATOR DOES CHANGE CURRENT TOC
+							 * OFFSETS TO NEW ONE. THIS WILL AND CAN NOT BE HERE!
+							 * ONLY FOR DEBUG! - IF ENABLED, NO COMPARE TO ORIGINAL DATA POSSIBLE!
+							 */
+							//TocCreator.createModifiedSBFile(Main.getGame().getCurrentToc(), sbpart/*REPLACE WITH MODIF. 1*/, false, "output/"+getTreeItem().getParent().getValue().getName()+"_splexx.sb", true);	
+							//FileHandler.writeFile("output/"+getTreeItem().getParent().getValue().getName()+"_splexx.toc", TocCreator.createTocFile(Main.getGame().getCurrentToc()));
+							/*END*/
 							
 							Main.getGame().setCurrentSB(sbpart);
 							TreeItem<TreeViewEntry> tree = TreeViewConverter.getTreeView(sbpart);
@@ -57,9 +52,13 @@ public class JavaFXexplorerTCF extends TreeCell<TreeViewEntry> {
 						}
 					}else if (getTreeItem().getChildren().isEmpty() && getTreeItem().getValue().getValue() instanceof File){
 						//EXPLORER MODE
-						Main.getGame().setCurrentFile(((File)getTreeItem().getValue().getValue()).getAbsolutePath().replace(".sb", ""));
+						Main.getGame().setCurrentFile(FileHandler.normalizePath(((File)getTreeItem().getValue().getValue()).getAbsolutePath().replace(".sb", "")));
 						TocFile toc = TocManager.readToc(Main.getGame().getCurrentFile());
 						ConvertedTocFile convToc = TocConverter.convertTocFile(toc);
+						if (convToc.getName()==null){
+							//is null if patched! (update folder files are noname's)
+							convToc.setName(Main.getGame().getCurrentFile().replace(FileHandler.normalizePath(Main.gamePath), ""));
+						}
 						
 						if (convToc.isCas()){
 							Main.getGame().setCurrentToc(convToc);

@@ -2,7 +2,6 @@ package tk.captainsplexx.Resource.TOC;
 
 import java.io.File;
 
-import tk.captainsplexx.Game.Main;
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.ResourceHandler.LinkBundleType;
 

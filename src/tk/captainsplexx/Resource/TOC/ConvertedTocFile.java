@@ -18,8 +18,13 @@ public class ConvertedTocFile {
 	public void setTotalSize(long totalSize) {
 		this.totalSize = totalSize;
 	}
+
+
 	public String getName() {
 		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
 	}
 	public String getTag() {
 		return tag;
@@ -39,9 +44,7 @@ public class ConvertedTocFile {
 	public ArrayList<TocSBLink> getChunks() {
 		return chunks;
 	}
-	public void setName(String name) {
-		this.name = name;
-	}
+
 	public void setCas(boolean cas) {
 		this.cas = cas;
 	}

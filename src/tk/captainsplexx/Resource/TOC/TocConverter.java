@@ -22,7 +22,7 @@ public class TocConverter {
 					convToc.setAlwaysEmitSuperBundle((boolean) field.getObj());
 				}else if (field.getName().toLowerCase().equals("cas") && field.getType() == TocFieldType.BOOL){
 					convToc.setCas((boolean) field.getObj());
-				}else if (field.getName().toLowerCase().equals("name") && field.getType() == TocFieldType.STRING){
+				}else if (field.getName().toLowerCase().equals("name") && field.getType() == TocFieldType.STRING){ //no name in update folder!
 					convToc.setName((String)field.getObj());
 				}else if (field.getName().toLowerCase().equals("chunks") && field.getType() == TocFieldType.LIST){
 					for (TocEntry entry : (ArrayList<TocEntry>) field.getObj()){

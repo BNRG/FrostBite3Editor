@@ -3,6 +3,8 @@ package tk.captainsplexx.JavaFX;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 
+import javafx.scene.control.TreeItem;
+import javafx.scene.image.ImageView;
 import tk.captainsplexx.Game.Main;
 import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
 import tk.captainsplexx.Resource.FileHandler;
@@ -18,12 +20,10 @@ import tk.captainsplexx.Resource.TOC.ResourceLink;
 import tk.captainsplexx.Resource.TOC.TocEntry;
 import tk.captainsplexx.Resource.TOC.TocField;
 import tk.captainsplexx.Resource.TOC.TocFile;
-import tk.captainsplexx.Resource.TOC.TocSBLink;
 import tk.captainsplexx.Resource.TOC.TocManager.TocEntryType;
 import tk.captainsplexx.Resource.TOC.TocManager.TocFieldType;
 import tk.captainsplexx.Resource.TOC.TocManager.TocFileType;
-import javafx.scene.control.TreeItem;
-import javafx.scene.image.ImageView;
+import tk.captainsplexx.Resource.TOC.TocSBLink;
 
 public class TreeViewConverter {
 	

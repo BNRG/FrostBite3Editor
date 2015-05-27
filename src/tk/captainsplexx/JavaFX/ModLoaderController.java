@@ -1,12 +1,14 @@
 package tk.captainsplexx.JavaFX;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.ImageView;
 import tk.captainsplexx.Game.Main;
 import tk.captainsplexx.Mod.Mod;
+import tk.captainsplexx.Resource.FileHandler;
 
 public class ModLoaderController {
 	@FXML
@@ -21,6 +23,8 @@ public class ModLoaderController {
 	ImageView logo;
 	@FXML
 	TextArea desc;
+	@FXML
+	Button runEditor;
 	
 	
 	public void runEditor(){
@@ -28,7 +32,7 @@ public class ModLoaderController {
 	}
 	
 	public void openModFolder(){
-		System.out.println("TODO");
+		FileHandler.openFolder("mods/");
 	}	
 	
 	//set bottom label
@@ -59,5 +63,10 @@ public class ModLoaderController {
 	public TextArea getDesc() {
 		return desc;
 	}
+
+	public Button getRunEditor() {
+		return runEditor;
+	}
+	
 	
 }

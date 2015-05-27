@@ -89,17 +89,18 @@ public class TocCreator {
 			TocField cas = new TocField(cToc.isCas(), TocFieldType.BOOL, "cas");
 			rootEntry.getFields().add(cas);
 		}
-
 		if (!(cToc.getTotalSize() == -1)){
 			TocField totalsize = new TocField(cToc.getTotalSize(), TocFieldType.LONG, "totalSize");
 			rootEntry.getFields().add(totalsize);
 		}
-
-		TocField name = new TocField(cToc.getName(), TocFieldType.STRING, "name");
-		rootEntry.getFields().add(name);
-
-		TocField emitSuperBundle = new TocField(cToc.isAlwaysEmitSuperBundle(), TocFieldType.BOOL, "alwaysEmitSuperbundle");
-		rootEntry.getFields().add(emitSuperBundle);
+		if (cToc.getName()!=null){
+			TocField name = new TocField(cToc.getName(), TocFieldType.STRING, "name");
+			rootEntry.getFields().add(name);
+		}
+		if (cToc.alwaysEmitSuperBundle){
+			TocField emitSuperBundle = new TocField(cToc.isAlwaysEmitSuperBundle(), TocFieldType.BOOL, "alwaysEmitSuperbundle");
+			rootEntry.getFields().add(emitSuperBundle);
+		}
 
 
 		file.addAll(createEntry(rootEntry));
@@ -117,6 +118,9 @@ public class TocCreator {
 
 		TocField magicSalt = new TocField(part.getMagicSalt(), TocFieldType.INTEGER, "magicSalt");
 		rootEntry.getFields().add(magicSalt);
+		
+		//TEST-TOTALSIZE
+		long totalSize = 0;
 
 		//EBX
 		TocEntry ebxEntry = new TocEntry(TocEntryType.ORDINARY);
@@ -130,6 +134,7 @@ public class TocCreator {
 			linkEntry.getFields().add(sha1);
 
 			TocField size = new TocField(link.getSize(), TocFieldType.LONG, "size");
+			totalSize += link.getSize();
 			linkEntry.getFields().add(size);
 
 			TocField originalSize = new TocField(link.getOriginalSize(), TocFieldType.LONG, "originalSize");
@@ -170,6 +175,7 @@ public class TocCreator {
 			linkEntry.getFields().add(sha1);
 
 			TocField size = new TocField(link.getSize(), TocFieldType.LONG, "size");
+			totalSize += link.getSize();
 			linkEntry.getFields().add(size);
 
 			TocField originalSize = new TocField(link.getOriginalSize(), TocFieldType.LONG, "originalSize");
@@ -209,6 +215,7 @@ public class TocCreator {
 			linkEntry.getFields().add(sha1);
 
 			TocField size = new TocField(link.getSize(), TocFieldType.LONG, "size");
+			totalSize += link.getSize();
 			linkEntry.getFields().add(size);
 
 			TocField originalSize = new TocField(link.getOriginalSize(), TocFieldType.LONG, "originalSize");
@@ -268,6 +275,7 @@ public class TocCreator {
 			linkEntry.getFields().add(sha1);
 
 			TocField size = new TocField(link.getSize(), TocFieldType.LONG, "size");
+			totalSize += link.getSize();
 			linkEntry.getFields().add(size);
 			
 			if (link.getOriginalSize()!=0){
@@ -362,9 +370,11 @@ public class TocCreator {
 
 		TocField storeCompressedSizes = new TocField(part.isStoreCompressedSizes(), TocFieldType.BOOL, "storeCompressedSizes");
 		rootEntry.getFields().add(storeCompressedSizes);
-
-		TocField totalSize = new TocField(part.getTotalSize(), TocFieldType.LONG, "totalSize");
-		rootEntry.getFields().add(totalSize);
+		
+		//Battlefield does not validate this value, but may needed for "INTERNAL-MEMORY-CALCULATIONS"!
+		TocField totalSizeF = new TocField(totalSize, TocFieldType.LONG, "totalSize");
+		//TocField totalSizeF = new TocField(part.getTotalSize(), TocFieldType.LONG, "totalSize");
+		rootEntry.getFields().add(totalSizeF);
 
 		TocField dbxTotalSize = new TocField(part.getDbxTotalSize(), TocFieldType.LONG, "dbxTotalSize");
 		rootEntry.getFields().add(dbxTotalSize);
@@ -480,6 +490,7 @@ public class TocCreator {
 			byte[] raw2 = (byte[]) field.getObj();
 			if (raw2 == null){
 				System.err.println("NULL RAW2 FOUND :/");
+				break;
 			}
 			data.addAll(FileHandler.toLEB128List(raw2.length));
 			for (byte b : raw2){
@@ -498,6 +509,10 @@ public class TocCreator {
 			data.add((byte) 0x07);
 			data.addAll(nameBytes);
 			String value = (String) field.getObj();
+			if (value == null){
+				System.err.println("NULL STRING FOUND :/");
+				break;
+			}
 			data.addAll(FileHandler.toLEB128List((value.length()+1) & 0xFFFFFFFF));
 			//tailing null is also inculded!
 			for (byte b : value.getBytes()){
@@ -515,6 +530,10 @@ public class TocCreator {
 	}
 
 	public static boolean createModifiedSBFile(ConvertedTocFile toc, ConvertedSBpart newBundlePart, boolean isNew, String destination, boolean override){
+		//creates modi. sb file and updates toc file for that.
+		byte[] header2 = new byte[]{0x53, 0x70, 0x6C, 0x65, 0x78, 0x58, 0x5F,
+				0x4D, 0x6F, 0x64, 0x5F, 0x46, 0x69, 0x6C,
+				0x65, 0x21};
 		System.out.println("Creating ModifiedSBFile!");
 		FileSeeker seeker = new FileSeeker();
 		destination = FileHandler.normalizePath(destination);
@@ -536,6 +555,8 @@ public class TocCreator {
 			link.setType(LinkBundleType.BUNDLES);
 			toc.getBundles().add(link);
 		}
+		FileHandler.writeFile(destination, header2, false);
+		seeker.seek(header2.length);
 		for (TocSBLink bundle : toc.getBundles()){
 			long currentOffset = seeker.getOffset();
 			if (bundle.getID().equals(newBundlePart.getPath())){
@@ -545,17 +566,14 @@ public class TocCreator {
 					System.err.println("zero length");
 				}
 				FileHandler.writeFile(destination, newBundleBytes, true);
-				
-				/*DEBUG*/
-				FileHandler.writeFile(destination+"_replaced_part", newBundleBytes, false);
-				/*You have seen nothing !*/
-				
+								
 				bundle.setOffset(currentOffset);
 				bundle.setSize(newBundleBytes.length);
 				seeker.seek(newBundleBytes.length);
 				
-				//TODO --> NO BASE: IS DELTA ?
-				//bundle.setBase ?
+				//TEST does -base+delta does mean: replace with delta ? //TODO
+				bundle.setBase(false);
+				bundle.setDelta(true);
 				
 			}else{
 				if (bundle.isBase() && !bundle.isDelta()){

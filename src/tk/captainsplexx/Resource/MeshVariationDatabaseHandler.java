@@ -10,11 +10,11 @@ import tk.captainsplexx.Resource.EBX.EBXInstance;
 
 public class MeshVariationDatabaseHandler {
 	public HashMap<String, MeshVariationDatabaseCollection> entries;
-	private EBXHandler ebxHandler;
+//	//private EBXHandler ebxHandler;
 	
 	public MeshVariationDatabaseHandler(EBXHandler ebxHandler) {
 		this.entries = new HashMap<String, MeshVariationDatabaseCollection>();
-		this.ebxHandler = ebxHandler;
+//		//this.ebxHandler = ebxHandler;
 	}
 
 	public ArrayList<String> getMaterials(String meshName, int variation) {

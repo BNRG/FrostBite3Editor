@@ -1,8 +1,8 @@
 package tk.captainsplexx.JavaFX;
 
-import tk.captainsplexx.Resource.FileHandler;
 import javafx.scene.control.TreeItem;
 import javafx.scene.image.Image;
+import tk.captainsplexx.Resource.FileHandler;
 
 
 public class JavaFXHandler {

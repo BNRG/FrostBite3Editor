@@ -7,10 +7,9 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.image.ImageView;
 import tk.captainsplexx.JavaFX.JavaFXHandler;
 import tk.captainsplexx.JavaFX.JavaFXMainWindow;
+import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
 import tk.captainsplexx.JavaFX.TreeViewConverter;
 import tk.captainsplexx.JavaFX.TreeViewEntry;
-import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
-import tk.captainsplexx.Maths.Patcher;
 import tk.captainsplexx.Mod.Mod;
 import tk.captainsplexx.Render.ModelHandler;
 import tk.captainsplexx.Resource.DDSConverter;
@@ -60,22 +59,23 @@ public class Game {
 		shaderHandler = new ShaderHandler();
 		entityHandler = new EntityHandler(modelHandler, resourceHandler);
 		
-		/*TEST FOR PATCHING BASEDATA USING DELTA*/
+		/*
+		TEST FOR PATCHING BASEDATA USING DELTA
 		byte[] patchedData = Patcher.getPatchedData(
 				FileHandler.readFile("__DOCUMENTATION__/patch_system/decompressed_base"),
 				FileHandler.readFile("__DOCUMENTATION__/patch_system/delta")
 		);
 		FileHandler.writeFile("output/patched_data", patchedData);
-		/*END OF TEST*/
+		END OF TEST*/
 				
-		//Client.createModifClient("C:/Program Files (x86)/Origin Games/Battlefield 4/", "Battlefield 4 SPLEXX");
+		//Client.cloneClient("C:/Program Files (x86)/Origin Games/Battlefield 4/", "Battlefield 4 SPLEXX");
 		
 		System.out.println("Please select a game root directory like this one: 'C:/Program Files (x86)/Origin Games/Battlefield Hardline Digital Deluxe'!");
 		Main.getJavaFXHandler().getMainWindow().selectGamePath();
 
 		while (true){
 			//wait
-			System.out.print(""); //Why this has to be here ? Otherwise not working :(
+			System.out.print("");
 			if (!(Main.gamePath == null)){
 				break;
 			}
@@ -102,14 +102,10 @@ public class Game {
 		ebxFileGUIDs = new HashMap<String, String>();
 		chunkGUIDSHA1 = new HashMap<String, String>();
 				
-		//byte[] data = CasDataReader.readCas("A2C97156565E4C3A9B71F900B37C61EA3D5CE66B", Main.gamePath+"/Data", getResourceHandler().getCasCatManager().getEntries());
-		//FileHandler.writeFile("output/decompressed_ebx", data);
-		
-		
 		/*
-		byte[] data = CasDataReader.readCas("76 06 C5 5F F0 95 B8 53 9A C6 A5 FC 60 0A E3 25 3D 09 5F 85", gamePath+"/Data", resourceHandler.getCasCatManager().getEntries());
-		EbxCasConverter conv = new EbxCasConverter();
-		conv.createCAS(data);
+		CasManager.createCAS("output/cas_99.cas");
+		String sha1_1 = CasManager.extendCAS(FileHandler.readFile("res/filler.hex"), new File("output/cas_99.cas"), resourceHandler.getPatchedCasCatManager());
+		String sha1_2 = CasManager.extendCAS(FileHandler.readFile("res/filler.hex"), new File("output/cas_99.cas"), resourceHandler.getPatchedCasCatManager());
 		*/
 	}
 
@@ -240,7 +236,7 @@ public class Game {
 	public void setCurrentMod(Mod currentMod) {
 		this.currentMod = currentMod;
 	}
-	
+
 
 	
 	

@@ -2,16 +2,6 @@ package tk.captainsplexx.JavaFX.CellFactories;
 
 import java.nio.ByteOrder;
 
-import tk.captainsplexx.Game.Game;
-import tk.captainsplexx.Game.Main;
-import tk.captainsplexx.JavaFX.JavaFXHandler;
-import tk.captainsplexx.JavaFX.TreeViewConverter;
-import tk.captainsplexx.JavaFX.TreeViewEntry;
-import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
-import tk.captainsplexx.JavaFX.JavaFXMainWindow.WorkDropType;
-import tk.captainsplexx.Resource.FileHandler;
-import tk.captainsplexx.Resource.CAS.CasDataReader;
-import tk.captainsplexx.Resource.TOC.ResourceLink;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
@@ -31,6 +21,16 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.paint.Color;
+import tk.captainsplexx.Game.Game;
+import tk.captainsplexx.Game.Main;
+import tk.captainsplexx.JavaFX.JavaFXHandler;
+import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
+import tk.captainsplexx.JavaFX.JavaFXMainWindow.WorkDropType;
+import tk.captainsplexx.JavaFX.TreeViewConverter;
+import tk.captainsplexx.JavaFX.TreeViewEntry;
+import tk.captainsplexx.Resource.FileHandler;
+import tk.captainsplexx.Resource.CAS.CasDataReader;
+import tk.captainsplexx.Resource.TOC.ResourceLink;
 
 public class JavaFXebxTCF extends TreeCell<TreeViewEntry> {
 		private enum Operation {Name, Value};

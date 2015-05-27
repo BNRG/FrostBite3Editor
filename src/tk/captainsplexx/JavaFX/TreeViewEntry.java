@@ -2,8 +2,8 @@ package tk.captainsplexx.JavaFX;
 
 
 
-import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
 import javafx.scene.image.ImageView;
+import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
 
 public class TreeViewEntry implements Cloneable{
 

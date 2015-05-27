@@ -1,9 +1,11 @@
 package tk.captainsplexx.JavaFX;
 
-import tk.captainsplexx.Resource.DDSConverter;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TreeView;
+import tk.captainsplexx.Game.Main;
+import tk.captainsplexx.Resource.DDSConverter;
+import tk.captainsplexx.Resource.FileHandler;
 
 public class LeftController {
 	@FXML
@@ -16,11 +18,11 @@ public class LeftController {
 	
 	/*OnAction*/
 	public void exit(){ 
-		System.out.println("EXIT -> FXML LEFT -> MENU -> QUIT");	
+		Main.keepAlive = false;
 	}
 	
 	public void about(){ 
-		//TODO
+		FileHandler.openURL("https://github.com/CaptainSpleXx/FrostBite3Editor#stay-in-contact");
 	}
 	
 	public void incLOD(){ 

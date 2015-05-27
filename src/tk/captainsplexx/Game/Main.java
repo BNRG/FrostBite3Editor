@@ -1,7 +1,15 @@
 package tk.captainsplexx.Game;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.nio.ByteBuffer;
+import java.nio.file.Paths;
 
 import javax.imageio.ImageIO;
 
@@ -12,7 +20,6 @@ import org.newdawn.slick.opengl.ImageIOImageData;
 
 import tk.captainsplexx.Event.EventHandler;
 import tk.captainsplexx.JavaFX.JavaFXHandler;
-import tk.captainsplexx.Maths.Hash;
 import tk.captainsplexx.Mod.ModTools;
 import tk.captainsplexx.Render.Render;
 import tk.captainsplexx.Resource.FileHandler;
@@ -45,9 +52,41 @@ public class Main {
 	public static boolean runEditor;
 	
 	public static String buildVersion;
+	public static String currentDir;
 		
 	public static void main(String[] args){
-		buildVersion = "0.01A";
+		String newVersion = "";
+		try{
+			URL url = new URL("https://raw.githubusercontent.com/CaptainSpleXx/FrostBite3Editor/master/version");
+			URLConnection ec = url.openConnection();
+	        BufferedReader in = new BufferedReader(new InputStreamReader(
+	                ec.getInputStream(), "UTF-8"));
+	        String inputLine;
+	        StringBuilder a = new StringBuilder();
+	        while ((inputLine = in.readLine()) != null)
+	            a.append(inputLine);
+	        in.close();
+
+	        newVersion += a.toString();
+		}catch(Exception e){
+			System.err.println("Could not get version info from GitHub...");
+		}
+		
+		currentDir = FileHandler.normalizePath(Paths.get("").toAbsolutePath().toString());
+		try{
+			FileReader fr = new FileReader("version");
+			
+			BufferedReader br = new BufferedReader(fr);
+			buildVersion = br.readLine();
+			br.close();
+			fr.close();
+		}catch (Exception e){
+			buildVersion = "n/a";
+			System.err.println("NO VERSION FILE FOUND!");
+		}
+		if (!buildVersion.equalsIgnoreCase(newVersion) && !newVersion.equalsIgnoreCase("")){
+			buildVersion += " | [NEW VERSION ADVILABLE]";
+		}
 		keepAlive = true;
 		runEditor = false;
 		

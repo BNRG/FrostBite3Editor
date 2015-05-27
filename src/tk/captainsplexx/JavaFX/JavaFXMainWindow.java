@@ -3,14 +3,6 @@ package tk.captainsplexx.JavaFX;
 import java.io.File;
 import java.io.IOException;
 
-import org.lwjgl.opengl.Display;
-
-import tk.captainsplexx.Game.Main;
-import tk.captainsplexx.JavaFX.CellFactories.JavaFXebxTCF;
-import tk.captainsplexx.JavaFX.CellFactories.JavaFXexplorer1TCF;
-import tk.captainsplexx.JavaFX.CellFactories.JavaFXexplorerTCF;
-import tk.captainsplexx.JavaFX.CellFactories.ModLoaderListFactory;
-import tk.captainsplexx.Mod.Mod;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -26,6 +18,15 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
+
+import org.lwjgl.opengl.Display;
+
+import tk.captainsplexx.Game.Main;
+import tk.captainsplexx.JavaFX.CellFactories.JavaFXebxTCF;
+import tk.captainsplexx.JavaFX.CellFactories.JavaFXexplorer1TCF;
+import tk.captainsplexx.JavaFX.CellFactories.JavaFXexplorerTCF;
+import tk.captainsplexx.JavaFX.CellFactories.ModLoaderListFactory;
+import tk.captainsplexx.Mod.Mod;
 
 
 public class JavaFXMainWindow extends Application{
@@ -248,6 +249,7 @@ public class JavaFXMainWindow extends Application{
 	            return new ModLoaderListFactory();
 	        }
         });
+        modLoaderController.getRunEditor().setDisable(true);
 	}
 
 	/*UPDATE METHODS*/
@@ -365,7 +367,7 @@ public class JavaFXMainWindow extends Application{
 						System.out.println("Selected '"+path+"' as gamepath.");
 						Main.gamePath = path;
 					}else{
-						System.err.println("Nothing selected.");
+						Main.gamePath = "emty";
 						Main.keepAlive = false;
 					}
 				}
