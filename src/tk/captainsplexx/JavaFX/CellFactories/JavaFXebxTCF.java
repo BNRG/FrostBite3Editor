@@ -1,6 +1,7 @@
 package tk.captainsplexx.JavaFX.CellFactories;
 
 import java.nio.ByteOrder;
+import java.util.HashMap;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -30,6 +31,7 @@ import tk.captainsplexx.JavaFX.TreeViewConverter;
 import tk.captainsplexx.JavaFX.TreeViewEntry;
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.CAS.CasDataReader;
+import tk.captainsplexx.Resource.EBX.EBXFieldDescriptor;
 import tk.captainsplexx.Resource.TOC.ResourceLink;
 
 public class JavaFXebxTCF extends TreeCell<TreeViewEntry> {
@@ -269,6 +271,27 @@ public class JavaFXebxTCF extends TreeCell<TreeViewEntry> {
     	        if (entry.getType()==EntryType.BOOL){
     	        	entry.setValue(!((Boolean) entry.getValue()));
     	        	commitEdit(getTreeItem().getValue());
+    	        }else if(entry.getType()==EntryType.ENUM&&entry.getValue() instanceof HashMap<?,?>){
+    	        	HashMap<EBXFieldDescriptor, Boolean> enums = (HashMap<EBXFieldDescriptor, Boolean>) entry.getValue();
+	    			Boolean done = false;
+	    			Boolean selectNext = false;
+	    			for (EBXFieldDescriptor desc : enums.keySet()){
+	    				boolean selected = enums.get(desc);
+	    				if (selected){
+	    					enums.put(desc, false);
+	    					selectNext = true;
+	    				}else if (selectNext){
+	    					enums.put(desc, true);
+	    					selectNext = false;
+	    					done = true;
+	    				}
+	    			}
+	    			if (!done){
+	    				for (EBXFieldDescriptor desc : enums.keySet()){
+	    					enums.put(desc, true);
+		    				break;
+		    			}
+	    			}
     	        }else{
     	        	//if (textField == null) { //USELESS ?
     		        createTextField(getTreeItem());
@@ -344,10 +367,13 @@ public class JavaFXebxTCF extends TreeCell<TreeViewEntry> {
 	                    	if (obj != null && (treeItem.getValue().getType() == EntryType.ARRAY) || treeItem.getValue().getType() == EntryType.LIST){
 	                    		treeItem.getValue().setName((String) obj);
 	                            commitEdit(treeItem.getValue());
+	                            modifyOp = null;
 	                    	}else if (obj != null){
 	                    		treeItem.getValue().setValue(obj);
 	                            commitEdit(treeItem.getValue());
+	                            modifyOp = null;
 	                    	}else{
+	                    		modifyOp = null;
 	                    		cancelEdit();
 	                    	}
                     	}
@@ -393,7 +419,16 @@ public class JavaFXebxTCF extends TreeCell<TreeViewEntry> {
 	    		case BYTE:
 	    			return byteToHex(((Byte)item.getValue()));
 	    		case ENUM:
-	    			return (String)item.getValue();
+	    			HashMap<EBXFieldDescriptor, Boolean> enums = (HashMap<EBXFieldDescriptor, Boolean>) item.getValue();
+	    			String value = "ENUM NOTHING SELECTED!";
+	    			for (EBXFieldDescriptor desc : enums.keySet()){
+	    				boolean selected = enums.get(desc);
+	    				if (selected){
+	    					value = desc.getName();
+	    					break;
+	    				}
+	    			}
+	    			return value;
 	    		case RAW:
 	    			return FileHandler.bytesToHex((byte[]) item.getValue());
 	    		case NULL:
@@ -413,7 +448,7 @@ public class JavaFXebxTCF extends TreeCell<TreeViewEntry> {
 		    		case STRING:
 		    			return(value);
 		    		case ENUM:
-		    			return(value);
+		    			return(item.getValue()/*RETURNS STRING(if null) OR HASHMAP*/);
 		    		case HEX8:
 		    			return(value);
 		    		case LIST:

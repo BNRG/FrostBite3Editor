@@ -20,6 +20,8 @@ public class ModLoaderController {
 	@FXML
 	Label authorName;
 	@FXML
+	Label gameName;
+	@FXML
 	ImageView logo;
 	@FXML
 	TextArea desc;
@@ -66,6 +68,10 @@ public class ModLoaderController {
 
 	public Button getRunEditor() {
 		return runEditor;
+	}
+
+	public Label getGameName() {
+		return gameName;
 	}
 	
 	

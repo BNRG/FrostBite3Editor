@@ -6,7 +6,7 @@
 	</tr>
 	<tr>
 		<td>Done:</td>
-		<td>Mainpipeline 85 percent.</td>
+		<td>Mainpipeline 89 percent.</td>
 	</tr>
 </table>
 <h1>Description</h1>
@@ -42,7 +42,8 @@ LICENSE before using it!&lt;&lt;--</p><br><p>
 </table>
 
 <h1>Download</h1>
-<p>Run "run_binary.bat" to launch.</p>
+<p>Run "run_binary.bat" to launch.</p><br>
+<p>PLEASE DO NOT REUPLOAD</p>
 <table>
 	<tr>
 		<td>Supported using AdF.ly (NO SURVEY))</td>
@@ -52,7 +53,7 @@ LICENSE before using it!&lt;&lt;--</p><br><p>
 	</tr>
 	<tr>
 		<td>Direct</td>
-		<td><p>No free support :( - You should donate instead. </p><a href="https://github.com/CaptainSpleXx/FrostBite3Editor/archive/master.zip">Klick here (via. github.com)</a></td>
+		<td><p>No support :(</p><a href="https://github.com/CaptainSpleXx/FrostBite3Editor/archive/master.zip">Klick here (via. github.com)</a></td>
 	</tr>
 </table>
 

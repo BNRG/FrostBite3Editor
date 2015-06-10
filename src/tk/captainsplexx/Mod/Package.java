@@ -4,10 +4,8 @@ import java.util.ArrayList;
 
 public class Package {
 	public String name;
-	public ArrayList<String> entries;
-	
-	
-	
+	public ArrayList<PackageEntry> entries;
+		
 	//Getter and Setter.
 	
 	public String getName() {
@@ -16,7 +14,7 @@ public class Package {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public ArrayList<String> getEntries() {
+	public ArrayList<PackageEntry> getEntries() {
 		return entries;
 	}
 	

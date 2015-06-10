@@ -29,6 +29,8 @@ public class Client {
 			System.err.println("New folder does already exist.");
 			return false;
 		}
+		System.out.println("Client get currently cloned...\n"
+				+"(Windows-Hardlink's will be used. It will take 'no' space!)");
 		sourceFiles = FileHandler.listf(sourceFolder, "");
 		for (File f : sourceFiles){
 			if (!f.getAbsolutePath().contains(".par")){

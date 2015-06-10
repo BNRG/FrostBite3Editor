@@ -3,9 +3,7 @@ package tk.captainsplexx.Game;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.ByteBuffer;
@@ -51,10 +49,14 @@ public class Main {
 	public static boolean keepAlive;
 	public static boolean runEditor;
 	
+	public static boolean isDEBUG;
+	
 	public static String buildVersion;
 	public static String currentDir;
 		
 	public static void main(String[] args){
+		gamePath = null;
+		/*VERSION CHECK*/
 		String newVersion = "";
 		try{
 			URL url = new URL("https://raw.githubusercontent.com/CaptainSpleXx/FrostBite3Editor/master/version");
@@ -71,8 +73,6 @@ public class Main {
 		}catch(Exception e){
 			System.err.println("Could not get version info from GitHub...");
 		}
-		
-		currentDir = FileHandler.normalizePath(Paths.get("").toAbsolutePath().toString());
 		try{
 			FileReader fr = new FileReader("version");
 			
@@ -84,9 +84,18 @@ public class Main {
 			buildVersion = "n/a";
 			System.err.println("NO VERSION FILE FOUND!");
 		}
-		if (!buildVersion.equalsIgnoreCase(newVersion) && !newVersion.equalsIgnoreCase("")){
+		if (buildVersion.contains("|")){
+			isDEBUG = true;
+			System.err.println("RUNNING IN DEBUG MODE!");
+			String[] versionArgs = buildVersion.split("\\|");
+			gamePath = versionArgs[1];
+			buildVersion = versionArgs[0]+" DEBUG MODE! ";
+		}else if (!buildVersion.equalsIgnoreCase(newVersion) && !newVersion.equalsIgnoreCase("")){
 			buildVersion += " | [NEW VERSION ADVILABLE]";
 		}
+		/*END OF VERSION CHECK*/
+		
+		currentDir = FileHandler.normalizePath(Paths.get("").toAbsolutePath().toString());
 		keepAlive = true;
 		runEditor = false;
 		
@@ -94,7 +103,6 @@ public class Main {
 		FileHandler.cleanFolder("temp/images");
 		FileHandler.cleanFolder("output");
 		
-		gamePath = null;
 		TICK_RATE = 20;
 				
 		DISPLAY_WIDTH = 1280; DISPLAY_HEIGHT = 720;

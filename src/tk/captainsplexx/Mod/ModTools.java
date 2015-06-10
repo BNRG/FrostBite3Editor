@@ -8,6 +8,8 @@ import java.util.Collections;
 
 import tk.captainsplexx.Game.Main;
 import tk.captainsplexx.Resource.FileHandler;
+import tk.captainsplexx.Resource.ResourceHandler.LinkBundleType;
+import tk.captainsplexx.Resource.ResourceHandler.ResourceType;
 
 public class ModTools {
 	public ArrayList<Mod> mods;
@@ -92,8 +94,24 @@ public class ModTools {
 			Package pack = new Package(FileHandler.normalizePath(file.getAbsolutePath()).replace(Main.getGame().getCurrentMod().getPath()+"/packages", "").replace(".pack", ""));
 			String line = "";
 			while ((line = br.readLine()) != null){
-				if (line.equals("")){continue;}
-				pack.getEntries().add(line);
+			
+					String[] parts = line.split("\\|");
+					
+					/*| is treated as an OR in RegEx. So you need to escape it:
+					 * String[] separated = line.split("\\|");
+					 */
+					
+					if (parts.length<4||parts.length>5){continue;}
+					PackageEntry entry = new PackageEntry(
+						LinkBundleType.valueOf(parts[0]),
+						parts[1],
+						ResourceType.valueOf(parts[2]),
+						parts[3]
+					);
+					if (parts.length==5){//additional
+						entry.setTargetPath(parts[4]);
+					}
+					pack.getEntries().add(entry);
 			}
 			br.close();
 			fr.close();
@@ -109,9 +127,17 @@ public class ModTools {
 		if (file.exists()){
 			file.delete();
 		}
-		Collections.sort(pack.getEntries());
-
-		if (!FileHandler.writeLine(pack.getEntries(), file)){
+		ArrayList<String> entries = new ArrayList<>();
+		for (PackageEntry entry : pack.getEntries()){
+			String fullEntry = entry.getBundleType()+"|"+entry.getSubPackage()+"|"+entry.getResType()+"|"+entry.getResourcePath();
+			if (entry.getTargetPath()!=null){
+				fullEntry += "|"+entry.getTargetPath();
+			}
+			entries.add(fullEntry);
+		}
+		Collections.sort(entries);
+		
+		if (!FileHandler.writeLine(entries, file)){
 			return false;
 		}
 		return true;
@@ -140,22 +166,25 @@ public class ModTools {
 		return null;
 	}
 	
-	public boolean extendPackage(String bundle, String sbPart, String type, String path, Package pack){
+	public boolean extendPackage(LinkBundleType bundle, String sbPart, ResourceType type, String path, Package pack){
 		return extendPackage(bundle, sbPart, type, path, null, pack);
 	}
 	
-	public boolean extendPackage(String bundle, String sbPart, String type, String path, String targetPath, Package pack){
-		String fullEntry = bundle+"|"+sbPart+"|"+type+"|"+path;
+	public boolean extendPackage(LinkBundleType bundle, String sbPart, ResourceType type, String path, String targetPath, Package pack){
+		PackageEntry entry = new PackageEntry(bundle, sbPart, type, path);
 		if (targetPath!=null){
 			/*Additional, if someone whats to have a diffrent resources for a package with the same path.*/
-			fullEntry+="|"+targetPath;
+			entry.setTargetPath(targetPath);
 		}
-		for (String str : pack.getEntries()){
-			if (str.equals(fullEntry)){
+		for (PackageEntry pEntry: pack.getEntries()){
+			if (pEntry.getBundleType()==bundle && pEntry.getSubPackage()==sbPart &&
+					pEntry.getResourcePath()==path && pEntry.getResType()==type &&
+						pEntry.getTargetPath()==targetPath){
+				//entry does already exist.
 				return true;
 			}
 		}
-		pack.getEntries().add(fullEntry);
+		pack.getEntries().add(entry);
 		return true;
 	}
 	

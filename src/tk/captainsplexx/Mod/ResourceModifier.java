@@ -32,7 +32,8 @@ public class ResourceModifier {
 					res.setCasPatchType(1); //->Replace
 					res.setSha1(casCatEntry.getSHA1());
 					
-					//Whats about originalSize and Size ?? -> Is required!!!
+					res.setOriginalSize(data.length);//TEST
+					res.setSize(casCatEntry.getProcSize());//TEST
 					
 					casCatMan.getEntries().add(casCatEntry);
 					return true;
@@ -62,7 +63,8 @@ public class ResourceModifier {
 					ebx.setSha1(casCatEntry.getSHA1());
 					casCatMan.getEntries().add(casCatEntry);
 					
-					//Whats about originalSize and Size ?? -> Is required!!!
+					ebx.setOriginalSize(data.length);//TEST
+					ebx.setSize(casCatEntry.getProcSize());//TEST
 					
 					return true;
 				}
@@ -82,8 +84,11 @@ public class ResourceModifier {
 					chunk.setDeltaSha1(null);
 					chunk.setCasPatchType(1); //->Replace
 					chunk.setSha1(casCatEntry.getSHA1());
-					/*Whats about Size
-					logicalOffset and logicalSize ?? -> Is required!!! */
+					
+					chunk.setSize(casCatEntry.getProcSize());//TEST
+					chunk.setLogicalOffset(0);//TEST
+					chunk.setLogicalSize(data.length);//TEST
+					
 					casCatMan.getEntries().add(casCatEntry);
 					return true;
 				}

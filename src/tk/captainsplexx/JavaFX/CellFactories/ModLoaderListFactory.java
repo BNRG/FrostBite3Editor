@@ -25,7 +25,8 @@ public class ModLoaderListFactory extends ListCell<Mod>{
 					Main.getModTools().fetchPackages();
 					
 					ctrlr.getModName().setText(mod.getName());
-					ctrlr.getAuthorName().setText(mod.getAuthor()+" "+mod.getGame());
+					ctrlr.getAuthorName().setText(mod.getAuthor());
+					ctrlr.getGameName().setText(mod.getGame());
 						
 					ctrlr.getDesc().setWrapText(true);
 					ctrlr.getDesc().setText(mod.getDesc());
@@ -41,6 +42,7 @@ public class ModLoaderListFactory extends ListCell<Mod>{
 					Main.getGame().setCurrentMod(null);
 					ctrlr.getModName().setText("No mod currently selected!");
 					ctrlr.getAuthorName().setText("");
+					ctrlr.getGameName().setText("");
 						
 					ctrlr.getDesc().setWrapText(true);
 					ctrlr.getDesc().setText("");

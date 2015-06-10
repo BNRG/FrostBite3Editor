@@ -2,6 +2,7 @@ package tk.captainsplexx.JavaFX;
 
 import java.nio.ByteOrder;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javafx.scene.control.TreeItem;
 import javafx.scene.image.ImageView;
@@ -13,6 +14,7 @@ import tk.captainsplexx.Resource.EBX.EBXComplexDescriptor;
 import tk.captainsplexx.Resource.EBX.EBXField;
 import tk.captainsplexx.Resource.EBX.EBXFieldDescriptor;
 import tk.captainsplexx.Resource.EBX.EBXFile;
+import tk.captainsplexx.Resource.EBX.EBXHandler.FieldValueType;
 import tk.captainsplexx.Resource.EBX.EBXInstance;
 import tk.captainsplexx.Resource.TOC.ConvertedSBpart;
 import tk.captainsplexx.Resource.TOC.ConvertedTocFile;
@@ -94,7 +96,7 @@ public class TreeViewConverter {
 	
 	/*FROM EBX*/
 	public static TreeItem<TreeViewEntry> getTreeView(EBXFile ebx){
-		TreeItem<TreeViewEntry> root = new TreeItem<TreeViewEntry>(new TreeViewEntry(ebx.getTruePath(), new ImageView(JavaFXHandler.documentIcon), null, EntryType.LIST));
+		TreeItem<TreeViewEntry> root = new TreeItem<TreeViewEntry>(new TreeViewEntry(ebx.getTruePath(), new ImageView(JavaFXHandler.documentIcon), ebx.getGuid(), EntryType.LIST));
 		for (EBXInstance instance : ebx.getInstances()){
 			root.getChildren().add(readInstance(instance));
 		}
@@ -127,7 +129,7 @@ public class TreeViewConverter {
 						entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), new ImageView(JavaFXHandler.byteIcon), (Byte)ebxField.getValue(), EntryType.BYTE);
 						break;
 					case Complex:
-						entry = new TreeViewEntry(ebxField.getValueAsComplex().getComplexDescriptor().getName()+" "+ebxField.getFieldDescritor().getName(), new ImageView(JavaFXHandler.instanceIcon), null, EntryType.LIST);
+						entry = new TreeViewEntry(ebxField.getFieldDescritor().getName()+"::"+ebxField.getValueAsComplex().getComplexDescriptor().getName(), new ImageView(JavaFXHandler.instanceIcon), null, EntryType.LIST);
 						entry.setEBXType((short) (ebxField.getFieldDescritor().getType()&0xFFFF));
 						TreeItem<TreeViewEntry> complexFields = new TreeItem<TreeViewEntry>(entry);
 						for (EBXField eF : ebxField.getValueAsComplex().getFields()){
@@ -135,8 +137,13 @@ public class TreeViewConverter {
 						}
 						return complexFields;
 					case Enum:
-						if (ebxField.getValue() instanceof EBXFieldDescriptor){
-							entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), new ImageView(JavaFXHandler.enumIcon), ((EBXFieldDescriptor)ebxField.getValue()).getName(), EntryType.ENUM);
+//						if (ebxField.getValue() instanceof EBXFieldDescriptor){
+//							entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), new ImageView(JavaFXHandler.enumIcon), ((EBXFieldDescriptor)ebxField.getValue()).getName(), EntryType.ENUM);
+//						}else{
+//							entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), new ImageView(JavaFXHandler.enumIcon), (String)ebxField.getValue(), EntryType.ENUM);
+//						}
+						if (ebxField.getValue() instanceof HashMap<?,?>){
+							entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), new ImageView(JavaFXHandler.enumIcon), (HashMap<EBXFieldDescriptor, Boolean>)ebxField.getValue(), EntryType.ENUM);	
 						}else{
 							entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), new ImageView(JavaFXHandler.enumIcon), (String)ebxField.getValue(), EntryType.ENUM);
 						}
@@ -148,6 +155,9 @@ public class TreeViewConverter {
 						entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), null, (String)ebxField.getValue(), EntryType.CHUNKGUID);
 						break;
 					case Guid:
+						entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), new ImageView(JavaFXHandler.structureIcon), (String)ebxField.getValue(), EntryType.GUID);
+						break;
+					case ExternalGuid:
 						entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), new ImageView(JavaFXHandler.structureIcon), (String)ebxField.getValue(), EntryType.GUID);
 						break;
 					case Hex8:
@@ -201,7 +211,7 @@ public class TreeViewConverter {
 					instances.add(ebxInstance);
 				}
 			}
-			EBXFile file = new EBXFile(rootEntry.getValue().getName(), instances);
+			EBXFile file = new EBXFile(rootEntry.getValue().getName(), instances, (String) rootEntry.getValue().getValue());
 			return file;
 		}catch (Exception e){
 			e.printStackTrace();
@@ -225,9 +235,35 @@ public class TreeViewConverter {
 	
 	static EBXComplex getEBXComplex(TreeItem<TreeViewEntry> complexEntry){
 		try{
-			EBXComplexDescriptor complexDescriptor = new EBXComplexDescriptor(complexEntry.getValue().getName().split(" ")[0]);
+			EBXComplexDescriptor complexDescriptor = null;
+			
+			String name = complexEntry.getValue().getName();
+			String[] split = name.split("::");
+			String[] splitInstanceComplex = complexEntry.getValue().getName().split(" ");
+			if (split.length==2 && splitInstanceComplex.length==1){ //if it has ::
+				complexDescriptor = new EBXComplexDescriptor(split[1]);//GET RIGHT PART AS COMPLEX NAME
+			}else if (splitInstanceComplex.length == 2 && split.length == 1){//if it is a instanceComplex
+				complexDescriptor = new EBXComplexDescriptor(splitInstanceComplex[0]); //First part is -> ReferencedObjectData //Second is Guid -> 00000001
+			}else{
+				complexDescriptor = new EBXComplexDescriptor(split[0]);//GET LEFT PART AS COMPLEX NAME
+			}
+			
+			
+			
 			//complexDescriptor.setType(type);
 			EBXComplex complex = new EBXComplex(complexDescriptor);
+			complex.setFields(new EBXField[complexEntry.getChildren().size()]);
+			EBXField[] fields = complex.getFields();
+			int index = 0;
+			for (TreeItem<TreeViewEntry> twField : complexEntry.getChildren()){
+				EBXField ebxField = getEBXField(twField);
+				if (ebxField!=null){
+					fields[index] = ebxField;
+				}else{
+					System.err.println("Error while converting TreeViewStructure to EBXComplex. 'null'.");
+				}
+				index++;
+			}
 			return complex;
 		}catch (Exception e){
 			e.printStackTrace();
@@ -237,47 +273,62 @@ public class TreeViewConverter {
 	}
 	
 	static EBXField getEBXField(TreeItem<TreeViewEntry> fieldEntry){
+		TreeViewEntry entry = fieldEntry.getValue();
+		EBXFieldDescriptor desc = new EBXFieldDescriptor(entry.getName(), (short) 0, (short) 0, 0, 0);
+		EBXField field = new EBXField(desc, 0);
 		switch (fieldEntry.getValue().getType()) {
 			case ARRAY:
+				EBXComplex complex0 = getEBXComplex(fieldEntry);
+				field.setValue(complex0, FieldValueType.ArrayComplex);
+				desc.setType(entry.getEBXType());
 				break;
 			case BOOL:
+				field.setValue(entry.getValue(), FieldValueType.Bool);
 				break;
 			case BYTE:
+				field.setValue(entry.getValue(), FieldValueType.Byte);
 				break;
 			case CHUNKGUID:
-				break;
-			case DOUBLE:
+				field.setValue(entry.getValue(), FieldValueType.ChunkGuid);
 				break;
 			case ENUM:
+				field.setValue(entry.getValue(), FieldValueType.Enum);//value is string(if null) or hashmap.
+				//System.err.println("//TODO: TreeView->EBXField . ENUM");
 				break;
 			case FLOAT:
+				field.setValue(entry.getValue(), FieldValueType.Float);
 				break;
 			case GUID:
+				field.setValue(entry.getValue(), FieldValueType.Guid);
 				break;
 			case HEX8:
+				field.setValue(entry.getValue(), FieldValueType.Hex8);
 				break;
 			case INTEGER:
+				field.setValue(entry.getValue(), FieldValueType.Integer);
 				break;
 			case LIST:
-				break;
-			case LONG:
-				break;
-			case NULL:
-				break;
-			case RAW:
-				break;
-			case SHA1:
+				EBXComplex complex1 = getEBXComplex(fieldEntry);
+				
+				/*IF FIELD AS PARENT: CHANGE DESCRIPTOR NAME!*/
+				desc.setName(desc.getName().split("::")[0]);
+				
+				field.setValue(complex1, FieldValueType.Complex);
 				break;
 			case SHORT:
+				field.setValue(entry.getValue(), FieldValueType.Short);
 				break;
 			case STRING:
-				break;
+				field.setValue(entry.getValue(), FieldValueType.String);
+				return field;
 			case UINTEGER:
-				break;
+				field.setValue(entry.getValue(), FieldValueType.UInteger);
+				return field;
 			default:
+				System.err.println("Error while converting TreeViewStructure to EBXField.");
 				break;
 			}
-		return null;
+		return field;
 	}
 	/*END OF ENCODE TO EBX*/
 	

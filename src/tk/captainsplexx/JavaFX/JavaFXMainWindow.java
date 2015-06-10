@@ -174,7 +174,11 @@ public class JavaFXMainWindow extends Application{
         stageRight.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			@Override
 			public void handle(WindowEvent e) {
-				e.consume();
+				if (Main.isDEBUG){
+					System.exit(1);
+				}else{
+					e.consume();
+				}
 			}
 		});
         

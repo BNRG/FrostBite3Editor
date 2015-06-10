@@ -128,6 +128,26 @@ public class FileHandler {
 		return true;
 	}
 	
+	public static byte[] toBytes(ArrayList<ArrayList<Byte>> arraylist){
+		int totalSize = 0;
+		for (ArrayList<Byte> array : arraylist){
+			if (array!=null){
+				totalSize += array.size();
+			}
+		}
+		byte[] arr = new byte[totalSize];
+		int index = 0;
+		for (ArrayList<Byte> array : arraylist){
+			if (array!=null){
+				for (Byte b : array){
+					arr[index] = b; 
+					index++;
+				}
+			}
+		}
+		return arr;
+	}
+	
 	
 	//WRITE - FileOutputStream
 	public static boolean writeFile(String filepath, byte[] arr, boolean append){
@@ -313,6 +333,23 @@ public class FileHandler {
         }
         return bytesp;
     }
+	
+	public static byte[] toBytes(float littleFloat, ByteOrder order) {//NOT TESTED //TODO
+	    byte[] outData=new byte[4];
+	    int data=Float.floatToIntBits(littleFloat);
+	    if (order == ByteOrder.LITTLE_ENDIAN){
+		    outData[0]=(byte)(data>>>24);
+		    outData[1]=(byte)(data>>>16);
+		    outData[2]=(byte)(data>>>8);
+		    outData[3]=(byte)(data>>>0);
+	    }else{
+	    	outData[3]=(byte)(data>>>24);
+		    outData[2]=(byte)(data>>>16);
+		    outData[1]=(byte)(data>>>8);
+		    outData[0]=(byte)(data>>>0);
+	    }
+	    return outData;
+	}
 	
 	public static int readHeigh(byte b){
 		return b >> 4 & 0xF;

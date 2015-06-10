@@ -12,15 +12,15 @@ public class ResourceHandler {
 			LIGHTINGSYSTEM, GFX, STREAIMINGSTUB, ENLIGHTEN, PROBESET, STATICENLIGHTEN,
 		SHADERDATERBASE, SHADERDB, SHADERPROGRAMDB, LUAC, UNDEFINED
 	};
-	
+		
 	public static enum LinkBundleType{BUNDLES, CHUNKS};
 	
-	public MeshChunkLoader mcL;
-	public MeshVariationDatabaseHandler mvdH;
-	public EBXHandler ebxHandler;
-	public TextureHandler textureHandler;
-	public CasCatManager cCatManager; 
-	public CasCatManager patchedCasCatManager;
+	MeshChunkLoader mcL;
+	MeshVariationDatabaseHandler mvdH;
+	EBXHandler ebxHandler;
+	TextureHandler textureHandler;
+	CasCatManager cCatManager; 
+	CasCatManager patchedCasCatManager;
 
 	public ResourceHandler(/*String chunkFolderPath, String guidTablePath*/) {
 		//this.chunkFolderPath = chunkFolderPath;

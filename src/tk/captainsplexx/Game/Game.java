@@ -15,6 +15,7 @@ import tk.captainsplexx.Render.ModelHandler;
 import tk.captainsplexx.Resource.DDSConverter;
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.ResourceHandler;
+import tk.captainsplexx.Resource.EBX.EBXFile;
 import tk.captainsplexx.Resource.ITEXTURE.ItextureHandler;
 import tk.captainsplexx.Resource.TOC.ConvertedSBpart;
 import tk.captainsplexx.Resource.TOC.ConvertedTocFile;
@@ -42,6 +43,7 @@ public class Game {
 		 * 2=25%
 		 * 3=12.5%
 		 * ....
+		 * MAX 9!
 		 */
 		DDSConverter.MIP_MAP_LEVEL = 0;
 		
@@ -59,23 +61,30 @@ public class Game {
 		shaderHandler = new ShaderHandler();
 		entityHandler = new EntityHandler(modelHandler, resourceHandler);
 		
-		/*
-		TEST FOR PATCHING BASEDATA USING DELTA
-		byte[] patchedData = Patcher.getPatchedData(
-				FileHandler.readFile("__DOCUMENTATION__/patch_system/decompressed_base"),
-				FileHandler.readFile("__DOCUMENTATION__/patch_system/delta")
-		);
-		FileHandler.writeFile("output/patched_data", patchedData);
-		END OF TEST*/
-				
-		//Client.cloneClient("C:/Program Files (x86)/Origin Games/Battlefield 4/", "Battlefield 4 SPLEXX");
+		if (!Main.isDEBUG){
+			System.out.println("Please select a game root directory like this one: 'C:/Program Files (x86)/Origin Games/Battlefield 4'!");
+			Main.getJavaFXHandler().getMainWindow().selectGamePath();
+		}else{
+			
+			/*TEST FOR PATCHING BASEDATA USING DELTA
+			byte[] patchedData = Patcher.getPatchedData(
+					FileHandler.readFile("__DOCUMENTATION__/patch_system/decompressed_base"),
+					FileHandler.readFile("__DOCUMENTATION__/patch_system/delta")
+			);
+			FileHandler.writeFile("output/patched_data", patchedData);
+			END OF TEST*/
+					
+			//Client.cloneClient(Main.gamePath+"/", "Battlefield 4 SPLEXX");
+		}
 		
-		System.out.println("Please select a game root directory like this one: 'C:/Program Files (x86)/Origin Games/Battlefield Hardline Digital Deluxe'!");
-		Main.getJavaFXHandler().getMainWindow().selectGamePath();
-
 		while (true){
 			//wait
 			System.out.print("");
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}
 			if (!(Main.gamePath == null)){
 				break;
 			}
@@ -90,6 +99,17 @@ public class Game {
 		}
 		System.out.println("Building up FrostBite Editor!");
 		buildEditor();
+		
+		if (Main.isDEBUG){//EBX-DEBUG
+			Main.getJavaFXHandler().getMainWindow().toggleRightVisibility();
+			Main.getJavaFXHandler().getMainWindow().toggleModLoaderVisibility();
+			currentMod = null;
+			byte[] bytes = FileHandler.readFile("__DOCUMENTATION__/ebx/sample_ebx/layer0_default.ebx");
+			EBXFile ebxFile = resourceHandler.getEBXHandler().loadFile(bytes);
+			TreeItem<TreeViewEntry> treeView = TreeViewConverter.getTreeView(ebxFile);
+			Main.getJavaFXHandler().setTreeViewStructureRight(treeView);
+			Main.getJavaFXHandler().getMainWindow().updateRightRoot();
+		}
 	}
 	
 	

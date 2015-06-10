@@ -32,6 +32,10 @@ public class EBXHeader{
 		this.lenPayload = lenPayload;
 	}
 
+	public EBXHeader() {
+		// TODO Auto-generated constructor stub
+	}
+
 	public int getAbsStringOffset() {
 		return absStringOffset;
 	}

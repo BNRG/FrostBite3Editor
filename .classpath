@@ -10,5 +10,5 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/jar/slick-util.jar" sourcepath="lib/jar/slick-util-src.zip"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry kind="output" path="bin_class"/>
 </classpath>

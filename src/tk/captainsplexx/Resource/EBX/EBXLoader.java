@@ -19,30 +19,32 @@ public class EBXLoader {
 	public HashMap<Integer, String> keywordDict;
 	
 
-	public byte[] littleHeader = new byte[] { (byte) 0xCE, (byte) 0xD1,
+	public static byte[] littleHeader = new byte[] { (byte) 0xCE, (byte) 0xD1,
 			(byte) 0xB2, (byte) 0x0F };
 	public byte[] bigHeader = new byte[] { (byte) 0x0F, (byte) 0xB2,
 			(byte) 0xD1, (byte) 0xCE };
 
-	public ByteOrder order;
+	private ByteOrder order;
 	public EBXHeader header;
 
-	public int arraySectionstart;
-	public String trueFilename;
-	public String fileGUID;
-	public EBXExternalGUID[] externalGUIDs;
-	public ArrayList<String> internalGUIDs;
-	public EBXFieldDescriptor[] fieldDescriptors;
-	public EBXComplexDescriptor[] complexDescriptors;
-	public EBXInstanceRepeater[] instanceRepeaters;
-	public EBXArrayRepeater[] arrayRepeaters;
-	public ArrayList<EBXInstance> instances;
-	public ArrayList<EBXField> fields;
+	private int arraySectionstart;
+	private String trueFilename;
+	private String fileGUID;
+	private EBXExternalGUID[] externalGUIDs;
+	private ArrayList<String> internalGUIDs;
+	private EBXFieldDescriptor[] fieldDescriptors;
+	private EBXComplexDescriptor[] complexDescriptors;
+	private EBXInstanceRepeater[] instanceRepeaters;
+	private EBXArrayRepeater[] arrayRepeaters;
+	private ArrayList<EBXInstance> instances;
+	private ArrayList<EBXField> fields;
 	
-	public FileSeeker seeker;
+	private ArrayList<EBXInstanceHelper> instanceHelpers;
 	
-	public boolean isPrimaryInstance;
-	public String filePath;
+	private FileSeeker seeker;
+	
+	private boolean isPrimaryInstance;
+	private String filePath;
 	
 	public ArrayList<EBXInstance> getInstances(){
 		return instances;
@@ -102,7 +104,7 @@ public class EBXLoader {
 		int keyOffset = 0;
 		while (startKeyOffset+keyOffset < startKeyOffset+header.getLenName()){
 			String s = readString(ebxFileBytes, startKeyOffset+keyOffset);
-			keywordDict.put(hasher(s.getBytes()), s);
+			keywordDict.put(EBXHandler.hasher(s.getBytes()), s);
 			keyOffset += s.length()+1;
 		}
 		//fieldDescriptors
@@ -155,6 +157,7 @@ public class EBXLoader {
 		int nonGUIDindex = 0;
 		String tempGUID = "";
 		isPrimaryInstance = true;
+		instanceHelpers = new ArrayList<EBXInstanceHelper>();
 		for (int repeater=0; repeater<instanceRepeaters.length;repeater++){
 			EBXInstanceRepeater ir = instanceRepeaters[repeater];
 			for (int repetition=0; repetition<ir.getRepetitions();repetition++){
@@ -166,10 +169,16 @@ public class EBXLoader {
 					nonGUIDindex++;
 				}
 				internalGUIDs.add(tempGUID);
-				instances.add(new EBXInstance(tempGUID, readComplex(ir.getComplexIndex(), true)));
+				instanceHelpers.add(new EBXInstanceHelper(seeker.getOffset(), tempGUID, ir.getComplexIndex()));
+				//instances.add(new EBXInstance(tempGUID, readComplex(ir.getComplexIndex(), true)));
 				isPrimaryInstance = false;
 			}
 		}
+		
+		for (EBXInstanceHelper helper : instanceHelpers){
+			instances.add(new EBXInstance(helper.getGuid(), readComplex(helper.getInstanceComplexIndex(),true)));
+		}
+		
 		ebxFileBytes = null;
 	}
 	
@@ -219,8 +228,8 @@ public class EBXLoader {
 					fields[i].setType(FieldValueType.String);
 				}else if (fields[i].getFieldDescritor().getType() == (short) 0x0089 || fields[i].getFieldDescritor().getType() == (short) 0xC089){//ENUM
 					fields[i].setType(FieldValueType.Enum);
-				}else if (fields[i].getFieldDescritor().getType()== (short) 0xC15D){ //GUID
-					fields[i].setType(FieldValueType.Guid);
+				}else if (fields[i].getFieldDescritor().getType()== (short) 0xC15D){ //chunk guid
+					fields[i].setType(FieldValueType.ChunkGuid);
 				}else if (fields[i].getFieldDescritor().getType()== (short) 0x417D){ //8HEX
 					fields[i].setType(FieldValueType.Hex8);
 				}else if (fields[i].getFieldDescritor().getType()==(short) 0xC13D){//FLOAT
@@ -235,7 +244,7 @@ public class EBXLoader {
 					fields[i].setType(FieldValueType.Short);			
 				}else if (fields[i].getFieldDescritor().getType() == (short) 0xc0cd){//BYTE
 					fields[i].setType(FieldValueType.Byte);
-				}else if(fields[i].getFieldDescritor().getType() == (short) 0x0035){ // ##guid
+				}else if(fields[i].getFieldDescritor().getType() == (short) 0x0035){ //Instance guid -> specify a target file/instance
 					fields[i].setType(FieldValueType.Guid);
 				}
 			}
@@ -259,13 +268,16 @@ public class EBXLoader {
 			if (enumComplex.getNumField()==0){
 				field.setValue("*nullEnum*", FieldValueType.Enum);
 			}else{
+				HashMap<EBXFieldDescriptor, Boolean> enums = new HashMap<>();
 				for (int index=0; index<enumComplex.getNumField(); index++){ //TODO check ??
 					if (fieldDescriptors[enumComplex.getFieldStartIndex()+index].getOffset()==compareValue){
-						field.setValue(fieldDescriptors[enumComplex.getFieldStartIndex()+index], FieldValueType.Enum);
+						enums.put(fieldDescriptors[enumComplex.getFieldStartIndex()+index], true);//SELECTED
 						break;
+					}else{
+						enums.put(fieldDescriptors[enumComplex.getFieldStartIndex()+index], false);//NOT SELECTED
 					}
 				}
-				field.setValue("ERROR ENUM", FieldValueType.Enum);
+				field.setValue(enums, FieldValueType.Enum);
 			}
 		}else if (fieldDesc.getType()== (short) 0xC15D){ //GUID CHUNK
 			field.setValue(FileHandler.bytesToHex(FileHandler.readByte(ebxFileBytes, seeker,16)), FieldValueType.ChunkGuid);
@@ -285,20 +297,31 @@ public class EBXLoader {
 			field.setValue(FileHandler.readByte(ebxFileBytes, seeker), FieldValueType.Byte);
 		}else if(fieldDesc.getType() == (short) 0x0035){ // #guid
 			int tempValue = FileHandler.readInt(ebxFileBytes, seeker);
-			if(((tempValue>>31) & 0xFFFFFFFF) == -1){
-				EBXExternalGUID guid = externalGUIDs[(tempValue & 0x7fffffff)];
-				String fileGUID = Main.getGame().getEBXFileGUIDs().get(guid.getFileGUID().toUpperCase());
-				if (fileGUID != null){
-					field.setValue(fileGUID+" "+guid.getInstanceGUID(), FieldValueType.Guid);
+			/*	INTERNAL STARTS AT 0x1 (values needs to be substracted by 1 to optain the index)
+			 * 	EXTERNAL STARTS AT 0x80 00 00 00 -> substract base value to optain index. (starts at 0)
+			*/	
+			if(((tempValue>>31)) == -1){
+				EBXExternalGUID guid = externalGUIDs[(tempValue & 0x7fffffff)];//same as (tempValue - 0x800000) ^__^
+				String fileGUIDName = null;
+				try{
+					if (Main.getGame().getEBXFileGUIDs()!=null){//DEBUG-
+						fileGUIDName = Main.getGame().getEBXFileGUIDs().get(guid.getFileGUID().toUpperCase());
+					}
+				}catch(NullPointerException e){
+					System.err.println("EBXFileGUID Database does not exist!");
+				}
+				if (fileGUIDName != null){
+					field.setValue(fileGUIDName+" "+guid.getInstanceGUID(), FieldValueType.ExternalGuid); //TODO We need to convert the String later back to a FileGUID
 				}else{
-					field.setValue(guid.getFileGUID()+" "+guid.getInstanceGUID(), FieldValueType.Guid);
+					field.setValue(guid.getFileGUID()+" "+guid.getInstanceGUID(), FieldValueType.ExternalGuid);
 				}
 			}else if (tempValue == 0x0){
 				field.setValue("*nullGUID*", FieldValueType.Guid);
 			}else{
-				//System.err.println("INT"); //TODO WE NEED A RECURSE!
-				field.setValue("INTERNAL GUID TODO", FieldValueType.Guid);
-				//field.setValue(internalGUIDs.get(tempValue-1), FieldValueType.Guid);
+				String intGuid = internalGUIDs.get(tempValue-1/*BECAUSE IT STARTS AT 1 BUT IS ACC. 0*/);
+				
+				//System.err.println("INTERNAL GUID"); //TODO it does work if the numeration gets done erlier :) so change init ?
+				field.setValue(intGuid, FieldValueType.Guid);
 			}
 		}else{
 			System.err.println("(EBXLoader) Unknown field type: "+Integer.toHexString(fieldDesc.getType())+" File name: "+filePath);
@@ -318,13 +341,7 @@ public class EBXLoader {
 		
 	}
 
-	public int hasher(byte[] bytes) {
-		int hash = 5381;
-		for (Byte b : bytes) {
-			hash = hash * 33 ^ b;
-		}
-		return hash;
-	}
+	
 
 	public String readString(byte[] fileArray, int offset) {
 		String tmp = "";
@@ -362,6 +379,12 @@ public class EBXLoader {
 
 	public byte[] readMagic(byte[] fileArray) {
 		return readByte(fileArray, 0, 4);
+	}
+	
+	
+
+	public String getFileGUID() {
+		return fileGUID;
 	}
 
 	// Constructor
