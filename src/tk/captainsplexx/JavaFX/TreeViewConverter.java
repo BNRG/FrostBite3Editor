@@ -155,7 +155,7 @@ public class TreeViewConverter {
 						entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), null, (String)ebxField.getValue(), EntryType.CHUNKGUID);
 						break;
 					case Guid:
-						entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), new ImageView(JavaFXHandler.structureIcon), (String)ebxField.getValue(), EntryType.GUID);
+						entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), new ImageView(JavaFXHandler.internalIcon), (String)ebxField.getValue(), EntryType.GUID);
 						break;
 					case ExternalGuid:
 						entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), new ImageView(JavaFXHandler.structureIcon), (String)ebxField.getValue(), EntryType.GUID);
@@ -173,7 +173,7 @@ public class TreeViewConverter {
 						entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), new ImageView(JavaFXHandler.textIcon), (String)ebxField.getValue(), EntryType.STRING);
 						break;
 					case UInteger:
-						entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), new ImageView(JavaFXHandler.uintegerIcon), (Integer)ebxField.getValue(), EntryType.UINTEGER);
+						entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), new ImageView(JavaFXHandler.uintegerIcon), (Long)ebxField.getValue(), EntryType.UINTEGER);
 						break;
 					case Unknown:
 						break;
@@ -246,8 +246,9 @@ public class TreeViewConverter {
 				complexDescriptor = new EBXComplexDescriptor(splitInstanceComplex[0]); //First part is -> ReferencedObjectData //Second is Guid -> 00000001
 			}else{
 				complexDescriptor = new EBXComplexDescriptor(split[0]);//GET LEFT PART AS COMPLEX NAME
+				
 			}
-			
+			complexDescriptor.setType(complexEntry.getValue().getEBXType());
 			
 			
 			//complexDescriptor.setType(type);
@@ -284,28 +285,35 @@ public class TreeViewConverter {
 				break;
 			case BOOL:
 				field.setValue(entry.getValue(), FieldValueType.Bool);
+				desc.setType(entry.getEBXType());
 				break;
 			case BYTE:
 				field.setValue(entry.getValue(), FieldValueType.Byte);
+				desc.setType(entry.getEBXType());
 				break;
 			case CHUNKGUID:
 				field.setValue(entry.getValue(), FieldValueType.ChunkGuid);
+				desc.setType(entry.getEBXType());
 				break;
 			case ENUM:
 				field.setValue(entry.getValue(), FieldValueType.Enum);//value is string(if null) or hashmap.
-				//System.err.println("//TODO: TreeView->EBXField . ENUM");
+				desc.setType(entry.getEBXType());
 				break;
 			case FLOAT:
 				field.setValue(entry.getValue(), FieldValueType.Float);
+				desc.setType(entry.getEBXType());
 				break;
 			case GUID:
 				field.setValue(entry.getValue(), FieldValueType.Guid);
+				desc.setType(entry.getEBXType());
 				break;
 			case HEX8:
 				field.setValue(entry.getValue(), FieldValueType.Hex8);
+				desc.setType(entry.getEBXType());
 				break;
 			case INTEGER:
 				field.setValue(entry.getValue(), FieldValueType.Integer);
+				desc.setType(entry.getEBXType());
 				break;
 			case LIST:
 				EBXComplex complex1 = getEBXComplex(fieldEntry);
@@ -314,15 +322,19 @@ public class TreeViewConverter {
 				desc.setName(desc.getName().split("::")[0]);
 				
 				field.setValue(complex1, FieldValueType.Complex);
+				desc.setType(entry.getEBXType());
 				break;
 			case SHORT:
 				field.setValue(entry.getValue(), FieldValueType.Short);
+				desc.setType(entry.getEBXType());
 				break;
 			case STRING:
 				field.setValue(entry.getValue(), FieldValueType.String);
+				desc.setType(entry.getEBXType());
 				return field;
 			case UINTEGER:
 				field.setValue(entry.getValue(), FieldValueType.UInteger);
+				desc.setType(entry.getEBXType());
 				return field;
 			default:
 				System.err.println("Error while converting TreeViewStructure to EBXField.");

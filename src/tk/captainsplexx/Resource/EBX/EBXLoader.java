@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import tk.captainsplexx.Game.Main;
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.FileSeeker;
 import tk.captainsplexx.Resource.EBX.EBXHandler.FieldValueType;
@@ -154,7 +153,7 @@ public class EBXLoader {
 		fields = new ArrayList<EBXField>(); 
 		instances = new ArrayList<EBXInstance>(); 
 		seeker.setOffset(header.absStringOffset+header.lenString);
-		int nonGUIDindex = 0;
+		//int nonGUIDindex = 0;
 		String tempGUID = "";
 		isPrimaryInstance = true;
 		instanceHelpers = new ArrayList<EBXInstanceHelper>();
@@ -163,19 +162,21 @@ public class EBXLoader {
 			for (int repetition=0; repetition<ir.getRepetitions();repetition++){
 				while (seeker.getOffset()%complexDescriptors[ir.complexIndex].alignment!=0){ seeker.seek(1); } //#obey alignment of the instance; peek into the complex for that
 				if (repeater<header.getNumGUIDRepeater()){
-					tempGUID = FileHandler.bytesToHex(FileHandler.readByte(ebxFileBytes, seeker, 16));
+					tempGUID = FileHandler.bytesToHex(FileHandler.readByte(ebxFileBytes, seeker, 16));;
 				}else{
-					tempGUID = FileHandler.bytesToHex(ByteBuffer.allocate(4).putInt(nonGUIDindex).array());
-					nonGUIDindex++;
+					tempGUID = FileHandler.bytesToHex(ByteBuffer.allocate(4).putInt(internalGUIDs.size()).array());//lets use the index as guid
+					//tempGUID = FileHandler.bytesToHex(ByteBuffer.allocate(4).putInt(nonGUIDindex).array());
+					//nonGUIDindex++;
 				}
 				internalGUIDs.add(tempGUID);
-				instanceHelpers.add(new EBXInstanceHelper(seeker.getOffset(), tempGUID, ir.getComplexIndex()));
+				instanceHelpers.add(new EBXInstanceHelper(seeker.getOffset(), tempGUID, ir.getComplexIndex(), isPrimaryInstance));
 				//instances.add(new EBXInstance(tempGUID, readComplex(ir.getComplexIndex(), true)));
 				isPrimaryInstance = false;
 			}
 		}
 		
 		for (EBXInstanceHelper helper : instanceHelpers){
+			isPrimaryInstance = helper.isPrimaryInstance();
 			instances.add(new EBXInstance(helper.getGuid(), readComplex(helper.getInstanceComplexIndex(),true)));
 		}
 		
@@ -212,42 +213,24 @@ public class EBXLoader {
 		if (fieldDesc.getType() == (short) 0x0029|| fieldDesc.getType() == (short) 0xd029 || fieldDesc.getType() == (short) 0x0000 || fieldDesc.getType() == (short) 0x8029){ //COMPLEX
 			field.setValue(readComplex(fieldDesc.getRef(), false), EBXHandler.FieldValueType.Complex);
 		}else if (fieldDesc.getType() == 0x0041){ //ARRAYCOMPLEX
-			int indexasdf = FileHandler.readInt(ebxFileBytes, seeker);
-			EBXArrayRepeater arrayRepeater = arrayRepeaters[indexasdf];
+			int repeaterIndex = FileHandler.readInt(ebxFileBytes, seeker);
+			EBXArrayRepeater arrayRepeater = arrayRepeaters[repeaterIndex];
 			EBXComplexDescriptor arrayComplexDesc = complexDescriptors[fieldDesc.getRef()];
 			seeker.setOffset(arraySectionstart+arrayRepeater.offset);
 			EBXComplex arrayComplex = new EBXComplex(arrayComplexDesc);
-			EBXField[] fields = new EBXField[arrayRepeater.getRepetitions()];
-			for (int i=0; i<fields.length;i++){
-				fields[i] = readField(arrayComplexDesc.getFieldStartIndex());
-				if (fields[i].getFieldDescritor().getType() == (short) 0x0029|| fields[i].getFieldDescritor().getType() == (short) 0xd029 || fields[i].getFieldDescritor().getType() == (short) 0x0000 || fields[i].getFieldDescritor().getType() == (short) 0x8029){ //COMPLEX
-					fields[i].setType(FieldValueType.Complex);
-				}else if (fields[i].getFieldDescritor().getType() == 0x0041){ //ARRAYCOMPLEX
-					fields[i].setType(FieldValueType.ArrayComplex);
-				}else if (fields[i].getFieldDescritor().getType() == (short) 0x407D || fields[i].getFieldDescritor().getType() == (short) 0x409D){//STRING
-					fields[i].setType(FieldValueType.String);
-				}else if (fields[i].getFieldDescritor().getType() == (short) 0x0089 || fields[i].getFieldDescritor().getType() == (short) 0xC089){//ENUM
-					fields[i].setType(FieldValueType.Enum);
-				}else if (fields[i].getFieldDescritor().getType()== (short) 0xC15D){ //chunk guid
-					fields[i].setType(FieldValueType.ChunkGuid);
-				}else if (fields[i].getFieldDescritor().getType()== (short) 0x417D){ //8HEX
-					fields[i].setType(FieldValueType.Hex8);
-				}else if (fields[i].getFieldDescritor().getType()==(short) 0xC13D){//FLOAT
-					fields[i].setType(FieldValueType.Float);
-				}else if (fields[i].getFieldDescritor().getType()==(short) 0xC10D){//uint ===???
-					fields[i].setType(FieldValueType.UInteger);
-				}else if(fields[i].getFieldDescritor().getType() == (short) 0xc0fd){ // signed int ?=??
-					fields[i].setType(FieldValueType.Integer);
-				}else if (fields[i].getFieldDescritor().getType() == (short) 0xc0ad){//BOOL
-					fields[i].setType(FieldValueType.Bool);
-				}else if (fields[i].getFieldDescritor().getType() == (short) 0xc0ed){//short
-					fields[i].setType(FieldValueType.Short);			
-				}else if (fields[i].getFieldDescritor().getType() == (short) 0xc0cd){//BYTE
-					fields[i].setType(FieldValueType.Byte);
-				}else if(fields[i].getFieldDescritor().getType() == (short) 0x0035){ //Instance guid -> specify a target file/instance
-					fields[i].setType(FieldValueType.Guid);
+			EBXField[] fields = null;
+			if (arrayRepeater.getRepetitions()>0){//Guids,Strings,Integer... =) ?
+				fields = new EBXField[arrayRepeater.getRepetitions()];
+				for (int i=0; i<fields.length;i++){
+					fields[i] = readField(arrayComplexDesc.getFieldStartIndex());
+				}
+			}else if (arrayComplexDesc.getNumField()>0){//Field is prob, Complex
+				fields = new EBXField[arrayComplexDesc.getNumField()];
+				for (int i=0; i<fields.length;i++){
+					fields[i] = readField(arrayComplexDesc.getFieldStartIndex()+i);
 				}
 			}
+			
 			arrayComplex.setFields(fields);
 			field.setValue(arrayComplex, FieldValueType.ArrayComplex);
 		}else if (fieldDesc.getType() == (short) 0x407D || fieldDesc.getType() == (short) 0x409D){//STRING
@@ -257,7 +240,7 @@ public class EBXLoader {
 			}else{
 				field.setValue(readString(ebxFileBytes, header.getAbsStringOffset()+stringOffset),FieldValueType.String);
 			}
-			//TRUEFILENAME!
+			//TRUEFILENAME
 			if (isPrimaryInstance && fieldDesc.getName().equals("Name") && trueFilename.equals("")){
 				trueFilename = (String) field.getValue();
 			}
@@ -272,7 +255,6 @@ public class EBXLoader {
 				for (int index=0; index<enumComplex.getNumField(); index++){ //TODO check ??
 					if (fieldDescriptors[enumComplex.getFieldStartIndex()+index].getOffset()==compareValue){
 						enums.put(fieldDescriptors[enumComplex.getFieldStartIndex()+index], true);//SELECTED
-						break;
 					}else{
 						enums.put(fieldDescriptors[enumComplex.getFieldStartIndex()+index], false);//NOT SELECTED
 					}
@@ -286,7 +268,7 @@ public class EBXLoader {
 		}else if (fieldDesc.getType()==(short) 0xC13D){//FLOAT
 			field.setValue(FileHandler.readFloat(ebxFileBytes, seeker), FieldValueType.Float);
 		}else if (fieldDesc.getType()==(short) 0xC10D){//uint
-			field.setValue((FileHandler.readInt(ebxFileBytes, seeker, order) & 0xffffffff), FieldValueType.UInteger);
+			field.setValue((FileHandler.readInt(ebxFileBytes, seeker, order) & 0xffffffffL), FieldValueType.UInteger);
 		}else if(fieldDesc.getType() == (short) 0xc0fd){ //signed int
 			field.setValue(FileHandler.readInt(ebxFileBytes, seeker), FieldValueType.Integer);
 		}else if (fieldDesc.getType() == (short) 0xc0ad){//BOOL
@@ -302,7 +284,7 @@ public class EBXLoader {
 			*/	
 			if(((tempValue>>31)) == -1){
 				EBXExternalGUID guid = externalGUIDs[(tempValue & 0x7fffffff)];//same as (tempValue - 0x800000) ^__^
-				String fileGUIDName = null;
+				/*String fileGUIDName = null; -> Lets do that in the EBX TreeViewCellFactory
 				try{
 					if (Main.getGame().getEBXFileGUIDs()!=null){//DEBUG-
 						fileGUIDName = Main.getGame().getEBXFileGUIDs().get(guid.getFileGUID().toUpperCase());
@@ -311,10 +293,10 @@ public class EBXLoader {
 					System.err.println("EBXFileGUID Database does not exist!");
 				}
 				if (fileGUIDName != null){
-					field.setValue(fileGUIDName+" "+guid.getInstanceGUID(), FieldValueType.ExternalGuid); //TODO We need to convert the String later back to a FileGUID
-				}else{
-					field.setValue(guid.getFileGUID()+" "+guid.getInstanceGUID(), FieldValueType.ExternalGuid);
-				}
+					field.setValue(fileGUIDName+" "+guid.getInstanceGUID(), FieldValueType.ExternalGuid); //We need to convert the String later back to a FileGUID
+				}else{*/
+				field.setValue(guid.getFileGUID()+" "+guid.getInstanceGUID(), FieldValueType.ExternalGuid);
+				//}
 			}else if (tempValue == 0x0){
 				field.setValue("*nullGUID*", FieldValueType.Guid);
 			}else{

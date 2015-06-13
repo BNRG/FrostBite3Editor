@@ -327,7 +327,7 @@ public class JavaFXebxTCF extends TreeCell<TreeViewEntry> {
 		               if (item.getType() == EntryType.ARRAY || item.getType() == EntryType.LIST){
 		                	setText(item.getName()+":"+item.getType().toString());
 		                }else{
-		                	setText(item.getName()+":"+convertToString(item));
+		                	setText(item.getName()+": "+convertToString(item));
 		                }
 		                if (item.getEBXType()!=0){
 		                	setTooltip(new Tooltip("Type: "+FileHandler.bytesToHex(FileHandler.toBytes(item.getEBXType(), ByteOrder.BIG_ENDIAN))));
@@ -401,7 +401,7 @@ public class JavaFXebxTCF extends TreeCell<TreeViewEntry> {
 	    		case INTEGER:
 	    			return ((Integer)item.getValue()).toString();
 	    		case UINTEGER:
-	    			return ((Integer)item.getValue()).toString();
+	    			return ((Long)item.getValue()).toString();
 	    		case LONG:
 	    			return ((Long)item.getValue()).toString();
 	    		case ARRAY:
@@ -434,7 +434,15 @@ public class JavaFXebxTCF extends TreeCell<TreeViewEntry> {
 	    		case NULL:
 	    			return ("NULL"); //DEFINED NULL ("NULL")
 	    		case GUID:
-	    			return (String)item.getValue();
+	    			String fileGUIDName = null;
+	    			String[] split = ((String)item.getValue()).split(" ");
+					if (Main.getGame().getEBXFileGUIDs()!=null&&split.length==2){//DEBUG-
+						fileGUIDName = Main.getGame().getEBXFileGUIDs().get(split[0].toUpperCase());
+						if (fileGUIDName != null){
+							return fileGUIDName+" "+split[1];
+						}
+					}
+					return (String)item.getValue();
 	    		case CHUNKGUID:
 	    			return (String)item.getValue();
 				default:
@@ -466,7 +474,7 @@ public class JavaFXebxTCF extends TreeCell<TreeViewEntry> {
 		    		case LONG:
 		    			return(Long.valueOf(value));
 		    		case UINTEGER:
-		    			return(Integer.valueOf(value))& 0xffffffff;
+		    			return(Long.valueOf(value))& 0xffffffffL;
 		    		case BYTE:
 		    			return(hexToByte(value));
 		    		case RAW:
@@ -480,7 +488,21 @@ public class JavaFXebxTCF extends TreeCell<TreeViewEntry> {
 		    		case NULL:
 		    			return("NULL"); //DEFINED NULL ("NULL")
 		    		case GUID:
-		    			return(value);
+		    			if (value.contains("/")){
+		    				String[] split = value.split(" ");
+		    				if (Main.getGame().getEBXFileGUIDs()!=null&&split.length==2){
+		    					for (String v : Main.getGame().getEBXFileGUIDs().values()){
+		    						String keySet = Main.getGame().getEBXFileGUIDs().get(v);
+		    						if (keySet.equals(split[0])){
+		    							return (keySet+" "+split[1]);
+		    						}
+		    					}
+							}
+		    				System.err.println("EXTERNAL GUID PATH COULD NOT BE FOUND IN DATABASE. NO CONVERTION TO FILEGUID POSSIBLE!");
+		    				return("ERROR");
+		    			}else{
+		    				return(value);
+		    			}
 		    		case CHUNKGUID:
 		    			return(value);
 		    		case SHA1:

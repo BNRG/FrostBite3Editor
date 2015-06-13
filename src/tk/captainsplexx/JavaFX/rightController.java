@@ -1,13 +1,13 @@
 package tk.captainsplexx.JavaFX;
 
+import javafx.fxml.FXML;
+import javafx.scene.control.TreeView;
 import tk.captainsplexx.Game.Main;
 import tk.captainsplexx.Mod.Package;
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.ResourceHandler.LinkBundleType;
 import tk.captainsplexx.Resource.ResourceHandler.ResourceType;
 import tk.captainsplexx.Resource.EBX.EBXFile;
-import javafx.fxml.FXML;
-import javafx.scene.control.TreeView;
 
 public class RightController {
 	@FXML

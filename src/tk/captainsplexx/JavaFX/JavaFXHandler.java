@@ -32,6 +32,7 @@ public class JavaFXHandler {
 	public static final Image hashIcon = new Image(FileHandler.getStream("res/images/hash.png"));
 	public static final Image rawIcon = new Image(FileHandler.getStream("res/images/block.png"));
 	public static final Image structureIcon = new Image(FileHandler.getStream("res/images/structure.png"));
+	public static final Image internalIcon = new Image(FileHandler.getStream("res/images/internal.png"));
 	public static final Image resourceIcon = new Image(FileHandler.getStream("res/images/resource.png"));
 	public static final Image imageIcon = new Image(FileHandler.getStream("res/images/image.png"));
 	public static final Image geometryIcon = new Image(FileHandler.getStream("res/images/xyz.png"));

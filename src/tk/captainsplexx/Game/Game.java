@@ -85,13 +85,12 @@ public class Game {
 			} catch (InterruptedException e1) {
 				e1.printStackTrace();
 			}
-			if (!(Main.gamePath == null)){
+			if (Main.gamePath != null && Main.getJavaFXHandler().getMainWindow().getModLoaderController() != null){
 				break;
 			}
 		}
-		JavaFXMainWindow mainWindow = Main.getJavaFXHandler().getMainWindow();
-		mainWindow.getModLoaderController().setGamepath(FileHandler.normalizePath(Main.gamePath));
-		mainWindow.toggleModLoaderVisibility();
+		Main.getJavaFXHandler().getMainWindow().getModLoaderController().setGamepath(FileHandler.normalizePath(Main.gamePath));
+		Main.getJavaFXHandler().getMainWindow().toggleModLoaderVisibility();
 		File cascat = new File(Main.gamePath+"/Data/cas.cat");
 		if (!cascat.exists()){
 			System.err.println("Invalid gamepath selected.");
@@ -104,6 +103,8 @@ public class Game {
 			Main.getJavaFXHandler().getMainWindow().toggleRightVisibility();
 			Main.getJavaFXHandler().getMainWindow().toggleModLoaderVisibility();
 			currentMod = null;
+			ebxFileGUIDs = new HashMap<>();
+			ebxFileGUIDs.put("EA830D5EFFB3EE489D44963370D466B1", "test/test1/test2");
 			byte[] bytes = FileHandler.readFile("__DOCUMENTATION__/ebx/sample_ebx/layer0_default.ebx");
 			EBXFile ebxFile = resourceHandler.getEBXHandler().loadFile(bytes);
 			TreeItem<TreeViewEntry> treeView = TreeViewConverter.getTreeView(ebxFile);
