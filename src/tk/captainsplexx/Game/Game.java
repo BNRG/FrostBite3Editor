@@ -19,6 +19,7 @@ import tk.captainsplexx.Resource.EBX.EBXFile;
 import tk.captainsplexx.Resource.ITEXTURE.ItextureHandler;
 import tk.captainsplexx.Resource.TOC.ConvertedSBpart;
 import tk.captainsplexx.Resource.TOC.ConvertedTocFile;
+import tk.captainsplexx.Terrain.TerrainHandler;
 
 public class Game {
 	public ModelHandler modelHandler;
@@ -54,7 +55,7 @@ public class Game {
 		/*DO NOT CARE ABOUT IN THE MOMENT*/
 		terrainHandler = new TerrainHandler();
 		terrainHandler.generate(0, 0);
-		terrainHandler.generate(0, 0);
+		//terrainHandler.generate(0, 0);
 				
 		resourceHandler = new ResourceHandler();
 		

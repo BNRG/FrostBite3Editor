@@ -31,6 +31,14 @@ public class FileHandler {
 		}
 	}
 	
+	public static int longToInt(long l) {
+	    if (l < Integer.MIN_VALUE || l > Integer.MAX_VALUE) {
+	        System.err.println("Long is to small/big. No convertion to Integer possible!");
+	    	return 0;
+	    }
+	    return (int) l;
+	}
+	
 	public static byte[] readFile(String filepath, long offset, int length){
 		try{
 			File file = new File(normalizePath(filepath));

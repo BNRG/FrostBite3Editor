@@ -278,10 +278,10 @@ public class JavaFXebxTCF extends TreeCell<TreeViewEntry> {
 	    			for (EBXFieldDescriptor desc : enums.keySet()){
 	    				boolean selected = enums.get(desc);
 	    				if (selected){
-	    					enums.put(desc, false);
+	    					enums.put(desc, false);//TODO workaround to keep index
 	    					selectNext = true;
 	    				}else if (selectNext){
-	    					enums.put(desc, true);
+	    					enums.put(desc, true);//TODO workaround to keep index
 	    					selectNext = false;
 	    					done = true;
 	    				}

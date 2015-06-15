@@ -6,7 +6,7 @@
 	</tr>
 	<tr>
 		<td>Done:</td>
-		<td>Mainpipeline 89 percent.</td>
+		<td>Mainpipeline 93 percent.</td>
 	</tr>
 </table>
 <h1>Description</h1>
@@ -26,8 +26,7 @@
   
 <h1>Caution</h1>
 <p>--&gt;&gt;Read
-LICENSE before using it!&lt;&lt;--</p><br><p>
-'TEMP' GET CLEANED UP - DO NOT PLACE ANY FILES/FOLDERS IN THERE!</p>
+LICENSE before using it!&lt;&lt;--</p>
 
 <h1>Stay in contact</h1>
 <table>

@@ -1,17 +1,17 @@
-package tk.captainsplexx.Game;
+package tk.captainsplexx.Terrain;
 
 import java.util.ArrayList;
 
 import org.lwjgl.util.vector.Vector3f;
 
 import tk.captainsplexx.Entity.PlayerEntity;
-import tk.captainsplexx.Terrain.Terrain;
+import tk.captainsplexx.Game.PlayerHandler;
 
 public class TerrainHandler {
 	public ArrayList<Terrain> terrainList = new ArrayList<Terrain>();
-	float distance = 10f;
-	int maxX = 100;
-	int maxZ = 100;
+	float distance = 100f;
+	int maxX = 64;
+	int maxZ = 64;
 	
 	
 	public void generate(int idX, int idZ) {

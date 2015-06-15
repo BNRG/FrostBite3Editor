@@ -84,7 +84,7 @@ public class EBXCreator {
 		}
 		
 		//TODO
-		if (true){
+		if (false&&filler.isEmpty()){
 			filler.add((byte) 0xAA);
 			filler.add((byte) 0xAA);
 			filler.add((byte) 0xAA);
@@ -174,11 +174,11 @@ public class EBXCreator {
 	}
 
 	public boolean proccInstance(EBXInstance ebxInstance){
-		while(payloadData.size()%16!=0){//TODO lets align this, may we have to do this in the proccComplex^^
+		while(payloadData.size()%16!=0){//TODO its aligned in original one, how does the size get effected ?
 			payloadData.add((byte) 0x00);
 		}
 		FileHandler.addBytes(FileHandler.hexStringToByteArray(ebxInstance.getGuid()), payloadData);
-		short index = proccComplex(ebxInstance.getComplex());
+		short index = proccComplex(ebxInstance.getComplex(), false/*isArrayMember*/, true/*proccFieldDesc*/);
 		
 		EBXInstanceRepeater repeater = new EBXInstanceRepeater(index, 0);
 		/*sow, id clud be ´tha we cud makke a repeatzer 4 eavery one yoooo, in the original one as it always 0. we should be fine with that.*/
@@ -186,12 +186,12 @@ public class EBXCreator {
 		return true;
 	}
 	
-	public short proccComplex(EBXComplex ebxComplex){
+	public short proccComplex(EBXComplex ebxComplex, boolean isArrayMember, boolean proccDescriptor){
 		//return index of complex
 		//TODO
 		int totalSize = 0; //its acc. a short but wanna have a use for secondary size ^__^
 		for (EBXField field : ebxComplex.getFields()){
-			int fieldSize = proccField(field, false/*isArrayMember*/, true/*proccFieldDesc*/);
+			int fieldSize = proccField(field, isArrayMember, proccDescriptor);
 			if(fieldSize>=0){
 				totalSize += fieldSize;
 			}else{
@@ -273,7 +273,7 @@ public class EBXCreator {
 					desc.setType((short) 0x417D);
 					break;
 				case Integer:
-					desc.setType((short) 0xc0ad);
+					desc.setType((short) 0xc0fd);
 					break;
 				case Short:
 					desc.setType((short) 0xc0ed);
@@ -292,28 +292,33 @@ public class EBXCreator {
 		short h = ebxField.getFieldDescritor().getType();
 		if (h==0xFFFF){
 			//DEFUQ ?
-		}else if(h==0x407D||h==0x409D){ //_________________________________________________________________________________STRING
-			strings.add((String) ebxField.getValue());
-			int relOffset = 0;
-			for (String s : strings){
-				relOffset += s.length()+1;
-			}			
-			data = FileHandler.toBytes((int) relOffset, ByteOrder.LITTLE_ENDIAN);
+		}else if(h==(short)0x407D||h==(short)0x409D){ //_________________________________________________________________________________STRING
+			String val = (String) ebxField.getValue();
+			if (val.contains("*nullString*")){
+				data = new byte[] {(byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF};
+			}else{
+				strings.add(val);
+				int relOffset = 0;
+				for (String s : strings){
+					relOffset += s.length()+1;
+				}			
+				data = FileHandler.toBytes((int) relOffset, ByteOrder.LITTLE_ENDIAN);
+			}
 			FileHandler.addBytes(data, targetList);
-		}else if(h==0xC13D){//_____________________________________________________________________________________________FLOAT
-			data = FileHandler.toBytes((float) ebxField.getValue(), ByteOrder.LITTLE_ENDIAN);
+		}else if(h==(short)0xC13D){//_____________________________________________________________________________________________FLOAT
+			data = FileHandler.toBytes((float) ebxField.getValue(), ByteOrder.BIG_ENDIAN);
 			FileHandler.addBytes(data, targetList);
-		}else if(h==0x0029||h==0xd029||h==0x8029){//_______________________________________________________________________COMPLEX
+		}else if(h==(short)0x0029||h==(short)0xd029||h==(short)0x8029){//_______________________________________________________________________COMPLEX
 			
 			//data = new byte[] {0x00, 0x00, 0x00, 0x00};
 			//FileHandler.addBytes(data, payloadData);//?? what is the value/size ?? //TODO
 			
-			short index = proccComplex(ebxField.getValueAsComplex());
+			short index = proccComplex(ebxField.getValueAsComplex(), isArrayMember, proccDescriptor);
 			if (index==-1){
 				return -1;
 			}
 			desc.setRef(index);
-		}else if (h==0xC089||h==0x0089){//_________________________________________________________________________________ENUM
+		}else if (h==(short)0xC089||h==(short)0x0089){//_________________________________________________________________________________ENUM //TODO NEEDS WORK IN TCF, SELECTED INDEX FAIL. Hashmap put do last index.. also loses first one ??
 			if (ebxField.getValue() instanceof String){
 				System.err.println("NULL ENUM (STRING)");
 				EBXComplexDescriptor enumComplexDesc = new EBXComplexDescriptor(
@@ -369,14 +374,14 @@ public class EBXCreator {
 				System.err.println("ENUM ERROR");
 				//TODO ENUM ERROR...
 			}
-		}else if(h==0x0035){//___________________________________________________________________________________________GUID
+		}else if(h==(short)0x0035){//___________________________________________________________________________________________GUID
 			String val = (String) ebxField.getValue();
 			if (val.contains("null")){
 				data = new byte[] {0x00, 0x00, 0x00, 0x00};
 			}else if (val.contains(" ")){//External GUID
 				String[] split = val.split(" ");
 				EBXExternalGUID extGUID = new EBXExternalGUID(split[0], split[1]);
-				externalGUIDs.add(extGUID);
+				proccExternalGUID(extGUID);
 				int index = externalGUIDs.size()-1;
 				data = FileHandler.toBytes(index+0x80000000/*first bit toggled ;)*/, ByteOrder.LITTLE_ENDIAN);
 			}else{//Internal GUID
@@ -397,7 +402,7 @@ public class EBXCreator {
 				}				
 			}
 			FileHandler.addBytes(data, targetList);
-		}else if(h==0x0041){//___________________________________________________________________________________________ARRAYCOMPLEX
+		}else if(h==(short)0x0041){//___________________________________________________________________________________________ARRAYCOMPLEX
 			//TODO ARRAYCOMPLEX
 			int startOffset = arrayPayloadData.size();
 			EBXComplex arrayComplex = ebxField.getValueAsComplex();
@@ -417,7 +422,7 @@ public class EBXCreator {
 			int fieldStartIndex = 0;
 			if (type==0){//type is signed so we would have to cast it to unsigned but...nope
 				System.err.println("TODO: ARRAYCOMPLEX UNDEFINED TYPE");
-			}else if (type==0x29){//Type of Complex| //TODO are the more type's there using diffrent descriptors for each Member ?
+			}else if (type==(short)0x29){//Type of Complex| //TODO are the more type's there using diffrent descriptors for each Member ?
 				fieldStartIndex = fieldDescriptors.size();
 				for (EBXField field : arrayComplex.getFields()){
 					int refIndex = complexDescriptors.size();
@@ -435,7 +440,7 @@ public class EBXCreator {
 			}
 			arrayComplex.getComplexDescriptor().setAlignment((char)0x4); //TODO test alignment
 			arrayComplex.getComplexDescriptor().setType((short)0x41);
-			if (type==0x0029){
+			if (type==(short)0x0029){
 				arrayComplex.getComplexDescriptor().setNumField((char)arrayComplex.getFields().length);
 			}else{
 				arrayComplex.getComplexDescriptor().setNumField((char) 0);//TODO TEST setNumFields in arrayComplex
@@ -445,23 +450,24 @@ public class EBXCreator {
 			
 			arrayComplex.getComplexDescriptor().setFieldStartIndex(fieldStartIndex);
 			
-			short arrayComplexIndex = proccComplex(arrayComplex);
+			short arrayComplexIndex = proccComplex(arrayComplex, true/*isArrayMember*/, false/*proccFieldDesc*/);
 						
-			EBXArrayRepeater repeater = new EBXArrayRepeater(startOffset, arrayComplex.getFields().length, arrayComplexIndex /* complexIndex - same as ref*/);
+			EBXArrayRepeater repeater = new EBXArrayRepeater(startOffset, arrayComplex.getFields().length, arrayComplexIndex /*complexIndex - same as ref*/);
 			arrayRepeaters.add(repeater);
 						
 			data = FileHandler.toBytes(arrayRepeaters.size()-1, ByteOrder.LITTLE_ENDIAN);
 			FileHandler.addBytes(data, targetList);
-		}else if(h==0xc0ed){//____________________________________________________________________________________________SHORT
+		}else if(h==(short)0xc0ed){//____________________________________________________________________________________________SHORT
 			data = FileHandler.toBytes((short) ebxField.getValue(), ByteOrder.LITTLE_ENDIAN);
 			FileHandler.addBytes(data, targetList);
-		}else if(h==0xC10D){//____________________________________________________________________________________________UNSIGNED INTEGER (TREEVIEW VALUE AS LONG)
-			data = FileHandler.toBytes((Integer) ebxField.getValue()&0xFFFFFFFF, ByteOrder.LITTLE_ENDIAN); //TODO TEST
+		}else if(h==(short)0xC10D){//____________________________________________________________________________________________UNSIGNED INTEGER (TREEVIEW VALUE AS LONG)
+			long val = (Long)ebxField.getValue();
+			data = FileHandler.toBytes(FileHandler.longToInt(val), ByteOrder.LITTLE_ENDIAN); //TODO TEST
 			FileHandler.addBytes(data, targetList);
-		}else if(h==0xc0fd){//____________________________________________________________________________________________SIGNED INTEGER
+		}else if(h==(short)0xc0fd){//____________________________________________________________________________________________SIGNED INTEGER
 			data = FileHandler.toBytes((Integer) ebxField.getValue(), ByteOrder.LITTLE_ENDIAN);
 			FileHandler.addBytes(data, targetList);
-		}else if (h==0xc0ad){//____________________________________________________________________________________________BOOL
+		}else if (h==(short)0xc0ad){//____________________________________________________________________________________________BOOL
 			Boolean value = (Boolean) ebxField.getValue();
 			if (value){
 				data = new byte[]{0x01};
@@ -469,15 +475,18 @@ public class EBXCreator {
 				data = new byte[]{0x00};
 			}
 			FileHandler.addBytes(data, targetList);
-		}else if(h==0xc0cd){//_____________________________________________________________________________________________BYTE
+		}else if(h==(short)0xc0cd){//_____________________________________________________________________________________________BYTE
 			data = new byte[]{(byte) ebxField.getValue()};
 			FileHandler.addBytes(data, targetList);
-		}else if (h==0xC15D){//____________________________________________________________________________________________CHUNK GUID
+		}else if (h==(short)0xC15D){//____________________________________________________________________________________________CHUNK GUID
 			data = FileHandler.hexStringToByteArray((String)ebxField.getValue());
 			FileHandler.addBytes(data, targetList);
-		}else if (h==0x417D){//____________________________________________________________________________________________8HEX
+		}else if (h==(short)0x417D){//____________________________________________________________________________________________8HEX
 			data = FileHandler.hexStringToByteArray((String)ebxField.getValue());
 			FileHandler.addBytes(data, targetList);
+		}else{
+			byte[] typebyte = FileHandler.toBytes(h,ByteOrder.LITTLE_ENDIAN);
+			System.err.println("Type not found: 0x"+FileHandler.bytesToHex(typebyte));
 		}
 		
 		if (isArrayMember){//Is this needed ?
@@ -517,6 +526,16 @@ public class EBXCreator {
 		}
 		names.add(name);
 		return EBXHandler.hasher(name.getBytes());
+	}
+	
+	public boolean proccExternalGUID(EBXExternalGUID guid){
+		for (EBXExternalGUID entry : externalGUIDs){
+			if (guid.getFileGUID().equals(entry.getFileGUID()) && guid.getInstanceGUID().equals(entry.getInstanceGUID())){
+				return true;
+			}
+		}
+		externalGUIDs.add(guid);
+		return true;
 	}
 		
 	
@@ -607,7 +626,7 @@ public class EBXCreator {
 			stringBytes.add((byte) 0x00);
 		}
 		while (stringBytes.size()%16!=0){
-			stringBytes.add((byte) 0x00);//line padding.
+			stringBytes.add((byte) 0x00);//TODO line padding, add unnecessary extra line
 		}
 		header.setLenString(stringBytes.size());
 	}

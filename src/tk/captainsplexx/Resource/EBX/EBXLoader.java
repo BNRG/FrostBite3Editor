@@ -236,7 +236,7 @@ public class EBXLoader {
 		}else if (fieldDesc.getType() == (short) 0x407D || fieldDesc.getType() == (short) 0x409D){//STRING
 			int stringOffset = FileHandler.readInt(ebxFileBytes, seeker);
 			if (stringOffset==-1){
-				field.setValue("", FieldValueType.String);
+				field.setValue("*nullString*", FieldValueType.String);
 			}else{
 				field.setValue(readString(ebxFileBytes, header.getAbsStringOffset()+stringOffset),FieldValueType.String);
 			}
