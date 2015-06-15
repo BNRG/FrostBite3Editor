@@ -177,7 +177,15 @@ public class EBXCreator {
 		while(payloadData.size()%16!=0){//TODO its aligned in original one, how does the size get effected ?
 			payloadData.add((byte) 0x00);
 		}
-		FileHandler.addBytes(FileHandler.hexStringToByteArray(ebxInstance.getGuid()), payloadData);
+		String guid = ebxInstance.getGuid();
+		if (guid.length()>15){
+			FileHandler.addBytes(FileHandler.hexStringToByteArray(ebxInstance.getGuid()), payloadData);
+		}else{
+			for (int i=0; i<8;i++){
+				payloadData.add((byte) 0x00);
+			}
+		}
+		//obfuscationShift. shift by 8 ?? #alignment 4 instances require subtracting 8 for all field offsets and the complex size
 		short index = proccComplex(ebxInstance.getComplex(), false/*isArrayMember*/, true/*proccFieldDesc*/);
 		
 		EBXInstanceRepeater repeater = new EBXInstanceRepeater(index, 0);
@@ -282,7 +290,7 @@ public class EBXCreator {
 					desc.setType((short) 0x407D);//OR WHATEVER ??
 					break;
 				case UInteger:
-					desc.setType((short) 0xC10D);
+					desc.setType((short) 0xc10d);
 					break;
 				case Unknown:
 					desc.setType((short) 0xFFFF);//ERROR
@@ -297,11 +305,11 @@ public class EBXCreator {
 			if (val.contains("*nullString*")){
 				data = new byte[] {(byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF};
 			}else{
-				strings.add(val);
 				int relOffset = 0;
 				for (String s : strings){
 					relOffset += s.length()+1;
-				}			
+				}
+				strings.add(val);
 				data = FileHandler.toBytes((int) relOffset, ByteOrder.LITTLE_ENDIAN);
 			}
 			FileHandler.addBytes(data, targetList);
@@ -401,66 +409,70 @@ public class EBXCreator {
 					System.err.println("Invalid Internal GUID - check length!");
 				}				
 			}
+			//data = new byte[] {0x47, 0x55, 0x49, 0x44};
 			FileHandler.addBytes(data, targetList);
 		}else if(h==(short)0x0041){//___________________________________________________________________________________________ARRAYCOMPLEX
 			//TODO ARRAYCOMPLEX
 			int startOffset = arrayPayloadData.size();
-			EBXComplex arrayComplex = ebxField.getValueAsComplex();
-				arrayComplex.getComplexDescriptor().setName("array");//->try this because of treeview converter creates a complex of a complex.
-			short type = 0;
-			if (arrayComplex.getFields().length>0){
-				type = arrayComplex.getField(0).getFieldDescritor().getType();
+			
+			if (ebxField.getValue() instanceof String){
+				data = new byte[] {0x00, 0x00, 0x00, 0x00};
 			}else{
-				System.err.println("EMTY ARRAYLIST!");
-			}
-			
-			if (arrayComplex.getFields().length>4000&&fieldDescriptors.size()>212){//DEBUG
-				System.err.println("MASS MEMBER!!");
-			}
-			
-			
-			int fieldStartIndex = 0;
-			if (type==0){//type is signed so we would have to cast it to unsigned but...nope
-				System.err.println("TODO: ARRAYCOMPLEX UNDEFINED TYPE");
-			}else if (type==(short)0x29){//Type of Complex| //TODO are the more type's there using diffrent descriptors for each Member ?
-				fieldStartIndex = fieldDescriptors.size();
-				for (EBXField field : arrayComplex.getFields()){
-					int refIndex = complexDescriptors.size();
-					proccField(field, true /*isArrayMember*/, true /*proccFieldDescriptor*/);//TODO test ^__^ (write to arrayPayloadSection and proccFieldDescriptor)
-					EBXFieldDescriptor memberFieldDesc = new EBXFieldDescriptor("member", type, (short) refIndex, 0, 0);
-					fieldDescriptors.add(memberFieldDesc);
+				EBXComplex arrayComplex = ebxField.getValueAsComplex();
+					arrayComplex.getComplexDescriptor().setName("array");//->try this because of treeview converter creates a complex of a complex.
+				short type = 0;
+				if (arrayComplex.getFields().length>0){
+					type = arrayComplex.getField(0).getFieldDescritor().getType();
 				}
-			}else{	
-				fieldStartIndex = fieldDescriptors.size();
-				EBXFieldDescriptor memberMasterFieldDesc = new EBXFieldDescriptor("member", type, (short) 0, 0, 0);
-				fieldDescriptors.add(memberMasterFieldDesc);
-				for (EBXField field : arrayComplex.getFields()){
-					proccField(field, true /*isArrayMember*/, false /*proccFieldDescriptor*/);//only write to arrayPayloadSection. Do NOT proccFieldDescriptor!
+				
+				int fieldStartIndex = 0;
+				if (type==0){//type is signed so we would have to cast it to unsigned but...nope
+					System.err.println("TODO: ARRAYCOMPLEX UNDEFINED TYPE");
+				}else if (type==(short)0x29){//Type of Complex| //TODO are the more type's there using diffrent descriptors for each Member ?
+					fieldStartIndex = fieldDescriptors.size();
+					for (EBXField field : arrayComplex.getFields()){
+						int refIndex = complexDescriptors.size();
+						proccField(field, true /*isArrayMember*/, true /*proccFieldDescriptor*/);
+						EBXFieldDescriptor memberFieldDesc = new EBXFieldDescriptor("member", type, (short) refIndex, 0, 0);
+						fieldDescriptors.add(memberFieldDesc);
+					}
+				}else{	
+					fieldStartIndex = fieldDescriptors.size();
+					EBXFieldDescriptor memberMasterFieldDesc = new EBXFieldDescriptor("member", type, (short) 0, 0, 0);
+					fieldDescriptors.add(memberMasterFieldDesc);
+					for (EBXField field : arrayComplex.getFields()){
+						proccField(field, true /*isArrayMember*/, false /*proccFieldDescriptor*/);//only write to arrayPayloadSection. Do NOT proccFieldDescriptor!
+					}
+				}
+				arrayComplex.getComplexDescriptor().setAlignment((char)0x4); //TODO test alignment
+				arrayComplex.getComplexDescriptor().setType((short)0x41);
+				if (type==(short)0x29){
+					arrayComplex.getComplexDescriptor().setNumField((char)arrayComplex.getFields().length);
+				}else{
+					arrayComplex.getComplexDescriptor().setNumField((char) 0);//TODO TEST setNumFields in arrayComplex
+				}
+				
+				arrayComplex.getComplexDescriptor().setSize((short) 0);//TODO arraycomplex calc size
+				
+				arrayComplex.getComplexDescriptor().setFieldStartIndex(fieldStartIndex);
+				
+				short arrayComplexIndex = proccComplex(arrayComplex, true/*isArrayMember*/, false/*proccFieldDesc*/);
+
+				if (type==(short)0x29){//Array of Complex's
+					data = new byte[] {0x00, 0x00, 0x00, 0x00};
+				}else{
+					EBXArrayRepeater repeater = new EBXArrayRepeater(startOffset, arrayComplex.getFields().length, arrayComplexIndex /*complexIndex - same as ref*/);
+					arrayRepeaters.add(repeater);
+								
+					data = FileHandler.toBytes(arrayRepeaters.size(), ByteOrder.LITTLE_ENDIAN);
 				}
 			}
-			arrayComplex.getComplexDescriptor().setAlignment((char)0x4); //TODO test alignment
-			arrayComplex.getComplexDescriptor().setType((short)0x41);
-			if (type==(short)0x0029){
-				arrayComplex.getComplexDescriptor().setNumField((char)arrayComplex.getFields().length);
-			}else{
-				arrayComplex.getComplexDescriptor().setNumField((char) 0);//TODO TEST setNumFields in arrayComplex
-			}
-			
-			arrayComplex.getComplexDescriptor().setSize((short) 0);//TODO arraycomplex calc size
-			
-			arrayComplex.getComplexDescriptor().setFieldStartIndex(fieldStartIndex);
-			
-			short arrayComplexIndex = proccComplex(arrayComplex, true/*isArrayMember*/, false/*proccFieldDesc*/);
-						
-			EBXArrayRepeater repeater = new EBXArrayRepeater(startOffset, arrayComplex.getFields().length, arrayComplexIndex /*complexIndex - same as ref*/);
-			arrayRepeaters.add(repeater);
-						
-			data = FileHandler.toBytes(arrayRepeaters.size()-1, ByteOrder.LITTLE_ENDIAN);
+			//data = new byte[] {0x41, 0x72, 0x72, 0x79};
 			FileHandler.addBytes(data, targetList);
 		}else if(h==(short)0xc0ed){//____________________________________________________________________________________________SHORT
-			data = FileHandler.toBytes((short) ebxField.getValue(), ByteOrder.LITTLE_ENDIAN);
+			data = FileHandler.toBytes((short) ebxField.getValue(), ByteOrder.BIG_ENDIAN);//TODO short in normalPayload has a size of 4^^
 			FileHandler.addBytes(data, targetList);
-		}else if(h==(short)0xC10D){//____________________________________________________________________________________________UNSIGNED INTEGER (TREEVIEW VALUE AS LONG)
+		}else if(h==(short)0xc10d){//____________________________________________________________________________________________UNSIGNED INTEGER (TREEVIEW VALUE AS LONG)
 			long val = (Long)ebxField.getValue();
 			data = FileHandler.toBytes(FileHandler.longToInt(val), ByteOrder.LITTLE_ENDIAN); //TODO TEST
 			FileHandler.addBytes(data, targetList);

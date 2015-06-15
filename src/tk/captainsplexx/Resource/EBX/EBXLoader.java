@@ -230,9 +230,12 @@ public class EBXLoader {
 					fields[i] = readField(arrayComplexDesc.getFieldStartIndex()+i);
 				}
 			}
-			
-			arrayComplex.setFields(fields);
-			field.setValue(arrayComplex, FieldValueType.ArrayComplex);
+			if (fields!=null){
+				arrayComplex.setFields(fields);
+				field.setValue(arrayComplex, FieldValueType.ArrayComplex);
+			}else{
+				field.setValue("*nullArray*", FieldValueType.ArrayComplex);
+			}
 		}else if (fieldDesc.getType() == (short) 0x407D || fieldDesc.getType() == (short) 0x409D){//STRING
 			int stringOffset = FileHandler.readInt(ebxFileBytes, seeker);
 			if (stringOffset==-1){
@@ -267,7 +270,7 @@ public class EBXLoader {
 			field.setValue(FileHandler.bytesToHex(FileHandler.readByte(ebxFileBytes,seeker, 8)), FieldValueType.Hex8);
 		}else if (fieldDesc.getType()==(short) 0xC13D){//FLOAT
 			field.setValue(FileHandler.readFloat(ebxFileBytes, seeker), FieldValueType.Float);
-		}else if (fieldDesc.getType()==(short) 0xC10D){//uint
+		}else if (fieldDesc.getType()==(short) 0xc10d){//uint
 			field.setValue((FileHandler.readInt(ebxFileBytes, seeker, order) & 0xffffffffL), FieldValueType.UInteger);
 		}else if(fieldDesc.getType() == (short) 0xc0fd){ //signed int
 			field.setValue(FileHandler.readInt(ebxFileBytes, seeker), FieldValueType.Integer);

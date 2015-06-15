@@ -50,11 +50,10 @@ public class Terrain {
         		//pointsZ[i2] = new Point(i1*distance, (float) Math.sin((double)i1*0.25f)*100, i2*distance, distance, random.nextFloat(), 0.1f, 0.1f); //SIN WAVE
         		pointsZ[i2] = new Point(i1*distance, ((float) Math.sin((double)i1*0.25f)*(float) Math.sin((double)i2*0.25f)*75f), i2*distance, distance, i1/(i2+1), 0.2f, 0.1f); //TERRAIN SIN WAVE
         		//pointsZ[i2] = new Point(i1*distance, (float) Math.sin((double)i1*i2)*100f, i2*distance, distance, random.nextFloat(), 0.1f, 0.1f);
-        		
+        		*/
         		pointsZ[i2].setX(pointsZ[i2].getX()+pos.getX());
         		pointsZ[i2].setY(pointsZ[i2].getY()+pos.getY());
         		pointsZ[i2].setZ(pointsZ[i2].getZ()+pos.getZ());
-        		*/
         	}
         	points[i1] = pointsZ;
         };
