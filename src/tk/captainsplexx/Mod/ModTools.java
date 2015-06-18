@@ -286,7 +286,7 @@ public class ModTools {
 					TocCreator.createModifiedSBFile(convToc, currentSBpart, false/*TODO*/, newPath, true);
 				}
 				byte[] tocBytes = TocCreator.createTocFile(convToc);
-				FileHandler.writeFile(Main.getGame().getCurrentFile()+".toc", tocBytes);//TODO currently is uses temp data, but we can change this later on :)
+				FileHandler.writeFile(((String) Main.getGame().getCurrentFile()+".toc").replace(Main.gamePath, path), tocBytes);//TODO currently is uses temp data, but we can change this later on :)
 				
 			}
 			//CREATE CAS.CAT
@@ -299,14 +299,8 @@ public class ModTools {
 			
 			//DONE OPEN FOLDER!
 			FileHandler.openFolder(path);
-			Main.getJavaFXHandler().getDialogBuilder().showInfo("INFO", "Ready to Play!\nOrigin DRM Files needs to be replaced manually!");
-			Main.getJavaFXHandler().getMainWindow().toggleModLoaderVisibility();
-			try {
-				Thread.sleep(10000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			//Main.getJavaFXHandler().getDialogBuilder().showInfo("INFO", "Ready to Play!\nOrigin DRM Files needs to be replaced manually!");
+			//Main.getJavaFXHandler().getMainWindow().toggleModLoaderVisibility();
 			Main.keepAlive = false;
 			return true;
 		}
@@ -321,7 +315,7 @@ public class ModTools {
 			if (targetObject==null){
 				targetObject = packEntry.getResourcePath();//otherwise use the resourcePath as target.
 			}
-			if (link.getName().equals(targetObject.split(".")[0])){
+			if (link.getName().equals(targetObject.replace(".", "-").split("-")[0])){
 				link.setCasPatchType(1);//Patching using data from update cas
 				//link.setResType(resType);
 				//link.setLogicalOffset(logicalOffset);
@@ -338,7 +332,7 @@ public class ModTools {
 			targetObject = packEntry.getResourcePath();//otherwise use the resourcePath as target.
 		}
 		ResourceLink link = new ResourceLink();
-		link.setName(targetObject.split(".")[0]);
+		link.setName(targetObject.replace(".", "-").split("-")[0]);
 		link.setType(packEntry.getResType());
 		//link.setResType(resType);
 		//link.setLogicalOffset(logicalOffset);
