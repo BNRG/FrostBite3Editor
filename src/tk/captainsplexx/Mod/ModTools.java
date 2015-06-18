@@ -12,6 +12,14 @@ import tk.captainsplexx.Game.Main;
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.ResourceHandler.LinkBundleType;
 import tk.captainsplexx.Resource.ResourceHandler.ResourceType;
+import tk.captainsplexx.Resource.TOC.ConvertedSBpart;
+import tk.captainsplexx.Resource.TOC.ConvertedTocFile;
+import tk.captainsplexx.Resource.TOC.ResourceLink;
+import tk.captainsplexx.Resource.TOC.TocConverter;
+import tk.captainsplexx.Resource.TOC.TocCreator;
+import tk.captainsplexx.Resource.TOC.TocFile;
+import tk.captainsplexx.Resource.TOC.TocManager;
+import tk.captainsplexx.Resource.TOC.TocSBLink;
 import tk.captainsplexx.Resource.CAS.CasCatEntry;
 import tk.captainsplexx.Resource.CAS.CasCatManager;
 import tk.captainsplexx.Resource.CAS.CasManager;
@@ -172,7 +180,7 @@ public class ModTools {
 	}
 	
 	public boolean playMod(){
-		String path = Client.cloneClient(Main.gamePath+"/", Main.getGame().getCurrentMod().getGame()+"_"+Main.getGame().getCurrentMod().getFolderName());
+		String path = "test"; //Client.cloneClient(Main.gamePath+"/", Main.getGame().getCurrentMod().getGame()+"_"+Main.getGame().getCurrentMod().getFolderName());
 		if (path!=null){
 			String casCatPath = path+"/Update/Patch/Data/cas_99.cas";
 			CasCatManager man = Main.getGame().getResourceHandler().getPatchedCasCatManager();
@@ -180,6 +188,9 @@ public class ModTools {
 			Mod currentMod = Main.getGame().getCurrentMod();
 			//TODO MOD CLIENT LOGIC!
 			for (Package pack : packages){
+				Main.getGame().setCurrentFile(FileHandler.normalizePath((Main.gamePath+"/"+pack.getName())));
+				TocFile toc = TocManager.readToc(Main.getGame().getCurrentFile());
+				ConvertedTocFile convToc = TocConverter.convertTocFile(toc);
 				
 				//SORT
 				HashMap<String, ArrayList<PackageEntry>> sorted = new HashMap<>();
@@ -195,11 +206,23 @@ public class ModTools {
 				
 				//PROCC
 				for (String subPackageName : sorted.keySet()){
+					ConvertedSBpart currentSBpart = null;
+					for (TocSBLink link : convToc.getBundles()){
+						if (link.getID().equals(subPackageName)){
+							TocFile part = link.getLinkedSBPart();
+							currentSBpart = TocConverter.convertSBpart(part);
+							break;
+						}
+					}
+					if (currentSBpart==null){
+						System.err.println("Mod.ModTools.playMod can't handle new subpackages at this time. ");
+						return false;
+					}
+					int originalSize = 0;
 					ArrayList<PackageEntry> subPackageEntries = sorted.get(subPackageName);
 					for (PackageEntry sortedEntry : subPackageEntries){
 						CasCatEntry casCatEntry = null;
-						if (sortedEntry.getBundleType()==LinkBundleType.BUNDLES){
-							switch(sortedEntry.getResType()){
+						switch(sortedEntry.getResType()){
 							case ANIMTRACKDATA:
 								break;
 							case ANT:
@@ -207,8 +230,9 @@ public class ModTools {
 							case CHUNK:
 								break;
 							case EBX:
-								//TODO change toc/sb
-								casCatEntry = CasManager.extendCAS(FileHandler.readFile(currentMod.getPath()+"/resources/"+sortedEntry.getResourcePath()), new File(casCatPath), man);
+								byte[] data = FileHandler.readFile(currentMod.getPath()+"/resources/"+sortedEntry.getResourcePath());
+								originalSize = data.length;
+								casCatEntry = CasManager.extendCAS(data, new File(casCatPath), man);
 								break;
 							case ENLIGHTEN:
 								break;
@@ -246,15 +270,23 @@ public class ModTools {
 								break;
 							default:
 								break;
-							}
-							man.getEntries().add(casCatEntry);
-						}else{
-							System.err.println("CHUNKS NOT SUPPORTED IN MOD. CLIENT CREATOR! (Mod.ModTools.playMod)");
-							//CHUNKS
 						}
+						
+						if (sortedEntry.getResType()==ResourceType.EBX){
+							modifyResourceLink(sortedEntry, casCatEntry, originalSize, currentSBpart.getEbx());
+						}else if (sortedEntry.getResType()==ResourceType.ITEXTURE||sortedEntry.getResType()==ResourceType.MESH){
+							modifyResourceLink(sortedEntry, casCatEntry, originalSize, currentSBpart.getRes());
+						}else{
+							System.err.println(sortedEntry.getResType()+" isn't defined in (Mod.ModTools.playMod) for modifyResourceL1nk!");
+						}
+						man.getEntries().add(casCatEntry);
 					}
-					
+					//TODO convToc.setTotalSize(totalSize);
+					String newPath = ((String) Main.getGame().getCurrentFile()+".sb").replace(Main.gamePath, path);
+					TocCreator.createModifiedSBFile(convToc, currentSBpart, false/*TODO*/, newPath, true);
 				}
+				byte[] tocBytes = TocCreator.createTocFile(convToc);
+				FileHandler.writeFile(Main.getGame().getCurrentFile()+".toc", tocBytes);//TODO currently is uses temp data, but we can change this later on :)
 				
 			}
 			//CREATE CAS.CAT
@@ -267,13 +299,57 @@ public class ModTools {
 			
 			//DONE OPEN FOLDER!
 			FileHandler.openFolder(path);
-			Main.getJavaFXHandler().getDialogBuilder().showInfo("INFO", "Ready to Play");
-			//Main.keepAlive = false;
+			Main.getJavaFXHandler().getDialogBuilder().showInfo("INFO", "Ready to Play!\nOrigin DRM Files needs to be replaced manually!");
+			Main.getJavaFXHandler().getMainWindow().toggleModLoaderVisibility();
+			try {
+				Thread.sleep(10000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			Main.keepAlive = false;
 			return true;
 		}
 		Main.getJavaFXHandler().getDialogBuilder().showError("ERROR", "Something went wrong :(");
 		return false;
 	}
+	
+	public boolean modifyResourceLink(PackageEntry packEntry, CasCatEntry casCatEntry, int originalSize, ArrayList<ResourceLink> targetList){
+	/*ALREADY EXIST*/
+		for (ResourceLink link : targetList){
+			String targetObject = packEntry.getTargetPath();//has a special targetPath defined, use this.
+			if (targetObject==null){
+				targetObject = packEntry.getResourcePath();//otherwise use the resourcePath as target.
+			}
+			if (link.getName().equals(targetObject.split(".")[0])){
+				link.setCasPatchType(1);//Patching using data from update cas
+				//link.setResType(resType);
+				//link.setLogicalOffset(logicalOffset);
+				link.setSha1(casCatEntry.getSHA1().toLowerCase());
+				link.setSize(originalSize);//TODO test size ?? maybe procc size ??
+				link.setOriginalSize(casCatEntry.getProcSize());//TODO test original size ??
+				return true;
+			}
+		}
+		
+	/*NEW ONE*/
+		String targetObject = packEntry.getTargetPath();//has a special targetPath defined, use this.
+		if (targetObject==null){
+			targetObject = packEntry.getResourcePath();//otherwise use the resourcePath as target.
+		}
+		ResourceLink link = new ResourceLink();
+		link.setName(targetObject.split(".")[0]);
+		link.setType(packEntry.getResType());
+		//link.setResType(resType);
+		//link.setLogicalOffset(logicalOffset);
+		link.setCasPatchType(1);//Patching using data from update cas
+		link.setSha1(casCatEntry.getSHA1().toLowerCase());
+		link.setSize(originalSize);//TODO test size ?? maybe procc size ??
+		link.setOriginalSize(casCatEntry.getProcSize());//TODO test original size ??
+		targetList.add(link);
+		return false;
+	}
+	
 	
 	public boolean extendPackage(LinkBundleType bundle, String sbPart, ResourceType type, String path, Package pack){
 		return extendPackage(bundle, sbPart, type, path, null, pack);

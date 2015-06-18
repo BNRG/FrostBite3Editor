@@ -24,6 +24,7 @@ public class PackageEntry {
 		this.subPackage = subPackage;
 		this.resType = resType;
 		this.resourcePath = resourcePath;
+		this.targetPath = null;
 	}
 
 	public LinkBundleType getBundleType() {

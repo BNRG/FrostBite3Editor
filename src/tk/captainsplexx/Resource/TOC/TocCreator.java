@@ -571,7 +571,6 @@ public class TocCreator {
 				bundle.setSize(newBundleBytes.length);
 				seeker.seek(newBundleBytes.length);
 				
-				//TEST does -base+delta does mean: replace with delta ? //TODO
 				bundle.setBase(false);
 				bundle.setDelta(true);
 				
@@ -580,7 +579,7 @@ public class TocCreator {
 					System.out.println("Bundle link: "+bundle.getID());
 				}else{
 					System.out.println("Bundle copy: "+bundle.getID());
-					boolean success = FileHandler.extendFileFromFile(bundle.getSbPath(), bundle.getOffset(), bundle.getSize(), destination, seeker);
+					boolean success = FileHandler.extendFileFromFile(bundle.getSbPath()/*.replace("/Updata/Patch/", "/")*/, bundle.getOffset(), bundle.getSize(), destination, seeker);
 					if (!success){
 						System.err.println("Abort: something went wrong while creating modified sb file :( (BUNDLES)");
 						return false;

@@ -121,12 +121,6 @@ public class Game {
 		}
 		ebxFileGUIDs = new HashMap<String, String>();
 		chunkGUIDSHA1 = new HashMap<String, String>();
-				
-		/*
-		CasManager.createCAS("output/cas_99.cas");
-		String sha1_1 = CasManager.extendCAS(FileHandler.readFile("res/filler.hex"), new File("output/cas_99.cas"), resourceHandler.getPatchedCasCatManager());
-		String sha1_2 = CasManager.extendCAS(FileHandler.readFile("res/filler.hex"), new File("output/cas_99.cas"), resourceHandler.getPatchedCasCatManager());
-		*/
 	}
 
 	

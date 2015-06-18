@@ -16,7 +16,7 @@ public class RightController {
 	public void saveEBX(){
 		if (ebxExplorer.getRoot() != null){
 			if (Main.getGame().getCurrentMod()!=null&&!Main.isDEBUG){
-				String resPath = "ebx/"+ebxExplorer.getRoot().getValue().getName()+".ebx";		
+				String resPath = ebxExplorer.getRoot().getValue().getName()+".ebx";		
 				String test = Main.getGame().getCurrentToc().getName();
 				Package pack = Main.getModTools().getPackage(test);
 				Main.getModTools().extendPackage(

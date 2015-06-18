@@ -211,14 +211,15 @@ public class FileHandler {
 	public static boolean extendFileFromFile(String sourceFile, long sourceOffset, long sourceSize, String targetFile, FileSeeker targetSeeker){
 		try{
 			File file = new File(normalizePath(sourceFile));
+			System.out.println(file.length());
 			FileInputStream fin = new FileInputStream(file);
 			fin.skip(sourceOffset);
 			
 			FileOutputStream fos = new FileOutputStream(normalizePath(targetFile), true);
-			
+			//byte[] test = FileHandler.readFile(normalizePath(targetFile));
 			byte[] data = new byte[1];
 			for (int i=0; i<sourceSize; i++){
-				fin.read(data);
+				int bob = fin.read(data);//TODO ??
 				fos.write(data, 0x0, 1);
 				targetSeeker.seek(1);
 			}
