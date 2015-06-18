@@ -37,6 +37,7 @@ public class ModLoaderListFactory extends ListCell<Mod>{
 						ctrlr.getLogo().setImage(null);
 					}
 					ctrlr.getRunEditor().setDisable(false);
+					ctrlr.getPlayButton().setDisable(false);
 				}else{
 					ctrlr.getRunEditor().setDisable(true);
 					Main.getGame().setCurrentMod(null);
@@ -47,6 +48,8 @@ public class ModLoaderListFactory extends ListCell<Mod>{
 					ctrlr.getDesc().setWrapText(true);
 					ctrlr.getDesc().setText("");
 					ctrlr.getLogo().setImage(null);
+					ctrlr.getRunEditor().setDisable(true);
+					ctrlr.getPlayButton().setDisable(true);
 				}
 			}
 		});

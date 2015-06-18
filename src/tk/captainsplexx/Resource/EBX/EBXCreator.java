@@ -197,6 +197,16 @@ public class EBXCreator {
 	public short proccComplex(EBXComplex ebxComplex, boolean isArrayMember, boolean proccDescriptor){
 		//return index of complex
 		//TODO
+		boolean isAligned = false;
+		while(payloadData.size()%16>=12){//TODO complex gets aligned, but why ?
+			payloadData.add((byte) 0x00);
+			
+		}
+		if (payloadData.size()%16==0){
+			isAligned = true;
+		}
+		int startOffset = payloadData.size();
+		
 		int totalSize = 0; //its acc. a short but wanna have a use for secondary size ^__^
 		for (EBXField field : ebxComplex.getFields()){
 			int fieldSize = proccField(field, isArrayMember, proccDescriptor);
@@ -205,6 +215,13 @@ public class EBXCreator {
 			}else{
 				System.err.println("Couldn't processing EBXComplex's field! Name: "+field.getFieldDescritor().getName());
 			}
+		}
+		int payloadTotalSize = payloadData.size()-startOffset;
+		//while(payloadData.size()%16>=12&&payloadTotalSize>=12&&payloadTotalSize<16){<-Worked really well
+		//while((payloadData.size()%16>=12&&payloadTotalSize>=12&&payloadTotalSize<16)||(payloadTotalSize>32&&payloadData.size()%16>=12)){
+		while((payloadData.size()%16>=12&&payloadTotalSize>=12&&payloadTotalSize<16)||(payloadTotalSize>32&&payloadData.size()%16>=12)){//TODO fields after complex gets SOMETIMES aligned too, but why ?
+			payloadData.add((byte) 0x00);
+			payloadTotalSize++;
 		}
 		return proccComplexDescriptor(ebxComplex.getComplexDescriptor(), ebxComplex.getFields().length, totalSize);
 	}
@@ -326,7 +343,7 @@ public class EBXCreator {
 				return -1;
 			}
 			desc.setRef(index);
-		}else if (h==(short)0xC089||h==(short)0x0089){//_________________________________________________________________________________ENUM //TODO NEEDS WORK IN TCF, SELECTED INDEX FAIL. Hashmap put do last index.. also loses first one ??
+		}else if (h==(short)0xC089||h==(short)0x0089){//_________________________________________________________________________________ENUM //TODO NEEDS WORK IN TCF, SELECTED INDEX FAIL.
 			if (ebxField.getValue() instanceof String){
 				System.err.println("NULL ENUM (STRING)");
 				EBXComplexDescriptor enumComplexDesc = new EBXComplexDescriptor(
@@ -346,14 +363,12 @@ public class EBXCreator {
 			}else if(ebxField.getValue() instanceof HashMap<?, ?>){//EBXFieldDescriptor, Boolean
 				HashMap<EBXFieldDescriptor, Boolean> enumList = (HashMap<EBXFieldDescriptor, Boolean>) ebxField.getValue();
 				int selectedIndex = 0;
-				int current = 0;
 				for (EBXFieldDescriptor fieldDesc : enumList.keySet()){
-					fieldDesc.setOffset(current);//offset does represent the index.
+					//fieldDesc.setOffset(current);//offset does represent the relative index from fieldStartIndex, is already set in loader
 					fieldDescriptors.add(fieldDesc);
-					current++;
 					Boolean selected = enumList.get(fieldDesc);
 					if (selected){
-						selectedIndex = current;
+						selectedIndex = fieldDesc.getOffset();
 					}
 				}
 				EBXComplexDescriptor enumComplexDesc = new EBXComplexDescriptor(
@@ -470,7 +485,12 @@ public class EBXCreator {
 			//data = new byte[] {0x41, 0x72, 0x72, 0x79};
 			FileHandler.addBytes(data, targetList);
 		}else if(h==(short)0xc0ed){//____________________________________________________________________________________________SHORT
-			data = FileHandler.toBytes((short) ebxField.getValue(), ByteOrder.BIG_ENDIAN);//TODO short in normalPayload has a size of 4^^
+			short val = (short) ebxField.getValue();
+			if (isArrayMember){
+				data = FileHandler.toBytes(val, ByteOrder.BIG_ENDIAN);
+			}else{//normalPayload short is 4 bytes. defuq...
+				data = FileHandler.toBytes((int) val, ByteOrder.LITTLE_ENDIAN);
+			}
 			FileHandler.addBytes(data, targetList);
 		}else if(h==(short)0xc10d){//____________________________________________________________________________________________UNSIGNED INTEGER (TREEVIEW VALUE AS LONG)
 			long val = (Long)ebxField.getValue();

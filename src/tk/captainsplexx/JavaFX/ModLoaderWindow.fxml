@@ -77,7 +77,7 @@
                                     <Insets bottom="5.0" left="15.0" right="5.0" top="10.0" />
                                  </HBox.margin>
                               </ImageView>
-                              <Button mnemonicParsing="false" prefHeight="32.0" prefWidth="128.0" text="Button">
+                              <Button fx:id="playButton" disable="true" mnemonicParsing="false" onAction="#playMod" prefHeight="32.0" prefWidth="128.0" text="Play">
                                  <HBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="10.0" />
                                  </HBox.margin>

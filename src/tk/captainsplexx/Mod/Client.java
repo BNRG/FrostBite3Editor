@@ -6,13 +6,13 @@ import java.util.ArrayList;
 import tk.captainsplexx.Resource.FileHandler;
 
 public class Client {
-	public static boolean cloneClient(String sourceFolder, String newFolderName){
+	public static String cloneClient(String sourceFolder, String newFolderName){
 		sourceFolder = FileHandler.normalizePath(sourceFolder);
 		ArrayList<File> sourceFiles = null;
 		File folder = new File(sourceFolder);
 		if (!folder.isDirectory()){
 			System.err.println("Not a vaild folder given.");
-			return false;
+			return null;
 		}
 		String[] split = sourceFolder.split("/");
 		int length = split.length;
@@ -27,7 +27,7 @@ public class Client {
 		File destFolder = new File(destFolderPath);
 		if (destFolder.isDirectory()){
 			System.err.println("New folder does already exist.");
-			return false;
+			return null;
 		}
 		System.out.println("Client get currently cloned...\n"
 				+"(Windows-Hardlink's will be used. It will take 'no' space!)");
@@ -40,6 +40,6 @@ public class Client {
 				FileHandler.createLink(linkPath, FileHandler.normalizePath(f.getAbsolutePath()));
 			}
 		}
-		return true;
+		return destFolderPath;
 	}
 }

@@ -21,6 +21,7 @@ import javafx.util.Callback;
 
 import org.lwjgl.opengl.Display;
 
+import antonsmirnov.javafx.dialog.Dialog.Builder;
 import tk.captainsplexx.Game.Main;
 import tk.captainsplexx.JavaFX.CellFactories.JavaFXebxTCF;
 import tk.captainsplexx.JavaFX.CellFactories.JavaFXexplorer1TCF;

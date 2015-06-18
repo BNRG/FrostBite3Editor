@@ -74,8 +74,6 @@ public class Game {
 			);
 			FileHandler.writeFile("output/patched_data", patchedData);
 			END OF TEST*/
-					
-			//Client.cloneClient(Main.gamePath+"/", "Battlefield 4 SPLEXX");
 		}
 		
 		while (true){

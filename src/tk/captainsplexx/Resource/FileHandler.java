@@ -115,6 +115,10 @@ public class FileHandler {
 		File newLinkFile = new File(normalizePath(newLink));
 		if (sourceFile.exists() && !newLinkFile.exists()){
 			String[] commands = {"cmd.exe","/r","mklink", "/H", newLink, source};
+			//System.out.println("");
+			//for (String s : commands){
+			//	System.out.print(s);
+			//}
 			try {
 				Process p = Runtime.getRuntime().exec(commands);
 				p.waitFor();

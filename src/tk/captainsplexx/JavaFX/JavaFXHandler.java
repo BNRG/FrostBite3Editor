@@ -1,7 +1,10 @@
 package tk.captainsplexx.JavaFX;
 
+import antonsmirnov.javafx.dialog.Dialog;
+import antonsmirnov.javafx.dialog.Dialog.Builder;
 import javafx.scene.control.TreeItem;
 import javafx.scene.image.Image;
+import tk.captainsplexx.Game.Main;
 import tk.captainsplexx.Resource.FileHandler;
 
 
@@ -45,21 +48,26 @@ public class JavaFXHandler {
 	public static final Image documentIcon = new Image(FileHandler.getStream("res/images/folder-open-document.png"));
 	public static final Image leftArrowIcon = new Image(FileHandler.getStream("res/images/arrow-000.png"));
 	public static final Image rightArrowIcon = new Image(FileHandler.getStream("res/images/arrow-180.png"));
+	public Builder dialogBuilder;
 	
 	public JavaFXHandler(){
 		main = new JavaFXMainWindow();
 		main.runApplication();
+		dialogBuilder = new Builder();
 	}
 	
 	public JavaFXMainWindow getMainWindow() {
 		return main;
 	}
-	
+
 	public void setMainWindow(JavaFXMainWindow main){
 		this.main = main;
 	}
-	
-	
+
+	public Builder getDialogBuilder() {
+		return dialogBuilder;
+	}
+
 	/* Getter and setter */
 	public TreeItem<TreeViewEntry> getTreeViewStructureLeft() {
 		return treeViewStructureLeft;

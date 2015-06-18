@@ -1,5 +1,6 @@
 package tk.captainsplexx.JavaFX;
 
+import antonsmirnov.javafx.dialog.Dialog;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -27,10 +28,17 @@ public class ModLoaderController {
 	TextArea desc;
 	@FXML
 	Button runEditor;
+	@FXML
+	Button playButton;
 	
 	
 	public void runEditor(){
 		Main.runEditor = true;
+	}
+	
+	public void playMod(){
+		//Main.getJavaFXHandler().getDialogBuilder().showInfo("INFO", "This may take a while!");
+		Main.getModTools().playMod();
 	}
 	
 	public void openModFolder(){
@@ -73,6 +81,12 @@ public class ModLoaderController {
 	public Label getGameName() {
 		return gameName;
 	}
+
+	public Button getPlayButton() {
+		return playButton;
+	}
+	
+	
 	
 	
 }

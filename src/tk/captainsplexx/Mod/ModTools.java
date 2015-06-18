@@ -5,11 +5,16 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 
+import antonsmirnov.javafx.dialog.Dialog;
 import tk.captainsplexx.Game.Main;
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.ResourceHandler.LinkBundleType;
 import tk.captainsplexx.Resource.ResourceHandler.ResourceType;
+import tk.captainsplexx.Resource.CAS.CasCatEntry;
+import tk.captainsplexx.Resource.CAS.CasCatManager;
+import tk.captainsplexx.Resource.CAS.CasManager;
 
 public class ModTools {
 	public ArrayList<Mod> mods;
@@ -155,7 +160,7 @@ public class ModTools {
 		return false;
 	}
 	
-	public Package getPackage(String name){//TODO
+	public Package getPackage(String name){
 		for (Package pack : packages){
 			if (pack.getName().equals(name)){
 				return pack;
@@ -164,6 +169,110 @@ public class ModTools {
 		Package pack = new Package(name);
 		packages.add(pack);
 		return null;
+	}
+	
+	public boolean playMod(){
+		String path = Client.cloneClient(Main.gamePath+"/", Main.getGame().getCurrentMod().getGame()+"_"+Main.getGame().getCurrentMod().getFolderName());
+		if (path!=null){
+			String casCatPath = path+"/Update/Patch/Data/cas_99.cas";
+			CasCatManager man = Main.getGame().getResourceHandler().getPatchedCasCatManager();
+			CasManager.createCAS(casCatPath);
+			Mod currentMod = Main.getGame().getCurrentMod();
+			//TODO MOD CLIENT LOGIC!
+			for (Package pack : packages){
+				
+				//SORT
+				HashMap<String, ArrayList<PackageEntry>> sorted = new HashMap<>();
+				for (PackageEntry entry : pack.getEntries()){
+					ArrayList<PackageEntry> subPackageEntries = sorted.get(entry.getSubPackage());
+					if (subPackageEntries==null){
+						subPackageEntries = new ArrayList<PackageEntry>();
+						sorted.put(entry.getSubPackage(), subPackageEntries);
+						entry.setSubPackage(null);//why not free up some memory here :)
+					}
+					subPackageEntries.add(entry);
+				}
+				
+				//PROCC
+				for (String subPackageName : sorted.keySet()){
+					ArrayList<PackageEntry> subPackageEntries = sorted.get(subPackageName);
+					for (PackageEntry sortedEntry : subPackageEntries){
+						CasCatEntry casCatEntry = null;
+						if (sortedEntry.getBundleType()==LinkBundleType.BUNDLES){
+							switch(sortedEntry.getResType()){
+							case ANIMTRACKDATA:
+								break;
+							case ANT:
+								break;
+							case CHUNK:
+								break;
+							case EBX:
+								//TODO change toc/sb
+								casCatEntry = CasManager.extendCAS(FileHandler.readFile(currentMod.getPath()+"/resources/"+sortedEntry.getResourcePath()), new File(casCatPath), man);
+								break;
+							case ENLIGHTEN:
+								break;
+							case GFX:
+								break;
+							case HKDESTRUCTION:
+								break;
+							case HKNONDESTRUCTION:
+								break;
+							case ITEXTURE:
+								break;
+							case LIGHTINGSYSTEM:
+								break;
+							case LUAC:
+								break;
+							case MESH:
+								break;
+							case OCCLUSIONMESH:
+								break;
+							case PROBESET:
+								break;
+							case RAGDOLL:
+								break;
+							case SHADERDATERBASE:
+								break;
+							case SHADERDB:
+								break;
+							case SHADERPROGRAMDB:
+								break;
+							case STATICENLIGHTEN:
+								break;
+							case STREAIMINGSTUB:
+								break;
+							case UNDEFINED:
+								break;
+							default:
+								break;
+							}
+							man.getEntries().add(casCatEntry);
+						}else{
+							System.err.println("CHUNKS NOT SUPPORTED IN MOD. CLIENT CREATOR! (Mod.ModTools.playMod)");
+							//CHUNKS
+						}
+					}
+					
+				}
+				
+			}
+			//CREATE CAS.CAT
+			byte[] patchedCasCatBytes = man.getCat();
+			File casCatFile = new File(path+"/Update/Patch/Data/cas.cat");
+			if (casCatFile.exists()){
+				casCatFile.delete();
+			}
+			FileHandler.writeFile(casCatFile.getAbsolutePath(), patchedCasCatBytes);
+			
+			//DONE OPEN FOLDER!
+			FileHandler.openFolder(path);
+			Main.getJavaFXHandler().getDialogBuilder().showInfo("INFO", "Ready to Play");
+			//Main.keepAlive = false;
+			return true;
+		}
+		Main.getJavaFXHandler().getDialogBuilder().showError("ERROR", "Something went wrong :(");
+		return false;
 	}
 	
 	public boolean extendPackage(LinkBundleType bundle, String sbPart, ResourceType type, String path, Package pack){

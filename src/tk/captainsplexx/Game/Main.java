@@ -84,6 +84,7 @@ public class Main {
 			buildVersion = "n/a";
 			System.err.println("NO VERSION FILE FOUND!");
 		}
+		System.out.println("Version: "+buildVersion);
 		if (buildVersion.contains("|")){
 			isDEBUG = true;
 			System.err.println("RUNNING IN DEBUG MODE!");
@@ -117,7 +118,7 @@ public class Main {
 		game = new Game();
 		modTools = new ModTools();
 		
-		while (true){
+		while (keepAlive){
 			//Wait for starting editor
 			System.out.print("");
 			try {
@@ -175,6 +176,7 @@ public class Main {
 				System.exit(0);
 			}
 		}
+		System.exit(0);
 	}	
 	
 	public static Game getGame(){
