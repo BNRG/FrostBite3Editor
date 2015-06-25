@@ -38,6 +38,16 @@ public class ModLoaderListFactory extends ListCell<Mod>{
 					}
 					ctrlr.getRunEditor().setDisable(false);
 					ctrlr.getPlayButton().setDisable(false);
+					
+					File destFolder = new File(mod.getDestFolderPath());
+					if (destFolder.isDirectory()){
+						ctrlr.getCheckBox().setVisible(true);
+						ctrlr.getCheckBox().setDisable(false);
+					}else{
+						ctrlr.getCheckBox().setVisible(false);
+						ctrlr.getCheckBox().setDisable(true);
+					}
+					
 				}else{
 					ctrlr.getRunEditor().setDisable(true);
 					Main.getGame().setCurrentMod(null);
@@ -50,6 +60,9 @@ public class ModLoaderListFactory extends ListCell<Mod>{
 					ctrlr.getLogo().setImage(null);
 					ctrlr.getRunEditor().setDisable(true);
 					ctrlr.getPlayButton().setDisable(true);
+					
+					ctrlr.getCheckBox().setVisible(false);
+					ctrlr.getCheckBox().setDisable(true);
 				}
 			}
 		});
@@ -59,7 +72,12 @@ public class ModLoaderListFactory extends ListCell<Mod>{
 	protected void updateItem(Mod item, boolean empty) {
 		super.updateItem(item, empty);
 		if (!empty){
-			setText(item.getFolderName());
+			String name = item.getFolderName();
+			File destFolder = new File(item.getDestFolderPath());
+			if (destFolder.isDirectory()){
+				name+=" (Compiled)";
+			}
+			setText(name);
 		}else{
 			setText(null);
 		}

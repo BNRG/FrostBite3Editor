@@ -115,6 +115,10 @@ public class TocManager {
 		if (fieldType != 0x00){
 			name = FileHandler.readString(data, seeker);
 		}
+		/* Really stupid stuff happend here, i have forgotten to replace the original path with the new one and so i currupted the original ones :/
+		 * if (name.equalsIgnoreCase("sto")){
+		 *	System.err.println("DEBUG");
+		}*/
 		if (fieldType == 0x01){ //#list type, containing ENTRIES (MULTIPLE ONE) 
 			ArrayList<TocEntry> list = new ArrayList<TocEntry>();
 			int listSize = FileHandler.readLEB128(data, seeker); 

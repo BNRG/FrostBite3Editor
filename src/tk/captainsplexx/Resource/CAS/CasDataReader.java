@@ -18,8 +18,8 @@ public class CasDataReader { //casPath == folderPath
 		ResourceHandler rs = game.getResourceHandler();
 		if (patchType == 2){
 			//Patched using delta
-			byte[] base = CasDataReader.readCas(baseSHA1, Main.gamePath+"/Data", rs.getCasCatManager().getEntries());
-			byte[] delta = CasDataReader.readCas(deltaSHA1, Main.gamePath+"/Update/Patch/Data", rs.getPatchedCasCatManager().getEntries());
+			byte[] base = CasDataReader.readCas(baseSHA1, Main.gamePath+"/Data", rs.getCasCatManager().getEntries(), false);
+			byte[] delta = CasDataReader.readCas(deltaSHA1, Main.gamePath+"/Update/Patch/Data", rs.getPatchedCasCatManager().getEntries(), true);
 			
 			byte[] data = Patcher.getPatchedData(base, delta);
 			if (data != null){
@@ -30,7 +30,7 @@ public class CasDataReader { //casPath == folderPath
 			}
 		}else if(patchType == 1){
 			//Patched using data from update cas
-			byte[] data = CasDataReader.readCas(SHA1, Main.gamePath+"/Update/Patch/Data", rs.getPatchedCasCatManager().getEntries());
+			byte[] data = CasDataReader.readCas(SHA1, Main.gamePath+"/Update/Patch/Data", rs.getPatchedCasCatManager().getEntries(), false);
 			if (data != null){
 				return data;
 			}else{
@@ -39,7 +39,7 @@ public class CasDataReader { //casPath == folderPath
 			}
 		}else{
 			//Unpatched
-			byte[] data = CasDataReader.readCas(SHA1, Main.gamePath+"/Data", rs.getCasCatManager().getEntries());
+			byte[] data = CasDataReader.readCas(SHA1, Main.gamePath+"/Data", rs.getCasCatManager().getEntries(), false);
 			if (data != null){
 				return data;
 			}else{
@@ -50,7 +50,7 @@ public class CasDataReader { //casPath == folderPath
 	}
 	
 	
-	public static byte[] readCas(String SHA1, String casFolderPath, ArrayList<CasCatEntry> casCatEntries){
+	public static byte[] readCas(String SHA1, String casFolderPath, ArrayList<CasCatEntry> casCatEntries, boolean hasNoBlockLogic){
 		try{
 			SHA1 = SHA1.replaceAll("\\s","");
 			for (CasCatEntry e : casCatEntries){
@@ -64,14 +64,16 @@ public class CasDataReader { //casPath == folderPath
 				casFilePath += "cas_"+ casFile + ".cas";
 				
 				System.out.println("Reading CAS: "+ casFilePath+" for SHA1: "+SHA1);
-				if (e.getProcSize()>=0x010000){
-					System.out.println("WARNING: Decompress each block and glue the decompressed parts together to obtain the file.");
+				if (!hasNoBlockLogic){//hasBlockLogic :)
+					if (e.getProcSize()>=0x010000){
+						System.out.println("WARNING: Decompress each block and glue the decompressed parts together to obtain the file.");
+					}
+					return convertToRAWData(FileHandler.readFile(casFilePath, e.getOffset(), e.getProcSize()));
+				}else{
+					return FileHandler.readFile(casFilePath, e.getOffset(), e.getProcSize());
 				}
-				
-				//TODO -----------------------------------------------------------------------------------------------------------------------WRONG
-				return convertToRAWData(FileHandler.readFile(casFilePath, e.getOffset(), e.getProcSize()));
-				//DONE
 			}
+			System.err.println("Invalid SHA given :(");
 			return null;
 		}catch (NullPointerException e){
 			return null;
@@ -89,12 +91,14 @@ public class CasDataReader { //casPath == folderPath
 				}
 			}else{
 				System.err.println("Could not read from given block!");
+				return null;
 			}
 		}//End of InputStream
 		return FileHandler.convertFromList(output);
 	}
 	
 	public static byte[] readBlock(byte[] encodedEntry, FileSeeker seeker){
+		FileHandler.writeFile("output/readBlock", encodedEntry);
 		int decompressedSize = FileHandler.readInt(encodedEntry, seeker, ByteOrder.BIG_ENDIAN);
 		int compressionType = FileHandler.readShort(encodedEntry, seeker, ByteOrder.BIG_ENDIAN);
 		int compressedSize = FileHandler.readShort(encodedEntry, seeker, ByteOrder.BIG_ENDIAN) & 0xFFFF;
@@ -108,10 +112,14 @@ public class CasDataReader { //casPath == folderPath
 		}else if (compressionType == 0x0070 || compressionType == 0x0071){//UNCOMPRESSED
 			//return FileHandler.readByte(encodedEntry, seeker, procSize-seeker.getOffset());
 			return FileHandler.readByte(encodedEntry, seeker, compressedSize);
-		}else{ // 0x0000 - emty payload
+		}else if (compressionType == 0x0){ // 0x0000 - emty payload
 			//seeker.setOffset(seeker.getOffset()-2); //NULL compressionSize
 			System.err.println("CasDataReader needs some help. 0x0000 emty payload"); //TODO
-			return FileHandler.readByte(encodedEntry, seeker, compressedSize);
+			//return FileHandler.readByte(encodedEntry, seeker, compressedSize);
+			return null;
+		}else{
+			System.err.println(FileHandler.bytesToHex(FileHandler.toBytes(compressionType, ByteOrder.LITTLE_ENDIAN))+" type was not defined in CasDataReader.");
+			return null;
 		}
 	}
 }

@@ -1,12 +1,12 @@
 package tk.captainsplexx.Game;
 
 import java.io.File;
+import java.nio.ByteOrder;
 import java.util.HashMap;
 
 import javafx.scene.control.TreeItem;
 import javafx.scene.image.ImageView;
 import tk.captainsplexx.JavaFX.JavaFXHandler;
-import tk.captainsplexx.JavaFX.JavaFXMainWindow;
 import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
 import tk.captainsplexx.JavaFX.TreeViewConverter;
 import tk.captainsplexx.JavaFX.TreeViewEntry;

@@ -9,6 +9,8 @@ public class Mod {
 	String game;
 	String folderName;
 	
+	String destFolderPath;
+	
 	public Mod(String name, String author, String game, String path, String folderName){
 		this.name = name;
 		this.author = author;
@@ -17,6 +19,7 @@ public class Mod {
 		this.tempFolder = "";
 		this.desc = "";
 		this.folderName = folderName;
+		this.destFolderPath = null;
 	}
 	
 	public Mod(){
@@ -24,6 +27,14 @@ public class Mod {
 	}
 	
 	
+	public String getDestFolderPath() {
+		return destFolderPath;
+	}
+
+	public void setDestFolderPath(String destFolderPath) {
+		this.destFolderPath = destFolderPath;
+	}
+
 	public String getFolderName() {
 		return folderName;
 	}

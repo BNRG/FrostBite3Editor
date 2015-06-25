@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import tk.captainsplexx.Resource.FileHandler;
 
 public class Client {
-	public static String cloneClient(String sourceFolder, String newFolderName){
+	public static String cloneClient(String sourceFolder, String newFolderName, boolean deleteExisiting){
 		sourceFolder = FileHandler.normalizePath(sourceFolder);
 		ArrayList<File> sourceFiles = null;
 		File folder = new File(sourceFolder);
@@ -26,8 +26,12 @@ public class Client {
 		destFolderPath += newFolderName;
 		File destFolder = new File(destFolderPath);
 		if (destFolder.isDirectory()){
-			System.err.println("New folder does already exist.");
-			return null;
+			if (deleteExisiting){
+				destFolder.delete();
+			}else{
+				System.err.println("New folder does already exist.");
+				return null;
+			}
 		}
 		System.out.println("Client get currently cloned...\n"
 				+"(Windows-Hardlink's will be used. It will take 'no' space!)");

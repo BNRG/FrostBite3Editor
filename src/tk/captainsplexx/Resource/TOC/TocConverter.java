@@ -144,7 +144,7 @@ public class TocConverter {
 						}
 					}
 				}else{
-					System.err.println(field.getName()+" "+field.getType());
+					System.err.println("TocConverter found an unhandled field: "+field.getName()+" as "+field.getType());
 				}
 			}
 			return convSB;

@@ -3,6 +3,7 @@ package tk.captainsplexx.JavaFX;
 import antonsmirnov.javafx.dialog.Dialog;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
@@ -30,6 +31,8 @@ public class ModLoaderController {
 	Button runEditor;
 	@FXML
 	Button playButton;
+	@FXML
+	CheckBox checkBox;
 	
 	
 	public void runEditor(){
@@ -38,7 +41,7 @@ public class ModLoaderController {
 	
 	public void playMod(){
 		//Main.getJavaFXHandler().getDialogBuilder().showInfo("INFO", "This may take a while!");
-		Main.getModTools().playMod();
+		Main.getModTools().playMod((checkBox.isVisible()&&checkBox.isSelected())||!checkBox.isVisible());
 	}
 	
 	public void openModFolder(){
@@ -84,6 +87,14 @@ public class ModLoaderController {
 
 	public Button getPlayButton() {
 		return playButton;
+	}
+
+	public CheckBox getCheckBox() {
+		return checkBox;
+	}
+
+	public void setCheckBox(CheckBox checkBox) {
+		this.checkBox = checkBox;
 	}
 	
 	

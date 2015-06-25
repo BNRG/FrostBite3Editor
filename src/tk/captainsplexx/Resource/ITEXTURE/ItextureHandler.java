@@ -50,7 +50,7 @@ public class ItextureHandler {
         	return null;
         }     
         
-        byte[] data = CasDataReader.readCas(sha1, casPath, casCatEntries);
+        byte[] data = CasDataReader.readCas(sha1, casPath, casCatEntries, false);//TODO what is with delta patching here ?
         
         //FileHandler.writeFile("D:/TEST_raw_data.dds", data);
         

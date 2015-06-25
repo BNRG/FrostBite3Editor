@@ -314,7 +314,7 @@ public class FileHandler {
 		return bytesToHex(readByte(fileArray, seeker, 20));
 	}
 	
-	public static byte[] toBytes(int value, ByteOrder order)
+	public static byte[] toBytes(int value, ByteOrder order)//tested working
     {
         byte[] byteArray = new byte[4];
         int shift = 0;
@@ -372,10 +372,10 @@ public class FileHandler {
 		return b & 0x0F;
 	}
 	
-	public static byte[] toBytes(short value, ByteOrder order){ //TODO not tested
+	public static byte[] toBytes(short value, ByteOrder order){//tested!
 		byte[] bytes = new byte[2];
 		
-		if (order == ByteOrder.BIG_ENDIAN){
+		if (order == ByteOrder.LITTLE_ENDIAN){
 			bytes[0] = (byte)(value & 0xff);
 			bytes[1] = (byte)((value >> 8) & 0xff);
 		}else{
