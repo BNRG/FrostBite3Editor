@@ -37,6 +37,7 @@ public class ResourceLink {
 
 	// additional
 	public ResourceBundleType bundleType;
+	public boolean hasModFile;
 
 	public ResourceLink(/* USING NULLCONSTRUCTOR */) {
 		this.name = "";
@@ -45,13 +46,14 @@ public class ResourceLink {
 		this.type = ResourceType.UNDEFINED;
 		this.sha1 = "";
 		this.bundleType = null;
-		ebxFileGUID = "";
+		this.ebxFileGUID = "";
 		this.casPatchType = 0;
 		this.baseSha1 = null;
 		this.deltaSha1 = null;
 		this.rangeStart = -1; //This can be 0, so we choose a negative value
 		this.rangeEnd = -1;
 		this.firstMip = -1;
+		this.hasModFile = false;
 	}
 
 	public String getEbxFileGUID() {
@@ -231,5 +233,14 @@ public class ResourceLink {
 	public void setMeta(byte[] meta) {
 		this.meta = meta;
 	}
+
+	public boolean isHasModFile() {
+		return hasModFile;
+	}
+
+	public void setHasModFile(boolean hasModFile) {
+		this.hasModFile = hasModFile;
+	}
+	
 
 }

@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
-import antonsmirnov.javafx.dialog.Dialog;
 import tk.captainsplexx.Game.Main;
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.ResourceHandler.LinkBundleType;
@@ -27,6 +26,9 @@ import tk.captainsplexx.Resource.CAS.CasManager;
 public class ModTools {
 	public ArrayList<Mod> mods;
 	public ArrayList<Package> packages;
+	public static final String RESOURCEFOLDER = "/resources/";
+	public static final String PACKAGEFOLDER = "/packages/";
+	public static final String PACKTYPE = ".pack";
 
 	public ModTools() {
 		init();
@@ -97,7 +99,7 @@ public class ModTools {
 	
 	public void fetchPackages(){
 		int entries = 0;
-		ArrayList<File> files = FileHandler.listf(Main.getGame().getCurrentMod().getPath()+"/packages/", ".pack");
+		ArrayList<File> files = FileHandler.listf(Main.getGame().getCurrentMod().getPath()+PACKAGEFOLDER, ".pack");
 		for (File f : files){
 			if (!f.isDirectory()){
 				Package pack = readPackageInfo(f);
@@ -110,12 +112,12 @@ public class ModTools {
 		System.out.println(packages.size()+" Packages where found in current mod with a total of "+entries+" entries.");
 	}
 	
-	Package readPackageInfo(File file){
+	public Package readPackageInfo(File file){
 		try {
 			FileReader fr = new FileReader(file);
 			BufferedReader br = new BufferedReader(fr);
 			
-			Package pack = new Package(FileHandler.normalizePath(file.getAbsolutePath()).replace(Main.getGame().getCurrentMod().getPath()+"/packages", "").replace(".pack", ""));
+			Package pack = new Package(FileHandler.normalizePath(file.getAbsolutePath()).replace(Main.getGame().getCurrentMod().getPath()+"/packages", "").replace(PACKTYPE, ""));
 			String line = "";
 			while ((line = br.readLine()) != null){
 			
@@ -172,7 +174,7 @@ public class ModTools {
 			return false;
 		}
 		for (Package pack : packages){
-			if (!writePackage(pack, new File(Main.getGame().getCurrentMod().getPath()+"/packages/"+pack.getName()+".pack"))){
+			if (!writePackage(pack, new File(Main.getGame().getCurrentMod().getPath()+"/packages/"+pack.getName()+PACKTYPE))){
 				return false;
 			}
 		}
@@ -243,7 +245,7 @@ public class ModTools {
 								case CHUNK:
 									break;
 								case EBX:
-									byte[] data = FileHandler.readFile(currentMod.getPath()+"/resources/"+sortedEntry.getResourcePath());
+									byte[] data = FileHandler.readFile(currentMod.getPath()+RESOURCEFOLDER+sortedEntry.getResourcePath());
 									originalSize = data.length;
 									casCatEntry = CasManager.extendCAS(data, new File(casCatPath), man);
 									break;

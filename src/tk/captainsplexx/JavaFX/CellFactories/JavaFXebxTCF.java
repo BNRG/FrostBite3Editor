@@ -339,6 +339,7 @@ public class JavaFXebxTCF extends TreeCell<TreeViewEntry> {
 		                }else if (getTreeItem()!= null){
 		                  	contextMenu.getItems().addAll(rename, remove);
 		                }
+		                //setUnderline(value);
 		                setContextMenu(contextMenu);
 		             }
 	            }

@@ -98,7 +98,7 @@ public class CasDataReader { //casPath == folderPath
 	}
 	
 	public static byte[] readBlock(byte[] encodedEntry, FileSeeker seeker){
-		FileHandler.writeFile("output/readBlock", encodedEntry);
+		//FileHandler.writeFile("output/readBlock", encodedEntry);
 		int decompressedSize = FileHandler.readInt(encodedEntry, seeker, ByteOrder.BIG_ENDIAN);
 		int compressionType = FileHandler.readShort(encodedEntry, seeker, ByteOrder.BIG_ENDIAN);
 		int compressedSize = FileHandler.readShort(encodedEntry, seeker, ByteOrder.BIG_ENDIAN) & 0xFFFF;

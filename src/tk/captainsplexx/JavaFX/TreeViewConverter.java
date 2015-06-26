@@ -1,5 +1,6 @@
 package tk.captainsplexx.JavaFX;
 
+import java.io.File;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,6 +9,8 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.image.ImageView;
 import tk.captainsplexx.Game.Main;
 import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
+import tk.captainsplexx.Mod.ModTools;
+import tk.captainsplexx.Mod.PackageEntry;
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.EBX.EBXComplex;
 import tk.captainsplexx.Resource.EBX.EBXComplexDescriptor;
@@ -26,6 +29,7 @@ import tk.captainsplexx.Resource.TOC.TocManager.TocEntryType;
 import tk.captainsplexx.Resource.TOC.TocManager.TocFieldType;
 import tk.captainsplexx.Resource.TOC.TocManager.TocFileType;
 import tk.captainsplexx.Resource.TOC.TocSBLink;
+import tk.captainsplexx.Mod.Package;
 
 public class TreeViewConverter {
 	
@@ -446,9 +450,29 @@ public class TreeViewConverter {
 	public static TreeItem<TreeViewEntry> getTreeView(ConvertedSBpart part){
 		TreeItem<TreeViewEntry> rootnode = new TreeItem<TreeViewEntry>(new TreeViewEntry(part.getPath(), new ImageView(JavaFXHandler.documentIcon), null, EntryType.LIST));
 		
+		File modFilePack = new File(FileHandler.normalizePath(
+				Main.getGame().getCurrentMod().getPath()+ModTools.PACKAGEFOLDER+
+				Main.getGame().getCurrentFile().replace(Main.gamePath, "")+ModTools.PACKTYPE)
+		);
+		Package modPackage = null;
+		if (modFilePack.exists()){
+			modPackage = Main.getModTools().readPackageInfo(modFilePack);
+		}
+		
 		/*EBX*/
 		TreeItem<TreeViewEntry> ebx = new TreeItem<TreeViewEntry>(new TreeViewEntry("ebx - "+part.getEbx().size()+" Children", new ImageView(JavaFXHandler.listIcon), null, EntryType.LIST));
 		for (ResourceLink link : part.getEbx()){
+			if (modPackage!=null){
+				for (PackageEntry entry : modPackage.getEntries()){
+					if (entry.getSubPackage().equalsIgnoreCase(part.getPath())&&//mp_playground/content
+							entry.getResourcePath().equalsIgnoreCase(link.getName()+".ebx")//levels/mp_playground/content/layer2_buildings.ebx
+					){
+						link.setHasModFile(true);
+						break;
+					}
+				}
+				//has NO mod file
+			}
 			String[] name = link.getName().split("/");
 			TreeViewEntry childEntry = new TreeViewEntry(name[name.length-1]+" ("+link.getSha1()+")", new ImageView(JavaFXHandler.structureIcon), link, EntryType.STRING);
 			if (link.getCasPatchType()!=0){
@@ -477,6 +501,18 @@ public class TreeViewConverter {
 		/*RES*/
 		TreeItem<TreeViewEntry> res = new TreeItem<TreeViewEntry>(new TreeViewEntry("res - "+part.getRes().size()+" Children", new ImageView(JavaFXHandler.listIcon), null, EntryType.LIST));
 		for (ResourceLink link : part.getRes()){
+			/*//TODO Res has mod file's too!
+			if (modPackage!=null){
+				for (PackageEntry entry : modPackage.getEntries()){
+					if (entry.getSubPackage().equalsIgnoreCase(part.getPath())&&//mp_playground/uiloading_sp
+							entry.getResourcePath().startsWith(link.getName())//levels/mp_playground/uiloading/cuteKitties.itexture
+					){
+						link.setHasModFile(true);
+						break;
+					}
+				}
+				//has NO mod file
+			}*/
 			String[] name = link.getName().split("/");
 			TreeViewEntry childEntry = new TreeViewEntry(name[name.length-1]+" ("+link.getSha1()+", "+link.getType()+")", null, link, EntryType.STRING);
 			ImageView graphic = null;

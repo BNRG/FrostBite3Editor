@@ -28,6 +28,7 @@ public class Client {
 		if (destFolder.isDirectory()){
 			if (deleteExisiting){
 				destFolder.delete();
+				return null;//TODO does not work :(
 			}else{
 				System.err.println("New folder does already exist.");
 				return null;
