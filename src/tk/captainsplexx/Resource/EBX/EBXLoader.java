@@ -176,6 +176,7 @@ public class EBXLoader {
 		}
 		
 		for (EBXInstanceHelper helper : instanceHelpers){
+			seeker.setOffset(helper.getOffset());
 			isPrimaryInstance = helper.isPrimaryInstance();
 			instances.add(new EBXInstance(helper.getGuid(), readComplex(helper.getInstanceComplexIndex(),true)));
 		}
@@ -214,6 +215,9 @@ public class EBXLoader {
 			field.setValue(readComplex(fieldDesc.getRef(), false), EBXHandler.FieldValueType.Complex);
 		}else if (fieldDesc.getType() == 0x0041){ //ARRAYCOMPLEX
 			int repeaterIndex = FileHandler.readInt(ebxFileBytes, seeker);
+			if (repeaterIndex>arrayRepeaters.length||repeaterIndex<0){
+				System.err.println("Out of bounds!");
+			}
 			EBXArrayRepeater arrayRepeater = arrayRepeaters[repeaterIndex];
 			EBXComplexDescriptor arrayComplexDesc = complexDescriptors[fieldDesc.getRef()];
 			seeker.setOffset(arraySectionstart+arrayRepeater.offset);
@@ -282,11 +286,13 @@ public class EBXLoader {
 			field.setValue(FileHandler.readByte(ebxFileBytes, seeker), FieldValueType.Byte);
 		}else if(fieldDesc.getType() == (short) 0x0035){ // #guid
 			int tempValue = FileHandler.readInt(ebxFileBytes, seeker);
-			/*	INTERNAL STARTS AT 0x1 (values needs to be substracted by 1 to optain the index)
-			 * 	EXTERNAL STARTS AT 0x80 00 00 00 -> substract base value to optain index. (starts at 0)
-			*/	
+			field.setValue("*debug*", FieldValueType.Guid);
+			return field; /*
+			//	INTERNAL STARTS AT 0x1 (values needs to be substracted by 1 to optain the index)
+			// 	EXTERNAL STARTS AT 0x80 00 00 00 -> substract base value to optain index. (starts at 0)	
 			if(((tempValue>>31)) == -1){
 				EBXExternalGUID guid = externalGUIDs[(tempValue & 0x7fffffff)];//same as (tempValue - 0x800000) ^__^
+				
 				/*String fileGUIDName = null; -> Lets do that in the EBX TreeViewCellFactory
 				try{
 					if (Main.getGame().getEBXFileGUIDs()!=null){//DEBUG-
@@ -297,17 +303,18 @@ public class EBXLoader {
 				}
 				if (fileGUIDName != null){
 					field.setValue(fileGUIDName+" "+guid.getInstanceGUID(), FieldValueType.ExternalGuid); //We need to convert the String later back to a FileGUID
-				}else{*/
+				}else{//}
+
 				field.setValue(guid.getFileGUID()+" "+guid.getInstanceGUID(), FieldValueType.ExternalGuid);
-				//}
+				
 			}else if (tempValue == 0x0){
 				field.setValue("*nullGUID*", FieldValueType.Guid);
 			}else{
-				String intGuid = internalGUIDs.get(tempValue-1/*BECAUSE IT STARTS AT 1 BUT IS ACC. 0*/);
+				String intGuid = internalGUIDs.get(tempValue-1);
 				
 				//System.err.println("INTERNAL GUID"); //TODO it does work if the numeration gets done erlier :) so change init ?
 				field.setValue(intGuid, FieldValueType.Guid);
-			}
+			}*/
 		}else{
 			System.err.println("(EBXLoader) Unknown field type: "+Integer.toHexString(fieldDesc.getType())+" File name: "+filePath);
 			field.setValue("*unknown field type*", FieldValueType.Unknown);

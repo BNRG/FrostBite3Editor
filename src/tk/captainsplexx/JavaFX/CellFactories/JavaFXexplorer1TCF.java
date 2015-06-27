@@ -39,7 +39,26 @@ public class JavaFXexplorer1TCF extends TreeCell<TreeViewEntry> {
 		restore.setGraphic(new ImageView(JavaFXHandler.clipboardPasteIcon));
 		restore.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
-            	System.err.println("TODO RESTORE");
+            	byte[] data = null;
+            	ResourceLink link = (ResourceLink) getTreeItem().getValue().getValue();
+            	if (link!=null){
+            		data = CasDataReader.readCas(link.getBaseSha1(), link.getDeltaSha1(), link.getSha1(), link.getCasPatchType());
+            		if (data!=null){
+            			File target = new File(Main.getGame().getCurrentMod().getPath()+ModTools.RESOURCEFOLDER+link.getName()+"."+link.getBundleType().toString().toLowerCase());
+            			if (target.exists()){
+            				File backup = new File(target.getAbsoluteFile()+".bak");
+            				if (backup.exists()){
+            					backup.delete();
+            				}
+            				target.renameTo(backup);
+            			}
+            			if (!FileHandler.writeFile(target.getAbsolutePath(), data)){
+            				System.err.println("Could not write data to file. Check permissions!");
+            			}
+            		}else{
+            			System.err.println("Could not fetch original data.");
+            		}
+            	}
             }
         });
 		
@@ -50,6 +69,7 @@ public class JavaFXexplorer1TCF extends TreeCell<TreeViewEntry> {
             	System.err.println("TODO REMOVE");
             }
         });
+		remove.setDisable(true);
 		
 		rename = new MenuItem("Rename");
 		rename.setGraphic(new ImageView(JavaFXHandler.textIcon));
@@ -58,6 +78,7 @@ public class JavaFXexplorer1TCF extends TreeCell<TreeViewEntry> {
             	System.err.println("TODO RENAME");
             }
         });
+		rename.setDisable(true);
 		
 		setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
