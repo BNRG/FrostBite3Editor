@@ -38,8 +38,8 @@ public class EBXLoader {
 	private ArrayList<EBXInstance> instances;
 	private ArrayList<EBXField> fields;
 	
-	private ArrayList<EBXInstanceHelper> instanceHelpers;
-	
+	private ArrayList<Integer> internalGUIDFieldIndexs;
+		
 	private FileSeeker seeker;
 	
 	private boolean isPrimaryInstance;
@@ -152,33 +152,34 @@ public class EBXLoader {
 		internalGUIDs = new ArrayList<String>(); 
 		fields = new ArrayList<EBXField>(); 
 		instances = new ArrayList<EBXInstance>(); 
+		internalGUIDFieldIndexs = new ArrayList<Integer>();
 		seeker.setOffset(header.absStringOffset+header.lenString);
 		//int nonGUIDindex = 0;
 		String tempGUID = "";
 		isPrimaryInstance = true;
-		instanceHelpers = new ArrayList<EBXInstanceHelper>();
 		for (int repeater=0; repeater<instanceRepeaters.length;repeater++){
 			EBXInstanceRepeater ir = instanceRepeaters[repeater];
 			for (int repetition=0; repetition<ir.getRepetitions();repetition++){
 				while (seeker.getOffset()%complexDescriptors[ir.complexIndex].alignment!=0){ seeker.seek(1); } //#obey alignment of the instance; peek into the complex for that
 				if (repeater<header.getNumGUIDRepeater()){
-					tempGUID = FileHandler.bytesToHex(FileHandler.readByte(ebxFileBytes, seeker, 16));;
+					tempGUID = FileHandler.bytesToHex(FileHandler.readByte(ebxFileBytes, seeker, 16));
 				}else{
 					tempGUID = FileHandler.bytesToHex(ByteBuffer.allocate(4).putInt(internalGUIDs.size()).array());//lets use the index as guid
 					//tempGUID = FileHandler.bytesToHex(ByteBuffer.allocate(4).putInt(nonGUIDindex).array());
 					//nonGUIDindex++;
 				}
 				internalGUIDs.add(tempGUID);
-				instanceHelpers.add(new EBXInstanceHelper(seeker.getOffset(), tempGUID, ir.getComplexIndex(), isPrimaryInstance));
-				//instances.add(new EBXInstance(tempGUID, readComplex(ir.getComplexIndex(), true)));
+				instances.add(new EBXInstance(tempGUID, readComplex(ir.getComplexIndex(), true)));
 				isPrimaryInstance = false;
 			}
 		}
-		
-		for (EBXInstanceHelper helper : instanceHelpers){
-			seeker.setOffset(helper.getOffset());
-			isPrimaryInstance = helper.isPrimaryInstance();
-			instances.add(new EBXInstance(helper.getGuid(), readComplex(helper.getInstanceComplexIndex(),true)));
+		for (Integer i : internalGUIDFieldIndexs){
+			EBXField field = fields.get(i);
+			Integer tempValue = (Integer) field.getValue();
+			
+			String intGuid = internalGUIDs.get(tempValue-1);		
+			
+			field.setValue(intGuid, FieldValueType.Guid); //set guid from temp value!
 		}
 		
 		ebxFileBytes = null;
@@ -286,8 +287,8 @@ public class EBXLoader {
 			field.setValue(FileHandler.readByte(ebxFileBytes, seeker), FieldValueType.Byte);
 		}else if(fieldDesc.getType() == (short) 0x0035){ // #guid
 			int tempValue = FileHandler.readInt(ebxFileBytes, seeker);
-			field.setValue("*debug*", FieldValueType.Guid);
-			return field; /*
+			//field.setValue(String.valueOf(tempValue)+"test", FieldValueType.Guid);
+			//return field;
 			//	INTERNAL STARTS AT 0x1 (values needs to be substracted by 1 to optain the index)
 			// 	EXTERNAL STARTS AT 0x80 00 00 00 -> substract base value to optain index. (starts at 0)	
 			if(((tempValue>>31)) == -1){
@@ -303,18 +304,25 @@ public class EBXLoader {
 				}
 				if (fileGUIDName != null){
 					field.setValue(fileGUIDName+" "+guid.getInstanceGUID(), FieldValueType.ExternalGuid); //We need to convert the String later back to a FileGUID
-				}else{//}
+				}else{//}*/
 
 				field.setValue(guid.getFileGUID()+" "+guid.getInstanceGUID(), FieldValueType.ExternalGuid);
 				
 			}else if (tempValue == 0x0){
 				field.setValue("*nullGUID*", FieldValueType.Guid);
 			}else{
-				String intGuid = internalGUIDs.get(tempValue-1);
+				internalGUIDFieldIndexs.add(fields.size()-1);//current field index ;)
+				
+				
+				//String test = FileHandler.bytesToHex(FileHandler.toBytes(tempValue, ByteOrder.BIG_ENDIAN));
+				//String intGuid = internalGUIDs.get(tempValue-1);
 				
 				//System.err.println("INTERNAL GUID"); //TODO it does work if the numeration gets done erlier :) so change init ?
-				field.setValue(intGuid, FieldValueType.Guid);
-			}*/
+				
+				
+				
+				field.setValue(tempValue, FieldValueType.Guid); //set tempValue temp as value.
+			}
 		}else{
 			System.err.println("(EBXLoader) Unknown field type: "+Integer.toHexString(fieldDesc.getType())+" File name: "+filePath);
 			field.setValue("*unknown field type*", FieldValueType.Unknown);
