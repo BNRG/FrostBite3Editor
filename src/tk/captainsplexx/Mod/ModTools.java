@@ -201,7 +201,7 @@ public class ModTools {
 				CasCatManager man = Main.getGame().getResourceHandler().getPatchedCasCatManager();
 				CasManager.createCAS(casCatPath);
 				Mod currentMod = Main.getGame().getCurrentMod();
-				//TODO MOD CLIENT LOGIC!
+				//TODO MOD CLIENT LOGIC! multi subpackages dont work ;(
 				for (Package pack : packages){
 					Main.getGame().setCurrentFile(FileHandler.normalizePath((Main.gamePath+"/"+pack.getName())));
 					TocFile toc = TocManager.readToc(Main.getGame().getCurrentFile());
@@ -224,6 +224,7 @@ public class ModTools {
 						ConvertedSBpart currentSBpart = null;
 						for (TocSBLink link : convToc.getBundles()){
 							if (link.getID().equals(subPackageName)){
+																				//link.setSbPath(sbPath); change the sb path once one subpackage is already done
 								TocFile part = link.getLinkedSBPart();
 								currentSBpart = TocConverter.convertSBpart(part);
 								break;

@@ -3,8 +3,12 @@ package tk.captainsplexx.Resource;
 public class FileSeeker {
 	public int offset;
 	public String description;
+	public FileSeeker(int offset){
+		this.offset = offset;
+		description = null;
+	}
 	public FileSeeker(){
-		offset = 0;
+		this.offset = 0;
 		description = null;
 	}
 	

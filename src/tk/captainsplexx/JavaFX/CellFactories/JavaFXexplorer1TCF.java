@@ -124,6 +124,7 @@ public class JavaFXexplorer1TCF extends TreeCell<TreeViewEntry> {
 										data = CasDataReader.readCas(link.getBaseSha1(), link.getDeltaSha1(), link.getSha1(), link.getCasPatchType());
 									}
 									if (data != null){
+				FileHandler.writeFile("output/ebx_data", data);
 										TreeItem<TreeViewEntry> ebx = TreeViewConverter.getTreeView(game.getResourceHandler().getEBXHandler().loadFile(data));
 										Main.getJavaFXHandler().setTreeViewStructureRight(ebx);
 										Main.getJavaFXHandler().getMainWindow().updateRightRoot();

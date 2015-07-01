@@ -386,129 +386,137 @@ public class JavaFXebxTCF extends TreeCell<TreeViewEntry> {
         }
         
         public String convertToString(TreeViewEntry item){
-        	switch(item.type){
-	    		case STRING:
-	    			return (String)item.getValue();
-	    		case SHA1:
-	    			return (String)item.getValue();
-	    		case FLOAT:
-	    			return ((Float)item.getValue()).toString();
-	    		case DOUBLE:
-	    			return ((Double)item.getValue()).toString();
-	    		case SHORT:
-	    			return ((Short)item.getValue()).toString();
-	    		case INTEGER:
-	    			return ((Integer)item.getValue()).toString();
-	    		case UINTEGER:
-	    			return ((Long)item.getValue()).toString();
-	    		case LONG:
-	    			return ((Long)item.getValue()).toString();
-	    		case ARRAY:
-	    			return item.getName();
-	    		case LIST:
-	    			return item.getName();
-	    		case BOOL:
-	    			if (((Boolean)item.getValue())==true){
-	    				return "TRUE";
-	    			}else{
-	    				return "FALSE";
-	    			}
-	    		case HEX8:
-	    			return (String)item.getValue();
-	    		case BYTE:
-	    			return byteToHex(((Byte)item.getValue()));
-	    		case ENUM:
-	    			HashMap<EBXFieldDescriptor, Boolean> enums = (HashMap<EBXFieldDescriptor, Boolean>) item.getValue();
-	    			String value = "ENUM NOTHING SELECTED!";
-	    			for (EBXFieldDescriptor desc : enums.keySet()){
-	    				boolean selected = enums.get(desc);
-	    				if (selected){
-	    					value = desc.getName();
-	    					break;
-	    				}
-	    			}
-	    			return value;
-	    		case RAW:
-	    			return FileHandler.bytesToHex((byte[]) item.getValue());
-	    		case NULL:
-	    			return ("NULL"); //DEFINED NULL ("NULL")
-	    		case GUID:
-	    			String fileGUIDName = null;
-	    			String[] split = ((String)item.getValue()).split(" ");
-					if (Main.getGame().getEBXFileGUIDs()!=null&&split.length==2){//DEBUG-
-						fileGUIDName = Main.getGame().getEBXFileGUIDs().get(split[0].toUpperCase());
-						if (fileGUIDName != null){
-							return fileGUIDName+" "+split[1];
+        	if (item.value!=null){
+	        	switch(item.type){
+		    		case STRING:
+		    			return (String)item.getValue();
+		    		case SHA1:
+		    			return (String)item.getValue();
+		    		case FLOAT:
+		    			return ((Float)item.getValue()).toString();
+		    		case DOUBLE:
+		    			return ((Double)item.getValue()).toString();
+		    		case SHORT:
+		    			return ((Short)item.getValue()).toString();
+		    		case INTEGER:
+		    			return ((Integer)item.getValue()).toString();
+		    		case UINTEGER:
+		    			return ((Long)item.getValue()).toString();
+		    		case LONG:
+		    			return ((Long)item.getValue()).toString();
+		    		case ARRAY:
+		    			return item.getName();
+		    		case LIST:
+		    			return item.getName();
+		    		case BOOL:
+		    			if (((Boolean)item.getValue())==true){
+		    				return "TRUE";
+		    			}else{
+		    				return "FALSE";
+		    			}
+		    		case HEX8:
+		    			return (String)item.getValue();
+		    		case BYTE:
+		    			return byteToHex(((Byte)item.getValue()));
+		    		case ENUM:
+		    			HashMap<EBXFieldDescriptor, Boolean> enums = (HashMap<EBXFieldDescriptor, Boolean>) item.getValue();
+		    			String value = "ENUM NOTHING SELECTED!";
+		    			for (EBXFieldDescriptor desc : enums.keySet()){
+		    				boolean selected = enums.get(desc);
+		    				if (selected){
+		    					value = desc.getName();
+		    					break;
+		    				}
+		    			}
+		    			return value;
+		    		case RAW:
+		    			return FileHandler.bytesToHex((byte[]) item.getValue());
+		    		case NULL:
+		    			return ("NULL"); //DEFINED NULL
+		    		case GUID:
+		    			String fileGUIDName = null;
+		    			String[] split = ((String)item.getValue()).split(" ");
+						if (Main.getGame().getEBXFileGUIDs()!=null&&split.length==2){//DEBUG-
+							fileGUIDName = Main.getGame().getEBXFileGUIDs().get(split[0].toUpperCase());
+							if (fileGUIDName != null){
+								return fileGUIDName+" "+split[1];
+							}
 						}
-					}
-					return (String)item.getValue();
-	    		case CHUNKGUID:
-	    			return (String)item.getValue();
-				default:
-					return null; //UNDEFINED NULL ("null")
+						return (String)item.getValue();
+		    		case CHUNKGUID:
+		    			return (String)item.getValue();
+					default:
+						return "null"; //UNDEFINED NULL
+	        	}
+        	}else{
+        		return "null";
         	}
         }
         
         public Object convertToObject(String value, TreeViewEntry item){
         	try{
-	        	switch(item.type){
-		    		case STRING:
-		    			return(value);
-		    		case ENUM:
-		    			return(item.getValue()/*RETURNS STRING(if null) OR HASHMAP*/);
-		    		case HEX8:
-		    			return(value);
-		    		case LIST:
-		    			return(value);
-		    		case ARRAY:
-		    			return(value);
-		    		case FLOAT:
-		    			return(Float.valueOf(value));
-		    		case DOUBLE:
-		    			return(Double.valueOf(value));
-		    		case SHORT:
-		    			return(Short.valueOf(value));
-		    		case INTEGER:
-		    			return(Integer.valueOf(value));
-		    		case LONG:
-		    			return(Long.valueOf(value));
-		    		case UINTEGER:
-		    			return(Long.valueOf(value))& 0xffffffffL;
-		    		case BYTE:
-		    			return(hexToByte(value));
-		    		case RAW:
-		    			return(FileHandler.hexStringToByteArray(value));
-		    		case BOOL:
-		    			if (value.equals("TRUE")){
-		    				return true;
-		    			}else{
-		    				return false;
-		    			}
-		    		case NULL:
-		    			return("NULL"); //DEFINED NULL ("NULL")
-		    		case GUID:
-		    			if (value.contains("/")){
-		    				String[] split = value.split(" ");
-		    				if (Main.getGame().getEBXFileGUIDs()!=null&&split.length==2){
-		    					for (String v : Main.getGame().getEBXFileGUIDs().values()){
-		    						String keySet = Main.getGame().getEBXFileGUIDs().get(v);
-		    						if (keySet.equals(split[0])){
-		    							return (keySet+" "+split[1]);
-		    						}
-		    					}
-							}
-		    				System.err.println("EXTERNAL GUID PATH COULD NOT BE FOUND IN DATABASE. NO CONVERTION TO FILEGUID POSSIBLE!");
-		    				return("ERROR");
-		    			}else{
-		    				return(value);
-		    			}
-		    		case CHUNKGUID:
-		    			return(value);
-		    		case SHA1:
-		    			return(value);
-					default:
-						return null; //UNDEFINED NULL ("null")
-	        	}
+        		if (value.equals("null")){//hasNoPayloadData! aka. undefined null
+        			return null;
+        		}else{
+		        	switch(item.type){
+			    		case STRING:
+			    			return(value);
+			    		case ENUM:
+			    			return(item.getValue()/*RETURNS STRING(if null) OR HASHMAP*/);
+			    		case HEX8:
+			    			return(value);
+			    		case LIST:
+			    			return(value);
+			    		case ARRAY:
+			    			return(value);
+			    		case FLOAT:
+			    			return(Float.valueOf(value));
+			    		case DOUBLE:
+			    			return(Double.valueOf(value));
+			    		case SHORT:
+			    			return(Short.valueOf(value));
+			    		case INTEGER:
+			    			return(Integer.valueOf(value));
+			    		case LONG:
+			    			return(Long.valueOf(value));
+			    		case UINTEGER:
+			    			return(Long.valueOf(value))& 0xffffffffL;
+			    		case BYTE:
+			    			return(hexToByte(value));
+			    		case RAW:
+			    			return(FileHandler.hexStringToByteArray(value));
+			    		case BOOL:
+			    			if (value.equals("TRUE")){
+			    				return true;
+			    			}else{
+			    				return false;
+			    			}
+			    		case NULL:
+			    			return("NULL"); //DEFINED NULL ("NULL")
+			    		case GUID:
+			    			if (value.contains("/")){
+			    				String[] split = value.split(" ");
+			    				if (Main.getGame().getEBXFileGUIDs()!=null&&split.length==2){
+			    					for (String v : Main.getGame().getEBXFileGUIDs().values()){
+			    						String keySet = Main.getGame().getEBXFileGUIDs().get(v);
+			    						if (keySet.equals(split[0])){
+			    							return (keySet+" "+split[1]);
+			    						}
+			    					}
+								}
+			    				System.err.println("EXTERNAL GUID PATH COULD NOT BE FOUND IN DATABASE. NO CONVERTION TO FILEGUID POSSIBLE!");
+			    				return("ERROR");
+			    			}else{
+			    				return(value);
+			    			}
+			    		case CHUNKGUID:
+			    			return(value);
+			    		case SHA1:
+			    			return(value);
+						default:
+							return null; //UNDEFINED NULL ("null")
+		        	}
+        		}
         	}catch(Exception e){
         		System.err.println("Couldn't not parse entry with name "+item.getName()+" in JavaFXTreeCellFactory!");
         		return null;

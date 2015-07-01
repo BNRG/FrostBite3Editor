@@ -50,6 +50,8 @@ public class EBXCreator {
 	
 	private ArrayList<Byte> filler = new ArrayList<>();
 	
+	private ArrayList<String> internalGUIDs;
+	
 	private boolean firstRun = true;
 	
 	public void init(){
@@ -76,6 +78,9 @@ public class EBXCreator {
 		instanceRepeaters = new ArrayList<>();
 		arrayRepeaters = new ArrayList<>();
 		strings = new ArrayList<>();
+		
+		internalGUIDs = new ArrayList<>();
+		
 	}
 	
 	public byte[] createEBX(EBXFile ebxFile){
@@ -106,11 +111,12 @@ public class EBXCreator {
 		
 		
 		//NOTE - TRUEFILENAME does actually not exist, it uses the String value of the first 'Name' field in the primaryInstance
-		
+		boolean isPrimaryInstance = true;
 		for (EBXInstance instance : ebxFile.getInstances()){
-			if (!proccInstance(instance)){
+			if (!proccInstance(instance, isPrimaryInstance)){
 				System.err.println("Couldn't processing EBXInstance. GUID: "+instance.getGuid());
 			}
+			isPrimaryInstance = false;
 		}
 		
 		
@@ -173,14 +179,15 @@ public class EBXCreator {
 				complexDescriptorBytes.size() + instanceRepeaterBytes.size() + arrayRepeaterBytes.size();
 	}
 
-	public boolean proccInstance(EBXInstance ebxInstance){
+	public boolean proccInstance(EBXInstance ebxInstance, boolean isPrimaryInstance){
 		while(payloadData.size()%16!=0){//TODO its aligned in original one, how does the size get effected ?
 			payloadData.add((byte) 0x00);
 		}
 		String guid = ebxInstance.getGuid();
 		if (guid.length()>15){
 			FileHandler.addBytes(FileHandler.hexStringToByteArray(ebxInstance.getGuid()), payloadData);
-		}else{
+		}
+		if (!isPrimaryInstance){
 			for (int i=0; i<8;i++){
 				payloadData.add((byte) 0x00);
 			}
@@ -381,21 +388,12 @@ public class EBXCreator {
 					(short)0x0//secondarySize
 				);
 				complexDescriptors.add(enumComplexDesc);//add directly because proccComplexDescr. contains size methods
-				desc.setRef((short) (complexDescriptors.size()-1));//TODO -1 ??
+				desc.setRef((short) (complexDescriptors.size()-1));
 				
 				data = FileHandler.toBytes(selectedIndex, ByteOrder.LITTLE_ENDIAN);
 				FileHandler.addBytes(data, targetList);
-				System.err.println("ENUM ->TEST!");
-				/*  value in field (unsigned integer) represents the relative index from the ENUMComplex fields!
-				 *  desc.ref redirects to the enumComplex. 
-				 *  for field in enum Complex (rel index starts at 0)
-				 *  	if (field.desc.offset) == value in field aka. index^
-				 *  		desc.name == SELECTED ENUM.
-				 *  
-				 */
 			}else{
 				System.err.println("ENUM ERROR");
-				//TODO ENUM ERROR...
 			}
 		}else if(h==(short)0x0035){//___________________________________________________________________________________________GUID
 			String val = (String) ebxField.getValue();
@@ -404,8 +402,7 @@ public class EBXCreator {
 			}else if (val.contains(" ")){//External GUID
 				String[] split = val.split(" ");
 				EBXExternalGUID extGUID = new EBXExternalGUID(split[0], split[1]);
-				proccExternalGUID(extGUID);
-				int index = externalGUIDs.size()-1;
+				int index = proccExternalGUID(extGUID);
 				data = FileHandler.toBytes(index+0x80000000/*first bit toggled ;)*/, ByteOrder.LITTLE_ENDIAN);
 			}else{//Internal GUID
 				byte[] internal = FileHandler.hexStringToByteArray(val);//
@@ -417,9 +414,16 @@ public class EBXCreator {
 							internal[0]//Should be LITTLE_ENDIAN :)
 					};
 					Integer index = FileHandler.readInt(internal, new FileSeeker());
+						proccInternalGUID(val);
 					index++;//because 1 is acc. 0
 					data = FileHandler.toBytes(index, ByteOrder.LITTLE_ENDIAN);
 					//System.err.println("GUID");//i changed the loader so it uses the index as guid :)
+				}else if (internal.length==16){
+					internal = null;
+					Integer index = proccInternalGUID(val);
+					data = FileHandler.toBytes(index, ByteOrder.LITTLE_ENDIAN);
+					//data for now :)
+					System.err.println("TEST->internal guid with 16 bytes");//TODO TEST internal guid
 				}else{
 					System.err.println("Invalid Internal GUID - check length!");
 				}				
@@ -560,14 +564,28 @@ public class EBXCreator {
 		return EBXHandler.hasher(name.getBytes());
 	}
 	
-	public boolean proccExternalGUID(EBXExternalGUID guid){
+	public int proccExternalGUID(EBXExternalGUID guid){
+		int index = 0;
 		for (EBXExternalGUID entry : externalGUIDs){
 			if (guid.getFileGUID().equals(entry.getFileGUID()) && guid.getInstanceGUID().equals(entry.getInstanceGUID())){
-				return true;
+				return index;
 			}
+			index++;
 		}
 		externalGUIDs.add(guid);
-		return true;
+		return externalGUIDs.size()-1;
+	}
+	
+	public int proccInternalGUID(String internalGUID){
+		int index = 0;
+		for (String s : internalGUIDs){
+			if (s.equalsIgnoreCase(internalGUID)){
+				return index;
+			}
+			index++;
+		}
+		internalGUIDs.add(internalGUID);
+		return internalGUIDs.size()-1;
 	}
 		
 	

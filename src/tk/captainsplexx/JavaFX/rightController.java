@@ -45,7 +45,7 @@ public class RightController {
 				FileHandler.writeFile("output/DEBUG.ebx", ebxBytes);
 				
 				//TEST 2
-				EBXFile orig = Main.getGame().getResourceHandler().getEBXHandler().loadFile(FileHandler.readFile("__DOCUMENTATION__/ebx/sample_ebx/layer0_default.ebx"));
+				EBXFile orig = Main.getGame().getResourceHandler().getEBXHandler().loadFile(FileHandler.readFile("mods/SampleMod/resources/levels/mp/mp_playground/content/layer2_buildings.bak--IGNORE"));
 				byte[] origBytes = Main.getGame().getResourceHandler().getEBXHandler().createEBX(orig);
 				FileHandler.writeFile("output/ORIG_DEBUG.ebx", origBytes);
 				

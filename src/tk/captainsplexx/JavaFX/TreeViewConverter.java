@@ -121,11 +121,18 @@ public class TreeViewConverter {
 					case ArrayComplex:
 						entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), new ImageView(JavaFXHandler.arrayIcon), null, EntryType.ARRAY);
 						entry.setEBXType((short) (ebxField.getFieldDescritor().getType()&0xFFFF));
-						TreeItem<TreeViewEntry> fieldArray = new TreeItem<TreeViewEntry>(entry);
-						for (EBXField eF : ebxField.getValueAsComplex().getFields()){
-							fieldArray.getChildren().add(readField(eF));
+						if (ebxField.getValue() instanceof String){
+							entry.setValue("*nullArray*");
+							TreeItem<TreeViewEntry> field = new TreeItem<TreeViewEntry>(entry);
+							return field;
+						}else{
+							TreeItem<TreeViewEntry> fieldArray = new TreeItem<TreeViewEntry>(entry);
+							for (EBXField eF : ebxField.getValueAsComplex().getFields()){
+								fieldArray.getChildren().add(readField(eF));
+							}
+							return fieldArray;
 						}
-						return fieldArray;
+						//array in array does not work right ?
 					case Bool:
 						entry = new TreeViewEntry(ebxField.getFieldDescritor().getName(), new ImageView(JavaFXHandler.boolIcon), (Boolean)ebxField.getValue(), EntryType.BOOL); //0x01 == TRUE
 						break;
@@ -283,10 +290,16 @@ public class TreeViewConverter {
 		EBXField field = new EBXField(desc, 0);
 		switch (fieldEntry.getValue().getType()) {
 			case ARRAY:
-				EBXComplex complex0 = getEBXComplex(fieldEntry);
-				field.setValue(complex0, FieldValueType.ArrayComplex);
-				desc.setType(entry.getEBXType());
-				break;
+				if (fieldEntry.getValue().getValue() instanceof String){
+					field.setValue("*nullArray*", FieldValueType.ArrayComplex);
+					desc.setType(entry.getEBXType());
+					break;
+				}else{
+					EBXComplex complex0 = getEBXComplex(fieldEntry);
+					field.setValue(complex0, FieldValueType.ArrayComplex);
+					desc.setType(entry.getEBXType());
+					break;
+				}
 			case BOOL:
 				field.setValue(entry.getValue(), FieldValueType.Bool);
 				desc.setType(entry.getEBXType());

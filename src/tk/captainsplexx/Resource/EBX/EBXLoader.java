@@ -95,7 +95,10 @@ public class EBXLoader {
 		while (seeker.getOffset()%16!=0){ seeker.seek(1); } //#padding
 		externalGUIDs = new EBXExternalGUID[header.getNumGUID()];
 		for (int i=0;i<externalGUIDs.length;i++){
-			externalGUIDs[i] = new EBXExternalGUID((FileHandler.bytesToHex(FileHandler.readByte(ebxFileBytes, seeker, 16)).toUpperCase()), (FileHandler.bytesToHex(FileHandler.readByte(ebxFileBytes, seeker, 16)).toUpperCase()));
+			externalGUIDs[i] = new EBXExternalGUID(
+					(FileHandler.bytesToHex(FileHandler.readByte(ebxFileBytes, seeker, 16)).toUpperCase()),
+					(FileHandler.bytesToHex(FileHandler.readByte(ebxFileBytes, seeker, 16)).toUpperCase())
+			);
 		}
 		//Get Keywords and Calculate Hashes
 		this.keywordDict = new HashMap<Integer, String>();
@@ -169,7 +172,7 @@ public class EBXLoader {
 					//nonGUIDindex++;
 				}
 				internalGUIDs.add(tempGUID);
-				instances.add(new EBXInstance(tempGUID, readComplex(ir.getComplexIndex(), true)));
+				instances.add(new EBXInstance(tempGUID, readComplex(ir.getComplexIndex(), true, false)));
 				isPrimaryInstance = false;
 			}
 		}
@@ -177,7 +180,7 @@ public class EBXLoader {
 			EBXField field = fields.get(i);
 			Integer tempValue = (Integer) field.getValue();
 			
-			String intGuid = internalGUIDs.get(tempValue-1);		
+			String intGuid = internalGUIDs.get(tempValue-1);
 			
 			field.setValue(intGuid, FieldValueType.Guid); //set guid from temp value!
 		}
@@ -185,7 +188,7 @@ public class EBXLoader {
 		ebxFileBytes = null;
 	}
 	
-	private EBXComplex readComplex(int complexIndex, boolean isInstance) {
+	private EBXComplex readComplex(int complexIndex, boolean isInstance, boolean hasEmtyPayload) {
 		EBXComplexDescriptor complexDesc = complexDescriptors[complexIndex];
 		EBXComplex cmplx = new EBXComplex(complexDesc);
 		cmplx.setOffset(seeker.getOffset());
@@ -198,25 +201,24 @@ public class EBXLoader {
 		}
 		for (int fieldIndex=0; fieldIndex<complexDesc.getNumField(); fieldIndex++){
 			seeker.setOffset(cmplx.getOffset()+fieldDescriptors[complexDesc.getFieldStartIndex()+fieldIndex].getOffset()-obfuscationShift);
-	    	fields[fieldIndex] = readField(complexDesc.getFieldStartIndex()+fieldIndex);
+	    	fields[fieldIndex] = readField(complexDesc.getFieldStartIndex()+fieldIndex, hasEmtyPayload);
 		}
 		cmplx.fields = fields;
 		seeker.setOffset(cmplx.getOffset()+complexDesc.getSize()-obfuscationShift);
 		return cmplx;
 	}
 
-	public EBXField readField(int fieldIndex){
+	public EBXField readField(int fieldIndex, boolean hasEmtyPayload){
 		EBXFieldDescriptor fieldDesc = fieldDescriptors[fieldIndex];
 		EBXField field = new EBXField(fieldDesc, seeker.getOffset());
 		fields.add(field);
-		
-		
+				
 		/*<DECODE>*/
 		if (fieldDesc.getType() == (short) 0x0029|| fieldDesc.getType() == (short) 0xd029 || fieldDesc.getType() == (short) 0x0000 || fieldDesc.getType() == (short) 0x8029){ //COMPLEX
-			field.setValue(readComplex(fieldDesc.getRef(), false), EBXHandler.FieldValueType.Complex);
+			field.setValue(readComplex(fieldDesc.getRef(), false, hasEmtyPayload), EBXHandler.FieldValueType.Complex);
 		}else if (fieldDesc.getType() == 0x0041){ //ARRAYCOMPLEX
 			int repeaterIndex = FileHandler.readInt(ebxFileBytes, seeker);
-			if (repeaterIndex>arrayRepeaters.length||repeaterIndex<0){
+			if (repeaterIndex>arrayRepeaters.length){
 				System.err.println("Out of bounds!");
 			}
 			EBXArrayRepeater arrayRepeater = arrayRepeaters[repeaterIndex];
@@ -227,12 +229,14 @@ public class EBXLoader {
 			if (arrayRepeater.getRepetitions()>0){//Guids,Strings,Integer... =) ?
 				fields = new EBXField[arrayRepeater.getRepetitions()];
 				for (int i=0; i<fields.length;i++){
-					fields[i] = readField(arrayComplexDesc.getFieldStartIndex());
+					fields[i] = readField(arrayComplexDesc.getFieldStartIndex(), false);
 				}
-			}else if (arrayComplexDesc.getNumField()>0){//Field is prob, Complex
+			}else if (arrayComplexDesc.getNumField()>0){//Field is prob, Complex|||  ------------>The complexDescr does exist but without any payload ??
+				int index = FileHandler.readInt(ebxFileBytes, new FileSeeker(seeker.getOffset()));//array section contains a integer for it ?
+				System.out.println("ArrayComplex-Integer-Debug: "+index);
 				fields = new EBXField[arrayComplexDesc.getNumField()];
 				for (int i=0; i<fields.length;i++){
-					fields[i] = readField(arrayComplexDesc.getFieldStartIndex()+i);
+					fields[i] = readField(arrayComplexDesc.getFieldStartIndex()+i, true);//has no payload data!
 				}
 			}
 			if (fields!=null){
@@ -242,86 +246,138 @@ public class EBXLoader {
 				field.setValue("*nullArray*", FieldValueType.ArrayComplex);
 			}
 		}else if (fieldDesc.getType() == (short) 0x407D || fieldDesc.getType() == (short) 0x409D){//STRING
-			int stringOffset = FileHandler.readInt(ebxFileBytes, seeker);
-			if (stringOffset==-1){
-				field.setValue("*nullString*", FieldValueType.String);
+			if (hasEmtyPayload){
+				field.setValue(null, FieldValueType.String);
 			}else{
-				field.setValue(readString(ebxFileBytes, header.getAbsStringOffset()+stringOffset),FieldValueType.String);
-			}
-			//TRUEFILENAME
-			if (isPrimaryInstance && fieldDesc.getName().equals("Name") && trueFilename.equals("")){
-				trueFilename = (String) field.getValue();
-			}
-		}else if (fieldDesc.getType() == (short) 0x0089 || fieldDesc.getType() == (short) 0xC089){//ENUM GIVES STRING BACK - incomplete implementation //TODO
-			int compareValue = FileHandler.readInt(ebxFileBytes, seeker);
-			EBXComplexDescriptor enumComplex = complexDescriptors[fieldDesc.getRef()];
-			
-			if (enumComplex.getNumField()==0){
-				field.setValue("*nullEnum*", FieldValueType.Enum);
-			}else{
-				HashMap<EBXFieldDescriptor, Boolean> enums = new HashMap<>();
-				for (int index=0; index<enumComplex.getNumField(); index++){ //TODO check ??
-					if (fieldDescriptors[enumComplex.getFieldStartIndex()+index].getOffset()==compareValue){
-						enums.put(fieldDescriptors[enumComplex.getFieldStartIndex()+index], true);//SELECTED
-					}else{
-						enums.put(fieldDescriptors[enumComplex.getFieldStartIndex()+index], false);//NOT SELECTED
-					}
+				int stringOffset = FileHandler.readInt(ebxFileBytes, seeker);
+				if (stringOffset<=-1){
+					field.setValue("*nullString*", FieldValueType.String);
+				}else{
+					field.setValue(readString(ebxFileBytes, header.getAbsStringOffset()+stringOffset),FieldValueType.String);
 				}
-				field.setValue(enums, FieldValueType.Enum);
+				//TRUEFILENAME
+				if (isPrimaryInstance && fieldDesc.getName().equals("Name") && trueFilename.equals("")){
+					trueFilename = (String) field.getValue();
+				}
+			}
+		}else if (fieldDesc.getType() == (short) 0x0089 || fieldDesc.getType() == (short) 0xC089){
+			if (hasEmtyPayload){
+				field.setValue(null, FieldValueType.Enum);
+			}else{
+				int compareValue = FileHandler.readInt(ebxFileBytes, seeker);
+				EBXComplexDescriptor enumComplex = complexDescriptors[fieldDesc.getRef()];
+				
+				if (enumComplex.getNumField()==0||hasEmtyPayload){
+					field.setValue("*nullEnum*", FieldValueType.Enum);
+				}else{
+					HashMap<EBXFieldDescriptor, Boolean> enums = new HashMap<>();
+					for (int index=0; index<enumComplex.getNumField(); index++){ //TODO check ??
+						if (fieldDescriptors[enumComplex.getFieldStartIndex()+index].getOffset()==compareValue){
+							enums.put(fieldDescriptors[enumComplex.getFieldStartIndex()+index], true);//SELECTED
+						}else{
+							enums.put(fieldDescriptors[enumComplex.getFieldStartIndex()+index], false);//NOT SELECTED
+						}
+					}
+					field.setValue(enums, FieldValueType.Enum);
+				}
 			}
 		}else if (fieldDesc.getType()== (short) 0xC15D){ //GUID CHUNK
-			field.setValue(FileHandler.bytesToHex(FileHandler.readByte(ebxFileBytes, seeker,16)), FieldValueType.ChunkGuid);
-		}else if (fieldDesc.getType()== (short) 0x417D){ //8HEX
-			field.setValue(FileHandler.bytesToHex(FileHandler.readByte(ebxFileBytes,seeker, 8)), FieldValueType.Hex8);
-		}else if (fieldDesc.getType()==(short) 0xC13D){//FLOAT
-			field.setValue(FileHandler.readFloat(ebxFileBytes, seeker), FieldValueType.Float);
-		}else if (fieldDesc.getType()==(short) 0xc10d){//uint
-			field.setValue((FileHandler.readInt(ebxFileBytes, seeker, order) & 0xffffffffL), FieldValueType.UInteger);
-		}else if(fieldDesc.getType() == (short) 0xc0fd){ //signed int
-			field.setValue(FileHandler.readInt(ebxFileBytes, seeker), FieldValueType.Integer);
-		}else if (fieldDesc.getType() == (short) 0xc0ad){//BOOL
-			field.setValue(((FileHandler.readByte(ebxFileBytes, seeker))!=0x0), FieldValueType.Bool);
-		}else if (fieldDesc.getType() == (short) 0xc0ed){//short
-			field.setValue(FileHandler.readShort(ebxFileBytes, seeker, order), FieldValueType.Short);			
-		}else if (fieldDesc.getType() == (short) 0xc0cd){//BYTE
-			field.setValue(FileHandler.readByte(ebxFileBytes, seeker), FieldValueType.Byte);
-		}else if(fieldDesc.getType() == (short) 0x0035){ // #guid
-			int tempValue = FileHandler.readInt(ebxFileBytes, seeker);
-			//field.setValue(String.valueOf(tempValue)+"test", FieldValueType.Guid);
-			//return field;
-			//	INTERNAL STARTS AT 0x1 (values needs to be substracted by 1 to optain the index)
-			// 	EXTERNAL STARTS AT 0x80 00 00 00 -> substract base value to optain index. (starts at 0)	
-			if(((tempValue>>31)) == -1){
-				EBXExternalGUID guid = externalGUIDs[(tempValue & 0x7fffffff)];//same as (tempValue - 0x800000) ^__^
-				
-				/*String fileGUIDName = null; -> Lets do that in the EBX TreeViewCellFactory
-				try{
-					if (Main.getGame().getEBXFileGUIDs()!=null){//DEBUG-
-						fileGUIDName = Main.getGame().getEBXFileGUIDs().get(guid.getFileGUID().toUpperCase());
-					}
-				}catch(NullPointerException e){
-					System.err.println("EBXFileGUID Database does not exist!");
-				}
-				if (fileGUIDName != null){
-					field.setValue(fileGUIDName+" "+guid.getInstanceGUID(), FieldValueType.ExternalGuid); //We need to convert the String later back to a FileGUID
-				}else{//}*/
-
-				field.setValue(guid.getFileGUID()+" "+guid.getInstanceGUID(), FieldValueType.ExternalGuid);
-				
-			}else if (tempValue == 0x0){
-				field.setValue("*nullGUID*", FieldValueType.Guid);
+			if (hasEmtyPayload){
+				field.setValue(null, FieldValueType.ChunkGuid);
 			}else{
-				internalGUIDFieldIndexs.add(fields.size()-1);//current field index ;)
-				
-				
-				//String test = FileHandler.bytesToHex(FileHandler.toBytes(tempValue, ByteOrder.BIG_ENDIAN));
-				//String intGuid = internalGUIDs.get(tempValue-1);
-				
-				//System.err.println("INTERNAL GUID"); //TODO it does work if the numeration gets done erlier :) so change init ?
-				
-				
-				
-				field.setValue(tempValue, FieldValueType.Guid); //set tempValue temp as value.
+				field.setValue(FileHandler.bytesToHex(FileHandler.readByte(ebxFileBytes, seeker,16)), FieldValueType.ChunkGuid);
+			}
+		}else if (fieldDesc.getType()== (short) 0x417D){ //8HEX
+			if (hasEmtyPayload){
+				field.setValue(null, FieldValueType.Hex8);
+			}else{
+				field.setValue(FileHandler.bytesToHex(FileHandler.readByte(ebxFileBytes,seeker, 8)), FieldValueType.Hex8);
+			}
+		}else if (fieldDesc.getType()==(short) 0xC13D){//FLOAT
+			if (hasEmtyPayload){
+				field.setValue(null, FieldValueType.Float);
+			}else{
+				field.setValue(FileHandler.readFloat(ebxFileBytes, seeker), FieldValueType.Float);
+			}
+		}else if (fieldDesc.getType()==(short) 0xc10d){//uint
+			if (hasEmtyPayload){
+				field.setValue(null, FieldValueType.UInteger);
+			}else{
+				field.setValue((FileHandler.readInt(ebxFileBytes, seeker, order) & 0xffffffffL), FieldValueType.UInteger);
+			}
+		}else if(fieldDesc.getType() == (short) 0xc0fd){ //signed int
+			if (hasEmtyPayload){
+				field.setValue(null, FieldValueType.Integer);
+			}else{
+				field.setValue(FileHandler.readInt(ebxFileBytes, seeker), FieldValueType.Integer);
+			}
+		}else if (fieldDesc.getType() == (short) 0xc0ad){//BOOL
+			if (hasEmtyPayload){
+				field.setValue(null, FieldValueType.Bool);
+			}else{
+				byte b = FileHandler.readByte(ebxFileBytes, seeker);
+				if (b==0x00){
+					field.setValue(false, FieldValueType.Bool);
+				}else if (b==0x01){
+					field.setValue(true, FieldValueType.Bool);
+				}else{
+					field.setValue(null, FieldValueType.Bool);
+					System.err.println("Field is not a boolean! at "+seeker.getOffset());
+				}
+			}
+		}else if (fieldDesc.getType() == (short) 0xc0ed){//short
+			if (hasEmtyPayload){
+				field.setValue(null, FieldValueType.Short);		
+			}else{
+				field.setValue(FileHandler.readShort(ebxFileBytes, seeker, order), FieldValueType.Short);			
+			}
+		}else if (fieldDesc.getType() == (short) 0xc0cd){//BYTE
+			if (hasEmtyPayload){
+				field.setValue(null, FieldValueType.Byte);
+			}else{
+				field.setValue(FileHandler.readByte(ebxFileBytes, seeker), FieldValueType.Byte);
+			}
+		}else if(fieldDesc.getType() == (short) 0x0035){ // #guid
+			if (hasEmtyPayload){
+				field.setValue(null, FieldValueType.Guid);
+			}else{
+				int tempValue = FileHandler.readInt(ebxFileBytes, seeker);
+				//field.setValue(String.valueOf(tempValue)+"test", FieldValueType.Guid);
+				//return field;
+				//	INTERNAL STARTS AT 0x1 (values needs to be substracted by 1 to optain the index)
+				// 	EXTERNAL STARTS AT 0x80 00 00 00 -> substract base value to optain index. (starts at 0)	
+				if(((tempValue>>31)) == -1){
+					EBXExternalGUID guid = externalGUIDs[(tempValue & 0x7fffffff)];//same as (tempValue - 0x800000) ^__^
+					
+					/*String fileGUIDName = null; -> Lets do that in the EBX TreeViewCellFactory
+					try{
+						if (Main.getGame().getEBXFileGUIDs()!=null){//DEBUG-
+							fileGUIDName = Main.getGame().getEBXFileGUIDs().get(guid.getFileGUID().toUpperCase());
+						}
+					}catch(NullPointerException e){
+						System.err.println("EBXFileGUID Database does not exist!");
+					}
+					if (fileGUIDName != null){
+						field.setValue(fileGUIDName+" "+guid.getInstanceGUID(), FieldValueType.ExternalGuid); //We need to convert the String later back to a FileGUID
+					}else{//}*/
+	
+					field.setValue(guid.getFileGUID()+" "+guid.getInstanceGUID(), FieldValueType.ExternalGuid);
+					
+				}else if (tempValue == 0x0){
+					field.setValue("*nullGUID*", FieldValueType.Guid);
+				}else{
+					internalGUIDFieldIndexs.add(fields.size()-1);//current field index ;)
+					
+					
+					//String test = FileHandler.bytesToHex(FileHandler.toBytes(tempValue, ByteOrder.BIG_ENDIAN));
+					//String intGuid = internalGUIDs.get(tempValue-1);
+					
+					//System.err.println("INTERNAL GUID"); //TODO it does work if the numeration gets done erlier :) so change init ?
+					
+					
+					
+					field.setValue(tempValue, FieldValueType.Guid); //set tempValue temp as value.
+				}
 			}
 		}else{
 			System.err.println("(EBXLoader) Unknown field type: "+Integer.toHexString(fieldDesc.getType())+" File name: "+filePath);
