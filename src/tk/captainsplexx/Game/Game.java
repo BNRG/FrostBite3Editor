@@ -1,11 +1,12 @@
 package tk.captainsplexx.Game;
 
 import java.io.File;
-import java.nio.ByteOrder;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import javafx.scene.control.TreeItem;
 import javafx.scene.image.ImageView;
+import tk.captainsplexx.Entity.EntityHandler;
 import tk.captainsplexx.JavaFX.JavaFXHandler;
 import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
 import tk.captainsplexx.JavaFX.TreeViewConverter;
@@ -15,10 +16,14 @@ import tk.captainsplexx.Render.ModelHandler;
 import tk.captainsplexx.Resource.DDSConverter;
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.ResourceHandler;
+import tk.captainsplexx.Resource.CAS.CasDataReader;
 import tk.captainsplexx.Resource.EBX.EBXFile;
 import tk.captainsplexx.Resource.ITEXTURE.ItextureHandler;
 import tk.captainsplexx.Resource.TOC.ConvertedSBpart;
 import tk.captainsplexx.Resource.TOC.ConvertedTocFile;
+import tk.captainsplexx.Resource.TOC.TocConverter;
+import tk.captainsplexx.Resource.TOC.TocFile;
+import tk.captainsplexx.Resource.TOC.TocManager;
 import tk.captainsplexx.Terrain.TerrainHandler;
 
 public class Game {
@@ -35,6 +40,8 @@ public class Game {
 	public HashMap<String, String> ebxFileGUIDs;
 	public HashMap<String, String> chunkGUIDSHA1;
 	public Mod currentMod;
+	
+	public ArrayList<ConvertedTocFile> commonChunks;
 				
 	public Game(){
 		currentMod = null;
@@ -55,7 +62,7 @@ public class Game {
 		/*DO NOT CARE ABOUT IN THE MOMENT*/
 		terrainHandler = new TerrainHandler();
 		terrainHandler.generate(0, 0);
-		//terrainHandler.generate(0, 0);
+		terrainHandler.generate(0, 1);
 				
 		resourceHandler = new ResourceHandler();
 		
@@ -122,6 +129,18 @@ public class Game {
 		}
 		ebxFileGUIDs = new HashMap<String, String>();
 		chunkGUIDSHA1 = new HashMap<String, String>();
+		
+		/*Use this to fetch common chunks!*/
+		commonChunks = new ArrayList<ConvertedTocFile>();
+		for (File file : FileHandler.listf(Main.gamePath+"/", "Chunks")){
+			if (file.getAbsolutePath().endsWith(".toc")){
+				String relPath = file.getAbsolutePath().replace("\\", "/").replace(".toc", "");
+				TocFile toc = TocManager.readToc(relPath);
+				ConvertedTocFile convToc = TocConverter.convertTocFile(toc);
+				commonChunks.add(convToc);
+			}
+		}
+		/*End of common chunks!*/
 	}
 
 	
@@ -252,6 +271,10 @@ public class Game {
 		this.currentMod = currentMod;
 	}
 
+
+	public ArrayList<ConvertedTocFile> getCommonChunks() {
+		return commonChunks;
+	}
 
 	
 	

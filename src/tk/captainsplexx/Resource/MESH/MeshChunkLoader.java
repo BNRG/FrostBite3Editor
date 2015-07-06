@@ -1,10 +1,19 @@
-package tk.captainsplexx.Resource;
+package tk.captainsplexx.Resource.MESH;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.ArrayList;
+
+import tk.captainsplexx.Game.Main;
+import tk.captainsplexx.Resource.FileHandler;
+import tk.captainsplexx.Resource.CAS.CasDataReader;
+import tk.captainsplexx.Resource.TOC.ConvertedSBpart;
+import tk.captainsplexx.Resource.TOC.ConvertedTocFile;
+import tk.captainsplexx.Resource.TOC.ResourceLink;
+import tk.captainsplexx.Resource.TOC.TocSBLink;
 
 public class MeshChunkLoader {
 	public byte[] MeshBytes;
@@ -36,9 +45,36 @@ public class MeshChunkLoader {
 	public String[] SubmeshNames;
 	
     	
-	public void loadFile(String meshFile, String chunkFile){
-		this.MeshBytes = readFile(meshFile);
-		this.ChunkBytes = readFile(chunkFile);
+	public boolean loadFile(byte[] mesh, ConvertedSBpart convSBPart){
+		this.MeshBytes = mesh;
+		this.ChunkBytes = null;
+		String chunkID = FileHandler.bytesToHex(readByte(MeshBytes, 0xC8, 16));
+		for (ResourceLink chunk : convSBPart.getChunks()){
+			//System.out.println(chunk.getId());
+			if (chunk.getId().equalsIgnoreCase(chunkID)){
+				this.ChunkBytes = CasDataReader.readCas(chunk.getBaseSha1(), chunk.getDeltaSha1(), chunk.getSha1(), chunk.getCasPatchType());
+				System.out.println("Chunk successfully found!");
+				break;
+			}
+		}
+		if (ChunkBytes==null){
+			for (ConvertedTocFile commonChunk : Main.getGame().getCommonChunks()){
+				for (TocSBLink chunk : commonChunk.getChunks()){
+					if (chunk.getGuid().equalsIgnoreCase(chunkID)){
+						this.ChunkBytes = CasDataReader.readCas(null, null, chunk.getSha1(), 0);
+						System.out.println("Chunk successfully found!");
+						break;
+					}
+				}
+				if (ChunkBytes!=null){
+					break;
+				}
+			}
+		}
+		if (ChunkBytes==null){
+			System.err.println("Chunk could not be found: "+chunkID);
+			return false;
+		}
 		
 		this.ObjectFullNameOffset = readShort(MeshBytes, 0x58); // 88 Bytes
 		this.ObjectFullName = readString(MeshBytes,ObjectFullNameOffset);
@@ -113,6 +149,7 @@ public class MeshChunkLoader {
 			
 			Increment_For_Vert_position += (VB_Sizes[submesh]*submesh_vert_count);
 		}
+		return true;
 		
 	}
 	

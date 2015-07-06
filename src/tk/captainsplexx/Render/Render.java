@@ -119,9 +119,10 @@ public class Render {
 		for (Terrain curTerr : game.getTerrainHandler().getTerrainList()) {
 			Point[][] points = curTerr.getPoints();
 			shader.loadTransformationMatrix(Matrix4f.add(TerrainransformationMatrix, TerrainransformationMatrix1, null));
-			TerrainransformationMatrix1.translate(new Vector3f(5000f, 500f, 0f));
+			/*TerrainransformationMatrix1.translate(new Vector3f(5000f, 500f, 0f));
 			TerrainransformationMatrix1.scale(new Vector3f(5.0f, 5.0f, 5.0f));
 			TerrainransformationMatrix1.rotate(45f, new Vector3f(0f, 1f, 0f));
+			*/
 			for (int i1 = 0; i1 < points.length - 1; i1++) {
 				glBegin(GL_LINE_STRIP);
 				for (int i2 = 0; i2 < points[i1].length - 1; i2++) {

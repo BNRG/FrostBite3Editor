@@ -511,7 +511,7 @@ public class FileHandler {
 	}
 	
 	/*FILEFINDER*/
-	public static ArrayList<File> listf(String directoryName, String endsWith) {
+	public static ArrayList<File> listf(String directoryName, String contains) {
 	    File directory = new File(directoryName);
 	    if (!directory.isDirectory()){
 	    	return new ArrayList<File>();
@@ -521,27 +521,27 @@ public class FileHandler {
 	    File[] fList = directory.listFiles();
 	    for (File file : fList) {
 	        if (file.isFile()) {
-	        	if (file.getName().endsWith(endsWith)){
+	        	if (file.getName().contains(contains)){
 	        		files.add(file);
 	        	}
 	        } else if (file.isDirectory()) {
-	        	listfdir(file.getAbsolutePath(), files, endsWith);
+	        	listfdir(file.getAbsolutePath(), files, contains);
 	        }
 	    }
 	    return files;
 	}
-	static void listfdir(String directoryName, ArrayList<File> files , String endsWith) {
+	static void listfdir(String directoryName, ArrayList<File> files , String contains) {
 	    File directory = new File(directoryName);
 	    if (directory.isDirectory()){
 	    	// get all the files from a directory
 		    File[] fList = directory.listFiles();
 		    for (File file : fList) {
 		        if (file.isFile()) {
-		        	if (file.getName().endsWith(endsWith)){
+		        	if (file.getName().contains(contains)){
 		        		files.add(file);
 		        	}
 		        } else if (file.isDirectory()) {
-		        	listfdir(file.getAbsolutePath(), files, endsWith);
+		        	listfdir(file.getAbsolutePath(), files, contains);
 		        }
 		    }
 	    }

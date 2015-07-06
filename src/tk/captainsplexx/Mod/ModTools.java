@@ -11,6 +11,9 @@ import tk.captainsplexx.Game.Main;
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.ResourceHandler.LinkBundleType;
 import tk.captainsplexx.Resource.ResourceHandler.ResourceType;
+import tk.captainsplexx.Resource.CAS.CasCatEntry;
+import tk.captainsplexx.Resource.CAS.CasCatManager;
+import tk.captainsplexx.Resource.CAS.CasManager;
 import tk.captainsplexx.Resource.TOC.ConvertedSBpart;
 import tk.captainsplexx.Resource.TOC.ConvertedTocFile;
 import tk.captainsplexx.Resource.TOC.ResourceLink;
@@ -19,9 +22,6 @@ import tk.captainsplexx.Resource.TOC.TocCreator;
 import tk.captainsplexx.Resource.TOC.TocFile;
 import tk.captainsplexx.Resource.TOC.TocManager;
 import tk.captainsplexx.Resource.TOC.TocSBLink;
-import tk.captainsplexx.Resource.CAS.CasCatEntry;
-import tk.captainsplexx.Resource.CAS.CasCatManager;
-import tk.captainsplexx.Resource.CAS.CasManager;
 
 public class ModTools {
 	public ArrayList<Mod> mods;

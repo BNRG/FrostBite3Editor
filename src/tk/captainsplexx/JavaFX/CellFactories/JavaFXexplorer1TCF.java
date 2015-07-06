@@ -14,8 +14,8 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import tk.captainsplexx.Game.Game;
 import tk.captainsplexx.Game.Main;
-import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
 import tk.captainsplexx.JavaFX.JavaFXHandler;
+import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
 import tk.captainsplexx.JavaFX.TreeViewConverter;
 import tk.captainsplexx.JavaFX.TreeViewEntry;
 import tk.captainsplexx.Mod.ModTools;
@@ -141,11 +141,21 @@ public class JavaFXexplorer1TCF extends TreeCell<TreeViewEntry> {
 											//System.out.println("Itexture: "+FileHandler.bytesToHex(itexture));
 											FileHandler.writeFile("output/"+link.getName().replace('/', '_')+".dds", ItextureHandler.getDSS(itexture, Main.gamePath+"/Data", rs.getCasCatManager().getEntries()));
 											//DDSConverter.convertToTGA(new File("output/"+link.getName().replace('/', '_')+".dds"));
+											Main.getJavaFXHandler().getMainWindow().toggleResToolsVisibility();
+										}else if (link.getType() == ResourceType.MESH){
+											Main.sharedObjs = new Object[]{data, link.getName()};
+											Main.runOnMainThread(new Runnable() {
+												@Override
+												public void run() {
+													// TODO Auto-generated method stub
+													Main.getGame().getEntityHandler().createEntity((byte[]) Main.sharedObjs[0], Main.getGame().getCurrentSB(), "", (String) Main.sharedObjs[1]);
+												}
+											});
+											//TEST
 										}else{
 											System.err.println("Type not supported yet.");
 											FileHandler.writeFile("output/"+link.getName().replace('/', '_')+"."+link.getType(), data);
 										}
-										Main.getJavaFXHandler().getMainWindow().toggleResToolsVisibility();
 									}else{
 										System.err.println("Could not find data.");
 									}

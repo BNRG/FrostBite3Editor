@@ -1,4 +1,4 @@
-package tk.captainsplexx.Resource;
+package tk.captainsplexx.Resource.MESH;
 
 import java.util.ArrayList;
 import java.util.HashMap;

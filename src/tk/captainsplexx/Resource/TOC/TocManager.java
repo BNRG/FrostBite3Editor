@@ -26,13 +26,14 @@ public class TocManager {
 	}
 	*/
 	public static TocFile readToc(String path){
-		return readToc(FileHandler.readFile(path+".toc"),path+".sb");
+		byte[] rawData = FileHandler.readFile(path+".toc");
+		return readToc(rawData, path+".sb");
 	}
 
 	public static TocFile readToc(byte[] fileArray, String sbPath) {
 		FileSeeker seeker = new FileSeeker();
 		ArrayList<TocEntry> entries = new ArrayList<TocEntry>();
-		byte[] data;
+		byte[] data = null;
 		int header = FileHandler.readInt(fileArray, seeker, ByteOrder.BIG_ENDIAN);
 		TocFileType fileType = null;
 		if (header == 0x00D1CE00 || header == 0x00D1CE01) { //#the file is XOR encrypted and has a signature
@@ -56,15 +57,19 @@ public class TocManager {
 			data = fileArray;
 		}
 		seeker = new FileSeeker();
-		while (seeker.getOffset() < data.length){ //READ ENTRIES
-			TocEntry entry = readEntry(data, seeker);
-			if (entry != null){
-				entries.add(entry);
-			}
-		}//EOF
-		TocFile file = new TocFile(fileType, sbPath);
-		file.getEntries().addAll(entries);
-		return file;
+		if (data!=null){
+			while (seeker.getOffset() < data.length){ //READ ENTRIES
+				TocEntry entry = readEntry(data, seeker);
+				if (entry != null){
+					entries.add(entry);
+				}
+			}//EOF
+			TocFile file = new TocFile(fileType, sbPath);
+			file.getEntries().addAll(entries);
+			return file;
+		}else{
+			return null;
+		}
 	}
 	
 	public static TocFile readSbPart(byte[] part) { // instead of reading the complete file, only read parts

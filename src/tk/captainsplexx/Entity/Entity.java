@@ -2,7 +2,7 @@ package tk.captainsplexx.Entity;
 
 import org.lwjgl.util.vector.Vector3f;
 
-import tk.captainsplexx.Game.EntityHandler.Type;
+import tk.captainsplexx.Entity.EntityHandler.Type;
 
 public class Entity {
 	

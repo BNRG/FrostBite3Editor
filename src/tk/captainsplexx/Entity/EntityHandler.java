@@ -1,14 +1,14 @@
-package tk.captainsplexx.Game;
+package tk.captainsplexx.Entity;
 
 import java.util.ArrayList;
 
 import org.lwjgl.opengl.GL11;
 
-import tk.captainsplexx.Entity.Entity;
 import tk.captainsplexx.Model.RawModel;
 import tk.captainsplexx.Render.ModelHandler;
-import tk.captainsplexx.Resource.MeshChunkLoader;
 import tk.captainsplexx.Resource.ResourceHandler;
+import tk.captainsplexx.Resource.MESH.MeshChunkLoader;
+import tk.captainsplexx.Resource.TOC.ConvertedSBpart;
 
 public class EntityHandler {
 	public enum Type {
@@ -17,7 +17,7 @@ public class EntityHandler {
 		
 	ArrayList <Entity> entities = new ArrayList <Entity>();
 	
-	public int MAX_TEXTURES = 10000;
+	public int MAX_TEXTURES = 1000;
 	
 	public ModelHandler modelHandler;
 	public ResourceHandler resourceHandler;
@@ -42,17 +42,17 @@ public class EntityHandler {
 		return null;
 	}
 	
-	public int createEntityFromMesh(String subpathMesh, String pathRoot, String textureRoot){
+	public int createEntity(byte[] mesh, ConvertedSBpart convSBpart, String textureRoot, String desc){
 		try{
 			MeshChunkLoader msl = resourceHandler.getMeshChunkLoader();
-			//msl.loadFile(pathRoot+subpathMesh, resourceHandler.getChunkFinder().findChunkFile(pathRoot+subpathMesh,resourceHandler)); //input for chunk file.
+			msl.loadFile(mesh, convSBpart);/*the chunk guid is located at 0xC8, but why the f*ck are the multiple ones? needs the loader work too?*/
 			String[] texturedModel = new String[msl.getSubMeshCount()];
-			ArrayList<String> materials = resourceHandler.getMeshVariationDatabaseHandler().getMaterials(msl.getName(), 0); //VARIATION ID ??!
+			//ArrayList<String> materials = resourceHandler.getMeshVariationDatabaseHandler().getMaterials(msl.getName(), 0); //VARIATION ID ??!
 			for (int submesh=0; submesh<msl.getSubMeshCount();submesh++){
 				RawModel model = modelHandler.addRawModel(GL11.GL_TRIANGLES, msl.getName()+submesh, msl.getVertexPositions(submesh), msl.getUVCoords(submesh), msl.getIndices(submesh));
 				
 				int textureID = modelHandler.getLoader().getNotFoundID();
-				if (materials!=null){
+				/*if (materials!=null){
 					if (!materials.isEmpty()){
 						try{
 							if (resourceHandler.getTextureHandler().isExisting(materials.get(submesh))){
@@ -67,13 +67,14 @@ public class EntityHandler {
 							System.err.println("Problem while loding Submesh Texture "+subpathMesh+" Submesh: "+submesh);
 						}
 					}
-				}
+				}*/
 				texturedModel[submesh] = (modelHandler.addTexturedModel(model, textureID));
 			}
-			return entities.indexOf(entities.add(new Entity(Type.Object, msl.getName(), texturedModel)));
+			entities.add(new Entity(Type.Object, msl.getName(), texturedModel));
+			return entities.size()-1;
 		}catch(Exception e){
 			e.printStackTrace();
-			System.err.println("Could not create entitiy: "+subpathMesh);
+			System.err.println("Could not create entitiy: "+desc);
 			return -1;
 		}
 	}

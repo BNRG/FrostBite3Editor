@@ -4,10 +4,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.ResourceBundle;
 
-import antonsmirnov.javafx.dialog.Dialog.Builder;
-import tk.captainsplexx.Resource.FileHandler;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -30,6 +27,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
+import tk.captainsplexx.Resource.FileHandler;
 
 /**
  *

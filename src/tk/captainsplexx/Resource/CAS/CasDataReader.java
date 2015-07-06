@@ -12,10 +12,18 @@ import tk.captainsplexx.Resource.FileSeeker;
 import tk.captainsplexx.Resource.ResourceHandler;
 
 public class CasDataReader { //casPath == folderPath
-	
 	public static byte[] readCas(String baseSHA1, String deltaSHA1, String SHA1, Integer patchType){
-		Game game = Main.getGame();
-		ResourceHandler rs = game.getResourceHandler();
+		return readCas(baseSHA1, deltaSHA1, SHA1, patchType, null);
+	}
+	
+	public static byte[] readCas(String baseSHA1, String deltaSHA1, String SHA1, Integer patchType, ResourceHandler resHandler){
+		ResourceHandler rs = null;
+		if (resHandler==null){
+			Game game = Main.getGame();
+			rs = game.getResourceHandler();
+		}else{
+			rs = resHandler;
+		}
 		if (patchType == 2){
 			//Patched using delta
 			byte[] base = CasDataReader.readCas(baseSHA1, Main.gamePath+"/Data", rs.getCasCatManager().getEntries(), false);

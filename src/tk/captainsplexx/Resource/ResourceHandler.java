@@ -3,6 +3,8 @@ package tk.captainsplexx.Resource;
 import tk.captainsplexx.Render.TextureHandler;
 import tk.captainsplexx.Resource.CAS.CasCatManager;
 import tk.captainsplexx.Resource.EBX.EBXHandler;
+import tk.captainsplexx.Resource.MESH.MeshChunkLoader;
+import tk.captainsplexx.Resource.MESH.MeshVariationDatabaseHandler;
 
 public class ResourceHandler {
 	//public String chunkFolderPath;

@@ -45,7 +45,7 @@
     </MenuBar>
     <SplitPane dividerPositions="0.2505567928730512, 0.5" focusTraversable="true" orientation="VERTICAL" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
       <items>
-        <AnchorPane prefHeight="222.0" prefWidth="277.0" SplitPane.resizableWithParent="false">
+        <AnchorPane prefHeight="157.0" prefWidth="277.0" SplitPane.resizableWithParent="false">
                <children>
                   <TabPane prefWidth="277.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <tabs>
@@ -58,6 +58,40 @@
                            <content>
                               <VBox prefHeight="200.0" prefWidth="100.0">
                                  <children>
+                                    <HBox alignment="TOP_RIGHT" layoutX="10.0" layoutY="10.0">
+                                       <children>
+                                          <Label alignment="TOP_CENTER" text="Part">
+                                             <padding>
+                                                <Insets bottom="2.0" left="2.0" right="2.0" top="6.0" />
+                                             </padding>
+                                          </Label>
+                                          <ComboBox fx:id="part" prefWidth="150.0">
+                                             <padding>
+                                                <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                                             </padding>
+                                          </ComboBox>
+                                       </children>
+                                       <padding>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </padding>
+                                    </HBox>
+                                    <HBox alignment="TOP_RIGHT" layoutX="10.0" layoutY="10.0">
+                                       <children>
+                                          <Label alignment="TOP_CENTER" text="Layer">
+                                             <padding>
+                                                <Insets bottom="2.0" left="2.0" right="2.0" top="6.0" />
+                                             </padding>
+                                          </Label>
+                                          <ComboBox fx:id="layer" prefWidth="150.0">
+                                             <padding>
+                                                <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                                             </padding>
+                                          </ComboBox>
+                                       </children>
+                                       <padding>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </padding>
+                                    </HBox>
                                     <HBox alignment="TOP_RIGHT">
                                        <children>
                                           <Label alignment="TOP_CENTER" text="Lightning">
@@ -65,11 +99,11 @@
                                                 <Insets bottom="2.0" left="2.0" right="2.0" top="6.0" />
                                              </padding>
                                           </Label>
-                                          <ChoiceBox prefHeight="20.0" prefWidth="150.0">
+                                          <ComboBox fx:id="lightning" prefWidth="150.0">
                                              <padding>
                                                 <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
                                              </padding>
-                                          </ChoiceBox>
+                                          </ComboBox>
                                        </children>
                                        <padding>
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -107,7 +141,7 @@
                     </tabs>
                   </TabPane>
                </children></AnchorPane>
-        <ScrollPane prefHeight="600.0" prefWidth="277.0">
+        <ScrollPane prefHeight="172.0" prefWidth="277.0">
           <content>
             <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0">
                      <opaqueInsets>
@@ -119,7 +153,7 @@
             </AnchorPane>
           </content>
         </ScrollPane>
-            <ScrollPane layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="277.0">
+            <ScrollPane layoutX="10.0" layoutY="10.0" prefHeight="221.0" prefWidth="277.0">
                <content>
                   <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0" prefHeight="814.0" prefWidth="265.0">
                      <children>

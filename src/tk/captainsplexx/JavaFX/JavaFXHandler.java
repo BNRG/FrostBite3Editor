@@ -1,11 +1,9 @@
 package tk.captainsplexx.JavaFX;
 
-import antonsmirnov.javafx.dialog.Dialog;
-import antonsmirnov.javafx.dialog.Dialog.Builder;
 import javafx.scene.control.TreeItem;
 import javafx.scene.image.Image;
-import tk.captainsplexx.Game.Main;
 import tk.captainsplexx.Resource.FileHandler;
+import antonsmirnov.javafx.dialog.Dialog.Builder;
 
 
 public class JavaFXHandler {

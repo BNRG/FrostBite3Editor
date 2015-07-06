@@ -10,6 +10,7 @@ import javafx.scene.image.ImageView;
 import tk.captainsplexx.Game.Main;
 import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
 import tk.captainsplexx.Mod.ModTools;
+import tk.captainsplexx.Mod.Package;
 import tk.captainsplexx.Mod.PackageEntry;
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.EBX.EBXComplex;
@@ -29,7 +30,6 @@ import tk.captainsplexx.Resource.TOC.TocManager.TocEntryType;
 import tk.captainsplexx.Resource.TOC.TocManager.TocFieldType;
 import tk.captainsplexx.Resource.TOC.TocManager.TocFileType;
 import tk.captainsplexx.Resource.TOC.TocSBLink;
-import tk.captainsplexx.Mod.Package;
 
 public class TreeViewConverter {
 	

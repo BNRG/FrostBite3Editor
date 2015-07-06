@@ -1,6 +1,8 @@
 package tk.captainsplexx.JavaFX;
 
+
 import javafx.fxml.FXML;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TreeView;
 import tk.captainsplexx.Game.Main;
@@ -12,9 +14,15 @@ public class LeftController {
 	public TreeView<TreeViewEntry> explorer;
 	@FXML
 	public TreeView<TreeViewEntry> explorer1;
-	
 	@FXML
 	public Label lodLabel;
+	@FXML
+	public ComboBox<String> part;
+	@FXML
+	public ComboBox<String> layer;
+	@FXML
+	public ComboBox<String> lightning;
+	
 	
 	/*OnAction*/
 	public void exit(){ 
@@ -44,10 +52,6 @@ public class LeftController {
 	}
 	
 	
-	
-	
-	
-	
 	public TreeView<TreeViewEntry> getExplorer() {
 		return explorer;
 	}
@@ -55,4 +59,18 @@ public class LeftController {
 	public TreeView<TreeViewEntry> getExplorer1() {
 		return explorer1;
 	}
+
+	public ComboBox<String> getPart() {
+		return part;
+	}
+
+	public ComboBox<String> getLayer() {
+		return layer;
+	}
+
+	public ComboBox<String> getLightning() {
+		return lightning;
+	}
+	
+	
 }

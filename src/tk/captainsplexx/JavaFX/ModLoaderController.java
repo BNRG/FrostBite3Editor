@@ -1,6 +1,5 @@
 package tk.captainsplexx.JavaFX;
 
-import antonsmirnov.javafx.dialog.Dialog;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;

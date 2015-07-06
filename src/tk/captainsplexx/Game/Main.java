@@ -53,8 +53,14 @@ public class Main {
 	
 	public static String buildVersion;
 	public static String currentDir;
+	
+	private static boolean executeRunnable;
+	private static Runnable runnable;
+	public static Object[] sharedObjs;
 		
-	public static void main(String[] args){
+	public static void main(String[] args){	
+		sharedObjs = null;
+		executeRunnable = false;
 		gamePath = null;
 		/*VERSION CHECK*/
 		String newVersion = "";
@@ -167,6 +173,10 @@ public class Main {
 					//update instantly
 					inputHandler.listen();
 					render.update();
+					if (executeRunnable){
+						executeRunnable = false;
+						runnable.run();
+					}
 				}
 				game.modelHandler.loader.cleanUp(); //CleanUp GPU-Memory!
 				game.shaderHandler.getStaticShader().cleanUp();
@@ -177,7 +187,11 @@ public class Main {
 			}
 		}
 		System.exit(0);
-	}	
+	}
+	public static void runOnMainThread(Runnable run){
+		executeRunnable = true;
+		runnable = run;
+	}
 	
 	public static Game getGame(){
 		return game;
@@ -198,6 +212,13 @@ public class Main {
 	public static ModTools getModTools() {
 		return modTools;
 	}
+	public static Object[] getSharedObjs() {
+		return sharedObjs;
+	}
+	public static void setSharedObjs(Object[] sharedObjs) {
+		Main.sharedObjs = sharedObjs;
+	}
+	
 	
 	
 }
