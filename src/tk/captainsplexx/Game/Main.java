@@ -14,10 +14,12 @@ import javax.imageio.ImageIO;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
+import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.opengl.ImageIOImageData;
 
 import tk.captainsplexx.Event.EventHandler;
 import tk.captainsplexx.JavaFX.JavaFXHandler;
+import tk.captainsplexx.Maths.VectorMath;
 import tk.captainsplexx.Mod.ModTools;
 import tk.captainsplexx.Render.Render;
 import tk.captainsplexx.Resource.FileHandler;
@@ -58,7 +60,7 @@ public class Main {
 	private static Runnable runnable;
 	public static Object[] sharedObjs;
 		
-	public static void main(String[] args){	
+	public static void main(String[] args){
 		sharedObjs = null;
 		executeRunnable = false;
 		gamePath = null;
@@ -122,6 +124,11 @@ public class Main {
 		jfxHandler = new JavaFXHandler();
 		eventHandler = new EventHandler();
 		game = new Game();
+		if (buildVersion.contains("NEW VERSION")){
+			jfxHandler.getDialogBuilder().showInfo("Info",
+					"Make sure to run the latest version!\n"+
+						"http://captainsplexx.tk/");
+		}
 		modTools = new ModTools();
 		
 		while (keepAlive){
@@ -168,6 +175,9 @@ public class Main {
 						
 						//update at rate
 						game.update();
+						if (currentTick%(TICK_RATE/4)==0){//0.25xTICK_RATE
+							game.lowRateUpdate();
+						}
 						eventHandler.listen();
 					}
 					//update instantly

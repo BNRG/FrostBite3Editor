@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.ArrayList;
 
 import tk.captainsplexx.Game.Main;
 import tk.captainsplexx.Resource.FileHandler;
@@ -43,6 +42,9 @@ public class MeshChunkLoader {
 	public int[] Indice_CountFull;
 	public int[] Vertices_Count;
 	public String[] SubmeshNames;
+	
+	public float[] minCoords;
+	public float[] maxCoords;
 	
     	
 	public boolean loadFile(byte[] mesh, ConvertedSBpart convSBPart){
@@ -149,6 +151,8 @@ public class MeshChunkLoader {
 			
 			Increment_For_Vert_position += (VB_Sizes[submesh]*submesh_vert_count);
 		}
+		minCoords = new float[] {10000f, 10000f, 10000f};
+		maxCoords = new float[] {-10000f, -10000f, -10000f};
 		return true;
 		
 	}
@@ -183,6 +187,19 @@ public class MeshChunkLoader {
 				buffer[i] = readHalfFloat(ChunkBytes, (int) ((VB_Offset[submesh]+(VB_Sizes[submesh]*Math.floor(i/3))) + ((i%3)*0x02)))*Model_Scale;
 			}
 		}
+		
+		//<--axis aligned bounding box-->
+		for (int i=0; i<buffer.length; i++){
+			float vertex = buffer[i];
+			int mod = i%3;//xyz
+			if (vertex > maxCoords[mod]){
+				maxCoords[mod] = vertex;
+			}
+			if (vertex < minCoords[mod]){
+				minCoords[mod] = vertex;
+			}
+		}
+		//System.out.println("Min: "+minCoords[0]+", "+minCoords[1]+", "+minCoords[2]+" Max: "+maxCoords[0]+", "+maxCoords[1]+", "+maxCoords[2]);
 		return buffer;
 	}
 	
@@ -291,4 +308,14 @@ public class MeshChunkLoader {
                         | ((half & 0x03FF) << 13));
         }
     }
+
+	public float[] getMinCoords() {
+		return minCoords;
+	}
+
+	public float[] getMaxCoords() {
+		return maxCoords;
+	}
+	
+	
 }

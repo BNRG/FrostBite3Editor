@@ -1,9 +1,6 @@
-package tk.captainsplexx.Render;
+package tk.captainsplexx.Model;
 
 import java.util.HashMap;
-
-import tk.captainsplexx.Model.RawModel;
-import tk.captainsplexx.Model.TexturedModel;
 
 public class ModelHandler {
 	public HashMap<String, RawModel> rawModels = new HashMap<String, RawModel>();

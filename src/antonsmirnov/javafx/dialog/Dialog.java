@@ -5,6 +5,7 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -369,15 +370,22 @@ public class Dialog extends Stage {
         }
     
 	    public void showInfo(String title, String message, Window owner) {
-	        Builder builder = new Builder();
-	        builder.create()
-		        .setOwner(owner)
-		        .setTitle(title)	
-		        .setInfoIcon()
-		        .setMessage(message)            
-		        .addOkButton()
-		            .build()
-		                .show();            
+	    	Platform.runLater(new Runnable() {
+				
+				@Override
+				public void run() {
+					Builder builder = new Builder();
+			        builder.create()
+				        .setOwner(owner)
+				        .setTitle(title)	
+				        .setInfoIcon()
+				        .setMessage(message)            
+				        .addOkButton()
+				            .build()
+				                .show();   
+				}
+			});
+	                 
 	    }
 	    
 	    public void showInfo(String title, String message) {
@@ -385,15 +393,22 @@ public class Dialog extends Stage {
 	    }
 	
 	    public void showWarning(String title, String message, Window owner) {
-	        new Builder()
-	            .create()
-	            .setOwner(owner)
-	            .setTitle(title)
-	            .setWarningIcon()
-	            .setMessage(message)
-	            .addOkButton()
-	                .build()
-	                    .show();
+	    	Platform.runLater(new Runnable() {
+				
+				@Override
+				public void run() {
+					 new Builder()
+			            .create()
+			            .setOwner(owner)
+			            .setTitle(title)
+			            .setWarningIcon()
+			            .setMessage(message)
+			            .addOkButton()
+			                .build()
+			                    .show();
+				}
+			});
+	       
 	    }
 	    
 	
@@ -409,15 +424,22 @@ public class Dialog extends Stage {
 	     * @param owner parent window
 	     */
 	    public void showError(String title, String message, Window owner) {
-	        new Builder()
-	            .create()
-	            .setOwner(owner)
-	            .setTitle(title)
-	            .setErrorIcon()
-	            .setMessage(message)
-	            .addOkButton()
-	                .build()
-	                    .show();
+	    	Platform.runLater(new Runnable() {
+				
+				@Override
+				public void run() {
+					new Builder()
+		            .create()
+		            .setOwner(owner)
+		            .setTitle(title)
+		            .setErrorIcon()
+		            .setMessage(message)
+		            .addOkButton()
+		                .build()
+		                    .show();
+				}
+			});
+	        
 	    }
 	    
 	    /**

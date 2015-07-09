@@ -4,19 +4,24 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.lwjgl.util.vector.Vector3f;
+
 import javafx.scene.control.TreeItem;
 import javafx.scene.image.ImageView;
+import tk.captainsplexx.Entity.Entity;
 import tk.captainsplexx.Entity.EntityHandler;
+import tk.captainsplexx.Entity.PlayerEntity;
+import tk.captainsplexx.Entity.PlayerHandler;
 import tk.captainsplexx.JavaFX.JavaFXHandler;
 import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
 import tk.captainsplexx.JavaFX.TreeViewConverter;
 import tk.captainsplexx.JavaFX.TreeViewEntry;
+import tk.captainsplexx.Maths.RayCasting;
 import tk.captainsplexx.Mod.Mod;
-import tk.captainsplexx.Render.ModelHandler;
+import tk.captainsplexx.Model.ModelHandler;
 import tk.captainsplexx.Resource.DDSConverter;
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.ResourceHandler;
-import tk.captainsplexx.Resource.CAS.CasDataReader;
 import tk.captainsplexx.Resource.EBX.EBXFile;
 import tk.captainsplexx.Resource.ITEXTURE.ItextureHandler;
 import tk.captainsplexx.Resource.TOC.ConvertedSBpart;
@@ -61,8 +66,8 @@ public class Game {
 		
 		/*DO NOT CARE ABOUT IN THE MOMENT*/
 		terrainHandler = new TerrainHandler();
-		terrainHandler.generate(0, 0);
-		terrainHandler.generate(0, 1);
+		terrainHandler.generate(0, 0);//defined from terrain4k.decals -> terrain subpackage
+		//terrainHandler.generate(0, 1);
 				
 		resourceHandler = new ResourceHandler();
 		
@@ -147,6 +152,11 @@ public class Game {
 	public void update(){
 		playerHandler.update();	
 		terrainHandler.collisionUpdate(playerHandler);
+	}
+	
+	public void lowRateUpdate(){
+		PlayerEntity pe = playerHandler.getPlayerEntity();
+		entityHandler.getFocussedEntity(pe.getPos(), pe.getRot());
 	}
 	
 	public void buildExplorerTree(){

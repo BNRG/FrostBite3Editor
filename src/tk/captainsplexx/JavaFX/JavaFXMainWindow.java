@@ -1,5 +1,6 @@
 package tk.captainsplexx.JavaFX;
 
+import java.awt.Checkbox;
 import java.io.File;
 import java.io.IOException;
 
@@ -8,10 +9,13 @@ import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TreeCell;
@@ -28,6 +32,10 @@ import tk.captainsplexx.JavaFX.CellFactories.JavaFXebxTCF;
 import tk.captainsplexx.JavaFX.CellFactories.JavaFXexplorer1TCF;
 import tk.captainsplexx.JavaFX.CellFactories.JavaFXexplorerTCF;
 import tk.captainsplexx.JavaFX.CellFactories.ModLoaderListFactory;
+import tk.captainsplexx.JavaFX.Controller.LeftController;
+import tk.captainsplexx.JavaFX.Controller.ModLoaderController;
+import tk.captainsplexx.JavaFX.Controller.ResToolsController;
+import tk.captainsplexx.JavaFX.Controller.RightController;
 import tk.captainsplexx.Mod.Mod;
 
 
@@ -157,6 +165,18 @@ public class JavaFXMainWindow extends Application{
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
 				System.err.println("Old: "+oldValue+" New: "+newValue);
 				// TODO Auto-generated method stub	
+			}
+		});
+        
+        leftController.getConsiderPitchBox().setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				CheckBox considerBox = leftController.getConsiderPitchBox();
+				if (considerBox.isSelected()){
+					Main.getRender().getCamera().setConsiderPitch(true);
+				}else{
+					Main.getRender().getCamera().setConsiderPitch(false);
+				}
 			}
 		});
         

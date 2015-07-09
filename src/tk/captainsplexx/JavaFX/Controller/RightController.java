@@ -1,8 +1,10 @@
-package tk.captainsplexx.JavaFX;
+package tk.captainsplexx.JavaFX.Controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.TreeView;
 import tk.captainsplexx.Game.Main;
+import tk.captainsplexx.JavaFX.TreeViewConverter;
+import tk.captainsplexx.JavaFX.TreeViewEntry;
 import tk.captainsplexx.Mod.Package;
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.ResourceHandler.LinkBundleType;

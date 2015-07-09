@@ -13,6 +13,8 @@ public class FPCameraController
     //the rotation around the X axis of the camera
     public float       pitch       = 0.0f;
     
+    public boolean considerPitch = false;
+    
     
     public float dx = 0.0f;
     public float dy = 0.0f;
@@ -29,7 +31,7 @@ public class FPCameraController
         position = new Vector3f(-pe.posX, -pe.posX, -pe.posX);
         
     }
-  //increment the camera's current yaw rotation
+    //increment the camera's current yaw rotation
     public void yaw(float amount)
     {
         //increment the yaw by the amount param
@@ -42,17 +44,23 @@ public class FPCameraController
         //increment the pitch by the amount param
         pitch += amount;
     }
-  //moves the camera forward relative to its current rotation (yaw)
+    //moves the camera forward relative to its current rotation (yaw|pitch)
     public void walkForward(float distance)
     {
         position.x += distance * (float)Math.sin(Math.toRadians(yaw));
+        if (considerPitch){
+        	position.y -= distance * (float)Math.tan(Math.toRadians(pitch));
+        }
         position.z -= distance * (float)Math.cos(Math.toRadians(yaw));
     }
      
-    //moves the camera backward relative to its current rotation (yaw)
+    //moves the camera backward relative to its current rotation (yaw|pitch)
     public void walkBackwards(float distance)
     {
         position.x -= distance * (float)Math.sin(Math.toRadians(yaw));
+        if (considerPitch){
+        	position.y += distance * (float)Math.tan(Math.toRadians(pitch));
+        }
         position.z += distance * (float)Math.cos(Math.toRadians(yaw));
     }
      
@@ -77,7 +85,7 @@ public class FPCameraController
     	position.y = -pe.posY;
     	position.z = -pe.posZ;
     	
-    	if (pe.velZ > 0){
+    	if (pe.velZ < 0){
 	    	walkForward(pe.movementSpeed*pe.velZ);
 	    }else{
 	    	walkBackwards(-pe.movementSpeed*pe.velZ);
@@ -116,10 +124,31 @@ public class FPCameraController
 	public Vector3f getPosition() {
 		return position;
 	}
+	public void setPosition(Vector3f pos){
+		this.position = pos;
+	}
 	public float getYaw() {
 		return yaw;
 	}
 	public float getPitch() {
 		return pitch;
 	}
+	public boolean isConsiderPitch() {
+		return considerPitch;
+	}
+	public void setConsiderPitch(boolean considerPitch) {
+		this.considerPitch = considerPitch;
+	}
+	
+	public void setRotation(Vector3f rot){
+		this.pitch = rot.x;
+		this.yaw = rot.y;
+	}
+	
+	public void changePosition(Vector3f relPos){
+		this.position.x += relPos.x;
+		this.position.z += relPos.y;
+		this.position.y += relPos.z;
+	}
+	
 }

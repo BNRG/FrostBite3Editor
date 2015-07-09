@@ -31,11 +31,11 @@ import tk.captainsplexx.Game.Game;
 import tk.captainsplexx.Game.Main;
 import tk.captainsplexx.Game.Point;
 import tk.captainsplexx.Maths.Matrices;
+import tk.captainsplexx.Maths.RayCasting;
 import tk.captainsplexx.Model.RawModel;
 import tk.captainsplexx.Model.TexturedModel;
 import tk.captainsplexx.Terrain.Terrain;
 
-;
 
 public class Render {
 
@@ -81,12 +81,17 @@ public class Render {
 		shader.start();
 		shader.loadProjectionMatrix(projectionMatrix);
 		shader.loadViewMatrix(viewMatrix);
+				
 		for (Entity e : game.entityHandler.getEntities()) {
 			if (e.isVisible){
+				if (e.isShowBoundingBox()){
+					shader.loadTransformationMatrix(Matrices.createTransformationMatrix(e.getPosition(), new Vector3f(0f, 0f, 0f), e.getScaling()));
+					drawAxisAlignedBoundingBox(e.getMinCoords(), e.getMaxCoords());
+				}
 				if (e.getHighlighted()){
 					shader.loadHighlighted(true);
 				}
-				
+				shader.loadHeighlightedColor(e.getHeighlightedColor());
 				String[] texturedModels = e.getTexturedModelNames();
 				for (int i = 0; i < texturedModels.length; i++) {
 					shader.loadTransformationMatrix(Matrices.createTransformationMatrix(
@@ -115,10 +120,13 @@ public class Render {
 		
 		Matrix4f TerrainransformationMatrix1 = Matrices.createTransformationMatrix(
 				new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(1.0f, 1.0f, 1.0f));
-				
+		
 		for (Terrain curTerr : game.getTerrainHandler().getTerrainList()) {
 			Point[][] points = curTerr.getPoints();
 			shader.loadTransformationMatrix(Matrix4f.add(TerrainransformationMatrix, TerrainransformationMatrix1, null));
+			
+			//drawAxisAlignedBoundingBox(new Vector3f(-386f, -99f, -554f), new Vector3f(386f, 599f, 538f));
+			
 			/*TerrainransformationMatrix1.translate(new Vector3f(5000f, 500f, 0f));
 			TerrainransformationMatrix1.scale(new Vector3f(5.0f, 5.0f, 5.0f));
 			TerrainransformationMatrix1.rotate(45f, new Vector3f(0f, 1f, 0f));
@@ -136,6 +144,16 @@ public class Render {
 				glEnd();
 			}
 		}
+		/*
+		glBegin(GL11.GL_TRIANGLES);
+			glColor3f(0.7f, 0.0f, 0.0f);
+			//glVertex3f(camera.getPosition().x ,camera.getPosition().y ,camera.getPosition().z);
+			shader.loadTransformationMatrix(Matrices.createTransformationMatrix(new Vector3f(0f, 0f, 0f), new Vector3f(0f, 0f, 0f), new Vector3f(1f, 1f, 1f)));
+			Vector3f ray = Main.getGame().getEntityHandler().getRay();
+			glVertex3f(ray.x+100, ray.y,     ray.z);
+			glVertex3f(ray.x,     ray.y+100, ray.z);
+			glVertex3f(ray.x,     ray.y,     ray.z+100);
+		glEnd();*/
 		shader.stop();
 		
 
@@ -161,5 +179,60 @@ public class Render {
 		Main.zNear = zNear;
 		Main.zFar = zFar;
 		projectionMatrix = Matrices.createProjectionMatrix(Main.FOV, Main.DISPLAY_WIDTH, Main.DISPLAY_HEIGHT, Main.zNear, Main.zFar);
+	}
+	
+	public void drawAxisAlignedBoundingBox(Vector3f minCoords, Vector3f maxCoords){
+		glColor3f(0.7f, 0.0f, 0.0f);
+		//Bottom
+		glBegin(GL11.GL_LINE_STRIP);
+			glVertex3f(minCoords.x,minCoords.y, minCoords.z);
+			glVertex3f(maxCoords.x, minCoords.y, minCoords.z);
+		glEnd();
+		glBegin(GL11.GL_LINE_STRIP);
+			glVertex3f(maxCoords.x, minCoords.y, minCoords.z);
+			glVertex3f(maxCoords.x, minCoords.y, maxCoords.z);
+		glEnd();
+		glBegin(GL11.GL_LINE_STRIP);
+			glVertex3f(maxCoords.x, minCoords.y, maxCoords.z);
+			glVertex3f(minCoords.x, minCoords.y, maxCoords.z);
+		glEnd();
+		glBegin(GL11.GL_LINE_STRIP);
+			glVertex3f(minCoords.x, minCoords.y, maxCoords.z);
+			glVertex3f(minCoords.x, minCoords.y, minCoords.z);
+		glEnd();
+		//Top
+		glBegin(GL11.GL_LINE_STRIP);
+			glVertex3f(minCoords.x, maxCoords.y, minCoords.z);
+			glVertex3f(maxCoords.x, maxCoords.y, minCoords.z);
+		glEnd();
+		glBegin(GL11.GL_LINE_STRIP);
+			glVertex3f(maxCoords.x, maxCoords.y, minCoords.z);
+			glVertex3f(maxCoords.x, maxCoords.y, maxCoords.z);
+		glEnd();
+		glBegin(GL11.GL_LINE_STRIP);
+			glVertex3f(maxCoords.x, maxCoords.y, maxCoords.z);
+			glVertex3f(minCoords.x, maxCoords.y, maxCoords.z);
+		glEnd();
+		glBegin(GL11.GL_LINE_STRIP);
+			glVertex3f(minCoords.x, maxCoords.y, maxCoords.z);
+			glVertex3f(minCoords.x, maxCoords.y, minCoords.z);
+		glEnd();
+		//Connection Lines
+		glBegin(GL11.GL_LINE_STRIP);
+			glVertex3f(minCoords.x, minCoords.y, minCoords.z);
+			glVertex3f(minCoords.x, maxCoords.y, minCoords.z);
+		glEnd();
+		glBegin(GL11.GL_LINE_STRIP);
+			glVertex3f(maxCoords.x,minCoords.y, minCoords.z);
+			glVertex3f(maxCoords.x,maxCoords.y, minCoords.z);
+		glEnd();
+		glBegin(GL11.GL_LINE_STRIP);
+			glVertex3f(maxCoords.x,minCoords.y, maxCoords.z);
+			glVertex3f(maxCoords.x,maxCoords.y, maxCoords.z);
+		glEnd();
+		glBegin(GL11.GL_LINE_STRIP);
+			glVertex3f(minCoords.x,minCoords.y, maxCoords.z);
+			glVertex3f(minCoords.x,maxCoords.y, maxCoords.z);
+		glEnd();
 	}
 }

@@ -1,6 +1,7 @@
 package tk.captainsplexx.Render;
 
 import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector3f;
 
 public class StaticShader extends ShaderProgram{
 	
@@ -8,6 +9,7 @@ public class StaticShader extends ShaderProgram{
 	public int projeMatrixID;
 	public int viewMatrixID;
 	public int highlightedID;
+	public int heighlightedColorID;
 
 	public StaticShader() {
 		super("res/shader/StaticShader.vert", "res/shader/StaticShader.frag");
@@ -25,6 +27,7 @@ public class StaticShader extends ShaderProgram{
 		projeMatrixID = super.getUniformLocation("projectionMatrix");
 		viewMatrixID = super.getUniformLocation("viewMatrix");
 		highlightedID = super.getUniformLocation("isHighlighted");
+		heighlightedColorID = super.getUniformLocation("heighlightedColor");
 	}
 	
 	public void loadTransformationMatrix(Matrix4f mtx){
@@ -41,5 +44,9 @@ public class StaticShader extends ShaderProgram{
 	
 	public void loadHighlighted(boolean bool){
 		super.loadBoolean(highlightedID, bool);
+	}
+	
+	public void loadHeighlightedColor(Vector3f vec3){
+		super.loadVector(heighlightedColorID, vec3);
 	}
 }

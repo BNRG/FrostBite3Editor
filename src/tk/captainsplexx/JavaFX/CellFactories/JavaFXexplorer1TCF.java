@@ -2,6 +2,8 @@ package tk.captainsplexx.JavaFX.CellFactories;
 
 import java.io.File;
 
+import org.lwjgl.util.vector.Vector3f;
+
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.ContextMenu;
@@ -12,6 +14,7 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import tk.captainsplexx.Entity.Entity;
 import tk.captainsplexx.Game.Game;
 import tk.captainsplexx.Game.Main;
 import tk.captainsplexx.JavaFX.JavaFXHandler;
@@ -147,8 +150,10 @@ public class JavaFXexplorer1TCF extends TreeCell<TreeViewEntry> {
 											Main.runOnMainThread(new Runnable() {
 												@Override
 												public void run() {
-													// TODO Auto-generated method stub
-													Main.getGame().getEntityHandler().createEntity((byte[]) Main.sharedObjs[0], Main.getGame().getCurrentSB(), "", (String) Main.sharedObjs[1]);
+													int entityID = Main.getGame().getEntityHandler().createEntity((byte[]) Main.sharedObjs[0], Main.getGame().getCurrentSB(), "", (String) Main.sharedObjs[1]);
+													//Entity en = Main.getGame().getEntityHandler().getEntities().get(entityID);
+													//en.setHighlighted(true);
+													//en.setHeighlightedColor(new Vector3f((float)Math.random(), (float)Math.random(), (float)Math.random()));
 												}
 											});
 											//TEST

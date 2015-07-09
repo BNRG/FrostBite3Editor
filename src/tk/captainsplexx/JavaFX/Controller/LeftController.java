@@ -1,11 +1,13 @@
-package tk.captainsplexx.JavaFX;
+package tk.captainsplexx.JavaFX.Controller;
 
 
 import javafx.fxml.FXML;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TreeView;
 import tk.captainsplexx.Game.Main;
+import tk.captainsplexx.JavaFX.TreeViewEntry;
 import tk.captainsplexx.Resource.DDSConverter;
 import tk.captainsplexx.Resource.FileHandler;
 
@@ -22,6 +24,8 @@ public class LeftController {
 	public ComboBox<String> layer;
 	@FXML
 	public ComboBox<String> lightning;
+	@FXML
+	public CheckBox considerPitchBox;
 	
 	
 	/*OnAction*/
@@ -71,6 +75,11 @@ public class LeftController {
 	public ComboBox<String> getLightning() {
 		return lightning;
 	}
+
+	public CheckBox getConsiderPitchBox() {
+		return considerPitchBox;
+	}
+	
 	
 	
 }

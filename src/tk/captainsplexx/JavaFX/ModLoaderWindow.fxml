@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<BorderPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tk.captainsplexx.JavaFX.ModLoaderController">
+<BorderPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tk.captainsplexx.JavaFX.Controller.ModLoaderController">
    <top>
       <VBox alignment="CENTER" style="-fx-background-color: #DDDDDD;" BorderPane.alignment="CENTER">
          <children>

@@ -52,11 +52,11 @@ public abstract class ShaderProgram {
 			return GL20.glGetUniformLocation(programID, name);
 		}
 		
-		protected void loadFloat(int location, float value){
+		public void loadFloat(int location, float value){
 			GL20.glUniform1f(location, value);
 		}
 		
-		protected void loatVector(int location, Vector3f vector){
+		public void loadVector(int location, Vector3f vector){
 			GL20.glUniform3f(location, vector.x, vector.y, vector.z);
 		}
 		

@@ -7,7 +7,7 @@ import javafx.scene.control.ListCell;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import tk.captainsplexx.Game.Main;
-import tk.captainsplexx.JavaFX.ModLoaderController;
+import tk.captainsplexx.JavaFX.Controller.ModLoaderController;
 import tk.captainsplexx.Mod.Mod;
 import tk.captainsplexx.Resource.FileHandler;
 

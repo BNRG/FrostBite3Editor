@@ -1,6 +1,5 @@
-package tk.captainsplexx.Game;
+package tk.captainsplexx.Entity;
 
-import tk.captainsplexx.Entity.PlayerEntity;
 
 public class PlayerHandler {
 	public PlayerEntity pe;

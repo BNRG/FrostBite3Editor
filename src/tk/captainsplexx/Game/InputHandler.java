@@ -1,23 +1,32 @@
 package tk.captainsplexx.Game;
 
 
+import java.util.Vector;
+
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import org.lwjgl.util.vector.Vector2f;
+import org.lwjgl.util.vector.Vector3f;
 
+import tk.captainsplexx.Entity.Entity;
 import tk.captainsplexx.Entity.PlayerEntity;
+import tk.captainsplexx.Entity.PlayerHandler;
+import tk.captainsplexx.Maths.VectorMath;
 
 public class InputHandler {
 	
-	public int speedMultipShift;
+	public float speedMultipShift;
 	public void listen() {		
-		speedMultipShift = 1;
-		if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))//asdfasdf
+		Entity en = Main.getGame().getEntityHandler().getFocussedEntity();
+		speedMultipShift = 1f;
+		if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 	    {
-			speedMultipShift = 10;
+			speedMultipShift = 10f;
 	    }
-		
-		
-		
+		if (Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
+	    {
+			speedMultipShift = 0.1f;
+	    }
 		PlayerHandler pl = Main.getGame().getPlayerHandler();
 		PlayerEntity pe = pl.getPlayerEntity();
 		if (Keyboard.isKeyDown(Keyboard.KEY_W))//move forward
@@ -46,7 +55,9 @@ public class InputHandler {
 	    	pe.velY -= pe.jumpStrength*speedMultipShift;
 	    }
 	    
-	    
+	    if (Mouse.isButtonDown(2)){//middle click
+	    	System.err.println("Middle mouse click TODO!");
+	    }
 	    
 	    
 	    if (Keyboard.isKeyDown(Keyboard.KEY_ADD))
@@ -59,43 +70,12 @@ public class InputHandler {
 	    	Main.getRender().updateProjectionMatrix(Main.FOV-1, Main.DISPLAY_WIDTH, Main.DISPLAY_HEIGHT, Main.zNear, Main.zFar);
 	    }
 	    
-	    //JComboBox comboBox = Main.getJFrameHandler().getComboBox();
-	    /*
-	    if (Keyboard.isKeyDown(Keyboard.KEY_ADD))//KEY_ADD down
+	    if (Keyboard.isKeyDown(Keyboard.KEY_NUMPAD0))
 	    {
-	    	Main.getGame().getEntityHandler().getEntities().get(comboBox.getSelectedIndex()).changeScaling(0.01f*speedMultipShift, 0.01f*speedMultipShift, 0.01f*speedMultipShift);
+	    	Main.getGame().getEntityHandler().getEntities().clear();
+	    	Main.getGame().getModelHandler().getLoader().cleanUp();
+	    	Main.getGame().getModelHandler().getLoader().init();//for loading the notFoundTexture!
 	    }
-	    if (Keyboard.isKeyDown(Keyboard.KEY_SUBTRACT))//KEY_SUBTRACT down
-	    {
-	    	Main.getGame().getEntityHandler().getEntities().get(comboBox.getSelectedIndex()).changeScaling(-0.01f*speedMultipShift, -0.01f*speedMultipShift, -0.01f*speedMultipShift);
-	    }
-	    if (Keyboard.isKeyDown(Keyboard.KEY_UP))//KEY_NUMPAD8 down
-	    {
-	    	Main.getGame().getEntityHandler().getEntities().get(comboBox.getSelectedIndex()).changePosition(0.5f*speedMultipShift, 0, 0);
-	    }
-	    if (Keyboard.isKeyDown(Keyboard.KEY_DOWN))//KEY_NUMPAD2 down
-	    {
-	    	Main.getGame().getEntityHandler().getEntities().get(comboBox.getSelectedIndex()).changePosition(-0.5f*speedMultipShift, 0, 0);
-	    }
-	    if (Keyboard.isKeyDown(Keyboard.KEY_LEFT))//KEY_NUMPAD4 down
-	    {
-	    	Main.getGame().getEntityHandler().getEntities().get(comboBox.getSelectedIndex()).changePosition(0, 0, 0.5f*speedMultipShift);
-	    }
-	    
-	    if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT))//KEY_NUMPAD6 down
-	    {
-	    	Main.getGame().getEntityHandler().getEntities().get(comboBox.getSelectedIndex()).changePosition(0, 0, -0.5f*speedMultipShift);
-	    }
-	    
-	    
-	    if (Keyboard.isKeyDown(Keyboard.KEY_NUMPAD3))//KEY_NUMPAD1 down
-	    {
-	    	Main.getGame().getEntityHandler().getEntities().get(comboBox.getSelectedIndex()).changeRotation(0, -0.01f, 0);
-	    }
-	    if (Keyboard.isKeyDown(Keyboard.KEY_NUMPAD1))//KEY_NUMPAD1 down
-	    {
-	    	Main.getGame().getEntityHandler().getEntities().get(comboBox.getSelectedIndex()).changeRotation(0, 0.01f, 0);
-	    }*/
 	    
 	    
 	    if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE))//KEY_ESCAPE down
@@ -104,6 +84,47 @@ public class InputHandler {
 	    }
 	    if (Mouse.isButtonDown(0)){
 	    	Mouse.setGrabbed(true);
+	    }
+	    
+	    if (Keyboard.isKeyDown(Keyboard.KEY_LEFT))
+	    {
+	    	if (en!=null){
+	    		Vector2f relCoords = pe.moveLeft(10f*speedMultipShift);
+	    		en.changePosition(new Vector3f(relCoords.x, 0, relCoords.y));
+	    	}
+	    }
+	    if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT))
+	    {
+	    	if (en!=null){
+	    		Vector2f relCoords = pe.moveRight(10f*speedMultipShift);
+	    		en.changePosition(new Vector3f(relCoords.x, 0, relCoords.y));
+	    	}
+	    }
+	    if (Keyboard.isKeyDown(Keyboard.KEY_UP))
+	    {
+	    	if (en!=null){
+	    		Vector2f relCoords = pe.moveForward(10f*speedMultipShift);
+	    		en.changePosition(new Vector3f(relCoords.x, 0, -relCoords.y));
+	    	}
+	    }
+	    if (Keyboard.isKeyDown(Keyboard.KEY_DOWN))
+	    {
+	    	if (en!=null){
+	    		Vector2f relCoords = pe.moveBackwards(10f*speedMultipShift);
+	    		en.changePosition(new Vector3f(-relCoords.x, 0, relCoords.y));
+	    	}
+	    }
+	    if (Keyboard.isKeyDown(Keyboard.KEY_Q))
+	    {
+	    	if (en!=null){
+	    		en.changeRotation(0f, speedMultipShift*0.01f, 0f);
+	    	}
+	    }
+	    if (Keyboard.isKeyDown(Keyboard.KEY_E))
+	    {
+	    	if (en!=null){
+	    		en.changeRotation(0f, speedMultipShift*0.01f, 0f);
+	    	}
 	    }
 	}
 }

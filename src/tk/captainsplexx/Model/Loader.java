@@ -1,4 +1,4 @@
-package tk.captainsplexx.Render;
+package tk.captainsplexx.Model;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,7 +16,6 @@ import org.lwjgl.opengl.GL30;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 
-import tk.captainsplexx.Model.RawModel;
 import tk.captainsplexx.Resource.DDSConverter;
 
 public class Loader {

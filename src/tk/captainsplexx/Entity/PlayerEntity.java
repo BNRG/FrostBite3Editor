@@ -1,5 +1,8 @@
 package tk.captainsplexx.Entity;
 
+import org.lwjgl.util.vector.Vector2f;
+import org.lwjgl.util.vector.Vector3f;
+
 
 public class PlayerEntity {
 	public float height = 100;
@@ -87,6 +90,69 @@ public class PlayerEntity {
 
 	public boolean isOnGround() {
 		return onGround;
-	}	
+	}
+	
+	public Vector3f getPos(){
+		return new Vector3f(posX, posY, posZ);
+	}
+	public Vector3f getRot(){
+		return new Vector3f(rotX, rotY, rotZ);
+	}
+	public Vector3f getVel(){
+		return new Vector3f(velX, velY, velZ);
+	}
+	
+	public void setPos(Vector3f pos){
+		this.posX = pos.x;
+		this.posY = pos.y;
+		this.posZ = pos.z;
+	}
+	
+	public void setRot(Vector3f rot){
+		this.rotX = rot.x;
+		this.rotY = rot.y;
+		this.rotZ = rot.z;
+	}
+	
+	public void setVel(Vector3f vel){
+		this.velX = vel.x;
+		this.velY = vel.y;
+		this.velZ = vel.z;
+	}
+	
+	public void changePosition(Vector3f relPos){
+		this.posX += relPos.x;
+		this.posY += relPos.y;
+		this.posZ += relPos.z;
+	}
+	
+	public Vector2f moveForward(float distance)
+	{
+		Vector2f vec = new Vector2f(distance * (float)Math.sin(Math.toRadians(rotY)), distance * (float)Math.cos(Math.toRadians(rotY)));
+		posX += vec.x;
+		posZ -= vec.y;
+		return vec;
+	}
+	public Vector2f moveBackwards(float distance)
+	{
+		Vector2f vec = new Vector2f(distance * (float)Math.sin(Math.toRadians(rotY)), distance * (float)Math.cos(Math.toRadians(rotY)));
+		posX -= vec.x;
+		posZ += vec.y;
+		return vec;
+	}
+	public Vector2f moveLeft(float distance)
+	{
+		Vector2f vec = new Vector2f(distance * (float)Math.sin(Math.toRadians(rotY-90)), distance * (float)Math.cos(Math.toRadians(rotY-90)));
+		posX += vec.x;
+		posZ -= vec.y;
+		return vec;
+	}
+	public Vector2f moveRight(float distance)
+	{
+		Vector2f vec = new Vector2f(distance * (float)Math.sin(Math.toRadians(rotY+90)), distance * (float)Math.cos(Math.toRadians(rotY+90)));
+		posX += vec.x;
+		posZ -= vec.y;
+		return vec;
+	}
 }
 
