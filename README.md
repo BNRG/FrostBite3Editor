@@ -121,6 +121,5 @@ LICENSE before using it!&lt;&lt;--</p>
 <h1>Help development</h1>
 <p>Currently I'm 17 and spend a lot of my freetime on developing
 	this tool, to give the community the chance to make games AMAZING!</p>
-	<p>If you&rsquo;d like to make a donation for all the hard
-	work, I&rsquo;d appreciate it.</p>
+<p>If you&rsquo;d like to make a donation for all the hard work, I&rsquo;d appreciate it.</p>
 <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=BJXCGQRKK8PXL">Donate via PayPal.</a>
