@@ -6,7 +6,7 @@ import javafx.event.EventHandler;
 import javafx.scene.control.ListCell;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
-import tk.captainsplexx.Game.Main;
+import tk.captainsplexx.Game.Core;
 import tk.captainsplexx.JavaFX.Controller.ModLoaderController;
 import tk.captainsplexx.Mod.Mod;
 import tk.captainsplexx.Resource.FileHandler;
@@ -18,11 +18,11 @@ public class ModLoaderListFactory extends ListCell<Mod>{
 			@Override
 			public void handle(MouseEvent arg0) {
 				Mod mod = getItem();
-				ModLoaderController ctrlr = Main.getJavaFXHandler().getMainWindow().getModLoaderController();
+				ModLoaderController ctrlr = Core.getJavaFXHandler().getMainWindow().getModLoaderController();
 				if (mod != null){
-					Main.getGame().setCurrentMod(mod);
-					Main.getModTools().getPackages().clear();
-					Main.getModTools().fetchPackages();
+					Core.getGame().setCurrentMod(mod);
+					Core.getModTools().getPackages().clear();
+					Core.getModTools().fetchPackages();
 					
 					ctrlr.getModName().setText(mod.getName());
 					ctrlr.getAuthorName().setText(mod.getAuthor());
@@ -50,7 +50,7 @@ public class ModLoaderListFactory extends ListCell<Mod>{
 					
 				}else{
 					ctrlr.getRunEditor().setDisable(true);
-					Main.getGame().setCurrentMod(null);
+					Core.getGame().setCurrentMod(null);
 					ctrlr.getModName().setText("No mod currently selected!");
 					ctrlr.getAuthorName().setText("");
 					ctrlr.getGameName().setText("");

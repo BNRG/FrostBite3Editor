@@ -7,7 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.ImageView;
-import tk.captainsplexx.Game.Main;
+import tk.captainsplexx.Game.Core;
 import tk.captainsplexx.Mod.Mod;
 import tk.captainsplexx.Resource.FileHandler;
 
@@ -35,12 +35,12 @@ public class ModLoaderController {
 	
 	
 	public void runEditor(){
-		Main.runEditor = true;
+		Core.runEditor = true;
 	}
 	
 	public void playMod(){
-		//Main.getJavaFXHandler().getDialogBuilder().showInfo("INFO", "This may take a while!");
-		Main.getModTools().playMod((checkBox.isVisible()&&checkBox.isSelected())||!checkBox.isVisible());
+		//Core.getJavaFXHandler().getDialogBuilder().showInfo("INFO", "This may take a while!");
+		Core.getModTools().playMod((checkBox.isVisible()&&checkBox.isSelected())||!checkBox.isVisible());
 	}
 	
 	public void openModFolder(){

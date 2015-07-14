@@ -4,14 +4,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
 import javafx.scene.control.TreeItem;
 import javafx.scene.image.ImageView;
 import tk.captainsplexx.Entity.Entity;
 import tk.captainsplexx.Entity.EntityHandler;
-import tk.captainsplexx.Entity.PlayerEntity;
-import tk.captainsplexx.Entity.PlayerHandler;
 import tk.captainsplexx.JavaFX.JavaFXHandler;
 import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
 import tk.captainsplexx.JavaFX.TreeViewConverter;
@@ -19,6 +18,9 @@ import tk.captainsplexx.JavaFX.TreeViewEntry;
 import tk.captainsplexx.Maths.RayCasting;
 import tk.captainsplexx.Mod.Mod;
 import tk.captainsplexx.Model.ModelHandler;
+import tk.captainsplexx.Player.PlayerEntity;
+import tk.captainsplexx.Player.PlayerHandler;
+import tk.captainsplexx.Render.Gui.GuiTexture;
 import tk.captainsplexx.Resource.DDSConverter;
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.ResourceHandler;
@@ -29,6 +31,7 @@ import tk.captainsplexx.Resource.TOC.ConvertedTocFile;
 import tk.captainsplexx.Resource.TOC.TocConverter;
 import tk.captainsplexx.Resource.TOC.TocFile;
 import tk.captainsplexx.Resource.TOC.TocManager;
+import tk.captainsplexx.Shader.ShaderHandler;
 import tk.captainsplexx.Terrain.TerrainHandler;
 
 public class Game {
@@ -45,6 +48,7 @@ public class Game {
 	public HashMap<String, String> ebxFileGUIDs;
 	public HashMap<String, String> chunkGUIDSHA1;
 	public Mod currentMod;
+	public ArrayList<GuiTexture> guis;
 	
 	public ArrayList<ConvertedTocFile> commonChunks;
 				
@@ -74,9 +78,11 @@ public class Game {
 		shaderHandler = new ShaderHandler();
 		entityHandler = new EntityHandler(modelHandler, resourceHandler);
 		
-		if (!Main.isDEBUG){
+		guis = new ArrayList<>();
+		
+		if (!Core.isDEBUG){
 			System.out.println("Please select a game root directory like this one: 'C:/Program Files (x86)/Origin Games/Battlefield 4'!");
-			Main.getJavaFXHandler().getMainWindow().selectGamePath();
+			Core.getJavaFXHandler().getMainWindow().selectGamePath();
 		}else{
 			
 			/*TEST FOR PATCHING BASEDATA USING DELTA
@@ -96,13 +102,13 @@ public class Game {
 			} catch (InterruptedException e1) {
 				e1.printStackTrace();
 			}
-			if (Main.gamePath != null && Main.getJavaFXHandler().getMainWindow().getModLoaderController() != null){
+			if (Core.gamePath != null && Core.getJavaFXHandler().getMainWindow().getModLoaderController() != null){
 				break;
 			}
 		}
-		Main.getJavaFXHandler().getMainWindow().getModLoaderController().setGamepath(FileHandler.normalizePath(Main.gamePath));
-		Main.getJavaFXHandler().getMainWindow().toggleModLoaderVisibility();
-		File cascat = new File(Main.gamePath+"/Data/cas.cat");
+		Core.getJavaFXHandler().getMainWindow().getModLoaderController().setGamepath(FileHandler.normalizePath(Core.gamePath));
+		Core.getJavaFXHandler().getMainWindow().toggleModLoaderVisibility();
+		File cascat = new File(Core.gamePath+"/Data/cas.cat");
 		if (!cascat.exists()){
 			System.err.println("Invalid gamepath selected.");
 			System.exit(0);
@@ -110,9 +116,9 @@ public class Game {
 		System.out.println("Building up FrostBite Editor!");
 		buildEditor();
 		
-		if (Main.isDEBUG){//EBX-DEBUG
-			Main.getJavaFXHandler().getMainWindow().toggleRightVisibility();
-			Main.getJavaFXHandler().getMainWindow().toggleModLoaderVisibility();
+		if (Core.isDEBUG){//EBX-DEBUG
+			Core.getJavaFXHandler().getMainWindow().toggleRightVisibility();
+			Core.getJavaFXHandler().getMainWindow().toggleModLoaderVisibility();
 			currentMod = null;
 			ebxFileGUIDs = new HashMap<>();
 			ebxFileGUIDs.put("EA830D5EFFB3EE489D44963370D466B1", "test/test1/test2");
@@ -120,15 +126,15 @@ public class Game {
 			byte[] bytes = FileHandler.readFile("mods/SampleMod/resources/levels/mp/mp_playground/content/layer2_buildings.bak--IGNORE");
 			EBXFile ebxFile = resourceHandler.getEBXHandler().loadFile(bytes);
 			TreeItem<TreeViewEntry> treeView = TreeViewConverter.getTreeView(ebxFile);
-			Main.getJavaFXHandler().setTreeViewStructureRight(treeView);
-			Main.getJavaFXHandler().getMainWindow().updateRightRoot();
+			Core.getJavaFXHandler().setTreeViewStructureRight(treeView);
+			Core.getJavaFXHandler().getMainWindow().updateRightRoot();
 		}
 	}
 	
 	
 	public void buildEditor(){
-		resourceHandler.getCasCatManager().readCat(FileHandler.readFile(Main.gamePath+"/Data/cas.cat"), "normal");
-		File patchedCasCat = new File(Main.gamePath+"/Update/Patch/Data/cas.cat");
+		resourceHandler.getCasCatManager().readCat(FileHandler.readFile(Core.gamePath+"/Data/cas.cat"), "normal");
+		File patchedCasCat = new File(Core.gamePath+"/Update/Patch/Data/cas.cat");
 		if (patchedCasCat.exists()){
 			resourceHandler.getPatchedCasCatManager().readCat(FileHandler.readFile(patchedCasCat.getAbsolutePath()), "patched");
 		}
@@ -137,7 +143,7 @@ public class Game {
 		
 		/*Use this to fetch common chunks!*/
 		commonChunks = new ArrayList<ConvertedTocFile>();
-		for (File file : FileHandler.listf(Main.gamePath+"/", "Chunks")){
+		for (File file : FileHandler.listf(Core.gamePath+"/", "Chunks")){
 			if (file.getAbsolutePath().endsWith(".toc")){
 				String relPath = file.getAbsolutePath().replace("\\", "/").replace(".toc", "");
 				TocFile toc = TocManager.readToc(relPath);
@@ -159,21 +165,21 @@ public class Game {
 		entityHandler.getFocussedEntity(pe.getPos(), pe.getRot());
 	}
 	
-	public void buildExplorerTree(){
+	public void buildExplorerTree(){		
 		currentToc = null;
 		currentSB = null;
 
-		TreeItem<TreeViewEntry> explorerTree = new TreeItem<TreeViewEntry>(new TreeViewEntry(Main.gamePath, null, null, EntryType.LIST));
-		for (File file : FileHandler.listf(Main.gamePath+"/Data/", ".sb")){
-			File patched = new File(file.getAbsolutePath().replace("\\", "/").replace(Main.gamePath, Main.gamePath+"/Update/Patch"));
+		TreeItem<TreeViewEntry> explorerTree = new TreeItem<TreeViewEntry>(new TreeViewEntry(Core.gamePath, null, null, EntryType.LIST));
+		for (File file : FileHandler.listf(Core.gamePath+"/Data/", ".sb")){
+			File patched = new File(file.getAbsolutePath().replace("\\", "/").replace(Core.gamePath, Core.gamePath+"/Update/Patch"));
 			if (!patched.exists()){
-				String relPath = file.getAbsolutePath().replace("\\", "/").replace(".sb", "").replace(Main.gamePath+"/", "");
+				String relPath = file.getAbsolutePath().replace("\\", "/").replace(".sb", "").replace(Core.gamePath+"/", "");
 				//System.out.println("NOPATCH "+relPath);
 				String[] fileName = relPath.split("/");
 				TreeItem<TreeViewEntry> convTocTree = new TreeItem<TreeViewEntry>(new TreeViewEntry(fileName[fileName.length-1], new ImageView(JavaFXHandler.documentIcon), file, EntryType.LIST)); 
 				TreeViewConverter.pathToTree(explorerTree, relPath, convTocTree);
 			}else{
-				String relPath = patched.getAbsolutePath().replace("\\", "/").replace(".sb", "").replace(Main.gamePath+"/", "");
+				String relPath = patched.getAbsolutePath().replace("\\", "/").replace(".sb", "").replace(Core.gamePath+"/", "");
 				//System.out.println("PATCH "+relPath);
 				String[] fileName = relPath.split("/");
 				TreeItem<TreeViewEntry> convTocTree = new TreeItem<TreeViewEntry>(new TreeViewEntry(fileName[fileName.length-1], new ImageView(JavaFXHandler.documentIcon), patched, EntryType.LIST)); 
@@ -186,14 +192,14 @@ public class Game {
 				child.setExpanded(true);
 			}
 		}
-		Main.getJavaFXHandler().setTreeViewStructureLeft(explorerTree);
-		Main.getJavaFXHandler().getMainWindow().updateLeftRoot();
+		Core.getJavaFXHandler().setTreeViewStructureLeft(explorerTree);
+		Core.getJavaFXHandler().getMainWindow().updateLeftRoot();
 		
-		Main.getJavaFXHandler().setTreeViewStructureLeft1(null);
-		Main.getJavaFXHandler().getMainWindow().updateLeftRoot1();
+		Core.getJavaFXHandler().setTreeViewStructureLeft1(null);
+		Core.getJavaFXHandler().getMainWindow().updateLeftRoot1();
 		
-		Main.getJavaFXHandler().setTreeViewStructureRight(null);
-		Main.getJavaFXHandler().getMainWindow().updateRightRoot();
+		Core.getJavaFXHandler().setTreeViewStructureRight(null);
+		Core.getJavaFXHandler().getMainWindow().updateRightRoot();
 	}
 	
 	
@@ -284,6 +290,11 @@ public class Game {
 
 	public ArrayList<ConvertedTocFile> getCommonChunks() {
 		return commonChunks;
+	}
+
+
+	public ArrayList<GuiTexture> getGuis() {
+		return guis;
 	}
 
 	

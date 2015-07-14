@@ -6,7 +6,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import tk.captainsplexx.Game.Main;
+import tk.captainsplexx.Game.Core;
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.CAS.CasDataReader;
 import tk.captainsplexx.Resource.TOC.ConvertedSBpart;
@@ -26,7 +26,7 @@ public class MeshChunkLoader {
 	private int Submesh_Mat_Name_Offset;
 	private long FaceIndiceOffset=0;
 	private int submesh_vert_count=0;
-	private float Model_Scale = 39f;
+	private float Model_Scale = 4f;
 	private String Submesh_Material_Name="";
 	private long Submesh_Face_Indice_Count = 0;
 	private int Submesh_Face_Indice_lastOffset = 0;
@@ -60,7 +60,7 @@ public class MeshChunkLoader {
 			}
 		}
 		if (ChunkBytes==null){
-			for (ConvertedTocFile commonChunk : Main.getGame().getCommonChunks()){
+			for (ConvertedTocFile commonChunk : Core.getGame().getCommonChunks()){
 				for (TocSBLink chunk : commonChunk.getChunks()){
 					if (chunk.getGuid().equalsIgnoreCase(chunkID)){
 						this.ChunkBytes = CasDataReader.readCas(null, null, chunk.getSha1(), 0);

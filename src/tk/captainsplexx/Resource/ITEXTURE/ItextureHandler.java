@@ -3,11 +3,13 @@ package tk.captainsplexx.Resource.ITEXTURE;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 
-import tk.captainsplexx.Game.Main;
+import tk.captainsplexx.Game.Core;
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.FileSeeker;
 import tk.captainsplexx.Resource.CAS.CasCatEntry;
 import tk.captainsplexx.Resource.CAS.CasDataReader;
+import tk.captainsplexx.Resource.TOC.ConvertedTocFile;
+import tk.captainsplexx.Resource.TOC.TocSBLink;
 
 public class ItextureHandler {
 	
@@ -25,7 +27,7 @@ public class ItextureHandler {
 	public static byte[] dds_DXT5 = { 0x44, 0x58, 0x54, 0x35 }; // 44585435 = DXT5
 	public static byte[] dds_ATI2 = { 0x41, 0x54, 0x49, 0x32 }; // 41544932 = ATI2
     	
-	public static byte[] getDSS(byte[] itextureData, String casPath, ArrayList<CasCatEntry> casCatEntries){
+	public static byte[] getDSS(byte[] itextureData){
 		FileSeeker seeker = new FileSeeker();
 		
         seeker.setOffset(12);
@@ -40,17 +42,35 @@ public class ItextureHandler {
         seeker.setOffset(28);
         String guid = FileHandler.bytesToHex(FileHandler.readByte(itextureData, seeker, 16));
         
-        String sha1 = Main.getGame().getChunkGUIDSHA1().get(guid.toLowerCase());
+        String sha1 = Core.getGame().getChunkGUIDSHA1().get(guid.toLowerCase());
         
-        /*for (String key :  Main.getGame().getChunkGUIDSHA1().keySet()){
-        	System.err.println("GUID: "+key+" Sha1: "+Main.getGame().getChunkGUIDSHA1().get(key));
+        /*for (String key :  Core.getGame().getChunkGUIDSHA1().keySet()){
+        	System.err.println("GUID: "+key+" Sha1: "+Core.getGame().getChunkGUIDSHA1().get(key));
         }*/
         if (sha1 == null){
-        	System.err.println("SHA1 could not found in 'CHUNK GUID -> SHA1' DB :(");
+        	System.out.println("SHA1 could not be found in GUID-SHA1 Database!");
+        	System.out.println("Try common chunks.");
+        	for (ConvertedTocFile commonChunk : Core.getGame().getCommonChunks()){
+				for (TocSBLink chunk : commonChunk.getChunks()){
+					if (chunk.getGuid().equalsIgnoreCase(guid)){
+						sha1 = chunk.getSha1();
+						System.out.println("Chunk successfully found!");
+						break;
+					}
+				}
+				if (sha1!=null){
+					break;
+				}
+			}
+        }
+        
+        if (sha1 == null){
+        	System.err.println("Nothing found ;(");
         	return null;
         }     
         
-        byte[] data = CasDataReader.readCas(sha1, casPath, casCatEntries, false);//TODO what is with delta patching here ?
+        //TODO what is with delta patching here ? does it even exist =) ?
+        byte[] data = CasDataReader.readCas(null, null, sha1, 666);
         
         //FileHandler.writeFile("D:/TEST_raw_data.dds", data);
         

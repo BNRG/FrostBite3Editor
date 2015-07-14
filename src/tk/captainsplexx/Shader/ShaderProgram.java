@@ -1,4 +1,4 @@
-package tk.captainsplexx.Render;
+package tk.captainsplexx.Shader;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

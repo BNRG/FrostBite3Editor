@@ -30,6 +30,11 @@ public class TextureHandler {
 		textures.put(meshName, id);
 	}
 
+	public HashMap<String, Integer> getTextures() {
+		return textures;
+	}
+	
+
 	
 	
 }

@@ -23,6 +23,7 @@ public class Loader {
 	public ArrayList<Integer> vbos = new ArrayList<Integer>();
 	public HashMap<String, Integer> textures = new HashMap<String, Integer>();
 	public int notFoundID;
+	public int crosshairID;
 	
 	public RawModel loadVAO(String name, int drawMethod, float[] positions, float[] textures, int[] indices){
 		int vaoID = createVAO();
@@ -31,6 +32,13 @@ public class Loader {
 		storeDataAsAttr(1, 2, textures);
 		unbindVAO();
 		return new RawModel(name, vaoID, indices.length, drawMethod);
+	}
+	
+	public RawModel loadVAO(String name, int drawMethod, float[] positions){
+		int vaoID = createVAO();
+		storeDataInAttributeList(0, 2, positions);
+		unbindVAO();
+		return new RawModel(name, vaoID, positions.length/2, drawMethod);
 	}
 	
 	public int createVAO(){
@@ -54,13 +62,20 @@ public class Loader {
 	
 	public Loader(){
 		notFoundID = 0;
+		crosshairID = 0;
 	}
 	public void init(){
 		notFoundID = loadTexture("res/notFound/notFound.dds");
+		crosshairID = loadTexture("res/interface/crosshair-vector.png");
 	}
 	
 	public int getNotFoundID() {
 		return notFoundID;
+	}
+	
+
+	public int getCrosshairID() {
+		return crosshairID;
 	}
 
 	public int loadTexture(String path){
@@ -86,7 +101,7 @@ public class Loader {
 	
 	
 	
-	public void storeDataAsAttr(int index, int dimensions, float[] data){
+	private void storeDataAsAttr(int index, int dimensions, float[] data){
 		int vboID = GL15.glGenBuffers();
 		vbos.add(vboID);
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboID);
@@ -96,6 +111,16 @@ public class Loader {
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboID);
 		
 	}
+	
+	private void storeDataInAttributeList(int attributeNumber, int vectorSize, float[] data){
+		int vboID = GL15.glGenBuffers();
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboID);
+		FloatBuffer buffer = storeDataInFloatBuffer(data);
+		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
+		GL20.glVertexAttribPointer(attributeNumber, vectorSize, GL11.GL_FLOAT, false, 0, 0);
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+	}
+	
 	public void unbindVAO(){
 		GL30.glBindVertexArray(0);
 	}
@@ -117,6 +142,13 @@ public class Loader {
 	}
 	
 	public FloatBuffer getFloatBuffer(float[] data){
+		FloatBuffer buffer = BufferUtils.createFloatBuffer(data.length);
+		buffer.put(data);
+		buffer.flip();
+		return buffer;
+	}
+	
+	private FloatBuffer storeDataInFloatBuffer(float[] data){
 		FloatBuffer buffer = BufferUtils.createFloatBuffer(data.length);
 		buffer.put(data);
 		buffer.flip();

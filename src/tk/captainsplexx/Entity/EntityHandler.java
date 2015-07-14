@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector3f;
 
-import tk.captainsplexx.Game.Main;
+import tk.captainsplexx.Game.Core;
 import tk.captainsplexx.Maths.RayCasting;
 import tk.captainsplexx.Maths.VectorMath;
 import tk.captainsplexx.Model.ModelHandler;
@@ -15,9 +15,6 @@ import tk.captainsplexx.Resource.MESH.MeshChunkLoader;
 import tk.captainsplexx.Resource.TOC.ConvertedSBpart;
 
 public class EntityHandler {
-	public enum Type {
-	    Object,
-	}
 		
 	ArrayList <Entity> entities = new ArrayList <Entity>();
 	Vector3f ray = null;
@@ -41,17 +38,9 @@ public class EntityHandler {
 	}
 	
 	
-	public Entity getEntity(Type type) {
-		for (Entity e : entities){
-			if (e.type == type){
-				return e;
-			}
-		}
-		return null;
-	}
-	
 	public Entity getFocussedEntity(Vector3f position, Vector3f direction){
 		this.ray = new Vector3f(position.x, position.y, position.z);
+		Vector3f origin = new Vector3f(position.x, position.y, position.z);
 		Vector3f absMinCoords = null;
 		Vector3f absMaxCoords = null;
 		for (int check=1; check<=MAX_RAY_CHECKS; check++){
@@ -60,14 +49,19 @@ public class EntityHandler {
 				e.setShowBoundingBox(false);
 				absMinCoords = Vector3f.add(e.getPosition(), VectorMath.multiply(e.getMinCoords(), e.getScaling(), null), null);//pos+(minCoords*Scaling)
 				absMaxCoords = Vector3f.add(e.getPosition(), VectorMath.multiply(e.getMaxCoords(), e.getScaling(), null), null);
-				if (ray.x >= absMinCoords.x && ray.x <= absMaxCoords.x){
-					if (ray.y >= absMinCoords.y && ray.y <= absMaxCoords.y){
-						if (ray.z >= absMinCoords.z && ray.z <= absMaxCoords.z){
-							e.setShowBoundingBox(true);
-							focussedEntity = e;
-							return e;//entity found!
-						}
+				if (ray.x >= absMinCoords.x && ray.x <= absMaxCoords.x && ray.y >= absMinCoords.y
+						&& ray.y <= absMaxCoords.y&& ray.z >= absMinCoords.z && ray.z <= absMaxCoords.z){ //Entity covers area of RayPoint
+					
+					
+					if (origin.x >= absMinCoords.x && origin.x <= absMaxCoords.x &&
+							origin.y >= absMinCoords.y && origin.y <= absMaxCoords.y&& origin.z >= absMinCoords.z && origin.z <= absMaxCoords.z){
+						//Origin point isn't allowed to be inside of entity!
+						continue;
 					}
+					
+					e.setShowBoundingBox(true);
+					focussedEntity = e;
+					return e;//entity found!
 				}
 			}
 		}
@@ -76,7 +70,7 @@ public class EntityHandler {
 	}
 	
 	
-	public int createEntity(byte[] mesh, ConvertedSBpart convSBpart, String textureRoot, String desc){
+	public Entity createEntity(byte[] mesh, ConvertedSBpart convSBpart, String textureRoot, ArrayList<String> materials, String desc){
 		try{
 			MeshChunkLoader msl = resourceHandler.getMeshChunkLoader();
 			msl.loadFile(mesh, convSBpart);/*the chunk guid is located at 0xC8, but why the f*ck are the multiple ones? needs the loader work too?*/
@@ -86,37 +80,36 @@ public class EntityHandler {
 				RawModel model = modelHandler.addRawModel(GL11.GL_TRIANGLES, msl.getName()+submesh, msl.getVertexPositions(submesh), msl.getUVCoords(submesh), msl.getIndices(submesh));
 				
 				int textureID = modelHandler.getLoader().getNotFoundID();
-				/*if (materials!=null){
+				if (materials!=null){
 					if (!materials.isEmpty()){
 						try{
 							if (resourceHandler.getTextureHandler().isExisting(materials.get(submesh))){
 								textureID = resourceHandler.getTextureHandler().getTextureID(materials.get(submesh));
 							}else{
-								if (entities.size()<MAX_TEXTURES && !materials.get(submesh).equals("")){
+								if (resourceHandler.getTextureHandler().getTextures().size()<MAX_TEXTURES && !materials.get(submesh).equals("")){
 									textureID = modelHandler.getLoader().loadTexture(textureRoot+"res/"+materials.get(submesh)+".jpg"); 
 									resourceHandler.getTextureHandler().addTextureID(textureID, materials.get(submesh));
 								}
 							}
 						}catch(Exception e){
-							System.err.println("Problem while loding Submesh Texture "+subpathMesh+" Submesh: "+submesh);
+							System.err.println("Problem while loding Texture of Submesh: "+submesh);
 						}
 					}
-				}*/
+				}
 				texturedModel[submesh] = (modelHandler.addTexturedModel(model, textureID));
 			}
-			Entity en = new Entity(Type.Object, msl.getName(), texturedModel);
+			Entity en = new ObjectEntity(msl.getName(), texturedModel);
 			//axis aligned bounding box
 			float[] maxCoords = msl.getMaxCoords();
 			float[] minCoords = msl.getMinCoords();
 			en.setMaxCoords(new Vector3f(maxCoords[0], maxCoords[1], maxCoords[2]));
 			en.setMinCoords(new Vector3f(minCoords[0], minCoords[1], minCoords[2]));
 			
-			entities.add(en);
-			return entities.size()-1;
+			return en;
 		}catch(Exception e){
 			e.printStackTrace();
 			System.err.println("Could not create entitiy: "+desc);
-			return -1;
+			return null;
 		}
 	}
 

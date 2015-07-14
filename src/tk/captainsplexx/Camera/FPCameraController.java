@@ -2,7 +2,7 @@ package tk.captainsplexx.Camera;
 
 import org.lwjgl.util.vector.Vector3f;
 
-import tk.captainsplexx.Entity.PlayerEntity;
+import tk.captainsplexx.Player.PlayerEntity;
 
 public class FPCameraController
 {
@@ -150,5 +150,13 @@ public class FPCameraController
 		this.position.z += relPos.y;
 		this.position.y += relPos.z;
 	}
+	public float getMouseSensitivity() {
+		return mouseSensitivity;
+	}
+	public void setMouseSensitivity(float mouseSensitivity) {
+		this.mouseSensitivity = mouseSensitivity;
+	}
+	
+	
 	
 }

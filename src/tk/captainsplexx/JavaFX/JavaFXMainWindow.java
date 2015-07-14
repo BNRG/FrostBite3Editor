@@ -27,7 +27,7 @@ import javafx.util.Callback;
 
 import org.lwjgl.opengl.Display;
 
-import tk.captainsplexx.Game.Main;
+import tk.captainsplexx.Game.Core;
 import tk.captainsplexx.JavaFX.CellFactories.JavaFXebxTCF;
 import tk.captainsplexx.JavaFX.CellFactories.JavaFXexplorer1TCF;
 import tk.captainsplexx.JavaFX.CellFactories.JavaFXexplorerTCF;
@@ -111,7 +111,7 @@ public class JavaFXMainWindow extends Application{
 	@Override
 	public void start(Stage stageLeft) {
 		this.stageLeft = stageLeft;
-		Main.getJavaFXHandler().setMainWindow(this); //Stupid thread bypass.
+		Core.getJavaFXHandler().setMainWindow(this); //Stupid thread bypass.
 		Parent leftroot = null;
 		/*
 		 * 
@@ -121,7 +121,7 @@ public class JavaFXMainWindow extends Application{
 		try {
 			leftLoader = new FXMLLoader(getClass().getResource("LeftWindow.fxml")); //not static to access controller class
 			leftroot = leftLoader.load();
-			leftController =  leftLoader.getController();
+			leftController = leftLoader.getController();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -173,12 +173,18 @@ public class JavaFXMainWindow extends Application{
 			public void handle(ActionEvent event) {
 				CheckBox considerBox = leftController.getConsiderPitchBox();
 				if (considerBox.isSelected()){
-					Main.getRender().getCamera().setConsiderPitch(true);
+					Core.getRender().getCamera().setConsiderPitch(true);
 				}else{
-					Main.getRender().getCamera().setConsiderPitch(false);
+					Core.getRender().getCamera().setConsiderPitch(false);
 				}
 			}
 		});
+        leftController.getMouseSensitivity().valueProperty().addListener(new ChangeListener<Number>() {
+        	public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
+        		double mouseSens = (double)new_val/500;
+        		Core.getRender().getCamera().setMouseSensitivity((float)mouseSens);
+        	}
+        });
         
         /*
          * 
@@ -205,7 +211,7 @@ public class JavaFXMainWindow extends Application{
         stageRight.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			@Override
 			public void handle(WindowEvent e) {
-				if (Main.isDEBUG){
+				if (Core.isDEBUG){
 					System.exit(1);
 				}else{
 					e.consume();
@@ -265,7 +271,7 @@ public class JavaFXMainWindow extends Application{
 		}
         stageModLoader = new Stage();
         Scene sceneModLoader = new Scene(modLoaderRoot, 800, 600);
-        stageModLoader.setTitle("FrostBite 3 Tools "+Main.buildVersion);
+        stageModLoader.setTitle("FrostBite 3 Tools "+Core.buildVersion);
         stageModLoader.setScene(sceneModLoader);
         stageModLoader.getIcons().add(JavaFXHandler.applicationIcon16);
         stageModLoader.getIcons().add(JavaFXHandler.applicationIcon32);
@@ -292,7 +298,7 @@ public class JavaFXMainWindow extends Application{
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
-				rightController.getEBXExplorer().setRoot(Main.getJavaFXHandler().getTreeViewStructureRight());
+				rightController.getEBXExplorer().setRoot(Core.getJavaFXHandler().getTreeViewStructureRight());
 				if (rightController.getEBXExplorer().getRoot() != null){
 					rightController.getEBXExplorer().getRoot().setExpanded(true);
 				}
@@ -304,7 +310,7 @@ public class JavaFXMainWindow extends Application{
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
-				leftController.getExplorer().setRoot(Main.getJavaFXHandler().getTreeViewStructureLeft());
+				leftController.getExplorer().setRoot(Core.getJavaFXHandler().getTreeViewStructureLeft());
 				leftController.getExplorer().scrollTo(0);
 				if (leftController.getExplorer().getRoot() != null){
 					leftController.getExplorer().getRoot().setExpanded(true);
@@ -319,7 +325,7 @@ public class JavaFXMainWindow extends Application{
 			public void run() {
 				ObservableList<Mod> mods = modLoaderController.getList().getItems();
 				mods.clear();
-				mods.addAll(Main.getModTools().getMods());
+				mods.addAll(Core.getModTools().getMods());
 			}
 		});	
 	}
@@ -328,7 +334,7 @@ public class JavaFXMainWindow extends Application{
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
-				leftController.getExplorer1().setRoot(Main.getJavaFXHandler().getTreeViewStructureLeft1());
+				leftController.getExplorer1().setRoot(Core.getJavaFXHandler().getTreeViewStructureLeft1());
 				if (leftController.getExplorer1().getRoot() != null){
 					leftController.getExplorer1().getRoot().setExpanded(true);
 				}
@@ -400,10 +406,10 @@ public class JavaFXMainWindow extends Application{
 					if (selectedDirectory != null) {
 						String path = selectedDirectory.getAbsolutePath().replace('\\', '/');
 						System.out.println("Selected '"+path+"' as gamepath.");
-						Main.gamePath = path;
+						Core.gamePath = path;
 					}else{
-						Main.gamePath = "emty";
-						Main.keepAlive = false;
+						Core.gamePath = "emty";
+						Core.keepAlive = false;
 					}
 				}
 			});

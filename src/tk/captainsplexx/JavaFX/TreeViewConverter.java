@@ -7,7 +7,7 @@ import java.util.HashMap;
 
 import javafx.scene.control.TreeItem;
 import javafx.scene.image.ImageView;
-import tk.captainsplexx.Game.Main;
+import tk.captainsplexx.Game.Core;
 import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
 import tk.captainsplexx.Mod.ModTools;
 import tk.captainsplexx.Mod.Package;
@@ -464,12 +464,12 @@ public class TreeViewConverter {
 		TreeItem<TreeViewEntry> rootnode = new TreeItem<TreeViewEntry>(new TreeViewEntry(part.getPath(), new ImageView(JavaFXHandler.documentIcon), null, EntryType.LIST));
 		
 		File modFilePack = new File(FileHandler.normalizePath(
-				Main.getGame().getCurrentMod().getPath()+ModTools.PACKAGEFOLDER+
-				Main.getGame().getCurrentFile().replace(Main.gamePath, "")+ModTools.PACKTYPE)
+				Core.getGame().getCurrentMod().getPath()+ModTools.PACKAGEFOLDER+
+				Core.getGame().getCurrentFile().replace(Core.gamePath, "")+ModTools.PACKTYPE)
 		);
 		Package modPackage = null;
 		if (modFilePack.exists()){
-			modPackage = Main.getModTools().readPackageInfo(modFilePack);
+			modPackage = Core.getModTools().readPackageInfo(modFilePack);
 		}
 		
 		/*EBX*/
@@ -492,7 +492,7 @@ public class TreeViewConverter {
 				childEntry.setName(childEntry.getName()+"_(Patched: "+link.getCasPatchType()+")");
 			}
 			String isReferenced = "";
-			if (Main.getGame().getEBXFileGUIDs().get(link.getEbxFileGUID().toUpperCase()) != null){
+			if (Core.getGame().getEBXFileGUIDs().get(link.getEbxFileGUID().toUpperCase()) != null){
 				isReferenced += " (referenced) ";
 			}
 			childEntry.setTooltip("GUID: "+link.getEbxFileGUID()+isReferenced);

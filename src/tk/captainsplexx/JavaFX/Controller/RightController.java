@@ -2,7 +2,7 @@ package tk.captainsplexx.JavaFX.Controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.TreeView;
-import tk.captainsplexx.Game.Main;
+import tk.captainsplexx.Game.Core;
 import tk.captainsplexx.JavaFX.TreeViewConverter;
 import tk.captainsplexx.JavaFX.TreeViewEntry;
 import tk.captainsplexx.Mod.Package;
@@ -17,13 +17,13 @@ public class RightController {
 
 	public void saveEBX(){
 		if (ebxExplorer.getRoot() != null){
-			if (Main.getGame().getCurrentMod()!=null&&!Main.isDEBUG){
+			if (Core.getGame().getCurrentMod()!=null&&!Core.isDEBUG){
 				String resPath = ebxExplorer.getRoot().getValue().getName()+".ebx";		
-				String test = Main.getGame().getCurrentToc().getName();
-				Package pack = Main.getModTools().getPackage(test);
-				Main.getModTools().extendPackage(
+				String test = Core.getGame().getCurrentToc().getName();
+				Package pack = Core.getModTools().getPackage(test);
+				Core.getModTools().extendPackage(
 						LinkBundleType.BUNDLES,
-						Main.getGame().getCurrentSB().getPath(), 
+						Core.getGame().getCurrentSB().getPath(), 
 						ResourceType.EBX,
 						resPath,
 						pack
@@ -31,11 +31,11 @@ public class RightController {
 				
 				//EBXFile ebxFile = TreeViewConverter.getEBXFile(ebxExplorer.getRoot());
 				//byte[] ebxBytes = EBXConverter.createEBX(ebxFile);
-				FileHandler.writeFile(Main.getGame().getCurrentMod().getPath()+"/resources/"+resPath, new byte[] {0x00}/*ebxBytes goes here!*/); //TODO
+				FileHandler.writeFile(Core.getGame().getCurrentMod().getPath()+"/resources/"+resPath, new byte[] {0x00}/*ebxBytes goes here!*/); //TODO
 				
 				
 				//This will be moved over into main save.
-				Main.getModTools().writePackages();
+				Core.getModTools().writePackages();
 				
 				
 				System.err.println("TODO");
@@ -43,12 +43,12 @@ public class RightController {
 				//DEBUG--
 				EBXFile ebxFile = TreeViewConverter.getEBXFile(ebxExplorer.getRoot());
 				System.err.println("TODO");
-				byte[] ebxBytes = Main.getGame().getResourceHandler().getEBXHandler().createEBX(ebxFile);
+				byte[] ebxBytes = Core.getGame().getResourceHandler().getEBXHandler().createEBX(ebxFile);
 				FileHandler.writeFile("output/DEBUG.ebx", ebxBytes);
 				
 				//TEST 2
-				EBXFile orig = Main.getGame().getResourceHandler().getEBXHandler().loadFile(FileHandler.readFile("mods/SampleMod/resources/levels/mp/mp_playground/content/layer2_buildings.bak--IGNORE"));
-				byte[] origBytes = Main.getGame().getResourceHandler().getEBXHandler().createEBX(orig);
+				EBXFile orig = Core.getGame().getResourceHandler().getEBXHandler().loadFile(FileHandler.readFile("mods/SampleMod/resources/levels/mp/mp_playground/content/layer2_buildings.bak--IGNORE"));
+				byte[] origBytes = Core.getGame().getResourceHandler().getEBXHandler().createEBX(orig);
 				FileHandler.writeFile("output/ORIG_DEBUG.ebx", origBytes);
 				
 			}

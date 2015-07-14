@@ -3,7 +3,7 @@ package tk.captainsplexx.Resource.TOC;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 
-import tk.captainsplexx.Game.Main;
+import tk.captainsplexx.Game.Core;
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.ResourceHandler.LinkBundleType;
 import tk.captainsplexx.Resource.ResourceHandler.ResourceType;
@@ -189,7 +189,7 @@ public class TocConverter {
 							typeNotHandled(field);
 						}
 					}
-					Main.getGame().getChunkGUIDSHA1().put(link.getId().toLowerCase(), link.getSha1());
+					Core.getGame().getChunkGUIDSHA1().put(link.getId().toLowerCase(), link.getSha1());
 					break;
 				case CHUNKMETA:
 					for (TocField field :  entry.getFields()){
@@ -255,9 +255,9 @@ public class TocConverter {
 						/*//TODO DISABLED UNTIL PATCH SYSTEM IMPEMENTED!
 						link.setEbxFileGUID(
 								EBXLoader.getGUID(CasDataReader.readCas(link.getSha1(),
-										Main.gamePath+"/Data", Main.getGame().getResourceHandler().getCasCatManager().getEntries())));
+										Core.gamePath+"/Data", Core.getGame().getResourceHandler().getCasCatManager().getEntries())));
 						
-						Main.getGame().getEBXFileGUIDs().put(link.getEbxFileGUID(), link.getName());
+						Core.getGame().getEBXFileGUIDs().put(link.getEbxFileGUID(), link.getName());
 						*/
 					}catch (Exception e){
 						//Timeout in JavaFX Thread ??

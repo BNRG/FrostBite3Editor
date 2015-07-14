@@ -1,24 +1,21 @@
-package tk.captainsplexx.Render;
+package tk.captainsplexx.Terrain;
 
 import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector3f;
 
-public class StaticShader extends ShaderProgram{
-	
+import tk.captainsplexx.Shader.ShaderProgram;
+
+public class TerrainShader extends ShaderProgram{
 	public int transMatrixID;
 	public int projeMatrixID;
 	public int viewMatrixID;
-	public int highlightedID;
-	public int heighlightedColorID;
 
-	public StaticShader() {
-		super("res/shader/StaticShader.vert", "res/shader/StaticShader.frag");
+	public TerrainShader() {
+		super("res/shader/TerrainShader.vert", "res/shader/TerrainShader.frag");
 	}
 
 	@Override
 	protected void bindAttributes() {
 		super.bindAttribute(0, "position");
-		super.bindAttribute(1, "texCoord");
 	}
 
 	@Override
@@ -26,8 +23,6 @@ public class StaticShader extends ShaderProgram{
 		transMatrixID = super.getUniformLocation("transformationMatrix");
 		projeMatrixID = super.getUniformLocation("projectionMatrix");
 		viewMatrixID = super.getUniformLocation("viewMatrix");
-		highlightedID = super.getUniformLocation("isHighlighted");
-		heighlightedColorID = super.getUniformLocation("heighlightedColor");
 	}
 	
 	public void loadTransformationMatrix(Matrix4f mtx){
@@ -40,13 +35,5 @@ public class StaticShader extends ShaderProgram{
 	
 	public void loadViewMatrix(Matrix4f mtx){
 		super.loadMatrix(viewMatrixID, mtx);
-	}
-	
-	public void loadHighlighted(boolean bool){
-		super.loadBoolean(highlightedID, bool);
-	}
-	
-	public void loadHeighlightedColor(Vector3f vec3){
-		super.loadVector(heighlightedColorID, vec3);
 	}
 }

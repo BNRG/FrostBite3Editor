@@ -109,6 +109,8 @@ public class EBXCreator {
 		}
 		
 		
+		header.setNumGUIDRepeater(0);
+		
 		
 		//NOTE - TRUEFILENAME does actually not exist, it uses the String value of the first 'Name' field in the primaryInstance
 		boolean isPrimaryInstance = true;
@@ -154,6 +156,8 @@ public class EBXCreator {
 		
 		int fileSize = stringOffset + stringBytes.size() + payloadData.size() + arrayPayloadData.size();
 		header.setLenStringToEOF(fileSize - stringOffset);
+		header.setLenPayload(payloadData.size());
+		
 		
 		writeHeader();//needs extend by payload! 4bytes fourCC + 36bytes
 		FileHandler.addBytes(FileHandler.hexStringToByteArray(ebxFile.getGuid()), headerBytes); //+16Bytes GUID
@@ -199,6 +203,7 @@ public class EBXCreator {
 		String guid = ebxInstance.getGuid();
 		if (guid.length()>15){
 			FileHandler.addBytes(FileHandler.hexStringToByteArray(ebxInstance.getGuid()), payloadData);
+			header.setNumGUIDRepeater(header.getNumGUIDRepeater()+1);
 		}
 		if (!isPrimaryInstance){
 			for (int i=0; i<8;i++){
@@ -368,10 +373,9 @@ public class EBXCreator {
 			}
 			desc.setRef(index);
 		}else if (h==(short)0xC089||h==(short)0x0089){//_________________________________________________________________________________ENUM //TODO NEEDS WORK IN TCF, SELECTED INDEX FAIL.
-			if (ebxField.getValue()!=null){
-				if (ebxField.getValue() instanceof String){
-					System.err.println("NULL ENUM (STRING)");
-					EBXComplexDescriptor enumComplexDesc = new EBXComplexDescriptor(
+			if (ebxField.getValue() instanceof String){
+				System.err.println("NULL ENUM (STRING)");
+				EBXComplexDescriptor enumComplexDesc = new EBXComplexDescriptor(
 						"$", //name
 						0,
 						(char) (0),//numFields <-0 == nullENUM
@@ -379,24 +383,33 @@ public class EBXCreator {
 						(short) 0x0,//type
 						(short) 0x0,//size
 						(short)0x0//secondarySize
-					);
-					complexDescriptors.add(enumComplexDesc);//add directly because proccComplexDescr. contains size methods
-					desc.setRef((short) (complexDescriptors.size()-1));//TODO -1 ??
-					
-					data = FileHandler.toBytes(0, ByteOrder.LITTLE_ENDIAN);
+						);
+				complexDescriptors.add(enumComplexDesc);//add directly because proccComplexDescr. contains size methods
+				desc.setRef((short) (complexDescriptors.size()-1));//TODO -1 ??
+
+				data = FileHandler.toBytes(0, ByteOrder.LITTLE_ENDIAN);
+				if (ebxField.getValue()!=null){//for hasEmtyPayload
 					FileHandler.addBytes(data, targetList);
-				}else if(ebxField.getValue() instanceof HashMap<?, ?>){//EBXFieldDescriptor, Boolean
-					HashMap<EBXFieldDescriptor, Boolean> enumList = (HashMap<EBXFieldDescriptor, Boolean>) ebxField.getValue();
-					int selectedIndex = 0;
-					for (EBXFieldDescriptor fieldDesc : enumList.keySet()){
-						//fieldDesc.setOffset(current);//offset does represent the relative index from fieldStartIndex, is already set in loader
-						fieldDescriptors.add(fieldDesc);
-						Boolean selected = enumList.get(fieldDesc);
-						if (selected){
-							selectedIndex = fieldDesc.getOffset();
-						}
+				}
+			}else if(ebxField.getValue() instanceof HashMap<?, ?>){//EBXFieldDescriptor, Boolean
+				HashMap<EBXFieldDescriptor, Boolean> enumList = (HashMap<EBXFieldDescriptor, Boolean>) ebxField.getValue();
+				int selectedIndex = -1;
+				boolean treeSet = false;
+				for (EBXFieldDescriptor fieldDesc : enumList.keySet()){
+					String fieldName = fieldDesc.getName();
+					if (fieldName.contains("_")&&!treeSet){
+						String treeName = fieldName.replace("_", " ").split(" ")[0];
+						proccName(treeName);
+						treeSet = true;
 					}
-					EBXComplexDescriptor enumComplexDesc = new EBXComplexDescriptor(
+					//fieldDesc.setOffset(current);//offset does represent the relative index from fieldStartIndex, is already set in loader
+					fieldDescriptors.add(fieldDesc);
+					Boolean selected = enumList.get(fieldDesc);
+					if (selected){
+						selectedIndex = fieldDesc.getOffset();
+					}
+				}
+				EBXComplexDescriptor enumComplexDesc = new EBXComplexDescriptor(
 						"$", //name
 						fieldDescriptors.size()-1-enumList.size(),//start index //TODO -1 ??
 						(char) (enumList.size()&0xFF),//numFields
@@ -404,15 +417,16 @@ public class EBXCreator {
 						(short) 0x0,//type
 						(short) 0x0,//size
 						(short)0x0//secondarySize
-					);
-					complexDescriptors.add(enumComplexDesc);//add directly because proccComplexDescr. contains size methods
-					desc.setRef((short) (complexDescriptors.size()-1));
-					
-					data = FileHandler.toBytes(selectedIndex, ByteOrder.LITTLE_ENDIAN);
+						);
+				complexDescriptors.add(enumComplexDesc);//add directly because proccComplexDescr. contains size methods
+				desc.setRef((short) (complexDescriptors.size()-1));
+
+				data = FileHandler.toBytes(selectedIndex, ByteOrder.LITTLE_ENDIAN);
+				if (selectedIndex>=0){//for hasNoPayloadData
 					FileHandler.addBytes(data, targetList);
-				}else{
-					System.err.println("ENUM ERROR");
 				}
+			}else{
+				System.err.println("ENUM ERROR");
 			}
 		}else if(h==(short)0x0035){//___________________________________________________________________________________________GUID
 			if (ebxField.getValue()!=null){
@@ -644,6 +658,7 @@ public class EBXCreator {
 			FileHandler.addBytes(FileHandler.hexStringToByteArray(guid.getFileGUID()), externalGUIDBytes);//file guid 16 bytes
 			FileHandler.addBytes(FileHandler.hexStringToByteArray(guid.getInstanceGUID()), externalGUIDBytes);//instance guid 16 bytes
 		}
+		header.setNumGUID(externalGUIDs.size());
 	}
 	
 	public void writeNames(){

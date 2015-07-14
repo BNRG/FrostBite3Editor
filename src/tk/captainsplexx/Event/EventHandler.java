@@ -2,7 +2,7 @@ package tk.captainsplexx.Event;
 
 import java.util.ArrayList;
 
-import tk.captainsplexx.Game.Main;
+import tk.captainsplexx.Game.Core;
 
 public class EventHandler {
 	ArrayList<Event> eventList = new ArrayList<Event>();
@@ -16,7 +16,7 @@ public class EventHandler {
 			
 			for(Event e : eventList){
 				try{
-					if (Main.currentTick%e.tick==0){
+					if (Core.currentTick%e.tick==0){
 						e.runnable.run();
 						e.count--;
 						if (e.count<=0&&e.count>-1){

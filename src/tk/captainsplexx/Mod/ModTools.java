@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
-import tk.captainsplexx.Game.Main;
+import tk.captainsplexx.Game.Core;
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.ResourceHandler.LinkBundleType;
 import tk.captainsplexx.Resource.ResourceHandler.ResourceType;
@@ -37,7 +37,7 @@ public class ModTools {
 		this.mods = new ArrayList<>();
 		this.packages = new ArrayList<>();
 		fetchMods();
-		Main.getJavaFXHandler().getMainWindow().updateModsList();
+		Core.getJavaFXHandler().getMainWindow().updateModsList();
 	}
 	
 	public void fetchMods(){
@@ -53,9 +53,9 @@ public class ModTools {
 					readModInfo(mod, info);
 				}
 				if (mod.getAuthor() != null){
-					String[] split = Main.gamePath.split("/");
+					String[] split = Core.gamePath.split("/");
 					int length = split.length;
-					if (Main.gamePath.endsWith("/")){
+					if (Core.gamePath.endsWith("/")){
 						length--;
 					}
 					String destFolderPath = "";
@@ -99,7 +99,7 @@ public class ModTools {
 	
 	public void fetchPackages(){
 		int entries = 0;
-		ArrayList<File> files = FileHandler.listf(Main.getGame().getCurrentMod().getPath()+PACKAGEFOLDER, ".pack");
+		ArrayList<File> files = FileHandler.listf(Core.getGame().getCurrentMod().getPath()+PACKAGEFOLDER, ".pack");
 		for (File f : files){
 			if (!f.isDirectory()){
 				Package pack = readPackageInfo(f);
@@ -117,7 +117,7 @@ public class ModTools {
 			FileReader fr = new FileReader(file);
 			BufferedReader br = new BufferedReader(fr);
 			
-			Package pack = new Package(FileHandler.normalizePath(file.getAbsolutePath()).replace(Main.getGame().getCurrentMod().getPath()+"/packages", "").replace(PACKTYPE, ""));
+			Package pack = new Package(FileHandler.normalizePath(file.getAbsolutePath()).replace(Core.getGame().getCurrentMod().getPath()+"/packages", "").replace(PACKTYPE, ""));
 			String line = "";
 			while ((line = br.readLine()) != null){
 			
@@ -170,11 +170,11 @@ public class ModTools {
 	}
 	
 	public boolean writePackages(){
-		if (Main.getGame().getCurrentMod()==null){
+		if (Core.getGame().getCurrentMod()==null){
 			return false;
 		}
 		for (Package pack : packages){
-			if (!writePackage(pack, new File(Main.getGame().getCurrentMod().getPath()+"/packages/"+pack.getName()+PACKTYPE))){
+			if (!writePackage(pack, new File(Core.getGame().getCurrentMod().getPath()+"/packages/"+pack.getName()+PACKTYPE))){
 				return false;
 			}
 		}
@@ -194,17 +194,17 @@ public class ModTools {
 	
 	public boolean playMod(boolean recompile){
 		if (recompile){
-			String path = Client.cloneClient(Main.gamePath+"/", Main.getGame().getCurrentMod().getGame()+"_"+Main.getGame().getCurrentMod().getFolderName(), true);
+			String path = Client.cloneClient(Core.gamePath+"/", Core.getGame().getCurrentMod().getGame()+"_"+Core.getGame().getCurrentMod().getFolderName(), true);
 			if (path!=null){
 				System.out.println("Compile Client...");
 				String casCatPath = path+"/Update/Patch/Data/cas_99.cas";
-				CasCatManager man = Main.getGame().getResourceHandler().getPatchedCasCatManager();
+				CasCatManager man = Core.getGame().getResourceHandler().getPatchedCasCatManager();
 				CasManager.createCAS(casCatPath);
-				Mod currentMod = Main.getGame().getCurrentMod();
+				Mod currentMod = Core.getGame().getCurrentMod();
 				//TODO MOD CLIENT LOGIC! multi subpackages dont work ;(
 				for (Package pack : packages){
-					Main.getGame().setCurrentFile(FileHandler.normalizePath((Main.gamePath+"/"+pack.getName())));
-					TocFile toc = TocManager.readToc(Main.getGame().getCurrentFile());
+					Core.getGame().setCurrentFile(FileHandler.normalizePath((Core.gamePath+"/"+pack.getName())));
+					TocFile toc = TocManager.readToc(Core.getGame().getCurrentFile());
 					ConvertedTocFile convToc = TocConverter.convertTocFile(toc);
 					
 					//SORT
@@ -298,11 +298,11 @@ public class ModTools {
 							man.getEntries().add(casCatEntry);
 						}
 						//TODO convToc.setTotalSize(totalSize);
-						String newPath = ((String) Main.getGame().getCurrentFile()+".sb").replace(Main.gamePath, path);
+						String newPath = ((String) Core.getGame().getCurrentFile()+".sb").replace(Core.gamePath, path);
 						TocCreator.createModifiedSBFile(convToc, currentSBpart, false/*TODO*/, newPath, true/*delete first*/);
 					}
 					byte[] tocBytes = TocCreator.createTocFile(convToc);
-					File newTocFile = new File(((String) Main.getGame().getCurrentFile()+".toc").replace(Main.gamePath, path));
+					File newTocFile = new File(((String) Core.getGame().getCurrentFile()+".toc").replace(Core.gamePath, path));
 					if (newTocFile.exists()){
 						newTocFile.delete();//delete do remove hardlink.
 					}
@@ -319,16 +319,16 @@ public class ModTools {
 				
 				//DONE OPEN FOLDER!
 				FileHandler.openFolder(path);
-				//Main.getJavaFXHandler().getDialogBuilder().showInfo("INFO", "Ready to Play!\nOrigin DRM Files needs to be replaced manually!");
-				//Main.getJavaFXHandler().getMainWindow().toggleModLoaderVisibility();
-				Main.keepAlive = false;
+				//Core.getJavaFXHandler().getDialogBuilder().showInfo("INFO", "Ready to Play!\nOrigin DRM Files needs to be replaced manually!");
+				//Core.getJavaFXHandler().getMainWindow().toggleModLoaderVisibility();
+				Core.keepAlive = false;
 				return true;
 			}
-			Main.getJavaFXHandler().getDialogBuilder().showError("ERROR", "Something went wrong :(");
+			Core.getJavaFXHandler().getDialogBuilder().showError("ERROR", "Something went wrong :(");
 			return false;
 		}else{
-			FileHandler.openFolder(Main.getGame().getCurrentMod().getDestFolderPath());
-			Main.getJavaFXHandler().getDialogBuilder().showInfo("INFO", "Have fun =)");
+			FileHandler.openFolder(Core.getGame().getCurrentMod().getDestFolderPath());
+			Core.getJavaFXHandler().getDialogBuilder().showInfo("INFO", "Have fun =)");
 			return false;
 		}
 	}

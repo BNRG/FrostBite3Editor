@@ -8,7 +8,7 @@ import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import tk.captainsplexx.Game.Main;
+import tk.captainsplexx.Game.Core;
 import tk.captainsplexx.JavaFX.JavaFXHandler;
 import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
 import tk.captainsplexx.JavaFX.TreeViewConverter;
@@ -39,36 +39,36 @@ public class JavaFXexplorerTCF extends TreeCell<TreeViewEntry> {
 							 * OFFSETS TO NEW ONE. THIS WILL AND CAN NOT BE HERE!
 							 * ONLY FOR DEBUG! - IF ENABLED, NO COMPARE TO ORIGINAL DATA POSSIBLE!
 							 */
-							//TocCreator.createModifiedSBFile(Main.getGame().getCurrentToc(), sbpart/*REPLACE WITH MODIF. 1*/, false, "output/"+getTreeItem().getParent().getValue().getName()+"_splexx.sb", true);	
-							//FileHandler.writeFile("output/"+getTreeItem().getParent().getValue().getName()+"_splexx.toc", TocCreator.createTocFile(Main.getGame().getCurrentToc()));
+							//TocCreator.createModifiedSBFile(Core.getGame().getCurrentToc(), sbpart/*REPLACE WITH MODIF. 1*/, false, "output/"+getTreeItem().getParent().getValue().getName()+"_splexx.sb", true);	
+							//FileHandler.writeFile("output/"+getTreeItem().getParent().getValue().getName()+"_splexx.toc", TocCreator.createTocFile(Core.getGame().getCurrentToc()));
 							/*END*/
 							
-							Main.getGame().setCurrentSB(sbpart);
+							Core.getGame().setCurrentSB(sbpart);
 							TreeItem<TreeViewEntry> tree = TreeViewConverter.getTreeView(sbpart);
-							Main.getJavaFXHandler().setTreeViewStructureLeft1(tree);
-							Main.getJavaFXHandler().getMainWindow().updateLeftRoot1();
+							Core.getJavaFXHandler().setTreeViewStructureLeft1(tree);
+							Core.getJavaFXHandler().getMainWindow().updateLeftRoot1();
 						}else{
 							System.err.println(((TocSBLink)getTreeItem().getValue().getValue()).getType()+" are not supported yet.");
 						}
 					}else if (getTreeItem().getChildren().isEmpty() && getTreeItem().getValue().getValue() instanceof File){
 						//EXPLORER MODE
-						Main.getGame().setCurrentFile(FileHandler.normalizePath(((File)getTreeItem().getValue().getValue()).getAbsolutePath().replace(".sb", "")));
-						TocFile toc = TocManager.readToc(Main.getGame().getCurrentFile());
+						Core.getGame().setCurrentFile(FileHandler.normalizePath(((File)getTreeItem().getValue().getValue()).getAbsolutePath().replace(".sb", "")));
+						TocFile toc = TocManager.readToc(Core.getGame().getCurrentFile());
 						ConvertedTocFile convToc = TocConverter.convertTocFile(toc);
 						if (convToc.getName()==null){
 							//is null if patched! (update folder files are noname's)
-							convToc.setName(Main.getGame().getCurrentFile().replace(FileHandler.normalizePath(Main.gamePath), ""));
+							convToc.setName(Core.getGame().getCurrentFile().replace(FileHandler.normalizePath(Core.gamePath), ""));
 						}
 						
 						if (convToc.isCas()){
-							Main.getGame().setCurrentToc(convToc);
+							Core.getGame().setCurrentToc(convToc);
 							TreeItem<TreeViewEntry> masterTree = new TreeItem<TreeViewEntry>(new TreeViewEntry("BACK (Click)", new ImageView(JavaFXHandler.leftArrowIcon), "GO BACK", EntryType.LIST));
 							TreeItem<TreeViewEntry> convTocTree = TreeViewConverter.getTreeView(convToc);
 							convTocTree.setExpanded(true);
 							masterTree.getChildren().add(convTocTree);
 							masterTree.setExpanded(true);
-							Main.getJavaFXHandler().setTreeViewStructureLeft(masterTree);
-							Main.getJavaFXHandler().getMainWindow().updateLeftRoot();
+							Core.getJavaFXHandler().setTreeViewStructureLeft(masterTree);
+							Core.getJavaFXHandler().getMainWindow().updateLeftRoot();
 						}else{
 							System.err.println("NON CAS DETECTED!! NO SUPPORT YET. MAYBE NEVER, BECAUSE OF LEGAL RESTRICTIONS :X");
 							getTreeItem().getParent().getChildren().remove(getTreeItem());
@@ -84,7 +84,7 @@ public class JavaFXexplorerTCF extends TreeCell<TreeViewEntry> {
 					}else if (getTreeItem().getValue().getValue() instanceof String){
 						if (((String)getTreeItem().getValue().getValue()).equals("GO BACK")){
 							//BACK
-							Main.getGame().buildExplorerTree();
+							Core.getGame().buildExplorerTree();
 						}
 					}
 				}

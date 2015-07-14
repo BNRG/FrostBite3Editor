@@ -4,7 +4,7 @@ import java.nio.ByteOrder;
 import java.util.ArrayList;
 
 import tk.captainsplexx.Game.Game;
-import tk.captainsplexx.Game.Main;
+import tk.captainsplexx.Game.Core;
 import tk.captainsplexx.Maths.LZ4;
 import tk.captainsplexx.Maths.Patcher;
 import tk.captainsplexx.Resource.FileHandler;
@@ -19,15 +19,31 @@ public class CasDataReader { //casPath == folderPath
 	public static byte[] readCas(String baseSHA1, String deltaSHA1, String SHA1, Integer patchType, ResourceHandler resHandler){
 		ResourceHandler rs = null;
 		if (resHandler==null){
-			Game game = Main.getGame();
+			Game game = Core.getGame();
 			rs = game.getResourceHandler();
 		}else{
 			rs = resHandler;
 		}
-		if (patchType == 2){
+		if (patchType == 666){
+			//Unknown
+			byte[] data = CasDataReader.readCas(SHA1, Core.gamePath+"/Update/Patch/Data", rs.getPatchedCasCatManager().getEntries(), false);
+			if (data != null){
+				System.out.println("SHA1 was found in patched CasCat!");
+				return data;
+			}else{
+				byte[] data2 = CasDataReader.readCas(SHA1, Core.gamePath+"/Data", rs.getCasCatManager().getEntries(), false);
+				if (data2 != null){
+					System.out.println("SHA1 was found in unpatched CasCat!");
+					return data2;
+				}else{
+					System.err.println("SHA could not be found in any CasCat :/");
+					return null;
+				}
+			}
+		}else if (patchType == 2){
 			//Patched using delta
-			byte[] base = CasDataReader.readCas(baseSHA1, Main.gamePath+"/Data", rs.getCasCatManager().getEntries(), false);
-			byte[] delta = CasDataReader.readCas(deltaSHA1, Main.gamePath+"/Update/Patch/Data", rs.getPatchedCasCatManager().getEntries(), true);
+			byte[] base = CasDataReader.readCas(baseSHA1, Core.gamePath+"/Data", rs.getCasCatManager().getEntries(), false);
+			byte[] delta = CasDataReader.readCas(deltaSHA1, Core.gamePath+"/Update/Patch/Data", rs.getPatchedCasCatManager().getEntries(), true);
 			
 			byte[] data = Patcher.getPatchedData(base, delta);
 			if (data != null){
@@ -38,7 +54,7 @@ public class CasDataReader { //casPath == folderPath
 			}
 		}else if(patchType == 1){
 			//Patched using data from update cas
-			byte[] data = CasDataReader.readCas(SHA1, Main.gamePath+"/Update/Patch/Data", rs.getPatchedCasCatManager().getEntries(), false);
+			byte[] data = CasDataReader.readCas(SHA1, Core.gamePath+"/Update/Patch/Data", rs.getPatchedCasCatManager().getEntries(), false);
 			if (data != null){
 				return data;
 			}else{
@@ -47,7 +63,7 @@ public class CasDataReader { //casPath == folderPath
 			}
 		}else{
 			//Unpatched
-			byte[] data = CasDataReader.readCas(SHA1, Main.gamePath+"/Data", rs.getCasCatManager().getEntries(), false);
+			byte[] data = CasDataReader.readCas(SHA1, Core.gamePath+"/Data", rs.getCasCatManager().getEntries(), false);
 			if (data != null){
 				return data;
 			}else{
@@ -81,7 +97,7 @@ public class CasDataReader { //casPath == folderPath
 					return FileHandler.readFile(casFilePath, e.getOffset(), e.getProcSize());
 				}
 			}
-			System.err.println("Invalid SHA given :(");
+			System.err.println("SHA not found in "+casFolderPath);
 			return null;
 		}catch (NullPointerException e){
 			return null;

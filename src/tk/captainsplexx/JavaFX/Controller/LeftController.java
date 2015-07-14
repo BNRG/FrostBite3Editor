@@ -5,8 +5,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
 import javafx.scene.control.TreeView;
-import tk.captainsplexx.Game.Main;
+import tk.captainsplexx.Game.Core;
 import tk.captainsplexx.JavaFX.TreeViewEntry;
 import tk.captainsplexx.Resource.DDSConverter;
 import tk.captainsplexx.Resource.FileHandler;
@@ -26,11 +27,13 @@ public class LeftController {
 	public ComboBox<String> lightning;
 	@FXML
 	public CheckBox considerPitchBox;
+	@FXML
+	public Slider mouseSensitivity;
 	
 	
 	/*OnAction*/
 	public void exit(){ 
-		Main.keepAlive = false;
+		Core.keepAlive = false;
 	}
 	
 	public void about(){ 
@@ -78,6 +81,10 @@ public class LeftController {
 
 	public CheckBox getConsiderPitchBox() {
 		return considerPitchBox;
+	}
+
+	public Slider getMouseSensitivity() {
+		return mouseSensitivity;
 	}
 	
 	

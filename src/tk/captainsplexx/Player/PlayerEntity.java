@@ -1,4 +1,4 @@
-package tk.captainsplexx.Entity;
+package tk.captainsplexx.Player;
 
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
@@ -20,8 +20,8 @@ public class PlayerEntity {
 	public float velY = 0;
 	public float velZ = 0;
 	
-	public float movementSpeed = 10.0f;
-	public float jumpStrength = 0.5f;
+	public float movementSpeed = 1.0f;
+	public float jumpStrength = 0.05f;
 	public float gravity = 0.0f;
 	
 	public boolean onGround = false;

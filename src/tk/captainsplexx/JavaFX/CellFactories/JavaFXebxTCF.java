@@ -23,7 +23,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.paint.Color;
 import tk.captainsplexx.Game.Game;
-import tk.captainsplexx.Game.Main;
+import tk.captainsplexx.Game.Core;
 import tk.captainsplexx.JavaFX.JavaFXHandler;
 import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
 import tk.captainsplexx.JavaFX.JavaFXMainWindow.WorkDropType;
@@ -162,13 +162,13 @@ public class JavaFXebxTCF extends TreeCell<TreeViewEntry> {
                 	try{
 	                	String[] target = ((String)getTreeItem().getValue().getValue()).split(" ");
 	                	if (target.length>1 && target[0].contains("/")){ //IS NOT AT NULL GUID OR IS NOT REFERENCED
-	                		Game game = Main.getGame();
+	                		Game game = Core.getGame();
 	                		for (ResourceLink ebxLink : game.getCurrentSB().getEbx()){
 	                			if (ebxLink.getName().toLowerCase().equals(target[0].toLowerCase())){
 									byte[] data = CasDataReader.readCas(ebxLink.getBaseSha1(), ebxLink.getDeltaSha1(), ebxLink.getSha1(), ebxLink.getCasPatchType());
 									TreeItem<TreeViewEntry> ebx = TreeViewConverter.getTreeView(game.getResourceHandler().getEBXHandler().loadFile(data));
-									Main.getJavaFXHandler().setTreeViewStructureRight(ebx);
-									Main.getJavaFXHandler().getMainWindow().updateRightRoot();
+									Core.getJavaFXHandler().setTreeViewStructureRight(ebx);
+									Core.getJavaFXHandler().getMainWindow().updateRightRoot();
 	                				break;
 	                			}
 	                		}
@@ -436,8 +436,8 @@ public class JavaFXebxTCF extends TreeCell<TreeViewEntry> {
 		    		case GUID:
 		    			String fileGUIDName = null;
 		    			String[] split = ((String)item.getValue()).split(" ");
-						if (Main.getGame().getEBXFileGUIDs()!=null&&split.length==2){//DEBUG-
-							fileGUIDName = Main.getGame().getEBXFileGUIDs().get(split[0].toUpperCase());
+						if (Core.getGame().getEBXFileGUIDs()!=null&&split.length==2){//DEBUG-
+							fileGUIDName = Core.getGame().getEBXFileGUIDs().get(split[0].toUpperCase());
 							if (fileGUIDName != null){
 								return fileGUIDName+" "+split[1];
 							}
@@ -496,9 +496,9 @@ public class JavaFXebxTCF extends TreeCell<TreeViewEntry> {
 			    		case GUID:
 			    			if (value.contains("/")){
 			    				String[] split = value.split(" ");
-			    				if (Main.getGame().getEBXFileGUIDs()!=null&&split.length==2){
-			    					for (String v : Main.getGame().getEBXFileGUIDs().values()){
-			    						String keySet = Main.getGame().getEBXFileGUIDs().get(v);
+			    				if (Core.getGame().getEBXFileGUIDs()!=null&&split.length==2){
+			    					for (String v : Core.getGame().getEBXFileGUIDs().values()){
+			    						String keySet = Core.getGame().getEBXFileGUIDs().get(v);
 			    						if (keySet.equals(split[0])){
 			    							return (keySet+" "+split[1]);
 			    						}

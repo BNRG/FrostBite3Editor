@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 import org.lwjgl.util.vector.Vector3f;
 
-import tk.captainsplexx.Entity.PlayerEntity;
-import tk.captainsplexx.Entity.PlayerHandler;
+import tk.captainsplexx.Player.PlayerEntity;
+import tk.captainsplexx.Player.PlayerHandler;
 
 public class TerrainHandler {
 	public ArrayList<Terrain> terrainList = new ArrayList<Terrain>();

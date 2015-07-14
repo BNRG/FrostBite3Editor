@@ -14,18 +14,18 @@ import javax.imageio.ImageIO;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
-import org.lwjgl.util.vector.Vector3f;
+import org.lwjgl.util.vector.Vector2f;
 import org.newdawn.slick.opengl.ImageIOImageData;
 
 import tk.captainsplexx.Event.EventHandler;
 import tk.captainsplexx.JavaFX.JavaFXHandler;
-import tk.captainsplexx.Maths.VectorMath;
 import tk.captainsplexx.Mod.ModTools;
 import tk.captainsplexx.Render.Render;
+import tk.captainsplexx.Render.Gui.GuiTexture;
 import tk.captainsplexx.Resource.FileHandler;
 
 
-public class Main {
+public class Core {
 	public static Game game;
 	public static Render render;
 	public static EventHandler eventHandler;
@@ -64,45 +64,7 @@ public class Main {
 		sharedObjs = null;
 		executeRunnable = false;
 		gamePath = null;
-		/*VERSION CHECK*/
-		String newVersion = "";
-		try{
-			URL url = new URL("https://raw.githubusercontent.com/CaptainSpleXx/FrostBite3Editor/master/version");
-			URLConnection ec = url.openConnection();
-	        BufferedReader in = new BufferedReader(new InputStreamReader(
-	                ec.getInputStream(), "UTF-8"));
-	        String inputLine;
-	        StringBuilder a = new StringBuilder();
-	        while ((inputLine = in.readLine()) != null)
-	            a.append(inputLine);
-	        in.close();
-
-	        newVersion += a.toString();
-		}catch(Exception e){
-			System.err.println("Could not get version info from GitHub...");
-		}
-		try{
-			FileReader fr = new FileReader("version");
-			
-			BufferedReader br = new BufferedReader(fr);
-			buildVersion = br.readLine();
-			br.close();
-			fr.close();
-		}catch (Exception e){
-			buildVersion = "n/a";
-			System.err.println("NO VERSION FILE FOUND!");
-		}
-		System.out.println("Version: "+buildVersion);
-		if (buildVersion.contains("|")){
-			isDEBUG = true;
-			System.err.println("RUNNING IN DEBUG MODE!");
-			String[] versionArgs = buildVersion.split("\\|");
-			gamePath = versionArgs[1];
-			buildVersion = versionArgs[0]+" DEBUG MODE! ";
-		}else if (!buildVersion.equalsIgnoreCase(newVersion) && !newVersion.equalsIgnoreCase("")){
-			buildVersion += " | [NEW VERSION ADVILABLE]";
-		}
-		/*END OF VERSION CHECK*/
+		checkVersion();
 		
 		currentDir = FileHandler.normalizePath(Paths.get("").toAbsolutePath().toString());
 		keepAlive = true;
@@ -164,6 +126,7 @@ public class Main {
 				game.getModelHandler().getLoader().init();
 				game.getShaderHandler().init();
 				game.buildExplorerTree();
+				game.getGuis().add(new GuiTexture(game.getModelHandler().getLoader().getCrosshairID(), new Vector2f(0.0f, 0.0f), new Vector2f(0.1f, 0.1f)));
 				render = new Render(game);	
 				inputHandler = new InputHandler();
 				
@@ -189,8 +152,7 @@ public class Main {
 					}
 				}
 				game.modelHandler.loader.cleanUp(); //CleanUp GPU-Memory!
-				game.shaderHandler.getStaticShader().cleanUp();
-				
+				game.shaderHandler.cleanUpAll();
 				//Thank u for using...
 				
 				System.exit(0);
@@ -226,7 +188,49 @@ public class Main {
 		return sharedObjs;
 	}
 	public static void setSharedObjs(Object[] sharedObjs) {
-		Main.sharedObjs = sharedObjs;
+		Core.sharedObjs = sharedObjs;
+	}
+	
+	public static void checkVersion(){
+		/*VERSION CHECK*/
+		String newVersion = "";
+		try{
+			URL url = new URL("https://raw.githubusercontent.com/CaptainSpleXx/FrostBite3Editor/master/version");
+			URLConnection ec = url.openConnection();
+	        BufferedReader in = new BufferedReader(new InputStreamReader(
+	                ec.getInputStream(), "UTF-8"));
+	        String inputLine;
+	        StringBuilder a = new StringBuilder();
+	        while ((inputLine = in.readLine()) != null)
+	            a.append(inputLine);
+	        in.close();
+
+	        newVersion += a.toString();
+		}catch(Exception e){
+			System.err.println("Could not get version info from GitHub...");
+		}
+		try{
+			FileReader fr = new FileReader("version");
+			
+			BufferedReader br = new BufferedReader(fr);
+			buildVersion = br.readLine();
+			br.close();
+			fr.close();
+		}catch (Exception e){
+			buildVersion = "n/a";
+			System.err.println("NO VERSION FILE FOUND!");
+		}
+		System.out.println("Version: "+buildVersion);
+		if (buildVersion.contains("|")){
+			isDEBUG = true;
+			System.err.println("RUNNING IN DEBUG MODE!");
+			String[] versionArgs = buildVersion.split("\\|");
+			gamePath = versionArgs[1];
+			buildVersion = versionArgs[0]+" DEBUG MODE! ";
+		}else if (!buildVersion.equalsIgnoreCase(newVersion) && !newVersion.equalsIgnoreCase("")){
+			buildVersion += " | [NEW VERSION ADVILABLE]";
+		}
+		/*END OF VERSION CHECK*/
 	}
 	
 	

@@ -1,4 +1,4 @@
-package tk.captainsplexx.Entity;
+package tk.captainsplexx.Player;
 
 
 public class PlayerHandler {
