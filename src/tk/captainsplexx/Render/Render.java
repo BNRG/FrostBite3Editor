@@ -248,6 +248,7 @@ public class Render {
 
 	public void updateProjectionMatrix(float FOV, int DISPLAY_WIDTH,
 			int DISPLAY_HEIGHT, float zNear, float zFar) {
+		System.out.println("Projection Matrix gets an update!");
 		Core.FOV = FOV;
 		Core.DISPLAY_WIDTH = DISPLAY_WIDTH;
 		Core.DISPLAY_HEIGHT = DISPLAY_HEIGHT;

@@ -49,7 +49,7 @@
                <children>
                   <TabPane prefWidth="277.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <tabs>
-                        <Tab text="Resource Manager">
+                        <Tab text="Core">
                           <content>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="64.0" prefWidth="277.0" />
                           </content>
@@ -197,9 +197,27 @@
         </ScrollPane>
             <ScrollPane layoutX="10.0" layoutY="10.0" prefHeight="221.0" prefWidth="277.0">
                <content>
-                  <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0" prefHeight="814.0" prefWidth="265.0">
+                  <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0">
                      <children>
-                        <TreeView fx:id="explorer1" prefHeight="800.0" />
+                        <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <HBox>
+                                 <children>
+                                    <TextField fx:id="filter" prefHeight="25.0" prefWidth="190.0" promptText="Filter String">
+                                       <HBox.margin>
+                                          <Insets bottom="5.0" left="5.0" top="5.0" />
+                                       </HBox.margin>
+                                    </TextField>
+                                    <Button fx:id="search" mnemonicParsing="false" text="Search">
+                                       <HBox.margin>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </HBox.margin>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                              <TreeView fx:id="explorer1" />
+                           </children>
+                        </VBox>
                      </children>
                      <opaqueInsets>
                         <Insets />

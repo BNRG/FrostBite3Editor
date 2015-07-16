@@ -39,7 +39,7 @@ Pipeline:</span><br>
 &nbsp;-Modify EBX Files 95% ✓<br>
 &nbsp;-EBX Editor 90% ✓<br>
 &nbsp;-Extract ITexture Files to DDS 100% ✓<br>
-&nbsp;-Modify DDS and recompile to ITexture 0% ✗<br>
+&nbsp;-Modify DDS and recompile to ITexture 95% ✗<br>
 &nbsp;-Extract MESH Files Geometry + UVs 90% ✓<br>
 &nbsp;-Mesh Bone support (may never added) 0% ✗<br>
 &nbsp;-Load Mesh into Editor 99.5% ✓<br>

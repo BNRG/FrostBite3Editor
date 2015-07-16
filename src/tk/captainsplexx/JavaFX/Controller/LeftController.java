@@ -2,10 +2,12 @@ package tk.captainsplexx.JavaFX.Controller;
 
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.control.TextField;
 import javafx.scene.control.TreeView;
 import tk.captainsplexx.Game.Core;
 import tk.captainsplexx.JavaFX.TreeViewEntry;
@@ -29,6 +31,10 @@ public class LeftController {
 	public CheckBox considerPitchBox;
 	@FXML
 	public Slider mouseSensitivity;
+	@FXML
+	public Button search;
+	@FXML
+	public TextField filter;
 	
 	
 	/*OnAction*/
@@ -86,6 +92,15 @@ public class LeftController {
 	public Slider getMouseSensitivity() {
 		return mouseSensitivity;
 	}
+
+	public Button getSearch() {
+		return search;
+	}
+
+	public TextField getFilter() {
+		return filter;
+	}
+	
 	
 	
 	

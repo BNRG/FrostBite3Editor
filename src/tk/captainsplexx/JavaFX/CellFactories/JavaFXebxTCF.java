@@ -277,6 +277,7 @@ public class JavaFXebxTCF extends TreeCell<TreeViewEntry> {
 	    				boolean selected = enums.get(desc);
 	    				if (selected){
 	    					enums.put(desc, false);//TODO workaround to keep index
+	    					System.err.println("TODO: workaround to keep index");
 	    					selectNext = true;
 	    				}else if (selectNext){
 	    					enums.put(desc, true);//TODO workaround to keep index
@@ -420,7 +421,7 @@ public class JavaFXebxTCF extends TreeCell<TreeViewEntry> {
 		    			return byteToHex(((Byte)item.getValue()));
 		    		case ENUM:
 		    			HashMap<EBXFieldDescriptor, Boolean> enums = (HashMap<EBXFieldDescriptor, Boolean>) item.getValue();
-		    			String value = "ENUM NOTHING SELECTED!";
+		    			String value = "null";
 		    			for (EBXFieldDescriptor desc : enums.keySet()){
 		    				boolean selected = enums.get(desc);
 		    				if (selected){

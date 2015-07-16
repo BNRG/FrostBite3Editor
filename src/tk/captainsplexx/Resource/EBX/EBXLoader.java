@@ -270,7 +270,7 @@ public class EBXLoader {
 				field.setValue("*nullEnum*", FieldValueType.Enum);
 			}else{
 				HashMap<EBXFieldDescriptor, Boolean> enums = new HashMap<>();
-				for (int index=0; index<enumComplex.getNumField(); index++){ //TODO check ??
+				for (int index=0; index<enumComplex.getNumField(); index++){
 					if (fieldDescriptors[enumComplex.getFieldStartIndex()+index].getOffset()==compareValue){
 						enums.put(fieldDescriptors[enumComplex.getFieldStartIndex()+index], true);//SELECTED
 					}else{

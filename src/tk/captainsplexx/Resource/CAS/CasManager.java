@@ -48,13 +48,14 @@ public class CasManager {
 		for (int i=0; i<blocks; i++){
 			FileHandler.addBytes(FileHandler.toBytes(blockSize, ByteOrder.BIG_ENDIAN), procEntries);//int
 			FileHandler.addBytes(compressionType, procEntries);
-			FileHandler.addBytes(FileHandler.toBytes((short) (blockContent&0xFFFF), ByteOrder.BIG_ENDIAN), procEntries);//short
+			FileHandler.addBytes(FileHandler.toBytes((short) (blockContent&0xFFFF), ByteOrder.BIG_ENDIAN), procEntries);/*short -- this can may be even 0x00, because
+															FrankElster said: "..compressed size (null for type 0071 and type 0000) of the payload .. without the header"*/
 			FileHandler.addBytes(decompressedBytes, procEntries, i*blockContent, blockContent);
 		}
 		
 		/*FILL REST*/
 		FileHandler.addBytes(FileHandler.toBytes(restLen, ByteOrder.BIG_ENDIAN), procEntries);
-		FileHandler.addBytes(compressionType, procEntries); // 0x0070 -- uncompressed || 0x0970 lz4 compressed || 0x0071 -- uncompressed no payload
+		FileHandler.addBytes(compressionType, procEntries); // 0x0070 -- uncompressed || 0x0970 lz4 compressed || 0x0071 -- uncompressed no payload || 0x0000 -- empty payload
 		FileHandler.addBytes(FileHandler.toBytes((short) restLen, ByteOrder.BIG_ENDIAN), procEntries);
 		FileHandler.addBytes(decompressedBytes, procEntries, blocks*blockContent, restLen);
 		

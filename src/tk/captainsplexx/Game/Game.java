@@ -25,7 +25,7 @@ import tk.captainsplexx.Resource.DDSConverter;
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.ResourceHandler;
 import tk.captainsplexx.Resource.EBX.EBXFile;
-import tk.captainsplexx.Resource.ITEXTURE.ItextureHandler;
+import tk.captainsplexx.Resource.ITEXTURE.ITextureHandler;
 import tk.captainsplexx.Resource.TOC.ConvertedSBpart;
 import tk.captainsplexx.Resource.TOC.ConvertedTocFile;
 import tk.captainsplexx.Resource.TOC.TocConverter;
@@ -41,7 +41,7 @@ public class Game {
 	public ResourceHandler resourceHandler;
 	public EntityHandler entityHandler;
 	public ShaderHandler shaderHandler;
-	public ItextureHandler itextureHandler;
+	public ITextureHandler itextureHandler;
 	public String currentFile;
 	public ConvertedTocFile currentToc;
 	public ConvertedSBpart currentSB;
@@ -230,7 +230,7 @@ public class Game {
 		return shaderHandler;
 	}
 
-	public ItextureHandler getItextureHandler() {
+	public ITextureHandler getITextureHandler() {
 		return itextureHandler;
 	}
 	/*End of Handler*/

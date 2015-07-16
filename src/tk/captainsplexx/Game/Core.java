@@ -8,6 +8,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.ByteBuffer;
 import java.nio.file.Paths;
+import java.util.UUID;
 
 import javax.imageio.ImageIO;
 
@@ -23,6 +24,7 @@ import tk.captainsplexx.Mod.ModTools;
 import tk.captainsplexx.Render.Render;
 import tk.captainsplexx.Render.Gui.GuiTexture;
 import tk.captainsplexx.Resource.FileHandler;
+import tk.captainsplexx.Resource.ITEXTURE.ITextureConverter;
 
 
 public class Core {
@@ -61,6 +63,9 @@ public class Core {
 	public static Object[] sharedObjs;
 		
 	public static void main(String[] args){
+		
+		//ITextureConverter.getITextureHeader(FileHandler.readFile("mods/SampleMod/resources/objects/architecture/housesettlement_01/t_housesettlement_01_railing_d.dds"), "01 10 96 C2 D2 DA DF 9B 39 31 23 20 14 07 C1 E7".replace(" ", ""));
+		
 		sharedObjs = null;
 		executeRunnable = false;
 		gamePath = null;
@@ -70,7 +75,6 @@ public class Core {
 		keepAlive = true;
 		runEditor = false;
 		
-		FileHandler.cleanFolder("temp/mods");
 		FileHandler.cleanFolder("temp/images");
 		FileHandler.cleanFolder("output");
 		
@@ -126,7 +130,7 @@ public class Core {
 				game.getModelHandler().getLoader().init();
 				game.getShaderHandler().init();
 				game.buildExplorerTree();
-				game.getGuis().add(new GuiTexture(game.getModelHandler().getLoader().getCrosshairID(), new Vector2f(0.0f, 0.0f), new Vector2f(0.1f, 0.1f)));
+				game.getGuis().add(new GuiTexture(game.getModelHandler().getLoader().getCrosshairID(), new Vector2f(0.0f, 0.0f), new Vector2f(0.15f, 0.15f)));
 				render = new Render(game);	
 				inputHandler = new InputHandler();
 				

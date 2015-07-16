@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.UUID;
 
 import tk.captainsplexx.Game.Core;
 import tk.captainsplexx.Resource.FileHandler;
@@ -14,6 +15,7 @@ import tk.captainsplexx.Resource.ResourceHandler.ResourceType;
 import tk.captainsplexx.Resource.CAS.CasCatEntry;
 import tk.captainsplexx.Resource.CAS.CasCatManager;
 import tk.captainsplexx.Resource.CAS.CasManager;
+import tk.captainsplexx.Resource.ITEXTURE.ITextureConverter;
 import tk.captainsplexx.Resource.TOC.ConvertedSBpart;
 import tk.captainsplexx.Resource.TOC.ConvertedTocFile;
 import tk.captainsplexx.Resource.TOC.ResourceLink;
@@ -198,7 +200,7 @@ public class ModTools {
 			if (path!=null){
 				System.out.println("Compile Client...");
 				String casCatPath = path+"/Update/Patch/Data/cas_99.cas";
-				CasCatManager man = Core.getGame().getResourceHandler().getPatchedCasCatManager();
+				CasCatManager manPatched = Core.getGame().getResourceHandler().getPatchedCasCatManager();
 				CasManager.createCAS(casCatPath);
 				Mod currentMod = Core.getGame().getCurrentMod();
 				//TODO MOD CLIENT LOGIC! multi subpackages dont work ;(
@@ -236,8 +238,14 @@ public class ModTools {
 						}
 						int originalSize = 0;
 						ArrayList<PackageEntry> subPackageEntries = sorted.get(subPackageName);
+						byte[] data = null;
+						CasCatEntry casCatEntry;
+						CasCatEntry casCatEntryChunk;
+						String chunkID;
 						for (PackageEntry sortedEntry : subPackageEntries){
-							CasCatEntry casCatEntry = null;
+							casCatEntry = null;
+							casCatEntryChunk = null;
+							chunkID = null;
 							switch(sortedEntry.getResType()){
 								case ANIMTRACKDATA:
 									break;
@@ -246,9 +254,9 @@ public class ModTools {
 								case CHUNK:
 									break;
 								case EBX:
-									byte[] data = FileHandler.readFile(currentMod.getPath()+RESOURCEFOLDER+sortedEntry.getResourcePath());
+									data = FileHandler.readFile(currentMod.getPath()+RESOURCEFOLDER+sortedEntry.getResourcePath());
 									originalSize = data.length;
-									casCatEntry = CasManager.extendCAS(data, new File(casCatPath), man);
+									casCatEntry = CasManager.extendCAS(data, new File(casCatPath), manPatched);
 									break;
 								case ENLIGHTEN:
 									break;
@@ -259,6 +267,16 @@ public class ModTools {
 								case HKNONDESTRUCTION:
 									break;
 								case ITEXTURE:
+									byte[] ddsFileBytes = /*DSS FILE*/FileHandler.readFile(currentMod.getPath()+RESOURCEFOLDER+sortedEntry.getResourcePath());
+									
+									chunkID = UUID.randomUUID().toString().replace("-", "");
+									byte[] blockData = ITextureConverter.getBlockData(ddsFileBytes);
+									casCatEntryChunk = CasManager.extendCAS(blockData, new File(casCatPath), manPatched);
+									modifyChunkEntry(casCatEntryChunk, chunkID, blockData.length, currentSBpart, true);
+																		
+									data = ITextureConverter.getITextureHeader(ddsFileBytes, chunkID);
+									originalSize = data.length;
+									casCatEntry = CasManager.extendCAS(data, new File(casCatPath), manPatched);
 									break;
 								case LIGHTINGSYSTEM:
 									break;
@@ -295,7 +313,10 @@ public class ModTools {
 							}else{
 								System.err.println(sortedEntry.getResType()+" isn't defined in (Mod.ModTools.playMod) for modifyResourceL1nk!");
 							}
-							man.getEntries().add(casCatEntry);
+							if (casCatEntryChunk!=null){
+								manPatched.getEntries().add(casCatEntryChunk);
+							}
+							manPatched.getEntries().add(casCatEntry);
 						}
 						//TODO convToc.setTotalSize(totalSize);
 						String newPath = ((String) Core.getGame().getCurrentFile()+".sb").replace(Core.gamePath, path);
@@ -310,7 +331,7 @@ public class ModTools {
 					
 				}
 				//CREATE CAS.CAT
-				byte[] patchedCasCatBytes = man.getCat();
+				byte[] patchedCasCatBytes = manPatched.getCat();
 				File casCatFile = new File(path+"/Update/Patch/Data/cas.cat");
 				if (casCatFile.exists()){
 					casCatFile.delete();
@@ -331,6 +352,20 @@ public class ModTools {
 			Core.getJavaFXHandler().getDialogBuilder().showInfo("INFO", "Have fun =)");
 			return false;
 		}
+	}
+	public boolean modifyChunkEntry(CasCatEntry chunkCatEntry, String chunkGuid, Integer chunkSize, ConvertedSBpart convertedSBpart, boolean isNew){
+		if (isNew){
+			ResourceLink chunkLink = new ResourceLink();
+			chunkLink.setId(chunkGuid);
+			chunkLink.setSha1(chunkCatEntry.getSHA1());
+			chunkLink.setLogicalOffset(0);
+			chunkLink.setLogicalSize(chunkSize);
+			convertedSBpart.getChunks().add(chunkLink);
+		}else{
+			System.err.println("TODO mofidy Chunk Entry that already exist!");
+		}
+		return false;
+		
 	}
 	
 	public boolean modifyResourceLink(PackageEntry packEntry, CasCatEntry casCatEntry, int originalSize, ArrayList<ResourceLink> targetList){

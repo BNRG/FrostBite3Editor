@@ -211,7 +211,7 @@ public class FileHandler {
 	public static boolean extendFileFromFile(String sourceFile, long sourceOffset, long sourceSize, String targetFile, FileSeeker targetSeeker){
 		try{
 			File file = new File(normalizePath(sourceFile));
-			System.out.println(file.length());
+			//System.out.println(file.length());
 			FileInputStream fin = new FileInputStream(file);
 			fin.skip(sourceOffset);
 			

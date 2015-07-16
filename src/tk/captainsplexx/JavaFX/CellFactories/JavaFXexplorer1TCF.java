@@ -29,7 +29,7 @@ import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.ResourceHandler;
 import tk.captainsplexx.Resource.ResourceHandler.ResourceType;
 import tk.captainsplexx.Resource.CAS.CasDataReader;
-import tk.captainsplexx.Resource.ITEXTURE.ItextureHandler;
+import tk.captainsplexx.Resource.ITEXTURE.ITextureHandler;
 import tk.captainsplexx.Resource.MESH.MeshConverter;
 import tk.captainsplexx.Resource.TOC.ResourceLink;
 import tk.captainsplexx.Resource.TOC.TocConverter.ResourceBundleType;
@@ -129,7 +129,7 @@ public class JavaFXexplorer1TCF extends TreeCell<TreeViewEntry> {
 										data = CasDataReader.readCas(link.getBaseSha1(), link.getDeltaSha1(), link.getSha1(), link.getCasPatchType());
 									}
 									if (data != null){
-				FileHandler.writeFile("output/ebx_data", data);
+				//FileHandler.writeFile("output/ebx_data", data);
 										TreeItem<TreeViewEntry> ebx = TreeViewConverter.getTreeView(game.getResourceHandler().getEBXHandler().loadFile(data));
 										Core.getJavaFXHandler().setTreeViewStructureRight(ebx);
 										Core.getJavaFXHandler().getMainWindow().updateRightRoot();
@@ -142,8 +142,7 @@ public class JavaFXexplorer1TCF extends TreeCell<TreeViewEntry> {
 									}
 									if (data != null){
 										if (link.getType() == ResourceType.ITEXTURE){
-											//System.out.println("Itexture: "+FileHandler.bytesToHex(itexture));
-											FileHandler.writeFile("output/"+link.getName().replace('/', '_')+".dds", ItextureHandler.getDSS(data));
+											FileHandler.writeFile("output/"+link.getName().replace('/', '_')+".dds", ITextureHandler.getDSS(data));
 											//DDSConverter.convertToTGA(new File("output/"+link.getName().replace('/', '_')+".dds"));
 											Core.getJavaFXHandler().getMainWindow().toggleResToolsVisibility();
 										}else if (link.getType() == ResourceType.MESH){
