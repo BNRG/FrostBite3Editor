@@ -162,6 +162,7 @@ public class Render {
 		if (Display.wasResized()) {
 			updateProjectionMatrix(Core.FOV, Display.getWidth(),
 					Display.getHeight(), Core.zNear, Core.zFar);
+
 		}
 		Display.sync(Core.DISPLAY_RATE);
 	}
@@ -254,7 +255,7 @@ public class Render {
 		Core.DISPLAY_HEIGHT = DISPLAY_HEIGHT;
 		Core.zNear = zNear;
 		Core.zFar = zFar;
-		projectionMatrix = Matrices.createProjectionMatrix(Core.FOV,
+		this.projectionMatrix = Matrices.createProjectionMatrix(Core.FOV,
 				Core.DISPLAY_WIDTH, Core.DISPLAY_HEIGHT, Core.zNear, Core.zFar);
 	}
 

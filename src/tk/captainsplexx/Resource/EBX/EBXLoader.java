@@ -233,7 +233,7 @@ public class EBXLoader {
 				}
 			}else if (arrayComplexDesc.getNumField()>0){//Field is prob, Complex|||  ------------>The complexDescr does exist but without any payload ??
 				int index = FileHandler.readInt(ebxFileBytes, new FileSeeker(seeker.getOffset()));//array section contains a integer for it ?
-				System.out.println("ArrayComplex-Integer-Debug: "+index);
+				//System.out.println("ArrayComplex-Integer-Debug: "+index);
 				fields = new EBXField[arrayComplexDesc.getNumField()];
 				for (int i=0; i<fields.length;i++){
 					fields[i] = readField(arrayComplexDesc.getFieldStartIndex()+i, true);//has no payload data!

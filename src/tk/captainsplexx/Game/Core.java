@@ -8,7 +8,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.ByteBuffer;
 import java.nio.file.Paths;
-import java.util.UUID;
 
 import javax.imageio.ImageIO;
 
@@ -24,8 +23,13 @@ import tk.captainsplexx.Mod.ModTools;
 import tk.captainsplexx.Render.Render;
 import tk.captainsplexx.Render.Gui.GuiTexture;
 import tk.captainsplexx.Resource.FileHandler;
-import tk.captainsplexx.Resource.ITEXTURE.ITextureConverter;
-
+import tk.captainsplexx.Resource.EBX.EBXFile;
+import tk.captainsplexx.Resource.EBX.EBXHandler;
+import tk.captainsplexx.Resource.EBX.EBXLoader;
+import tk.captainsplexx.Resource.EBX.Structure.EBXStructureEntry;
+import tk.captainsplexx.Resource.EBX.Structure.EBXStructureFile;
+import tk.captainsplexx.Resource.EBX.Structure.EBXStructureReader;
+import tk.captainsplexx.Resource.EBX.Structure.Entry.EBXStrReferencedObjectData;
 
 public class Core {
 	public static Game game;
@@ -34,7 +38,7 @@ public class Core {
 	public static InputHandler inputHandler;
 	public static ModTools modTools;
 	public static JavaFXHandler jfxHandler;
-	
+		
 	public static int DISPLAY_WIDTH;
 	public static int DISPLAY_HEIGHT;
 	public static int DISPLAY_RATE;
@@ -65,6 +69,25 @@ public class Core {
 	public static void main(String[] args){
 		
 		//ITextureConverter.getITextureHeader(FileHandler.readFile("mods/SampleMod/resources/objects/architecture/housesettlement_01/t_housesettlement_01_railing_d.dds"), "01 10 96 C2 D2 DA DF 9B 39 31 23 20 14 07 C1 E7".replace(" ", ""));
+		
+		
+		/*
+		byte[] file = FileHandler.readFile("D:\\dump_bf4_fs\\bundles_more_info\\ebx\\levels\\mp\\mp_playground\\content\\layer2_buildings.ebx");
+		
+		EBXFile ebxFile = new EBXHandler().loadFile(file);
+		EBXStructureFile structFile = EBXStructureReader.readStructure(ebxFile);
+		for (EBXStructureEntry entry : structFile.getEntries()){
+			switch (entry.getType()){
+				case ReferenceObjectData:
+					EBXStrReferencedObjectData en = (EBXStrReferencedObjectData) entry;
+					//System.out.println(en.getBlueprintTransform().getTranformations().get(3).getY());
+					continue;
+				}
+			//System.out.println(entry.getType() +" :)");
+		}
+		
+		System.exit(0);*/
+		
 		
 		sharedObjs = null;
 		executeRunnable = false;
