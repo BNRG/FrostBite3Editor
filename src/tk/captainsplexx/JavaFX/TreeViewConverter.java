@@ -491,10 +491,10 @@ public class TreeViewConverter {
 			if (link.getCasPatchType()!=0){
 				childEntry.setName(childEntry.getName()+"_(Patched: "+link.getCasPatchType()+")");
 			}
-			String isReferenced = "";
-			if (Core.getGame().getEBXFileGUIDs().get(link.getEbxFileGUID().toUpperCase()) != null){
+			String isReferenced = " ref. needs work treeviewconverter";
+			/*if (Core.getGame().getEBXFileGUIDs().get(link.getEbxFileGUID().toUpperCase()) != null){
 				isReferenced += " (referenced) ";
-			}
+			}*/
 			childEntry.setTooltip("GUID: "+link.getEbxFileGUID()+isReferenced);
 			TreeItem<TreeViewEntry> child = new TreeItem<TreeViewEntry>(childEntry);
 			pathToTree(ebx, link.getName(), child);

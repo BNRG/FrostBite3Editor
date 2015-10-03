@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector3f;
 
-import tk.captainsplexx.Game.Core;
 import tk.captainsplexx.Maths.RayCasting;
 import tk.captainsplexx.Maths.VectorMath;
 import tk.captainsplexx.Model.ModelHandler;
@@ -21,8 +20,8 @@ public class EntityHandler {
 	Entity focussedEntity = null;
 	
 	public int MAX_TEXTURES = 1000;
-	public int MAX_RAY_CHECKS = 1000;
-	public float RAY_CHECK_DISTANCE = 10f;
+	public int MAX_RAY_CHECKS = 10000;
+	public float RAY_CHECK_DISTANCE = 1f;
 	
 	public ModelHandler modelHandler;
 	public ResourceHandler resourceHandler;

@@ -4,18 +4,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.lwjgl.util.vector.Vector2f;
-import org.lwjgl.util.vector.Vector3f;
-
 import javafx.scene.control.TreeItem;
 import javafx.scene.image.ImageView;
-import tk.captainsplexx.Entity.Entity;
 import tk.captainsplexx.Entity.EntityHandler;
 import tk.captainsplexx.JavaFX.JavaFXHandler;
 import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
 import tk.captainsplexx.JavaFX.TreeViewConverter;
 import tk.captainsplexx.JavaFX.TreeViewEntry;
-import tk.captainsplexx.Maths.RayCasting;
 import tk.captainsplexx.Mod.Mod;
 import tk.captainsplexx.Model.ModelHandler;
 import tk.captainsplexx.Player.PlayerEntity;
@@ -45,7 +40,7 @@ public class Game {
 	public String currentFile;
 	public ConvertedTocFile currentToc;
 	public ConvertedSBpart currentSB;
-	public HashMap<String, String> ebxFileGUIDs;
+	//public HashMap<String, String> ebxFileGUIDs /*GUID, FileName*/;;
 	public HashMap<String, String> chunkGUIDSHA1;
 	public Mod currentMod;
 	public ArrayList<GuiTexture> guis;
@@ -120,8 +115,8 @@ public class Game {
 			Core.getJavaFXHandler().getMainWindow().toggleRightVisibility();
 			Core.getJavaFXHandler().getMainWindow().toggleModLoaderVisibility();
 			currentMod = null;
-			ebxFileGUIDs = new HashMap<>();
-			ebxFileGUIDs.put("EA830D5EFFB3EE489D44963370D466B1", "test/test1/test2");
+			//ebxFileGUIDs = new HashMap<>();
+			//ebxFileGUIDs.put("EA830D5EFFB3EE489D44963370D466B1", "test/test1/test2");
 			//byte[] bytes = FileHandler.readFile("__DOCUMENTATION__/ebx/sample_ebx/layer0_default.ebx");
 			byte[] bytes = FileHandler.readFile("mods/SampleMod/resources/levels/mp/mp_playground/content/layer2_buildings.bak--IGNORE");
 			EBXFile ebxFile = resourceHandler.getEBXHandler().loadFile(bytes);
@@ -138,7 +133,7 @@ public class Game {
 		if (patchedCasCat.exists()){
 			resourceHandler.getPatchedCasCatManager().readCat(FileHandler.readFile(patchedCasCat.getAbsolutePath()), "patched");
 		}
-		ebxFileGUIDs = new HashMap<String, String>();
+		//ebxFileGUIDs = new HashMap<String, String>();
 		chunkGUIDSHA1 = new HashMap<String, String>();
 		
 		/*Use this to fetch common chunks!*/
@@ -248,9 +243,9 @@ public class Game {
 	}
 
 
-	public HashMap<String, String> getEBXFileGUIDs() {
+	/*public HashMap<String, String> getEBXFileGUIDs() {
 		return ebxFileGUIDs;
-	}
+	}*/
 
 
 	public ConvertedTocFile getCurrentToc() {

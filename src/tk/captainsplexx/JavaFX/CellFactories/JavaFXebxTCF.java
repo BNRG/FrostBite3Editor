@@ -22,8 +22,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.paint.Color;
-import tk.captainsplexx.Game.Game;
 import tk.captainsplexx.Game.Core;
+import tk.captainsplexx.Game.Game;
 import tk.captainsplexx.JavaFX.JavaFXHandler;
 import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
 import tk.captainsplexx.JavaFX.JavaFXMainWindow.WorkDropType;
@@ -32,6 +32,8 @@ import tk.captainsplexx.JavaFX.TreeViewEntry;
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.CAS.CasDataReader;
 import tk.captainsplexx.Resource.EBX.EBXFieldDescriptor;
+import tk.captainsplexx.Resource.EBX.EBXFile;
+import tk.captainsplexx.Resource.EBX.EBXHandler;
 import tk.captainsplexx.Resource.TOC.ResourceLink;
 
 public class JavaFXebxTCF extends TreeCell<TreeViewEntry> {
@@ -388,6 +390,7 @@ public class JavaFXebxTCF extends TreeCell<TreeViewEntry> {
         
         public String convertToString(TreeViewEntry item){
         	if (item.value!=null){
+        		EBXHandler ebxHandler = Core.getGame().getResourceHandler().getEBXHandler();
 	        	switch(item.type){
 		    		case STRING:
 		    			return (String)item.getValue();
@@ -437,10 +440,10 @@ public class JavaFXebxTCF extends TreeCell<TreeViewEntry> {
 		    		case GUID:
 		    			String fileGUIDName = null;
 		    			String[] split = ((String)item.getValue()).split(" ");
-						if (Core.getGame().getEBXFileGUIDs()!=null&&split.length==2){//DEBUG-
-							fileGUIDName = Core.getGame().getEBXFileGUIDs().get(split[0].toUpperCase());
-							if (fileGUIDName != null){
-								return fileGUIDName+" "+split[1];
+						if (ebxHandler.getFiles()!=null&&split.length==2){//DEBUG-
+							EBXFile file = ebxHandler.getEBXFileByGUID(split[0]);
+							if (file!=null){
+								return file.getTruePath()+" "+split[1];
 							}
 						}
 						return (String)item.getValue();
@@ -456,6 +459,7 @@ public class JavaFXebxTCF extends TreeCell<TreeViewEntry> {
         
         public Object convertToObject(String value, TreeViewEntry item){
         	try{
+        		EBXHandler ebxHandler = Core.getGame().getResourceHandler().getEBXHandler();
         		if (value.equals("null")){//hasNoPayloadData! aka. undefined null
         			return null;
         		}else{
@@ -496,13 +500,11 @@ public class JavaFXebxTCF extends TreeCell<TreeViewEntry> {
 			    			return("NULL"); //DEFINED NULL ("NULL")
 			    		case GUID:
 			    			if (value.contains("/")){
-			    				String[] split = value.split(" ");
-			    				if (Core.getGame().getEBXFileGUIDs()!=null&&split.length==2){
-			    					for (String v : Core.getGame().getEBXFileGUIDs().values()){
-			    						String keySet = Core.getGame().getEBXFileGUIDs().get(v);
-			    						if (keySet.equals(split[0])){
-			    							return (keySet+" "+split[1]);
-			    						}
+			    				String[] split = value.split(" ");			    				
+			    				if (split.length==2){
+				    				EBXFile file = ebxHandler.getEBXFileByName(split[0]);
+			    					if (file!=null){
+			    						return (file.getGuid()+" "+split[1]);
 			    					}
 								}
 			    				System.err.println("EXTERNAL GUID PATH COULD NOT BE FOUND IN DATABASE. NO CONVERTION TO FILEGUID POSSIBLE!");

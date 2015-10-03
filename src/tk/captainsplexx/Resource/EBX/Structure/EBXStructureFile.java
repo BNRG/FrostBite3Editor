@@ -24,5 +24,14 @@ public class EBXStructureFile {
 		return entries;
 	}
 	
-	
+	public EBXStructureEntry getEntryFromInstanceGUID(String guid){
+		for (EBXStructureEntry entry : entries){
+			if (entry.getGuid().equalsIgnoreCase(guid)){
+				return entry;
+			}
+		}
+		System.err.println("Instance "+guid+" does not exist in "+structureName+"! (EBXStructureFile -> getEntryFromInstanceGUID)");
+		return null;
+	}
+		
 }

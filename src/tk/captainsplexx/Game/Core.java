@@ -8,6 +8,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.ByteBuffer;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
@@ -25,11 +26,12 @@ import tk.captainsplexx.Render.Gui.GuiTexture;
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.EBX.EBXFile;
 import tk.captainsplexx.Resource.EBX.EBXHandler;
-import tk.captainsplexx.Resource.EBX.EBXLoader;
 import tk.captainsplexx.Resource.EBX.Structure.EBXStructureEntry;
 import tk.captainsplexx.Resource.EBX.Structure.EBXStructureFile;
 import tk.captainsplexx.Resource.EBX.Structure.EBXStructureReader;
+import tk.captainsplexx.Resource.EBX.Structure.Entry.EBXObjInstanceGUID;
 import tk.captainsplexx.Resource.EBX.Structure.Entry.EBXStrReferencedObjectData;
+import tk.captainsplexx.Resource.EBX.Structure.Entry.EBXStrSpatialPrefabBlueprint;
 
 public class Core {
 	public static Game game;
@@ -62,17 +64,19 @@ public class Core {
 	public static String buildVersion;
 	public static String currentDir;
 	
-	private static boolean executeRunnable;
-	private static Runnable runnable;
+	private static ArrayList<Runnable> runnables;
+	private static ArrayList<Runnable> runnablesQ;
+	private static boolean isExecutingRunnables;
 	public static Object[] sharedObjs;
 		
 	public static void main(String[] args){
 		
 		//ITextureConverter.getITextureHeader(FileHandler.readFile("mods/SampleMod/resources/objects/architecture/housesettlement_01/t_housesettlement_01_railing_d.dds"), "01 10 96 C2 D2 DA DF 9B 39 31 23 20 14 07 C1 E7".replace(" ", ""));
 		
-		
 		/*
-		byte[] file = FileHandler.readFile("D:\\dump_bf4_fs\\bundles_more_info\\ebx\\levels\\mp\\mp_playground\\content\\layer2_buildings.ebx");
+		byte[] file = FileHandler.readFile("D:\\dump_bf4_fs\\bundles_more_info\\ebx\\objects\\architecture\\housesettlement_01\\pf_housesettlement_01_medium_01_generic_mpnaval_nongroupable_autogen_Win32.ebx");
+		 "D:\\dump_bf4_fs\\bundles_more_info\\ebx\\levels\\mp\\mp_playground\\content\\layer2_buildings.ebx" 
+				
 		
 		EBXFile ebxFile = new EBXHandler().loadFile(file);
 		EBXStructureFile structFile = EBXStructureReader.readStructure(ebxFile);
@@ -80,17 +84,23 @@ public class Core {
 			switch (entry.getType()){
 				case ReferenceObjectData:
 					EBXStrReferencedObjectData en = (EBXStrReferencedObjectData) entry;
-					//System.out.println(en.getBlueprintTransform().getTranformations().get(3).getY());
+					//System.out.println(en.getBlueprintTransform().getTransformation(Component.TRANS).getY());
 					continue;
+				case SpatialPrefabBlueprint:
+					System.out.println("Found SpatialPrefabBlueprint!");
+					EBXStrSpatialPrefabBlueprint spBlueprint = (EBXStrSpatialPrefabBlueprint) entry;
+					for (Object obj : spBlueprint.getObjectArray().getObjects()){
+						EBXObjInstanceGUID instanceGUID = (EBXObjInstanceGUID) obj;
+					}
 				}
-			//System.out.println(entry.getType() +" :)");
 		}
 		
-		System.exit(0);*/
-		
-		
+		System.exit(0);
+		*/
+		runnables = new ArrayList<Runnable>();
+		runnablesQ = new ArrayList<Runnable>();
+		isExecutingRunnables = false;
 		sharedObjs = null;
-		executeRunnable = false;
 		gamePath = null;
 		checkVersion();
 		
@@ -173,10 +183,22 @@ public class Core {
 					//update instantly
 					inputHandler.listen();
 					render.update();
-					if (executeRunnable){
-						executeRunnable = false;
-						runnable.run();
+					
+					/*Proccess all runnables*/
+					isExecutingRunnables = true;
+					for (Runnable runna : runnables){
+						runna.run();
 					}
+					runnables.clear();
+					isExecutingRunnables = false;
+					for (Runnable runnaQ : runnablesQ){
+						runnables.add(runnaQ);
+					}
+					runnablesQ.clear();
+					/*End of Runnable section*/
+					
+					
+					
 				}
 				game.modelHandler.loader.cleanUp(); //CleanUp GPU-Memory!
 				game.shaderHandler.cleanUpAll();
@@ -188,8 +210,11 @@ public class Core {
 		System.exit(0);
 	}
 	public static void runOnMainThread(Runnable run){
-		executeRunnable = true;
-		runnable = run;
+		if (isExecutingRunnables){
+			runnablesQ.add(run);
+		}else{
+			runnables.add(run);
+		}
 	}
 	
 	public static Game getGame(){

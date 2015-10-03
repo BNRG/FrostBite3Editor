@@ -3,8 +3,8 @@ package tk.captainsplexx.Resource.CAS;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 
-import tk.captainsplexx.Game.Game;
 import tk.captainsplexx.Game.Core;
+import tk.captainsplexx.Game.Game;
 import tk.captainsplexx.Maths.LZ4;
 import tk.captainsplexx.Maths.Patcher;
 import tk.captainsplexx.Resource.FileHandler;

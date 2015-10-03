@@ -4,8 +4,6 @@ import java.util.HashMap;
 
 import tk.captainsplexx.Resource.EBX.EBXExternalGUID;
 import tk.captainsplexx.Resource.EBX.EBXField;
-import tk.captainsplexx.Resource.EBX.EBXFieldDescriptor;
-import tk.captainsplexx.Resource.EBX.EBXHandler.FieldValueType;
 import tk.captainsplexx.Resource.EBX.EBXInstance;
 import tk.captainsplexx.Resource.EBX.Structure.EBXStructureEntry;
 
@@ -25,51 +23,19 @@ public class EBXStrReferencedObjectData extends EBXStructureEntry {
 		for (EBXField instanceEntry : ebxInstance.getComplex().getFields()) {
 			switch (instanceEntry.getFieldDescritor().getName()) {
 			case "Blueprint": /* -------------- Blueprint -------------- */
-				if (instanceEntry.getType() == FieldValueType.ExternalGuid) {
-					String[] splitString = ((String) instanceEntry.getValue()).split(" ");
-					if (splitString.length == 2) {
-						EBXExternalGUID exGUID = new EBXExternalGUID(
-								splitString[0], splitString[1]);
-						this.blueprint = exGUID;
-					} else {
-						System.err.println("Invalid External GUID length in EBXStrReferencedObjectData's Constructor!");
-					}
-				}
+				this.blueprint = new EBXExternalGUID(instanceEntry);
 				break;
 			case "BlueprintTransform": /* -------------- BlueprintTransform -------------- */
 				this.blueprintTransform = new EBXObjBlueprintTransform(instanceEntry.getValueAsComplex());
 				break;
 			case "ObjectVariation": /* -------------- BlueprintTransform -------------- */
-				if (instanceEntry.getType() == FieldValueType.ExternalGuid) {
-					String[] splitString = ((String) instanceEntry.getValue()).split(" ");
-					if (splitString.length == 2) {
-						EBXExternalGUID exGUID = new EBXExternalGUID(
-								splitString[0], splitString[1]);
-						this.objectVariation = exGUID;
-					} else {
-						System.err.println("Invalid External GUID length in EBXStrReferencedObjectData's Constructor!");
-					}
-				}
+				this.objectVariation = new EBXExternalGUID(instanceEntry);
 				break;
 			case "StreamRealm": /* -------------- StreamRealm -------------- */
-				@SuppressWarnings("unchecked")
-				HashMap<EBXFieldDescriptor, Boolean> hashMap = (HashMap<EBXFieldDescriptor, Boolean>) instanceEntry.getValue();
-				HashMap<String, Boolean> streamRealmEnums = new HashMap<>();
-				for (EBXFieldDescriptor fieldDescriptor : hashMap.keySet()){
-					Boolean bool = hashMap.get(fieldDescriptor);
-					streamRealmEnums.put(fieldDescriptor.getName(), bool);
-				}		
-				this.streamRealm = new EBXObjEnum(streamRealmEnums);
+				this.streamRealm = new EBXObjEnum((HashMap<?, ?>) instanceEntry.getValue(), true);
 				break;
 			case "RadiosityTypeOverride": /* -------------- RadiosityTypeOverride -------------- */
-				@SuppressWarnings("unchecked")
-				HashMap<EBXFieldDescriptor, Boolean> hashMap1 = (HashMap<EBXFieldDescriptor, Boolean>) instanceEntry.getValue();
-				HashMap<String, Boolean> radiosityTypeOverrideEnums = new HashMap<>();
-				for (EBXFieldDescriptor fieldDescriptor : hashMap1.keySet()){
-					Boolean bool = hashMap1.get(fieldDescriptor);
-					radiosityTypeOverrideEnums.put(fieldDescriptor.getName(), bool);
-				}		
-				this.radiosityTypeOverride = new EBXObjEnum(radiosityTypeOverrideEnums);
+				this.radiosityTypeOverride = new EBXObjEnum((HashMap<?, ?>) instanceEntry.getValue(), true);
 				break;
 			case "CastSunShadowEnable": /* -------------- CastSunShadowEnable -------------- */
 				this.castSunShadowEnable = (boolean) instanceEntry.getValue();
@@ -82,11 +48,6 @@ public class EBXStrReferencedObjectData extends EBXStructureEntry {
 				break;
 			}
 		}
-
-		// Read in
-
-		// TODO LOGIC!
-
 	}
 
 	public EBXExternalGUID getBlueprint() {

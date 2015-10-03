@@ -2,19 +2,28 @@ package tk.captainsplexx.Resource.EBX.Structure.Entry;
 
 import java.util.HashMap;
 
+import tk.captainsplexx.Resource.EBX.EBXFieldDescriptor;
+
 public class EBXObjEnum {
 	public HashMap<String, Boolean> values;
 
 	//Constructor
-	public EBXObjEnum(HashMap<String, Boolean> streamRealmEnums) {
-		this.values = streamRealmEnums;
+	@SuppressWarnings("unchecked")
+	public EBXObjEnum(HashMap<?, ?> hashMap, boolean areFieldDescriptors) {
+		if (areFieldDescriptors){
+			values = new HashMap<>();
+			HashMap<EBXFieldDescriptor, Boolean> fieldHashMap = (HashMap<EBXFieldDescriptor, Boolean>) hashMap;
+			for (EBXFieldDescriptor fieldDescriptor : fieldHashMap.keySet()){
+				Boolean bool = fieldHashMap.get(fieldDescriptor);
+				values.put(fieldDescriptor.getName(), bool);
+			}
+		}else{
+			this.values = (HashMap<String, Boolean>) hashMap;
+		}
 	}
-
+	
 	//Getter and Setter
 	public HashMap<String, Boolean> getValues() {
 		return values;
-	}
-	
-	
-	
+	}	
 }

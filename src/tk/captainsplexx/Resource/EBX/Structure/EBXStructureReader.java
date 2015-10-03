@@ -1,11 +1,40 @@
 package tk.captainsplexx.Resource.EBX.Structure;
 
+import tk.captainsplexx.Game.Core;
+import tk.captainsplexx.Resource.EBX.EBXExternalGUID;
 import tk.captainsplexx.Resource.EBX.EBXFile;
+import tk.captainsplexx.Resource.EBX.EBXHandler;
 import tk.captainsplexx.Resource.EBX.EBXInstance;
 import tk.captainsplexx.Resource.EBX.Structure.EBXStructureEntry.EntryType;
 import tk.captainsplexx.Resource.EBX.Structure.Entry.EBXStrReferencedObjectData;
+import tk.captainsplexx.Resource.EBX.Structure.Entry.EBXStrSpatialPrefabBlueprint;
+import tk.captainsplexx.Resource.TOC.ResourceLink;
 
 public class EBXStructureReader {
+	
+	public static EBXStructureFile readExternalGUIDTarget(EBXExternalGUID externalGUID, boolean useOriginalOnly){
+		ResourceLink targetLink = null;
+		for (ResourceLink ebxLink:Core.getGame().getCurrentSB().getEbx()){
+			if (ebxLink.getEbxFileGUID().equals(externalGUID.getFileGUID())){
+				targetLink = ebxLink;
+				break;
+			}
+		}
+		if (targetLink==null){
+			System.err.println("Target "+externalGUID.getBothGUIDs()+" could not get resolved. No link does exist.");
+		}
+		byte[] data = Core.getGame().getResourceHandler().readResource(
+				targetLink.getBaseSha1(), targetLink.getDeltaSha1(), targetLink.getSha1(),
+				targetLink.getCasPatchType(), targetLink.getName(),
+				targetLink.getType(), useOriginalOnly);
+		if (data==null){
+			return null;
+		}
+		EBXFile ebxFile = Core.getGame().getResourceHandler().getEBXHandler().loadFile(data);	
+		return EBXStructureReader.readStructure(ebxFile);
+	}
+	
+	
 	public static EBXStructureFile readStructure(EBXFile ebxFile){
 		EBXStructureFile structFile = new EBXStructureFile(ebxFile.getTruePath());
 		for (EBXInstance instance : ebxFile.getInstances()){
@@ -30,9 +59,12 @@ public class EBXStructureReader {
 					case ReferenceObjectData:
 						entry = new EBXStrReferencedObjectData(ebxEntry);
 						break;
+					case SpatialPrefabBlueprint:
+						entry = new EBXStrSpatialPrefabBlueprint(ebxEntry);
+						break;
 				}
 			}else{
-				System.err.println("EBXStructureEntity-Enum is INCLOMPLETE: "+name);
+				System.err.println("EBXStructureReader is INCLOMPLETE: "+name);
 				return null;
 			}
 			if (entry==null){

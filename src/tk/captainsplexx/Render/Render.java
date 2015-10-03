@@ -28,8 +28,8 @@ import org.lwjgl.util.vector.Vector3f;
 
 import tk.captainsplexx.Camera.FPCameraController;
 import tk.captainsplexx.Entity.Entity;
-import tk.captainsplexx.Game.Game;
 import tk.captainsplexx.Game.Core;
+import tk.captainsplexx.Game.Game;
 import tk.captainsplexx.Game.Point;
 import tk.captainsplexx.Maths.Matrices;
 import tk.captainsplexx.Model.RawModel;

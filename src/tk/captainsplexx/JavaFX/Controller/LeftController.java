@@ -22,8 +22,6 @@ public class LeftController {
 	@FXML
 	public Label lodLabel;
 	@FXML
-	public ComboBox<String> part;
-	@FXML
 	public ComboBox<String> layer;
 	@FXML
 	public ComboBox<String> lightning;
@@ -73,9 +71,6 @@ public class LeftController {
 		return explorer1;
 	}
 
-	public ComboBox<String> getPart() {
-		return part;
-	}
 
 	public ComboBox<String> getLayer() {
 		return layer;

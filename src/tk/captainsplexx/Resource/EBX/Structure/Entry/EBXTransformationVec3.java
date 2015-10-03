@@ -1,8 +1,15 @@
 package tk.captainsplexx.Resource.EBX.Structure.Entry;
 
+import org.lwjgl.util.vector.Vector3f;
+
 import tk.captainsplexx.Resource.EBX.EBXField;
 
 public class EBXTransformationVec3 {
+	
+	public enum Component {
+		RIGHT, UP, FORWARD, TRANS
+	};
+	
 	private float x = 0f, y = 0f, z = 0f;
 	private String name;
 	
@@ -69,6 +76,13 @@ public class EBXTransformationVec3 {
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public Vector3f getVector(){
+		return new Vector3f(x, y, z);
+	}
+	public Vector3f getVector(float mulX, float mulY, float mulZ){
+		return new Vector3f(x*mulX, y*mulY, z*mulZ);
 	}
 	
 	

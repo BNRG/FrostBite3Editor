@@ -22,7 +22,8 @@ CaptainSpleXx is free to play his modded maps."</p>
 <table>
   <tbody>
     <tr>
-      <td>Under Development</td>
+      <td>Under Development - reworking main structrure (28-Sep-15)</td>
+      <td>BF4 Private Server comming soon! <a href="http://zlogames.ru/index.php?/topic/4163/&do=findComment&comment=43187">link</a></td>
     </tr>
   </tbody>
 </table>

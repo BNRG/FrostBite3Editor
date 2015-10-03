@@ -13,7 +13,8 @@ public abstract class EBXStructureEntry {
 		RandomMultiEventEntityData, LogicVisualEnvironmentEntityData, PlatformSplitterEntityData,
 		OrEntityData, TransformEntityData, SyncedBoolEntityData, FadeEntityData,
 		UINPXTooltipEntityData, SequenceEntityData, CompareBoolEntityData, TransformPartPropertyTrackData,
-		UINPXTooltipLine, UINPXTextLine, UINPXPaddingLine, WorldPartData
+		UINPXTooltipLine, UINPXTextLine, UINPXPaddingLine, WorldPartData, SpatialPrefabBlueprint, ObjectBlueprint,
+		VegetationTreeEntityData, StaticModelEntityData
 	}
 
 	public EBXStructureEntry(EntryType type, String guid) {

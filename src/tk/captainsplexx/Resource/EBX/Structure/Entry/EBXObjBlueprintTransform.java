@@ -50,4 +50,13 @@ public class EBXObjBlueprintTransform {
 	public ArrayList<EBXTransformationVec3> getTranformations() {
 		return tranformations;
 	};	
+	
+	public EBXTransformationVec3 getTransformation(EBXTransformationVec3.Component component){
+		for (EBXTransformationVec3 vec : tranformations){
+			if (vec.getName().equalsIgnoreCase(component.toString())){
+				return vec;
+			}
+		}
+		return null;
+	}
 }

@@ -1,8 +1,9 @@
 package tk.captainsplexx.JavaFX;
 
-import java.awt.Checkbox;
 import java.io.File;
 import java.io.IOException;
+
+import org.lwjgl.opengl.Display;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -11,7 +12,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -24,9 +24,6 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
-
-import org.lwjgl.opengl.Display;
-
 import tk.captainsplexx.Game.Core;
 import tk.captainsplexx.JavaFX.CellFactories.JavaFXebxTCF;
 import tk.captainsplexx.JavaFX.CellFactories.JavaFXexplorer1TCF;
@@ -159,8 +156,8 @@ public class JavaFXMainWindow extends Application{
         leftController.getExplorer1().setPrefWidth(Display.getDesktopDisplayMode().getWidth());
         leftController.getExplorer1().setPrefHeight(Display.getDesktopDisplayMode().getHeight());
         
-        leftController.getPart().getItems().addAll("Test","Testsss","Testtssst");
-        leftController.getPart().valueProperty().addListener(new ChangeListener<String>() {
+        leftController.getLayer().getItems().addAll("Test","Testsss","Testtssst");
+        leftController.getLayer().valueProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
 				System.err.println("Old: "+oldValue+" New: "+newValue);

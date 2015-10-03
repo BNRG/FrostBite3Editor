@@ -2,8 +2,6 @@ package tk.captainsplexx.JavaFX.CellFactories;
 
 import java.io.File;
 
-import org.lwjgl.util.vector.Vector3f;
-
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.ContextMenu;
@@ -14,21 +12,18 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import tk.captainsplexx.Entity.Entity;
-import tk.captainsplexx.Entity.EntityHandler;
-import tk.captainsplexx.Game.Game;
 import tk.captainsplexx.Game.Core;
+import tk.captainsplexx.Game.Game;
 import tk.captainsplexx.JavaFX.JavaFXHandler;
 import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
 import tk.captainsplexx.JavaFX.TreeViewConverter;
 import tk.captainsplexx.JavaFX.TreeViewEntry;
 import tk.captainsplexx.Mod.ModTools;
-import tk.captainsplexx.Mod.Package;
-import tk.captainsplexx.Mod.PackageEntry;
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.ResourceHandler;
 import tk.captainsplexx.Resource.ResourceHandler.ResourceType;
 import tk.captainsplexx.Resource.CAS.CasDataReader;
+import tk.captainsplexx.Resource.EBX.EBXFile;
 import tk.captainsplexx.Resource.ITEXTURE.ITextureHandler;
 import tk.captainsplexx.Resource.MESH.MeshConverter;
 import tk.captainsplexx.Resource.TOC.ResourceLink;
@@ -93,53 +88,22 @@ public class JavaFXexplorer1TCF extends TreeCell<TreeViewEntry> {
 					if (i.getParent()!=null){
 						if (i.getValue().getValue() != null){
 							if (event.getButton() == MouseButton.PRIMARY){
-								byte[] data = null;
+								
 								Game game = Core.getGame();
 								ResourceHandler rs = game.getResourceHandler();
 								ResourceLink link = (ResourceLink) i.getValue().getValue();
-								
-								//Mod file replacement:
-								File modFilePack = new File(FileHandler.normalizePath(
-										Core.getGame().getCurrentMod().getPath()+ModTools.PACKAGEFOLDER+
-										Core.getGame().getCurrentFile().replace(Core.gamePath, "")+ModTools.PACKTYPE)
-								);
-								Package modPackage = null;
-								if (modFilePack.exists()){
-									modPackage = Core.getModTools().readPackageInfo(modFilePack);
-								}
-								
-								if (modPackage!=null){
-									for (PackageEntry entry : modPackage.getEntries()){
-										if (entry.getSubPackage().equalsIgnoreCase(Core.getGame().getCurrentSB().getPath())&&//mp_playground/content
-												entry.getResourcePath().equalsIgnoreCase(link.getName()+"."+link.getBundleType())//levels/mp_playground/content/layer2_buildings.ebx .itexture .mesh
-										){
-											System.err.println("Mod file was found, use this as resource!");
-											data = FileHandler.readFile(Core.getGame().getCurrentMod().getPath()+ModTools.RESOURCEFOLDER+entry.getResourcePath());
-											break;
-										}
-									}
-									if (data==null){
-										System.err.println("No mod file was found, use original data from Game.");
-									}
-									//has NO mod file
-								}
-								
+								byte[] data = rs.readResourceLink(link, false /*useOriginalDataONLY*/);
 								if (link.getBundleType() == ResourceBundleType.EBX){
-									if (data==null){
-										data = CasDataReader.readCas(link.getBaseSha1(), link.getDeltaSha1(), link.getSha1(), link.getCasPatchType());
-									}
 									if (data != null){
-				//FileHandler.writeFile("output/ebx_data", data);
-										TreeItem<TreeViewEntry> ebx = TreeViewConverter.getTreeView(game.getResourceHandler().getEBXHandler().loadFile(data));
+										//FileHandler.writeFile("output/ebx_data", data);
+										EBXFile ebxFile = game.getResourceHandler().getEBXHandler().loadFile(data);
+										TreeItem<TreeViewEntry> ebx = TreeViewConverter.getTreeView(ebxFile);
 										Core.getJavaFXHandler().setTreeViewStructureRight(ebx);
 										Core.getJavaFXHandler().getMainWindow().updateRightRoot();
 									}else{
 										System.err.println("Could not build EBX Explorer because of missing data.");
 									}
 								}else if (link.getBundleType() == ResourceBundleType.RES){
-									if (data==null){
-										data = CasDataReader.readCas(link.getBaseSha1(), link.getDeltaSha1(), link.getSha1(), link.getCasPatchType());
-									}
 									if (data != null){
 										if (link.getType() == ResourceType.ITEXTURE){
 											FileHandler.writeFile("output/"+link.getName().replace('/', '_')+".dds", ITextureHandler.getDSS(data));
@@ -148,17 +112,6 @@ public class JavaFXexplorer1TCF extends TreeCell<TreeViewEntry> {
 										}else if (link.getType() == ResourceType.MESH){
 											byte[] obj = MeshConverter.getAsOBJ(data, game.getCurrentSB());
 											FileHandler.writeFile("output/"+link.getName().replace('/', '_')+".obj", obj);
-											
-											Core.sharedObjs = new Object[]{data, link.getName()};
-											Core.runOnMainThread(new Runnable() {
-												@Override
-												public void run() {
-													EntityHandler ehandler = Core.getGame().getEntityHandler();
-													Entity en = ehandler.createEntity((byte[]) Core.sharedObjs[0], Core.getGame().getCurrentSB(), "", null, (String) Core.sharedObjs[1]);
-													ehandler.getEntities().add(en);
-												}
-											});
-											//TEST
 										}else{
 											System.err.println("Type not supported yet.");
 											FileHandler.writeFile("output/"+link.getName().replace('/', '_')+"."+link.getType(), data);
