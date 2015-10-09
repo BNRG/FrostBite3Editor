@@ -106,23 +106,24 @@ public class Game {
 		File cascat = new File(Core.gamePath+"/Data/cas.cat");
 		if (!cascat.exists()){
 			System.err.println("Invalid gamepath selected.");
-			System.exit(0);
-		}
-		System.out.println("Building up FrostBite Editor!");
-		buildEditor();
-		
-		if (Core.isDEBUG){//EBX-DEBUG
-			Core.getJavaFXHandler().getMainWindow().toggleRightVisibility();
-			Core.getJavaFXHandler().getMainWindow().toggleModLoaderVisibility();
-			currentMod = null;
-			//ebxFileGUIDs = new HashMap<>();
-			//ebxFileGUIDs.put("EA830D5EFFB3EE489D44963370D466B1", "test/test1/test2");
-			//byte[] bytes = FileHandler.readFile("__DOCUMENTATION__/ebx/sample_ebx/layer0_default.ebx");
-			byte[] bytes = FileHandler.readFile("mods/SampleMod/resources/levels/mp/mp_playground/content/layer2_buildings.bak--IGNORE");
-			EBXFile ebxFile = resourceHandler.getEBXHandler().loadFile(bytes);
-			TreeItem<TreeViewEntry> treeView = TreeViewConverter.getTreeView(ebxFile);
-			Core.getJavaFXHandler().setTreeViewStructureRight(treeView);
-			Core.getJavaFXHandler().getMainWindow().updateRightRoot();
+			Core.keepAlive(false);
+		}else{
+			System.out.println("Building up FrostBite Editor!");
+			buildEditor();
+			
+			if (Core.isDEBUG){//EBX-DEBUG
+				Core.getJavaFXHandler().getMainWindow().toggleRightVisibility();
+				Core.getJavaFXHandler().getMainWindow().toggleModLoaderVisibility();
+				currentMod = null;
+				//ebxFileGUIDs = new HashMap<>();
+				//ebxFileGUIDs.put("EA830D5EFFB3EE489D44963370D466B1", "test/test1/test2");
+				//byte[] bytes = FileHandler.readFile("__DOCUMENTATION__/ebx/sample_ebx/layer0_default.ebx");
+				byte[] bytes = FileHandler.readFile("mods/SampleMod/resources/levels/mp/mp_playground/content/layer2_buildings.bak--IGNORE");
+				EBXFile ebxFile = resourceHandler.getEBXHandler().loadFile(bytes);
+				TreeItem<TreeViewEntry> treeView = TreeViewConverter.getTreeView(ebxFile);
+				Core.getJavaFXHandler().setTreeViewStructureRight(treeView);
+				Core.getJavaFXHandler().getMainWindow().updateRightRoot();
+			}
 		}
 	}
 	

@@ -159,6 +159,23 @@
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                        </padding>
                                     </HBox>
+                                    <HBox alignment="TOP_RIGHT" layoutX="10.0" layoutY="45.0">
+                                       <children>
+                                          <Label alignment="TOP_CENTER" text="Camera Speed">
+                                             <padding>
+                                                <Insets bottom="2.0" left="2.0" right="2.0" top="8.0" />
+                                             </padding>
+                                          </Label>
+                                          <Slider fx:id="cameraSpeed" blockIncrement="1.0" majorTickUnit="2.0" max="25.0" min="1.0" minorTickCount="1" prefHeight="31.0" prefWidth="140.0" showTickLabels="true" showTickMarks="true">
+                                             <padding>
+                                                <Insets bottom="2.0" left="2.0" right="2.0" top="8.0" />
+                                             </padding>
+                                          </Slider>
+                                       </children>
+                                       <padding>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </padding>
+                                    </HBox>
                                  </children>
                               </VBox>
                            </content>

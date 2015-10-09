@@ -154,5 +154,67 @@ public class PlayerEntity {
 		posZ -= vec.y;
 		return vec;
 	}
+
+	public void setHeight(float height) {
+		this.height = height;
+	}
+
+	public void setWidth(float width) {
+		this.width = width;
+	}
+
+	public void setPosX(float posX) {
+		this.posX = posX;
+	}
+
+	public void setPosY(float posY) {
+		this.posY = posY;
+	}
+
+	public void setPosZ(float posZ) {
+		this.posZ = posZ;
+	}
+
+	public void setRotX(float rotX) {
+		this.rotX = rotX;
+	}
+
+	public void setRotY(float rotY) {
+		this.rotY = rotY;
+	}
+
+	public void setRotZ(float rotZ) {
+		this.rotZ = rotZ;
+	}
+
+	public void setVelX(float velX) {
+		this.velX = velX;
+	}
+
+	public void setVelY(float velY) {
+		this.velY = velY;
+	}
+
+	public void setVelZ(float velZ) {
+		this.velZ = velZ;
+	}
+
+	public void setMovementSpeed(float movementSpeed) {
+		this.movementSpeed = movementSpeed;
+	}
+
+	public void setJumpStrength(float jumpStrength) {
+		this.jumpStrength = jumpStrength;
+	}
+
+	public void setGravity(float gravity) {
+		this.gravity = gravity;
+	}
+
+	public void setOnGround(boolean onGround) {
+		this.onGround = onGround;
+	}
+	
+	
 }
 

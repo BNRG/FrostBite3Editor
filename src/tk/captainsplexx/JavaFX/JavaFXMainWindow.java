@@ -182,6 +182,12 @@ public class JavaFXMainWindow extends Application{
         		Core.getRender().getCamera().setMouseSensitivity((float)mouseSens);
         	}
         });
+        leftController.getCameraSpeed().valueProperty().addListener(new ChangeListener<Number>() {
+        	public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
+        		double cameraSpeed = (double)new_val*4;
+        		Core.getGame().getPlayerHandler().getPlayerEntity().setMovementSpeed((float) cameraSpeed);
+        	}
+        });
         
         /*
          * 
@@ -277,7 +283,7 @@ public class JavaFXMainWindow extends Application{
         stageModLoader.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			@Override
 			public void handle(WindowEvent e) {
-				System.exit(0);
+				Core.keepAlive(false);
 			}
 		});
         

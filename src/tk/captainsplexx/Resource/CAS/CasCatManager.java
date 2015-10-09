@@ -26,12 +26,34 @@ public class CasCatManager {
 		entries = new ArrayList<CasCatEntry>();
 		seeker = new FileSeeker();
 		seeker.seek(16);
+		
+		/* Starwars Battlefront contains the number of entries in a long behind the header!
+		 * So, calculate number of entries by filesize, if there are 8 bytes left. Skip 8!
+		 * 
+		 * SHA1 = 20 Bytes
+		 * Offset = 4 Bytes
+		 * ProcSize = 4 Bytes
+		 * CasFile = 4 Bytes
+		 * ------------------> Total Size = 32 Bytes == 0x20
+		 * */
+		
+		int dataSize = fileArray.length-header.length;
+		int leftOver = dataSize%0x20;
+		if (leftOver!=0){
+			System.out.println("New CasCat-File was detected (aka. 'Starwars Battlefront change')");
+			seeker.seek(leftOver);//Skip additional header data.
+		}
+		
 		while (seeker.getOffset() < fileArray.length){
 			CasCatEntry en = new CasCatEntry();
 			en.setSHA1(FileHandler.readSHA1(fileArray, seeker));
 			en.setOffset(FileHandler.readInt(fileArray, seeker));
 			en.setProcSize(FileHandler.readInt(fileArray, seeker));
 			en.setCasFile(FileHandler.readInt(fileArray, seeker));
+			/*if (en.getSHA1().equalsIgnoreCase("337A2C248C20171E2575CADFFFAEF9805F0E255C")){
+				System.err.println("Found 337A2C248C20171E2575CADFFFAEF9805F0E255C SHA1!");
+			}
+			System.out.println(en.getSHA1());*/
 			entries.add(en);
 		}//EOF
 		System.out.println(entries.size()+" entries where found.");

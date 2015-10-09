@@ -30,6 +30,8 @@ public class LeftController {
 	@FXML
 	public Slider mouseSensitivity;
 	@FXML
+	public Slider cameraSpeed;
+	@FXML
 	public Button search;
 	@FXML
 	public TextField filter;
@@ -94,6 +96,10 @@ public class LeftController {
 
 	public TextField getFilter() {
 		return filter;
+	}
+
+	public Slider getCameraSpeed() {
+		return cameraSpeed;
 	}
 	
 	

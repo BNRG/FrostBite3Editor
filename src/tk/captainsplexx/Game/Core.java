@@ -24,6 +24,7 @@ import tk.captainsplexx.Mod.ModTools;
 import tk.captainsplexx.Render.Render;
 import tk.captainsplexx.Render.Gui.GuiTexture;
 import tk.captainsplexx.Resource.FileHandler;
+import tk.captainsplexx.Resource.CAS.CasDataReader;
 import tk.captainsplexx.Resource.EBX.EBXFile;
 import tk.captainsplexx.Resource.EBX.EBXHandler;
 import tk.captainsplexx.Resource.EBX.Structure.EBXStructureEntry;
@@ -34,6 +35,7 @@ import tk.captainsplexx.Resource.EBX.Structure.Entry.EBXStrReferencedObjectData;
 import tk.captainsplexx.Resource.EBX.Structure.Entry.EBXStrSpatialPrefabBlueprint;
 
 public class Core {
+	/*Main Components*/
 	public static Game game;
 	public static Render render;
 	public static EventHandler eventHandler;
@@ -41,41 +43,62 @@ public class Core {
 	public static ModTools modTools;
 	public static JavaFXHandler jfxHandler;
 		
+	/*Defaults for Screen Configuration.*/
 	public static int DISPLAY_WIDTH;
 	public static int DISPLAY_HEIGHT;
 	public static int DISPLAY_RATE;
-	public static int TICK_RATE;
-	
 	public static float zNear;
 	public static float zFar;
-	
 	public static float FOV;
 	
+	/*Boring stuff to make Ticks possible.*/
+	public static int TICK_RATE;
 	public static int currentTick = -1;
 	public static int currentTime = 0;
 	public static int oldTime = -1;
 	
+	/*Active session*/
 	public static String gamePath;
 	public static boolean keepAlive;
 	public static boolean runEditor;
-	
 	public static boolean isDEBUG;
-	
-	public static String buildVersion;
 	public static String currentDir;
 	
+	/*You w00t mate ? :D*/
+	public static String buildVersion;
+		
+	/*Support for Cross-Threading*/
 	private static ArrayList<Runnable> runnables;
 	private static ArrayList<Runnable> runnablesQ;
 	private static boolean isExecutingRunnables;
 	public static Object[] sharedObjs;
 		
 	public static void main(String[] args){
+		/*Everything's happen from here. Even your parents meet here!*/
+		
+		
+		
+		
+		/* Starwars battlefront beta DEBUG
+		 * 
+		 * CasCat file got changed and first 8 bytes after header is a little_endian long containing the number of entries.
+		 * 
+		 * 
+		byte[] blockdata = FileHandler.readFile("C:\\Users\\SpleXx\\Desktop\\settings_win32_cas_chunks");
+		byte[] finaldata = CasDataReader.convertToRAWData(blockdata);
+		FileHandler.writeFile("C:\\Users\\SpleXx\\Desktop\\settings_win32.ebx", finaldata);
+		
+		System.exit(0);
+		*/
+		
+		
+		
 		
 		//ITextureConverter.getITextureHeader(FileHandler.readFile("mods/SampleMod/resources/objects/architecture/housesettlement_01/t_housesettlement_01_railing_d.dds"), "01 10 96 C2 D2 DA DF 9B 39 31 23 20 14 07 C1 E7".replace(" ", ""));
 		
 		/*
 		byte[] file = FileHandler.readFile("D:\\dump_bf4_fs\\bundles_more_info\\ebx\\objects\\architecture\\housesettlement_01\\pf_housesettlement_01_medium_01_generic_mpnaval_nongroupable_autogen_Win32.ebx");
-		 "D:\\dump_bf4_fs\\bundles_more_info\\ebx\\levels\\mp\\mp_playground\\content\\layer2_buildings.ebx" 
+		 "D:\\dump_bf4_fs\\bundles_more_info\\ebx\\levels\\mp\\mp_playground\\content\\layer2_buildings.ebx"
 				
 		
 		EBXFile ebxFile = new EBXHandler().loadFile(file);
@@ -91,12 +114,18 @@ public class Core {
 					EBXStrSpatialPrefabBlueprint spBlueprint = (EBXStrSpatialPrefabBlueprint) entry;
 					for (Object obj : spBlueprint.getObjectArray().getObjects()){
 						EBXObjInstanceGUID instanceGUID = (EBXObjInstanceGUID) obj;
+						EBXStructureEntry targetOBJ = instanceGUID.followInternalGUID(structFile);
+						if (targetOBJ!=null){
+							System.out.println(targetOBJ.getType()+" - "+targetOBJ.getGuid());
+						}
 					}
 				}
 		}
 		
-		System.exit(0);
-		*/
+		System.exit(0); */
+		
+		
+		/*Initialize Variables*/
 		runnables = new ArrayList<Runnable>();
 		runnablesQ = new ArrayList<Runnable>();
 		isExecutingRunnables = false;
@@ -130,14 +159,21 @@ public class Core {
 		}
 		modTools = new ModTools();
 		
+		
+		/*Let's loop until user's exit request was initialized*/
 		while (keepAlive){
-			//Wait for starting editor
+			/* Wait for starting editor.
+			 * JavaFX is running on a diffrent Thread,
+			 * so we can slow this one down in the mean time.
+			 */
 			System.out.print("");
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e1) {
 				e1.printStackTrace();
 			}
+			
+			/*Mod was selected -> Run Editor*/
 			if (runEditor){
 				jfxHandler.getMainWindow().toggleLeftVisibility();
 				jfxHandler.getMainWindow().toggleRightVisibility();
@@ -203,10 +239,14 @@ public class Core {
 				game.modelHandler.loader.cleanUp(); //CleanUp GPU-Memory!
 				game.shaderHandler.cleanUpAll();
 				//Thank u for using...
-				
-				System.exit(0);
 			}
 		}
+		System.out.println("Thanks for using this Editor/ModLoader.\n"
+				 + "If u have noticed any Bugs, make sure to report them\n"
+				 + "directly on Github to @CaptainSpleXx."
+				 + "\n\n"
+				 + "Have a good one, Bye!");
+
 		System.exit(0);
 	}
 	public static void runOnMainThread(Runnable run){
@@ -284,7 +324,7 @@ public class Core {
 		}
 		/*END OF VERSION CHECK*/
 	}
-	
-	
-	
+	public static void keepAlive(boolean b) {
+		keepAlive = b;
+	}
 }

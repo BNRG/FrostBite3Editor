@@ -14,6 +14,6 @@ public class ObjectEntity extends Entity{
 	}
 	@Override
 	public void update() {
-		
+		//PS: I would love to have physic's support too ;)
 	}
 }

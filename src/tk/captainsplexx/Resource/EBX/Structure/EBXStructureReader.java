@@ -3,7 +3,6 @@ package tk.captainsplexx.Resource.EBX.Structure;
 import tk.captainsplexx.Game.Core;
 import tk.captainsplexx.Resource.EBX.EBXExternalGUID;
 import tk.captainsplexx.Resource.EBX.EBXFile;
-import tk.captainsplexx.Resource.EBX.EBXHandler;
 import tk.captainsplexx.Resource.EBX.EBXInstance;
 import tk.captainsplexx.Resource.EBX.Structure.EBXStructureEntry.EntryType;
 import tk.captainsplexx.Resource.EBX.Structure.Entry.EBXStrReferencedObjectData;

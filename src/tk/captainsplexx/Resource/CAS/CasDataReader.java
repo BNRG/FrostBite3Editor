@@ -104,7 +104,7 @@ public class CasDataReader { //casPath == folderPath
 		}
 	}
 	
-	static byte[] convertToRAWData(byte[] data){
+	public static byte[] convertToRAWData(byte[] data){
 		FileSeeker seeker = new FileSeeker("CasDataReader");
 		ArrayList<Byte> output = new ArrayList<Byte>();
 		while(seeker.getOffset()<data.length){
