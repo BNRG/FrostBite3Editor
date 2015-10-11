@@ -33,6 +33,7 @@ import tk.captainsplexx.Resource.EBX.Structure.EBXStructureReader;
 import tk.captainsplexx.Resource.EBX.Structure.Entry.EBXObjInstanceGUID;
 import tk.captainsplexx.Resource.EBX.Structure.Entry.EBXStrReferencedObjectData;
 import tk.captainsplexx.Resource.EBX.Structure.Entry.EBXStrSpatialPrefabBlueprint;
+import tk.captainsplexx.Resource.ITEXTURE.ITexture;
 
 public class Core {
 	/*Main Components*/
@@ -75,8 +76,6 @@ public class Core {
 		
 	public static void main(String[] args){
 		/*Everything's happen from here. Even your parents meet here!*/
-		
-		
 		
 		
 		/* Starwars battlefront beta DEBUG

@@ -509,6 +509,28 @@ public class FileHandler {
 			return false;
 		}
 	}
+	public static boolean addBytes(byte[] sourceArr, byte[] targetArr, FileSeeker seeker){
+		return addBytes(sourceArr, 0, sourceArr.length, targetArr, seeker);
+	}
+	
+	public static boolean addBytes(byte[] sourceArr, int startSource, int lengthSource, byte[] targetArr, FileSeeker seeker){
+		try{
+			if (sourceArr.length> seeker.getOffset()+targetArr.length){
+				System.err.println("Can't copy sourceArr to targetArr because out of bounds!");
+				return false;
+			}
+			int sourceIndex = 0;
+			for (int i=seeker.getOffset(); i<(seeker.getOffset()+sourceArr.length); i++){
+				targetArr[i] = sourceArr[startSource+sourceIndex];
+				sourceIndex++;
+			}
+			seeker.seek(lengthSource);
+			return true;
+		}catch (Exception e){
+			System.err.println("Something wrent wrong while adding byte's from array to array.");
+			return false;
+		}
+	}
 	
 	/*FILEFINDER*/
 	public static ArrayList<File> listf(String directoryName, String contains) {

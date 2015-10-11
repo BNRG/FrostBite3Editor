@@ -11,8 +11,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TreeView;
 import tk.captainsplexx.Game.Core;
 import tk.captainsplexx.JavaFX.TreeViewEntry;
-import tk.captainsplexx.Resource.DDSConverter;
 import tk.captainsplexx.Resource.FileHandler;
+import tk.captainsplexx.Resource.DDS.DDSConverter;
 
 public class LeftController {
 	@FXML

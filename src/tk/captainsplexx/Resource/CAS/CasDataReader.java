@@ -10,12 +10,13 @@ import tk.captainsplexx.Maths.Patcher;
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.FileSeeker;
 import tk.captainsplexx.Resource.ResourceHandler;
+import tk.captainsplexx.Resource.TOC.ConvertedSBpart;
 
 public class CasDataReader { //casPath == folderPath
 	public static byte[] readCas(String baseSHA1, String deltaSHA1, String SHA1, Integer patchType){
 		return readCas(baseSHA1, deltaSHA1, SHA1, patchType, null);
 	}
-	
+		
 	public static byte[] readCas(String baseSHA1, String deltaSHA1, String SHA1, Integer patchType, ResourceHandler resHandler){
 		ResourceHandler rs = null;
 		if (resHandler==null){
@@ -141,8 +142,12 @@ public class CasDataReader { //casPath == folderPath
 			System.err.println("CasDataReader needs some help. 0x0000 emty payload"); //TODO
 			//return FileHandler.readByte(encodedEntry, seeker, compressedSize);
 			return null;
+		}else if (compressionType == 0x0270){
+			System.err.println("'Dragon Age Inquisition' is not supported yet. Please be patient! \n If you know the Compression type of it, let me know via twittah ;)");
+			return null;
 		}else{
 			System.err.println(FileHandler.bytesToHex(FileHandler.toBytes(compressionType, ByteOrder.LITTLE_ENDIAN))+" type was not defined in CasDataReader.");
+			FileHandler.writeFile("output/debug/error_readBlock.tmp", encodedEntry);
 			return null;
 		}
 	}

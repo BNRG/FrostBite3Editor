@@ -1,8 +1,10 @@
-package tk.captainsplexx.Resource;
+package tk.captainsplexx.Resource.DDS;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Random;
+
+import tk.captainsplexx.Resource.FileHandler;
 
 
 public class DDSConverter {

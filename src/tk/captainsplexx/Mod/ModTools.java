@@ -9,13 +9,17 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import tk.captainsplexx.Game.Core;
+import tk.captainsplexx.Game.InputHandler;
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.ResourceHandler.LinkBundleType;
 import tk.captainsplexx.Resource.ResourceHandler.ResourceType;
 import tk.captainsplexx.Resource.CAS.CasCatEntry;
 import tk.captainsplexx.Resource.CAS.CasCatManager;
+import tk.captainsplexx.Resource.CAS.CasDataReader;
 import tk.captainsplexx.Resource.CAS.CasManager;
+import tk.captainsplexx.Resource.ITEXTURE.ITexture;
 import tk.captainsplexx.Resource.ITEXTURE.ITextureConverter;
+import tk.captainsplexx.Resource.ITEXTURE.ITextureHandler;
 import tk.captainsplexx.Resource.TOC.ConvertedSBpart;
 import tk.captainsplexx.Resource.TOC.ConvertedTocFile;
 import tk.captainsplexx.Resource.TOC.ResourceLink;
@@ -268,15 +272,21 @@ public class ModTools {
 									break;
 								case ITEXTURE:
 									byte[] ddsFileBytes = /*DSS FILE*/FileHandler.readFile(currentMod.getPath()+RESOURCEFOLDER+sortedEntry.getResourcePath());
-									
 									chunkID = UUID.randomUUID().toString().replace("-", "");
-									byte[] blockData = ITextureConverter.getBlockData(ddsFileBytes);
-									casCatEntryChunk = CasManager.extendCAS(blockData, new File(casCatPath), manPatched);
-									modifyChunkEntry(casCatEntryChunk, chunkID, blockData.length, currentSBpart, true);
 																		
-									data = ITextureConverter.getITextureHeader(ddsFileBytes, chunkID);
-									originalSize = data.length;
-									casCatEntry = CasManager.extendCAS(data, new File(casCatPath), manPatched);
+									byte[] originalHeaderBytes = readOrignalData(sortedEntry.getResourcePath().split(".")[0]/*plz without type ;)*/, currentSBpart.getRes());
+									if (originalHeaderBytes!=null){
+										ITexture newITexture = ITextureConverter.getITextureHeader(ddsFileBytes, new ITexture(originalHeaderBytes, null), chunkID);
+										data = newITexture.toBytes();
+										originalSize = data.length;
+										casCatEntry = CasManager.extendCAS(data, new File(casCatPath), manPatched);
+										
+										byte[] blockData = ITextureConverter.getBlockData(ddsFileBytes);
+										casCatEntryChunk = CasManager.extendCAS(blockData, new File(casCatPath), manPatched);
+										modifyChunkEntry(casCatEntryChunk, chunkID, blockData.length, currentSBpart, true);
+									}else{
+										System.err.println("ITexture could not get applied!");
+									}
 									break;
 								case LIGHTINGSYSTEM:
 									break;
@@ -429,6 +439,17 @@ public class ModTools {
 		}
 		pack.getEntries().add(entry);
 		return true;
+	}
+	
+	
+	public byte[] readOrignalData(String resourceName, ArrayList<ResourceLink> resourceList){
+		for (ResourceLink link : resourceList){
+			if (link.getName().equalsIgnoreCase(resourceName)){
+				return CasDataReader.readCas(link.getBaseSha1(), link.getDeltaSha1(), link.getSha1(), link.getCasPatchType());
+			}
+		}
+		System.err.println("Original Data could not get found for "+resourceName);
+		return null;
 	}
 	
 	//i dont really have to create a function for removing one line from a ".pack" file? huh.

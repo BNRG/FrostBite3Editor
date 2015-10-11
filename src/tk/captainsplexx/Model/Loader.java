@@ -16,7 +16,7 @@ import org.lwjgl.opengl.GL30;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 
-import tk.captainsplexx.Resource.DDSConverter;
+import tk.captainsplexx.Resource.DDS.DDSConverter;
 
 public class Loader {
 	public ArrayList<Integer> vaos = new ArrayList<Integer>();
