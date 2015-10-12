@@ -81,10 +81,9 @@ public class ITextureConverter {
 					break;
 			}
 		}else{
-			System.err.println("ITextureConverter needs help Line:84");
-			/*header.getPixelformat().setDwFourCC(ITexture.PixelFormatTypes.get(itexture.getPixelFormat()));*/
+			pixelformat.setDwFourCC(ITexture.PixelFormatTypes.get(itexture.getPixelFormat()));
 			if (itexture.getPixelFormat() == ITexture.TF_DXT1A){
-				header.getPixelformat().setDwFlags(header.getPixelformat().getDwFlags() | 1);
+				pixelformat.setDwFlags(pixelformat.getDwFlags() | 1);
 			}
 		}
 		header.setPixelformat(pixelformat);
@@ -143,9 +142,7 @@ public class ITextureConverter {
 				return null;
 		}
 		
-		itexture.setFirstMip((byte) 0x00);
-		System.err.println("DSS->ITexture is using FirstMapLevel 0! - This value may needs to be 1");
-		
+		itexture.setFirstMip(originalITextureHeader.getFirstMip());		
 		itexture.setTextureType(((ddsHeader.getDwCaps2() == 65024) ? ITexture.TT_Cube : ITexture.TT_2d));
 		
 		if (originalITextureHeader.getTextureType() == ITexture.TT_Cube && ddsHeader.getDwCaps2() != 65024)

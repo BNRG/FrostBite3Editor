@@ -64,6 +64,9 @@ public class Patcher {
 				System.err.println("Patched size is smaller as given one :( ["+patchedData.size()+"/"+patchedSize+"]");
 			}
 		}
+		if (baseSeeker.hasError() || deltaSeeker.hasError()){
+			return null;
+		}
 		
 		return FileHandler.convertFromList(patchedData);
 	}

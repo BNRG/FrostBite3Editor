@@ -52,7 +52,7 @@ public class ITextureHandler {
 			ddsHeaderArray = null;
 			return ddsFileData;
 		} else {
-			System.err.println("Could not get data from cas for SHA1: "+sha1+"\n ITexture to DDS conv. failed!");
+			System.err.println("Could not get data from cas for SHA1: "+sha1+"\nITexture to DDS conv. failed!");
 			return null;
 		}
 	}

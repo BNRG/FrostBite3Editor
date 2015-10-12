@@ -26,6 +26,7 @@ public class CasDataReader { //casPath == folderPath
 			rs = resHandler;
 		}
 		if (patchType == 666){
+			System.err.println("'UNKNOWN SOURCE' search started!");
 			//Unknown
 			byte[] data = CasDataReader.readCas(SHA1, Core.gamePath+"/Update/Patch/Data", rs.getPatchedCasCatManager().getEntries(), false);
 			if (data != null){
@@ -37,7 +38,7 @@ public class CasDataReader { //casPath == folderPath
 					System.out.println("SHA1 was found in unpatched CasCat!");
 					return data2;
 				}else{
-					System.err.println("SHA could not be found in any CasCat :/");
+					System.err.println("SHA could not be found in any CasCat!");
 					return null;
 				}
 			}
@@ -115,7 +116,7 @@ public class CasDataReader { //casPath == folderPath
 					output.add(b);
 				}
 			}else{
-				System.err.println("Could not read from given block!");
+				System.err.println("CasDataReader was not able to decode Block! - Following operations will fail!");
 				return null;
 			}
 		}//End of InputStream
@@ -127,6 +128,7 @@ public class CasDataReader { //casPath == folderPath
 		int decompressedSize = FileHandler.readInt(encodedEntry, seeker, ByteOrder.BIG_ENDIAN);
 		int compressionType = FileHandler.readShort(encodedEntry, seeker, ByteOrder.BIG_ENDIAN);
 		int compressedSize = FileHandler.readShort(encodedEntry, seeker, ByteOrder.BIG_ENDIAN) & 0xFFFF;
+		
 		if (compressionType == 0x0970){//COMPRESSED
 			//rawData = LZ4.decompress(FileHandler.readByte(encodedEntry, seeker, procSize-seeker.getOffset()));
 			byte[] rawData = LZ4.decompress(FileHandler.readByte(encodedEntry, seeker, compressedSize));
@@ -135,6 +137,9 @@ public class CasDataReader { //casPath == folderPath
 			}
 			return rawData;
 		}else if (compressionType == 0x0070 || compressionType == 0x0071){//UNCOMPRESSED
+			if (compressedSize==0x0){
+				compressedSize = decompressedSize;
+			}
 			//return FileHandler.readByte(encodedEntry, seeker, procSize-seeker.getOffset());
 			return FileHandler.readByte(encodedEntry, seeker, compressedSize);
 		}else if (compressionType == 0x0){ // 0x0000 - emty payload

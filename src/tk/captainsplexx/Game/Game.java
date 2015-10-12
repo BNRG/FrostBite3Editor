@@ -8,9 +8,9 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.image.ImageView;
 import tk.captainsplexx.Entity.EntityHandler;
 import tk.captainsplexx.JavaFX.JavaFXHandler;
-import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
 import tk.captainsplexx.JavaFX.TreeViewConverter;
 import tk.captainsplexx.JavaFX.TreeViewEntry;
+import tk.captainsplexx.JavaFX.Windows.MainWindow.EntryType;
 import tk.captainsplexx.Mod.Mod;
 import tk.captainsplexx.Model.ModelHandler;
 import tk.captainsplexx.Player.PlayerEntity;
@@ -97,11 +97,11 @@ public class Game {
 			} catch (InterruptedException e1) {
 				e1.printStackTrace();
 			}
-			if (Core.gamePath != null && Core.getJavaFXHandler().getMainWindow().getModLoaderController() != null){
+			if (Core.gamePath != null && Core.getJavaFXHandler().getMainWindow().getModLoaderWindow().getController() != null){
 				break;
 			}
 		}
-		Core.getJavaFXHandler().getMainWindow().getModLoaderController().setGamepath(FileHandler.normalizePath(Core.gamePath));
+		Core.getJavaFXHandler().getMainWindow().getModLoaderWindow().getController().setGamepath(FileHandler.normalizePath(Core.gamePath));
 		Core.getJavaFXHandler().getMainWindow().toggleModLoaderVisibility();
 		File cascat = new File(Core.gamePath+"/Data/cas.cat");
 		if (!cascat.exists()){
@@ -112,17 +112,16 @@ public class Game {
 			buildEditor();
 			
 			if (Core.isDEBUG){//EBX-DEBUG
-				Core.getJavaFXHandler().getMainWindow().toggleRightVisibility();
 				Core.getJavaFXHandler().getMainWindow().toggleModLoaderVisibility();
 				currentMod = null;
 				//ebxFileGUIDs = new HashMap<>();
 				//ebxFileGUIDs.put("EA830D5EFFB3EE489D44963370D466B1", "test/test1/test2");
-				//byte[] bytes = FileHandler.readFile("__DOCUMENTATION__/ebx/sample_ebx/layer0_default.ebx");
+				/*byte[] bytes = FileHandler.readFile("__DOCUMENTATION__/ebx/sample_ebx/layer0_default.ebx");
 				byte[] bytes = FileHandler.readFile("mods/SampleMod/resources/levels/mp/mp_playground/content/layer2_buildings.bak--IGNORE");
 				EBXFile ebxFile = resourceHandler.getEBXHandler().loadFile(bytes);
 				TreeItem<TreeViewEntry> treeView = TreeViewConverter.getTreeView(ebxFile);
 				Core.getJavaFXHandler().setTreeViewStructureRight(treeView);
-				Core.getJavaFXHandler().getMainWindow().updateRightRoot();
+				Core.getJavaFXHandler().getMainWindow().updateRightRoot();*/
 			}
 		}
 	}
@@ -194,8 +193,11 @@ public class Game {
 		Core.getJavaFXHandler().setTreeViewStructureLeft1(null);
 		Core.getJavaFXHandler().getMainWindow().updateLeftRoot1();
 		
+		/*
 		Core.getJavaFXHandler().setTreeViewStructureRight(null);
 		Core.getJavaFXHandler().getMainWindow().updateRightRoot();
+		
+		*/
 	}
 	
 	

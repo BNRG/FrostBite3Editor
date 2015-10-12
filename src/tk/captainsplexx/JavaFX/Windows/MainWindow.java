@@ -1,7 +1,8 @@
-package tk.captainsplexx.JavaFX;
+package tk.captainsplexx.JavaFX.Windows;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.lwjgl.opengl.Display;
 
@@ -25,18 +26,21 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import tk.captainsplexx.Game.Core;
+import tk.captainsplexx.JavaFX.JavaFXHandler;
+import tk.captainsplexx.JavaFX.TreeViewEntry;
 import tk.captainsplexx.JavaFX.CellFactories.JavaFXebxTCF;
 import tk.captainsplexx.JavaFX.CellFactories.JavaFXexplorer1TCF;
 import tk.captainsplexx.JavaFX.CellFactories.JavaFXexplorerTCF;
 import tk.captainsplexx.JavaFX.CellFactories.ModLoaderListFactory;
+import tk.captainsplexx.JavaFX.Controller.EBXWindowController;
 import tk.captainsplexx.JavaFX.Controller.LeftController;
 import tk.captainsplexx.JavaFX.Controller.ModLoaderController;
 import tk.captainsplexx.JavaFX.Controller.ResToolsController;
-import tk.captainsplexx.JavaFX.Controller.RightController;
 import tk.captainsplexx.Mod.Mod;
+import tk.captainsplexx.Resource.EBX.EBXFile;
 
 
-public class JavaFXMainWindow extends Application{
+public class MainWindow extends Application{
 	
 	public static enum EntryType{
 		STRING, INTEGER, LONG, BOOL, FLOAT, DOUBLE, ARRAY, LIST, BYTE, NULL, SHORT,
@@ -47,32 +51,36 @@ public class JavaFXMainWindow extends Application{
 
 	public FXMLLoader leftLoader;
 	public FXMLLoader resToolsLoader;
-	public FXMLLoader rightLoader;
-	public FXMLLoader modLoaderLoader;
+	public FXMLLoader ebxWindowLoader;
 	public LeftController leftController;
-	public RightController rightController;
+	public ArrayList<EBXWindow> ebxWindows;
 	public ResToolsController resToolsController;
-	public ModLoaderController modLoaderController;
 	public Stage stageLeft;
-	public Stage stageRight;
 	public Stage stageResTools;
-	public Stage stageModLoader;
+	public ModLoaderWindow modLoaderWindow;
 
 	public FXMLLoader getLeftLoader() {
 		return leftLoader;
 	}
 
-	public FXMLLoader getRightLoader() {
-		return rightLoader;
-	}
+
 	
+	public FXMLLoader getEbxWindowLoader() {
+		return ebxWindowLoader;
+	}
+
+
+
 	public LeftController getLeftController() {
 		return leftController;
 	}
+	
 
-	public RightController getRightController() {
-		return rightController;
-	}	
+	public ArrayList<EBXWindow> getEBXWindows() {
+		return ebxWindows;
+	}
+
+
 
 	public FXMLLoader getResToolsLoader() {
 		return resToolsLoader;
@@ -80,14 +88,6 @@ public class JavaFXMainWindow extends Application{
 
 	public ResToolsController getResToolsController() {
 		return resToolsController;
-	}
-
-	public ModLoaderController getModLoaderController() {
-		return modLoaderController;
-	}
-
-	public void setModLoaderController(ModLoaderController modLoaderController) {
-		this.modLoaderController = modLoaderController;
 	}
 
 	/*---------START--------------*/
@@ -107,6 +107,9 @@ public class JavaFXMainWindow extends Application{
 
 	@Override
 	public void start(Stage stageLeft) {
+		ebxWindows = new ArrayList<>();
+		modLoaderWindow = new ModLoaderWindow();
+		
 		this.stageLeft = stageLeft;
 		Core.getJavaFXHandler().setMainWindow(this); //Stupid thread bypass.
 		Parent leftroot = null;
@@ -188,50 +191,7 @@ public class JavaFXMainWindow extends Application{
         		Core.getGame().getPlayerHandler().getPlayerEntity().setMovementSpeed((float) cameraSpeed);
         	}
         });
-        
-        /*
-         * 
-         * RIGHT
-         * 
-         * */
-        Parent rightroot = null;
-		try { 
-			rightLoader = new FXMLLoader(getClass().getResource("RightWindow.fxml")); //not static to access controller class
-			rightroot = rightLoader.load();
-			rightController = rightLoader.getController();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-        stageRight = new Stage();
-        Scene sceneRight = new Scene(rightroot, 275, 700);
-        stageRight.setTitle("EBX Tools");
-        stageRight.setX(Display.getDesktopDisplayMode().getWidth()*0.985f-sceneLeft.getWidth());
-        stageRight.setY(Display.getDesktopDisplayMode().getHeight()/2-(sceneLeft.getHeight()/2));
-        stageRight.setScene(sceneRight);
-        stageRight.getIcons().add(JavaFXHandler.applicationIcon16);
-        stageRight.getIcons().add(JavaFXHandler.applicationIcon32);
-        stageRight.hide();
-        stageRight.setOnCloseRequest(new EventHandler<WindowEvent>() {
-			@Override
-			public void handle(WindowEvent e) {
-				if (Core.isDEBUG){
-					System.exit(1);
-				}else{
-					e.consume();
-				}
-			}
-		});
-        
-        rightController.getEBXExplorer().setCellFactory(new Callback<TreeView<TreeViewEntry>,TreeCell<TreeViewEntry>>(){
-            @Override
-            public TreeCell<TreeViewEntry> call(TreeView<TreeViewEntry> p) {
-                return new JavaFXebxTCF();
-            }
-        });
-        rightController.getEBXExplorer().setEditable(true);
-        rightController.getEBXExplorer().setPrefWidth(Display.getDesktopDisplayMode().getWidth());
-        rightController.getEBXExplorer().setPrefHeight(Display.getDesktopDisplayMode().getHeight());
-        
+                
         /*
          * 
          * RES TOOLS
@@ -258,57 +218,48 @@ public class JavaFXMainWindow extends Application{
 				e.consume();
 			}
 		});
-        
-        /*
-         * 
-         * MOD LOADER
-         * 
-         * */
-        Parent modLoaderRoot = null;
-		try { 
-			modLoaderLoader = new FXMLLoader(getClass().getResource("ModLoaderWindow.fxml")); //not static to access controller class
-			modLoaderRoot = modLoaderLoader.load();
-			modLoaderController = modLoaderLoader.getController();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-        stageModLoader = new Stage();
-        Scene sceneModLoader = new Scene(modLoaderRoot, 800, 600);
-        stageModLoader.setTitle("FrostBite 3 Tools "+Core.buildVersion);
-        stageModLoader.setScene(sceneModLoader);
-        stageModLoader.getIcons().add(JavaFXHandler.applicationIcon16);
-        stageModLoader.getIcons().add(JavaFXHandler.applicationIcon32);
-        stageModLoader.hide();
-        stageModLoader.setResizable(false);
-        stageModLoader.setOnCloseRequest(new EventHandler<WindowEvent>() {
-			@Override
-			public void handle(WindowEvent e) {
-				Core.keepAlive(false);
-			}
-		});
-        
-        modLoaderController.getList().setCellFactory(new Callback<ListView<Mod>, ListCell<Mod>>() {
-	        @Override 
-	        public ListCell<Mod> call(ListView<Mod> list) {
-	            return new ModLoaderListFactory();
-	        }
-        });
-        modLoaderController.getRunEditor().setDisable(true);
-	}
-
-	/*UPDATE METHODS*/
-	public void updateRightRoot(){
-		Platform.runLater(new Runnable() {
-			@Override
-			public void run() {
-				rightController.getEBXExplorer().setRoot(Core.getJavaFXHandler().getTreeViewStructureRight());
-				if (rightController.getEBXExplorer().getRoot() != null){
-					rightController.getEBXExplorer().getRoot().setExpanded(true);
-				}
-			}
-		});	
 	}
 	
+	public boolean createEBXWindow(EBXFile ebxFile){
+		try{
+			Platform.runLater(new Runnable() {
+				public void run() {
+					EBXWindow window = new EBXWindow(ebxFile);
+					ebxWindows.add(window);
+				}
+			});
+		}catch(Exception e){
+			e.printStackTrace();
+			System.err.println("EBX Window could not get created!");
+			return false;
+		}
+		return true;
+	}
+	
+	public boolean destroyEBXWindow(Stage stage){
+		try{Platform.runLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				for (EBXWindow window : ebxWindows){
+					if (window.getStage()==stage){
+						ebxWindows.remove(window);
+						break;
+					}
+				}				
+			}
+		});
+		}catch(Exception e){
+			e.printStackTrace();
+			System.err.println("EBXWindow could not get destroyed!");
+			return false;
+		}
+		return true;
+	}
+	
+	
+
+	/*UPDATE METHODS*/	
 	public void updateLeftRoot(){
 		Platform.runLater(new Runnable() {
 			@Override
@@ -326,7 +277,7 @@ public class JavaFXMainWindow extends Application{
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
-				ObservableList<Mod> mods = modLoaderController.getList().getItems();
+				ObservableList<Mod> mods = modLoaderWindow.getController().getList().getItems();
 				mods.clear();
 				mods.addAll(Core.getModTools().getMods());
 			}
@@ -344,20 +295,7 @@ public class JavaFXMainWindow extends Application{
 			}
 		});	
 	}
-	
-	public void toggleRightVisibility(){
-		Platform.runLater(new Runnable() {
-			@Override
-			public void run() {
-				if (stageRight.isShowing()){
-					stageRight.hide();
-				}else{
-					stageRight.show();
-				}
-			}
-		});	
-	}
-	
+		
 	public void toggleLeftVisibility(){
 		Platform.runLater(new Runnable() {
 			@Override
@@ -388,10 +326,11 @@ public class JavaFXMainWindow extends Application{
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
-				if (stageModLoader.isShowing()){
-					stageModLoader.hide();
+				Stage modLoaderStage = modLoaderWindow.getStage();
+				if (modLoaderStage.isShowing()){
+					modLoaderStage.hide();
 				}else{
-					stageModLoader.show();
+					modLoaderStage.show();
 				}
 			}
 		});	
@@ -423,4 +362,12 @@ public class JavaFXMainWindow extends Application{
 			selectGamePath();
 		}
 	}
+
+
+
+	public ModLoaderWindow getModLoaderWindow() {
+		return modLoaderWindow;
+	}
+	
+	
 }

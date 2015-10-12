@@ -3,7 +3,7 @@ package tk.captainsplexx.JavaFX;
 
 
 import javafx.scene.image.ImageView;
-import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
+import tk.captainsplexx.JavaFX.Windows.MainWindow.EntryType;
 
 public class TreeViewEntry implements Cloneable{
 

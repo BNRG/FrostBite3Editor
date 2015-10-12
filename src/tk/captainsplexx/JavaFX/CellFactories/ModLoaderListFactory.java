@@ -18,7 +18,7 @@ public class ModLoaderListFactory extends ListCell<Mod>{
 			@Override
 			public void handle(MouseEvent arg0) {
 				Mod mod = getItem();
-				ModLoaderController ctrlr = Core.getJavaFXHandler().getMainWindow().getModLoaderController();
+				ModLoaderController ctrlr = Core.getJavaFXHandler().getMainWindow().getModLoaderWindow().getController();
 				if (mod != null){
 					Core.getGame().setCurrentMod(mod);
 					Core.getModTools().getPackages().clear();

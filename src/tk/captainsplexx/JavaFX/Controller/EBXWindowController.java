@@ -11,7 +11,7 @@ import tk.captainsplexx.Resource.ResourceHandler.LinkBundleType;
 import tk.captainsplexx.Resource.ResourceHandler.ResourceType;
 import tk.captainsplexx.Resource.EBX.EBXFile;
 
-public class RightController {
+public class EBXWindowController {
 	@FXML
 	public TreeView<TreeViewEntry> ebxExplorer;
 

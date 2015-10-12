@@ -15,9 +15,9 @@ import javafx.scene.input.MouseEvent;
 import tk.captainsplexx.Game.Core;
 import tk.captainsplexx.Game.Game;
 import tk.captainsplexx.JavaFX.JavaFXHandler;
-import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
 import tk.captainsplexx.JavaFX.TreeViewConverter;
 import tk.captainsplexx.JavaFX.TreeViewEntry;
+import tk.captainsplexx.JavaFX.Windows.MainWindow.EntryType;
 import tk.captainsplexx.Mod.ModTools;
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.ResourceHandler;
@@ -93,22 +93,31 @@ public class JavaFXexplorer1TCF extends TreeCell<TreeViewEntry> {
 								ResourceHandler rs = game.getResourceHandler();
 								ResourceLink link = (ResourceLink) i.getValue().getValue();
 								byte[] data = rs.readResourceLink(link, false /*useOriginalDataONLY*/);
+								if (Core.isDEBUG&&data!=null){
+									FileHandler.writeFile("output/debug/targetData_TCF1", data);
+								}
 								if (link.getBundleType() == ResourceBundleType.EBX){
 									if (data != null){
-										//FileHandler.writeFile("output/ebx_data", data);
 										EBXFile ebxFile = game.getResourceHandler().getEBXHandler().loadFile(data);
 										TreeItem<TreeViewEntry> ebx = TreeViewConverter.getTreeView(ebxFile);
-										Core.getJavaFXHandler().setTreeViewStructureRight(ebx);
+										
+										Core.getJavaFXHandler().getMainWindow().createEBXWindow(ebxFile);
+										
+										/*Core.getJavaFXHandler().setTreeViewStructureRight(ebx);
 										Core.getJavaFXHandler().getMainWindow().updateRightRoot();
+										*/
 									}else{
 										System.err.println("Could not build EBX Explorer because of missing data.");
 									}
 								}else if (link.getBundleType() == ResourceBundleType.RES){
 									if (data != null){
 										if (link.getType() == ResourceType.ITEXTURE){
-											FileHandler.writeFile("output/"+link.getName().replace('/', '_')+".dds", ITextureHandler.getDSS(data));
-											//DDSConverter.convertToTGA(new File("output/"+link.getName().replace('/', '_')+".dds"));
-											Core.getJavaFXHandler().getMainWindow().toggleResToolsVisibility();
+											byte[] ddsBytes = ITextureHandler.getDSS(data);
+											if (ddsBytes!=null){
+												FileHandler.writeFile("output/"+link.getName().replace('/', '_')+".dds", ddsBytes);
+												//DDSConverter.convertToTGA(new File("output/"+link.getName().replace('/', '_')+".dds"));
+												Core.getJavaFXHandler().getMainWindow().toggleResToolsVisibility();
+											}
 										}else if (link.getType() == ResourceType.MESH){
 											byte[] obj = MeshConverter.getAsOBJ(data, game.getCurrentSB());
 											FileHandler.writeFile("output/"+link.getName().replace('/', '_')+".obj", obj);

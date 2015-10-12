@@ -254,6 +254,7 @@ public class FileHandler {
 				out+=" ("+seeker.getDescription()+")";
 			}
 			System.err.println(out);
+			seeker.setError(true);
 		}
 		seeker.seek(1);
 		return b;
@@ -478,6 +479,7 @@ public class FileHandler {
 					tmp += new String(b, "UTF-8");
 				} catch (UnsupportedEncodingException e) {
 					e.printStackTrace();
+					seeker.setError(true);
 				}
 			}else{
 				break;
@@ -517,6 +519,7 @@ public class FileHandler {
 		try{
 			if (sourceArr.length> seeker.getOffset()+targetArr.length){
 				System.err.println("Can't copy sourceArr to targetArr because out of bounds!");
+				seeker.setError(true);
 				return false;
 			}
 			int sourceIndex = 0;
@@ -528,6 +531,7 @@ public class FileHandler {
 			return true;
 		}catch (Exception e){
 			System.err.println("Something wrent wrong while adding byte's from array to array.");
+			seeker.setError(true);
 			return false;
 		}
 	}

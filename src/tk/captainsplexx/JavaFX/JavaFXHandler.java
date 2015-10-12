@@ -3,12 +3,13 @@ package tk.captainsplexx.JavaFX;
 import antonsmirnov.javafx.dialog.Dialog.Builder;
 import javafx.scene.control.TreeItem;
 import javafx.scene.image.Image;
+import tk.captainsplexx.JavaFX.Windows.MainWindow;
 import tk.captainsplexx.Resource.FileHandler;
 
 
 public class JavaFXHandler {
 	
-	JavaFXMainWindow main;
+	MainWindow main;
 	
 	public TreeItem<TreeViewEntry> treeViewStructureLeft;
 	public TreeItem<TreeViewEntry> treeViewStructureLeft1;
@@ -52,16 +53,16 @@ public class JavaFXHandler {
 	public Builder dialogBuilder;
 	
 	public JavaFXHandler(){
-		main = new JavaFXMainWindow();
+		main = new MainWindow();
 		main.runApplication();
 		dialogBuilder = new Builder();
 	}
 	
-	public JavaFXMainWindow getMainWindow() {
+	public MainWindow getMainWindow() {
 		return main;
 	}
 
-	public void setMainWindow(JavaFXMainWindow main){
+	public void setMainWindow(MainWindow main){
 		this.main = main;
 	}
 

@@ -25,10 +25,10 @@ import javafx.scene.paint.Color;
 import tk.captainsplexx.Game.Core;
 import tk.captainsplexx.Game.Game;
 import tk.captainsplexx.JavaFX.JavaFXHandler;
-import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
-import tk.captainsplexx.JavaFX.JavaFXMainWindow.WorkDropType;
 import tk.captainsplexx.JavaFX.TreeViewConverter;
 import tk.captainsplexx.JavaFX.TreeViewEntry;
+import tk.captainsplexx.JavaFX.Windows.MainWindow.EntryType;
+import tk.captainsplexx.JavaFX.Windows.MainWindow.WorkDropType;
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.CAS.CasDataReader;
 import tk.captainsplexx.Resource.EBX.EBXFieldDescriptor;
@@ -165,7 +165,8 @@ public class JavaFXebxTCF extends TreeCell<TreeViewEntry> {
 	                	String[] target = ((String)getTreeItem().getValue().getValue()).split(" ");
 	                	if (target.length>1 && target[0].contains("/")){ //IS NOT AT NULL GUID OR IS NOT REFERENCED
 	                		Game game = Core.getGame();
-	                		for (ResourceLink ebxLink : game.getCurrentSB().getEbx()){
+	                		System.err.println("EBXTCF Reworking FOLLOW!");
+	                		/*for (ResourceLink ebxLink : game.getCurrentSB().getEbx()){
 	                			if (ebxLink.getName().toLowerCase().equals(target[0].toLowerCase())){
 									byte[] data = CasDataReader.readCas(ebxLink.getBaseSha1(), ebxLink.getDeltaSha1(), ebxLink.getSha1(), ebxLink.getCasPatchType());
 									TreeItem<TreeViewEntry> ebx = TreeViewConverter.getTreeView(game.getResourceHandler().getEBXHandler().loadFile(data));
@@ -173,7 +174,7 @@ public class JavaFXebxTCF extends TreeCell<TreeViewEntry> {
 									Core.getJavaFXHandler().getMainWindow().updateRightRoot();
 	                				break;
 	                			}
-	                		}
+	                		}*/
 	                	}
                 	}catch (Exception e){
                 		System.out.println("Invaild link to follow. || TODO DELTA PATCH :)");

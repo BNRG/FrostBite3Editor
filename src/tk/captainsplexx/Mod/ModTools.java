@@ -201,6 +201,7 @@ public class ModTools {
 	public boolean playMod(boolean recompile){
 		if (recompile){
 			String path = Client.cloneClient(Core.gamePath+"/", Core.getGame().getCurrentMod().getGame()+"_"+Core.getGame().getCurrentMod().getFolderName(), true);
+			/*String path = Core.getGame().getCurrentMod().getGame()+"_"+Core.getGame().getCurrentMod().getFolderName();*/
 			if (path!=null){
 				System.out.println("Compile Client...");
 				String casCatPath = path+"/Update/Patch/Data/cas_99.cas";
@@ -274,10 +275,18 @@ public class ModTools {
 									byte[] ddsFileBytes = /*DSS FILE*/FileHandler.readFile(currentMod.getPath()+RESOURCEFOLDER+sortedEntry.getResourcePath());
 									chunkID = UUID.randomUUID().toString().replace("-", "");
 																		
-									byte[] originalHeaderBytes = readOrignalData(sortedEntry.getResourcePath().split(".")[0]/*plz without type ;)*/, currentSBpart.getRes());
+									String[] split = sortedEntry.getResourcePath().split("\\.");
+									byte[] originalHeaderBytes = readOrignalData(split[0], currentSBpart.getRes());
 									if (originalHeaderBytes!=null){
+										
+										FileHandler.writeFile("output/debug/originalHeaderBytes", originalHeaderBytes);
+										
 										ITexture newITexture = ITextureConverter.getITextureHeader(ddsFileBytes, new ITexture(originalHeaderBytes, null), chunkID);
 										data = newITexture.toBytes();
+										
+										FileHandler.writeFile("output/debug/newITexture", data);
+										
+										
 										originalSize = data.length;
 										casCatEntry = CasManager.extendCAS(data, new File(casCatPath), manPatched);
 										

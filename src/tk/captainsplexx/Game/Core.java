@@ -157,12 +157,11 @@ public class Core {
 						"http://captainsplexx.tk/");
 		}
 		modTools = new ModTools();
-		
-		
+				
 		/*Let's loop until user's exit request was initialized*/
 		while (keepAlive){
 			/* Wait for starting editor.
-			 * JavaFX is running on a diffrent Thread,
+			 * JavaFX is running on a different Thread,
 			 * so we can slow this one down in the mean time.
 			 */
 			System.out.print("");
@@ -175,7 +174,6 @@ public class Core {
 			/*Mod was selected -> Run Editor*/
 			if (runEditor){
 				jfxHandler.getMainWindow().toggleLeftVisibility();
-				jfxHandler.getMainWindow().toggleRightVisibility();
 				
 				jfxHandler.getMainWindow().toggleModLoaderVisibility();
 				

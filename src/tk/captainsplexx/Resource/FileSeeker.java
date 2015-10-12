@@ -1,24 +1,29 @@
 package tk.captainsplexx.Resource;
 
 public class FileSeeker {
-	public int offset;
-	public String description;
+	private int offset;
+	private String description;
+	private boolean error;
+	
 	public FileSeeker(int offset){
 		this.offset = offset;
-		description = null;
+		this.description = null;
+		this.error = false;
 	}
 	public FileSeeker(){
 		this.offset = 0;
-		description = null;
+		this.description = null;
+		this.error = false;
 	}
 	
 	public FileSeeker(String description){
-		offset = 0;
+		this.offset = 0;
 		this.description = description;
+		this.error = false;
 	}
 	
 	public void seek(int bytes){
-		offset += bytes;
+		this.offset += bytes;
 	}
 	
 	public int getOffset(){
@@ -35,6 +40,13 @@ public class FileSeeker {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+	public boolean hasError() {
+		return error;
+	}
+	public void setError(boolean error) {
+		this.error = error;
+	}
+	
 	
 	
 }

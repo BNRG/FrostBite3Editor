@@ -8,7 +8,7 @@ import java.util.HashMap;
 import javafx.scene.control.TreeItem;
 import javafx.scene.image.ImageView;
 import tk.captainsplexx.Game.Core;
-import tk.captainsplexx.JavaFX.JavaFXMainWindow.EntryType;
+import tk.captainsplexx.JavaFX.Windows.MainWindow.EntryType;
 import tk.captainsplexx.Mod.ModTools;
 import tk.captainsplexx.Mod.Package;
 import tk.captainsplexx.Mod.PackageEntry;
