@@ -1,7 +1,5 @@
 package tk.captainsplexx.Resource.ITEXTURE;
 
-import java.nio.ByteOrder;
-
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.DDS.DDS_HEADER;
 import tk.captainsplexx.Resource.DDS.DDS_PIXELFORMAT;

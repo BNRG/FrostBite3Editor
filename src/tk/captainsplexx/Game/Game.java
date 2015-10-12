@@ -18,8 +18,6 @@ import tk.captainsplexx.Player.PlayerHandler;
 import tk.captainsplexx.Render.Gui.GuiTexture;
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.ResourceHandler;
-import tk.captainsplexx.Resource.DDS.DDSConverter;
-import tk.captainsplexx.Resource.EBX.EBXFile;
 import tk.captainsplexx.Resource.ITEXTURE.ITextureHandler;
 import tk.captainsplexx.Resource.TOC.ConvertedSBpart;
 import tk.captainsplexx.Resource.TOC.ConvertedTocFile;
@@ -57,7 +55,6 @@ public class Game {
 		 * ....
 		 * MAX 9!
 		 */
-		DDSConverter.MIP_MAP_LEVEL = 0;
 		
 		modelHandler = new ModelHandler();
 		

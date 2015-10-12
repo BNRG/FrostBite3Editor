@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.FileSeeker;
-import tk.captainsplexx.Resource.ITEXTURE.ITexture;
 
 public class DDS_HEADER {
 	public static byte[] DDSfourCC = new byte[]{0x44, 0x44, 0x53, 0x20};

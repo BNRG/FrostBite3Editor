@@ -16,7 +16,8 @@ import org.lwjgl.opengl.GL30;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 
-import tk.captainsplexx.Resource.DDS.DDSConverter;
+import tk.captainsplexx.Resource.ITEXTURE.ImageConverter;
+import tk.captainsplexx.Resource.ITEXTURE.ImageConverter.ImageType;
 
 public class Loader {
 	public ArrayList<Integer> vaos = new ArrayList<Integer>();
@@ -85,7 +86,7 @@ public class Loader {
 		}else{
 			try {
 				if (path.endsWith(".dds")){
-					File tga = DDSConverter.convertToTGA(new File(path));
+					File tga = ImageConverter.convert(new File(path), ImageType.TGA, true);
 					texture = TextureLoader.getTexture("TGA", new FileInputStream(tga.getAbsolutePath()));
 				}else{
 					texture = TextureLoader.getTexture("PNG", new FileInputStream(path));

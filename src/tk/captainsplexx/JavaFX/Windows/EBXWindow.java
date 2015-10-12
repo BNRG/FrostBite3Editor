@@ -55,7 +55,7 @@ public class EBXWindow {
 	    stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			@Override
 			public void handle(WindowEvent e) {
-				Core.getJavaFXHandler().getMainWindow().destroyEBXWindow((Stage) e.getSource());
+				Core.getJavaFXHandler().getMainWindow().destroyEBXWindow(stage);
 			}
 		});
 	    controller.getEBXExplorer().setEditable(true);

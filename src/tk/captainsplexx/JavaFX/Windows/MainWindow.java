@@ -17,8 +17,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeView;
 import javafx.stage.DirectoryChooser;
@@ -28,16 +26,13 @@ import javafx.util.Callback;
 import tk.captainsplexx.Game.Core;
 import tk.captainsplexx.JavaFX.JavaFXHandler;
 import tk.captainsplexx.JavaFX.TreeViewEntry;
-import tk.captainsplexx.JavaFX.CellFactories.JavaFXebxTCF;
 import tk.captainsplexx.JavaFX.CellFactories.JavaFXexplorer1TCF;
 import tk.captainsplexx.JavaFX.CellFactories.JavaFXexplorerTCF;
-import tk.captainsplexx.JavaFX.CellFactories.ModLoaderListFactory;
-import tk.captainsplexx.JavaFX.Controller.EBXWindowController;
 import tk.captainsplexx.JavaFX.Controller.LeftController;
-import tk.captainsplexx.JavaFX.Controller.ModLoaderController;
-import tk.captainsplexx.JavaFX.Controller.ResToolsController;
 import tk.captainsplexx.Mod.Mod;
 import tk.captainsplexx.Resource.EBX.EBXFile;
+import tk.captainsplexx.Resource.TOC.ConvertedSBpart;
+import tk.captainsplexx.Resource.TOC.ResourceLink;
 
 
 public class MainWindow extends Application{
@@ -50,13 +45,11 @@ public class MainWindow extends Application{
 	public static enum WorkDropType { DROP_INTO, REORDER };
 
 	public FXMLLoader leftLoader;
-	public FXMLLoader resToolsLoader;
 	public FXMLLoader ebxWindowLoader;
 	public LeftController leftController;
 	public ArrayList<EBXWindow> ebxWindows;
-	public ResToolsController resToolsController;
+	public ArrayList<ImagePreviewWindow> imagePreviewWindows;
 	public Stage stageLeft;
-	public Stage stageResTools;
 	public ModLoaderWindow modLoaderWindow;
 
 	public FXMLLoader getLeftLoader() {
@@ -80,16 +73,6 @@ public class MainWindow extends Application{
 		return ebxWindows;
 	}
 
-
-
-	public FXMLLoader getResToolsLoader() {
-		return resToolsLoader;
-	}
-
-	public ResToolsController getResToolsController() {
-		return resToolsController;
-	}
-
 	/*---------START--------------*/
 	public void runApplication(){
 		new Thread(new Runnable() {
@@ -108,6 +91,7 @@ public class MainWindow extends Application{
 	@Override
 	public void start(Stage stageLeft) {
 		ebxWindows = new ArrayList<>();
+		imagePreviewWindows = new ArrayList<>();
 		modLoaderWindow = new ModLoaderWindow();
 		
 		this.stageLeft = stageLeft;
@@ -191,34 +175,7 @@ public class MainWindow extends Application{
         		Core.getGame().getPlayerHandler().getPlayerEntity().setMovementSpeed((float) cameraSpeed);
         	}
         });
-                
-        /*
-         * 
-         * RES TOOLS
-         * 
-         * */
-        Parent resToolsRoot = null;
-		try { 
-			resToolsLoader = new FXMLLoader(getClass().getResource("ResToolsWindow.fxml")); //not static to access controller class
-			resToolsRoot = resToolsLoader.load();
-			resToolsController = resToolsLoader.getController();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-        stageResTools = new Stage();
-        Scene sceneResTools = new Scene(resToolsRoot, 275, 275);
-        stageResTools.setTitle("Resource Tools");
-        stageResTools.setScene(sceneResTools);
-        stageResTools.getIcons().add(JavaFXHandler.applicationIcon16);
-        stageResTools.getIcons().add(JavaFXHandler.applicationIcon32);
-        stageResTools.hide();
-        stageResTools.setOnCloseRequest(new EventHandler<WindowEvent>() {
-			@Override
-			public void handle(WindowEvent e) {
-				e.consume();
-			}
-		});
-	}
+}
 	
 	public boolean createEBXWindow(EBXFile ebxFile){
 		try{
@@ -252,6 +209,44 @@ public class MainWindow extends Application{
 		}catch(Exception e){
 			e.printStackTrace();
 			System.err.println("EBXWindow could not get destroyed!");
+			return false;
+		}
+		return true;
+	}
+	
+	public boolean createImagePreviewWindow(File file, ResourceLink resourceLink, String title){
+		try{
+			Platform.runLater(new Runnable() {
+				public void run() {
+					ImagePreviewWindow ipw = new ImagePreviewWindow(file, resourceLink, title);
+					ipw.getController().setParentStage(ipw.getStage());
+					imagePreviewWindows.add(ipw);
+				}
+			});
+		}catch(Exception e){
+			e.printStackTrace();
+			System.err.println("EBX Window could not get created!");
+			return false;
+		}
+		return true;
+	}
+	
+	public boolean destroyImagePreviewWindow(Stage stage){
+		try{Platform.runLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				for (ImagePreviewWindow window : imagePreviewWindows){
+					if (window.getStage()==stage){
+						imagePreviewWindows.remove(window);
+						break;
+					}
+				}				
+			}
+		});
+		}catch(Exception e){
+			e.printStackTrace();
+			System.err.println("ImagePreviewWindow could not get destroyed!");
 			return false;
 		}
 		return true;
@@ -308,20 +303,7 @@ public class MainWindow extends Application{
 			}
 		});	
 	}
-	
-	public void toggleResToolsVisibility(){
-		Platform.runLater(new Runnable() {
-			@Override
-			public void run() {
-				if (stageResTools.isShowing()){
-					stageResTools.hide();
-				}else{
-					stageResTools.show();
-				}
-			}
-		});	
-	}
-	
+		
 	public void toggleModLoaderVisibility(){
 		Platform.runLater(new Runnable() {
 			@Override
@@ -367,6 +349,12 @@ public class MainWindow extends Application{
 
 	public ModLoaderWindow getModLoaderWindow() {
 		return modLoaderWindow;
+	}
+
+
+
+	public ArrayList<ImagePreviewWindow> getImagePreviewWindows() {
+		return imagePreviewWindows;
 	}
 	
 	

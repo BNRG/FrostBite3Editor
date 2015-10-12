@@ -25,16 +25,13 @@ import javafx.scene.paint.Color;
 import tk.captainsplexx.Game.Core;
 import tk.captainsplexx.Game.Game;
 import tk.captainsplexx.JavaFX.JavaFXHandler;
-import tk.captainsplexx.JavaFX.TreeViewConverter;
 import tk.captainsplexx.JavaFX.TreeViewEntry;
 import tk.captainsplexx.JavaFX.Windows.MainWindow.EntryType;
 import tk.captainsplexx.JavaFX.Windows.MainWindow.WorkDropType;
 import tk.captainsplexx.Resource.FileHandler;
-import tk.captainsplexx.Resource.CAS.CasDataReader;
 import tk.captainsplexx.Resource.EBX.EBXFieldDescriptor;
 import tk.captainsplexx.Resource.EBX.EBXFile;
 import tk.captainsplexx.Resource.EBX.EBXHandler;
-import tk.captainsplexx.Resource.TOC.ResourceLink;
 
 public class JavaFXebxTCF extends TreeCell<TreeViewEntry> {
 		private enum Operation {Name, Value};

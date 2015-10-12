@@ -7,7 +7,7 @@ This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License.
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS â€œAS ISâ€� AND ANY EXPRESS OR IMPLIED WARRANTIES,
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS AS IS AND ANY EXPRESS OR IMPLIED WARRANTIES,
 INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
 DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
 SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
@@ -22,10 +22,11 @@ See the 'GNU LESSER GENERAL PUBLIC LICENSE' for more details.
 ARE REGISTERED TRADEMARKS OF ELECTRONIC ARTS AND/OR DIGITAL ILLUSIONS CE AB.
 
 3RD PARTY LIBRARIES/BINARIES
-Copyright Â© 2013 Slick2D
-Copyright Â© 2012-2014 Lightweight Java Game Library Project 
-Copyright Â© 2007 NVIDIA Corporation (readDXT.exe)
-Copyright Â© 1999-2015 7-Zip - Igor Pavlov
+Copyright © 2013 Slick2D
+Copyright © 2012-2014 Lightweight Java Game Library Project 
+Copyright © 2007 NVIDIA Corporation (readDXT.exe)
+Copyright © 1999-2015 7-Zip - Igor Pavlov
+Copyright © 1999-2015 convert.exe - ImageMagick Studio LLCv http://www.imagemagick.org/script/license.php
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~		  
 			  
                    GNU LESSER GENERAL PUBLIC LICENSE

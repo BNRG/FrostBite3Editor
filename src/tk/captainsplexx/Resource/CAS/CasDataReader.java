@@ -10,7 +10,6 @@ import tk.captainsplexx.Maths.Patcher;
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.FileSeeker;
 import tk.captainsplexx.Resource.ResourceHandler;
-import tk.captainsplexx.Resource.TOC.ConvertedSBpart;
 
 public class CasDataReader { //casPath == folderPath
 	public static byte[] readCas(String baseSHA1, String deltaSHA1, String SHA1, Integer patchType){

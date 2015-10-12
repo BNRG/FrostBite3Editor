@@ -24,16 +24,6 @@ import tk.captainsplexx.Mod.ModTools;
 import tk.captainsplexx.Render.Render;
 import tk.captainsplexx.Render.Gui.GuiTexture;
 import tk.captainsplexx.Resource.FileHandler;
-import tk.captainsplexx.Resource.CAS.CasDataReader;
-import tk.captainsplexx.Resource.EBX.EBXFile;
-import tk.captainsplexx.Resource.EBX.EBXHandler;
-import tk.captainsplexx.Resource.EBX.Structure.EBXStructureEntry;
-import tk.captainsplexx.Resource.EBX.Structure.EBXStructureFile;
-import tk.captainsplexx.Resource.EBX.Structure.EBXStructureReader;
-import tk.captainsplexx.Resource.EBX.Structure.Entry.EBXObjInstanceGUID;
-import tk.captainsplexx.Resource.EBX.Structure.Entry.EBXStrReferencedObjectData;
-import tk.captainsplexx.Resource.EBX.Structure.Entry.EBXStrSpatialPrefabBlueprint;
-import tk.captainsplexx.Resource.ITEXTURE.ITexture;
 
 public class Core {
 	/*Main Components*/

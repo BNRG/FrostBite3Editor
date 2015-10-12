@@ -12,7 +12,6 @@ import javafx.scene.control.TreeView;
 import tk.captainsplexx.Game.Core;
 import tk.captainsplexx.JavaFX.TreeViewEntry;
 import tk.captainsplexx.Resource.FileHandler;
-import tk.captainsplexx.Resource.DDS.DDSConverter;
 
 public class LeftController {
 	@FXML
@@ -47,21 +46,23 @@ public class LeftController {
 	}
 	
 	public void incLOD(){ 
+		/*
 		int current = Integer.valueOf(lodLabel.getText());
 		current+=1;
 		DDSConverter.MIP_MAP_LEVEL = current;
 		lodLabel.setText(current+"");
 		System.out.println("New LOD for textures: "+DDSConverter.MIP_MAP_LEVEL);
+		*/
 	}
 	
 	public void decLOD(){ 
-		int current = Integer.valueOf(lodLabel.getText());
+		/*int current = Integer.valueOf(lodLabel.getText());
 		if (current>0){
 			current-=1;
 			DDSConverter.MIP_MAP_LEVEL = current;
 			lodLabel.setText(current+"");
 			System.out.println("New LOD for textures: "+DDSConverter.MIP_MAP_LEVEL);
-		}
+		}*/
 	}
 	
 	

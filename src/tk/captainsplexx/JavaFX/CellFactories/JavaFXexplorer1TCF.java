@@ -25,6 +25,8 @@ import tk.captainsplexx.Resource.ResourceHandler.ResourceType;
 import tk.captainsplexx.Resource.CAS.CasDataReader;
 import tk.captainsplexx.Resource.EBX.EBXFile;
 import tk.captainsplexx.Resource.ITEXTURE.ITextureHandler;
+import tk.captainsplexx.Resource.ITEXTURE.ImageConverter;
+import tk.captainsplexx.Resource.ITEXTURE.ImageConverter.ImageType;
 import tk.captainsplexx.Resource.MESH.MeshConverter;
 import tk.captainsplexx.Resource.TOC.ResourceLink;
 import tk.captainsplexx.Resource.TOC.TocConverter.ResourceBundleType;
@@ -114,9 +116,13 @@ public class JavaFXexplorer1TCF extends TreeCell<TreeViewEntry> {
 										if (link.getType() == ResourceType.ITEXTURE){
 											byte[] ddsBytes = ITextureHandler.getDSS(data);
 											if (ddsBytes!=null){
-												FileHandler.writeFile("output/"+link.getName().replace('/', '_')+".dds", ddsBytes);
-												//DDSConverter.convertToTGA(new File("output/"+link.getName().replace('/', '_')+".dds"));
-												Core.getJavaFXHandler().getMainWindow().toggleResToolsVisibility();
+												File ddsFile = new File("temp/images/"+link.getName().replace('/', '_')+".dds");
+												FileHandler.writeFile(ddsFile.getAbsolutePath(), ddsBytes);
+												
+												File pngFile = ImageConverter.convert(ddsFile, ImageType.PNG, true);
+												if (pngFile!=null){
+													Core.getJavaFXHandler().getMainWindow().createImagePreviewWindow(pngFile, link, link.getName());
+												}
 											}
 										}else if (link.getType() == ResourceType.MESH){
 											byte[] obj = MeshConverter.getAsOBJ(data, game.getCurrentSB());
