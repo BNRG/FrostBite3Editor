@@ -9,7 +9,7 @@
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
-<VBox prefHeight="600.0" prefWidth="279.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tk.captainsplexx.JavaFX.Controller.LeftController">
+<VBox prefHeight="600.0" prefWidth="279.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tk.captainsplexx.JavaFX.Controller.ToolsWindowController">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
@@ -208,7 +208,7 @@
                                           <Insets bottom="5.0" left="5.0" top="5.0" />
                                        </HBox.margin>
                                     </TextField>
-                                    <Button fx:id="search" mnemonicParsing="false" text="Search">
+                                    <Button fx:id="search" mnemonicParsing="false" onAction="#search" text="Search">
                                        <HBox.margin>
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                        </HBox.margin>

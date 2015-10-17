@@ -329,7 +329,8 @@ public class JavaFXebxTCF extends TreeCell<TreeViewEntry> {
 		                	setText(item.getName()+": "+convertToString(item));
 		                }
 		                if (item.getEBXType()!=0){
-		                	setTooltip(new Tooltip("Type: "+FileHandler.bytesToHex(FileHandler.toBytes(item.getEBXType(), ByteOrder.BIG_ENDIAN))));
+		                	setTooltip(new Tooltip("Type: "+FileHandler.bytesToHex(FileHandler.toBytes(item.getEBXType(), ByteOrder.BIG_ENDIAN))+
+		                					    " | Offset: "+FileHandler.bytesToHex(FileHandler.toBytes(item.getOffset(), ByteOrder.BIG_ENDIAN))));
 		                }
 		                setGraphic(getTreeItem().getValue().getGraphic());
 		                contextMenu.getItems().clear();
@@ -387,9 +388,9 @@ public class JavaFXebxTCF extends TreeCell<TreeViewEntry> {
         }
         
         public String convertToString(TreeViewEntry item){
-        	if (item.value!=null){
+        	if (item.getValue()!=null){
         		EBXHandler ebxHandler = Core.getGame().getResourceHandler().getEBXHandler();
-	        	switch(item.type){
+	        	switch(item.getType()){
 		    		case STRING:
 		    			return (String)item.getValue();
 		    		case SHA1:
@@ -461,7 +462,7 @@ public class JavaFXebxTCF extends TreeCell<TreeViewEntry> {
         		if (value.equals("null")){//hasNoPayloadData! aka. undefined null
         			return null;
         		}else{
-		        	switch(item.type){
+		        	switch(item.getType()){
 			    		case STRING:
 			    			return(value);
 			    		case ENUM:

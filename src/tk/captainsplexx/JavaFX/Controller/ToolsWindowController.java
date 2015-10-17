@@ -13,7 +13,7 @@ import tk.captainsplexx.Game.Core;
 import tk.captainsplexx.JavaFX.TreeViewEntry;
 import tk.captainsplexx.Resource.FileHandler;
 
-public class LeftController {
+public class ToolsWindowController {
 	@FXML
 	public TreeView<TreeViewEntry> explorer;
 	@FXML
@@ -34,6 +34,16 @@ public class LeftController {
 	public Button search;
 	@FXML
 	public TextField filter;
+	
+	
+	public void search(){
+		if (filter.getText().equals("")){
+			Core.getJavaFXHandler().getMainWindow().setPackageExplorer1(null, null);
+		}else{
+			System.out.println("SEARCH for "+filter.getText());
+			Core.getJavaFXHandler().getMainWindow().setPackageExplorer1(null, filter.getText());
+		}
+	}
 	
 	
 	/*OnAction*/

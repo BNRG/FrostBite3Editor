@@ -24,10 +24,8 @@ public class ImagePreviewWindow {
 	private Parent parent;
 	private Scene scene;
 	private ImagePreviewWindowController controller;
-	private ResourceLink resourceLink;
 	
-	public ImagePreviewWindow(File file, ResourceLink resourceLink, String title) {
-		this.resourceLink = resourceLink;
+	public ImagePreviewWindow(File file, File ddsFile, ResourceLink resourceLink, String title) {
 		try { 
 			loader = new FXMLLoader(getClass().getResource("ImagePreviewWindow.fxml"));
 			controller = new ImagePreviewWindowController();
@@ -36,6 +34,10 @@ public class ImagePreviewWindow {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		controller.setResourceLink(resourceLink);
+		controller.setDdsFile(ddsFile);
+		
 		stage = new Stage();
         scene = new Scene(parent, 800, 800);
         stage.setTitle("Preview: "+title);
@@ -49,10 +51,11 @@ public class ImagePreviewWindow {
 				Core.getJavaFXHandler().getMainWindow().destroyImagePreviewWindow(stage);
 			}
 		});
-        controller.getImageView().setImage(new Image(FileHandler.getStream(file.getAbsolutePath())));
-        controller.getImageView().setFitHeight(stage.getHeight());
-        controller.getImageView().setFitWidth(stage.getWidth());
-        
+        if (file!=null){
+	        controller.getImageView().setImage(new Image(FileHandler.getStream(file.getAbsolutePath())));
+	        controller.getImageView().setFitHeight(stage.getHeight());
+	        controller.getImageView().setFitWidth(stage.getWidth());
+        }
         
         scene.widthProperty().addListener(new ChangeListener<Number>() {
             @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) {
@@ -86,7 +89,6 @@ public class ImagePreviewWindow {
 		return controller;
 	}
 
-	public ResourceLink getResourceLink() {
-		return resourceLink;
-	}
+	
+	
 }

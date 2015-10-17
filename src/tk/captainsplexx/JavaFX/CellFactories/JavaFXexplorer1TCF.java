@@ -121,7 +121,7 @@ public class JavaFXexplorer1TCF extends TreeCell<TreeViewEntry> {
 												
 												File pngFile = ImageConverter.convert(ddsFile, ImageType.PNG, true);
 												if (pngFile!=null){
-													Core.getJavaFXHandler().getMainWindow().createImagePreviewWindow(pngFile, link, link.getName());
+													Core.getJavaFXHandler().getMainWindow().createImagePreviewWindow(pngFile, ddsFile, link, link.getName());
 												}
 											}
 										}else if (link.getType() == ResourceType.MESH){

@@ -193,6 +193,7 @@ public class TreeViewConverter {
 				}
 				if (entry != null){
 					entry.setEBXType((short) (ebxField.getFieldDescritor().getType()&0xFFFF));
+					entry.setOffset(ebxField.getOffset());
 				}
 				TreeItem<TreeViewEntry> field = new TreeItem<TreeViewEntry>(entry);
 				return field;

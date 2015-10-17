@@ -16,6 +16,11 @@
                   <MenuItem mnemonicParsing="false" onAction="#close" text="Close" />
             </items>
           </Menu>
+            <Menu mnemonicParsing="false" text="Advanced">
+               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#showInformations" text="Show Informations" />
+               </items>
+            </Menu>
         </menus>
       </MenuBar>
       <ImageView fx:id="imageView" fitHeight="381.0" fitWidth="655.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true" VBox.vgrow="ALWAYS" />

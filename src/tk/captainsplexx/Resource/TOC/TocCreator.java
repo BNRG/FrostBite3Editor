@@ -105,6 +105,10 @@ public class TocCreator {
 
 		file.addAll(createEntry(rootEntry));
 		
+		while(file.size()%16!=0){
+			file.add((byte) 0x0);
+		}
+		
 		return FileHandler.toByteArray(file);
 	}
 
@@ -381,6 +385,11 @@ public class TocCreator {
 
 		//PAYLOAD
 		out.addAll(createEntry(rootEntry));
+		
+		
+		while(out.size()%16!=0){
+			out.add((byte) 0x0);
+		}
 		return FileHandler.toByteArray(out);
 	}
 

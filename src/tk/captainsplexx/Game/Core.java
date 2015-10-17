@@ -24,6 +24,7 @@ import tk.captainsplexx.Mod.ModTools;
 import tk.captainsplexx.Render.Render;
 import tk.captainsplexx.Render.Gui.GuiTexture;
 import tk.captainsplexx.Resource.FileHandler;
+import tk.captainsplexx.Resource.TOC.ResourceLink;
 
 public class Core {
 	/*Main Components*/
@@ -139,6 +140,7 @@ public class Core {
 		FOV = 60f;
 		
 		jfxHandler = new JavaFXHandler();
+		
 		eventHandler = new EventHandler();
 		game = new Game();
 		if (buildVersion.contains("NEW VERSION")){
@@ -147,6 +149,8 @@ public class Core {
 						"http://captainsplexx.tk/");
 		}
 		modTools = new ModTools();
+		
+		//jfxHandler.getMainWindow().createImagePreviewWindow(null, null, new ResourceLink(), "test");
 				
 		/*Let's loop until user's exit request was initialized*/
 		while (keepAlive){

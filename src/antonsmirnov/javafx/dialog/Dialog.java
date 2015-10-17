@@ -28,6 +28,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
+import tk.captainsplexx.Game.Core;
 import tk.captainsplexx.Resource.FileHandler;
 
 /**
@@ -296,15 +297,17 @@ public class Dialog extends Stage {
             return this;
         }
                 
-        protected Builder addOkButton() {
+        protected Builder addOkButton(Runnable runnableWhenOK) {
             stage.okButton = new Button("OK");
             stage.okButton.setPrefWidth(BUTTON_WIDTH);
             stage.okButton.setOnAction(new EventHandler<ActionEvent> () {
 
                 public void handle(ActionEvent t) {
+                	if (runnableWhenOK!=null){
+                		runnableWhenOK.run();
+                	}
                     stage.close();
                 }
-                
             });
             stage.buttonsPanel.getChildren().add(stage.okButton);
             return this;
@@ -369,8 +372,8 @@ public class Dialog extends Stage {
             return stage;
         }
     
-	    public void showInfo(String title, String message, Window owner) {
-	    	Platform.runLater(new Runnable() {
+	    public void showInfo(String title, String message, Window owner, Runnable runnableWhenOK) {
+	    	Core.getJavaFXHandler().runAndWait(new Runnable() {
 				
 				@Override
 				public void run() {
@@ -380,19 +383,18 @@ public class Dialog extends Stage {
 				        .setTitle(title)	
 				        .setInfoIcon()
 				        .setMessage(message)            
-				        .addOkButton()
+				        .addOkButton(runnableWhenOK)
 				            .build()
-				                .show();   
+				                .show();
 				}
 			});
-	                 
 	    }
 	    
 	    public void showInfo(String title, String message) {
-	        showInfo(title, message, null);
+	    	showInfo(title, message, null, null);	                 
 	    }
-	
-	    public void showWarning(String title, String message, Window owner) {
+	    	
+	    public void showWarning(String title, String message, Window owner, Runnable runnableWhenOK) {
 	    	Platform.runLater(new Runnable() {
 				
 				@Override
@@ -403,7 +405,7 @@ public class Dialog extends Stage {
 			            .setTitle(title)
 			            .setWarningIcon()
 			            .setMessage(message)
-			            .addOkButton()
+			            .addOkButton(runnableWhenOK)
 			                .build()
 			                    .show();
 				}
@@ -412,8 +414,8 @@ public class Dialog extends Stage {
 	    }
 	    
 	
-	    public void showWarning(String title, String message) {
-	        showWarning(title, message, null);
+	    public void showWarning(String title, String message, Runnable runnableWhenOK) {
+	        showWarning(title, message, null, runnableWhenOK);
 	    }
 	
 	    /**
@@ -423,7 +425,7 @@ public class Dialog extends Stage {
 	     * @param message dialog message
 	     * @param owner parent window
 	     */
-	    public void showError(String title, String message, Window owner) {
+	    public void showError(String title, String message, Window owner, Runnable runnableWhenOK) {
 	    	Platform.runLater(new Runnable() {
 				
 				@Override
@@ -434,7 +436,7 @@ public class Dialog extends Stage {
 		            .setTitle(title)
 		            .setErrorIcon()
 		            .setMessage(message)
-		            .addOkButton()
+		            .addOkButton(runnableWhenOK)
 		                .build()
 		                    .show();
 				}
@@ -448,8 +450,8 @@ public class Dialog extends Stage {
 	     * @param title dialog title
 	     * @param message dialog message
 	     */
-	    public void showError(String title, String message) {
-	        showError(title, message, null);
+	    public void showError(String title, String message, Runnable runnableWhenOK) {
+	        showError(title, message, null, runnableWhenOK);
 	    }
 	    
 	    /**
@@ -460,7 +462,7 @@ public class Dialog extends Stage {
 	     * @param t throwable
 	     * @param owner parent window 
 	     */
-	    public void showThrowable(String title, String message, Throwable t, Window owner) {
+	    public void showThrowable(String title, String message, Throwable t, Window owner, Runnable runnableWhenOK) {
 	        new Builder()
 	            .create()
 	            .setOwner(owner)
@@ -468,7 +470,7 @@ public class Dialog extends Stage {
 	            .setThrowableIcon()
 	            .setMessage(message)
 	            .setStackTrace(t)
-	            .addOkButton()
+	            .addOkButton(runnableWhenOK)
 	                .build()
 	                    .show();
 	    }
@@ -480,8 +482,8 @@ public class Dialog extends Stage {
 	     * @param message dialog message
 	     * @param t throwable
 	     */
-	    public void showThrowable(String title, String message, Throwable t) {
-	        showThrowable(title, message, t, null);
+	    public void showThrowable(String title, String message, Throwable t, Runnable runnableWhenOK) {
+	        showThrowable(title, message, t, null, runnableWhenOK);
 	    }
 	    
 	    /**

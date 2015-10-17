@@ -1,6 +1,9 @@
 package tk.captainsplexx.JavaFX;
 
+import java.util.concurrent.CountDownLatch;
+
 import antonsmirnov.javafx.dialog.Dialog.Builder;
+import javafx.application.Platform;
 import javafx.scene.control.TreeItem;
 import javafx.scene.image.Image;
 import tk.captainsplexx.JavaFX.Windows.MainWindow;
@@ -10,11 +13,7 @@ import tk.captainsplexx.Resource.FileHandler;
 public class JavaFXHandler {
 	
 	MainWindow main;
-	
-	public TreeItem<TreeViewEntry> treeViewStructureLeft;
-	public TreeItem<TreeViewEntry> treeViewStructureLeft1;
-	public TreeItem<TreeViewEntry> treeViewStructureRight;
-	
+		
 	public static final Image applicationIcon16 = new Image(FileHandler.getStream("res/icon/16.png"));
 	public static final Image applicationIcon32 = new Image(FileHandler.getStream("res/icon/32.png"));
 	public static final String imageFolder = "res/images/";
@@ -58,6 +57,34 @@ public class JavaFXHandler {
 		dialogBuilder = new Builder();
 	}
 	
+	public boolean runAndWait(Runnable action) {
+	    if (action == null){
+	        System.err.println("No action given to run on JavaFX Thread.");
+	        return false;
+	    }
+
+	    if (Platform.isFxApplicationThread()) {
+	        action.run();
+	        return true;
+	    }
+	
+	    final CountDownLatch doneLatch = new CountDownLatch(1);
+	    Platform.runLater(() -> {
+	        try {
+	            action.run();
+	        } finally {
+	            doneLatch.countDown();
+	        }
+	    });
+	    try {
+	        doneLatch.await();
+	    } catch (InterruptedException e) {
+	    	e.printStackTrace();
+	    	return false;
+	    }
+	    return true;
+	}
+	
 	public MainWindow getMainWindow() {
 		return main;
 	}
@@ -70,31 +97,4 @@ public class JavaFXHandler {
 		return dialogBuilder;
 	}
 
-	/* Getter and setter */
-	public TreeItem<TreeViewEntry> getTreeViewStructureLeft() {
-		return treeViewStructureLeft;
-	}
-
-	public void setTreeViewStructureLeft(
-			TreeItem<TreeViewEntry> treeViewStructureLeft) {
-		this.treeViewStructureLeft = treeViewStructureLeft;
-	}
-
-	public TreeItem<TreeViewEntry> getTreeViewStructureRight() {
-		return treeViewStructureRight;
-	}
-
-	public void setTreeViewStructureRight(
-			TreeItem<TreeViewEntry> treeViewStructureRight) {
-		this.treeViewStructureRight = treeViewStructureRight;
-	}
-
-	public TreeItem<TreeViewEntry> getTreeViewStructureLeft1() {
-		return treeViewStructureLeft1;
-	}
-
-	public void setTreeViewStructureLeft1(
-			TreeItem<TreeViewEntry> treeViewStructureLeft1) {
-		this.treeViewStructureLeft1 = treeViewStructureLeft1;
-	}
 }

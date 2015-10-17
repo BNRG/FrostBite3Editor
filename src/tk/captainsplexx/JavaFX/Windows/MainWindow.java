@@ -1,37 +1,18 @@
 package tk.captainsplexx.JavaFX.Windows;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-
-import org.lwjgl.opengl.Display;
 
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.TreeCell;
-import javafx.scene.control.TreeView;
+import javafx.scene.control.TreeItem;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
-import javafx.util.Callback;
 import tk.captainsplexx.Game.Core;
-import tk.captainsplexx.JavaFX.JavaFXHandler;
 import tk.captainsplexx.JavaFX.TreeViewEntry;
-import tk.captainsplexx.JavaFX.CellFactories.JavaFXexplorer1TCF;
-import tk.captainsplexx.JavaFX.CellFactories.JavaFXexplorerTCF;
-import tk.captainsplexx.JavaFX.Controller.LeftController;
 import tk.captainsplexx.Mod.Mod;
 import tk.captainsplexx.Resource.EBX.EBXFile;
-import tk.captainsplexx.Resource.TOC.ConvertedSBpart;
 import tk.captainsplexx.Resource.TOC.ResourceLink;
 
 
@@ -44,34 +25,11 @@ public class MainWindow extends Application{
 	
 	public static enum WorkDropType { DROP_INTO, REORDER };
 
-	public FXMLLoader leftLoader;
-	public FXMLLoader ebxWindowLoader;
-	public LeftController leftController;
-	public ArrayList<EBXWindow> ebxWindows;
-	public ArrayList<ImagePreviewWindow> imagePreviewWindows;
-	public Stage stageLeft;
-	public ModLoaderWindow modLoaderWindow;
+	private ArrayList<EBXWindow> ebxWindows;
+	private ArrayList<ImagePreviewWindow> imagePreviewWindows;
+	private ModLoaderWindow modLoaderWindow = null;
+	private ToolsWindow toolsWindow;
 
-	public FXMLLoader getLeftLoader() {
-		return leftLoader;
-	}
-
-
-	
-	public FXMLLoader getEbxWindowLoader() {
-		return ebxWindowLoader;
-	}
-
-
-
-	public LeftController getLeftController() {
-		return leftController;
-	}
-	
-
-	public ArrayList<EBXWindow> getEBXWindows() {
-		return ebxWindows;
-	}
 
 	/*---------START--------------*/
 	public void runApplication(){
@@ -93,89 +51,9 @@ public class MainWindow extends Application{
 		ebxWindows = new ArrayList<>();
 		imagePreviewWindows = new ArrayList<>();
 		modLoaderWindow = new ModLoaderWindow();
-		
-		this.stageLeft = stageLeft;
-		Core.getJavaFXHandler().setMainWindow(this); //Stupid thread bypass.
-		Parent leftroot = null;
-		/*
-		 * 
-		 * LEFT
-		 * 
-		 * */
-		try {
-			leftLoader = new FXMLLoader(getClass().getResource("LeftWindow.fxml")); //not static to access controller class
-			leftroot = leftLoader.load();
-			leftController = leftLoader.getController();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		Scene sceneLeft = new Scene(leftroot, 275, 700);
-		stageLeft.setX(Display.getDesktopDisplayMode().getWidth()*0.01f);
-		stageLeft.setY(Display.getDesktopDisplayMode().getHeight()/2-(sceneLeft.getHeight()/2));
-		stageLeft.setTitle("Tools / Explorer");
-		stageLeft.getIcons().add(JavaFXHandler.applicationIcon16);
-		stageLeft.getIcons().add(JavaFXHandler.applicationIcon32);
-		stageLeft.setScene(sceneLeft);
-		stageLeft.hide();
-		stageLeft.setOnCloseRequest(new EventHandler<WindowEvent>() {
-			@Override
-			public void handle(WindowEvent e) {
-				e.consume();
-			}
-		});
-        leftController.getExplorer().setCellFactory(new Callback<TreeView<TreeViewEntry>,TreeCell<TreeViewEntry>>(){
-            @Override
-            public TreeCell<TreeViewEntry> call(TreeView<TreeViewEntry> p) {
-                return new JavaFXexplorerTCF();
-            }
-        });
-        leftController.getExplorer().setEditable(false);
-        leftController.getExplorer().setPrefWidth(Display.getDesktopDisplayMode().getWidth());
-        leftController.getExplorer().setPrefHeight(Display.getDesktopDisplayMode().getHeight()); //Back to top in TCF or what ?
-
-        leftController.getExplorer1().setCellFactory(new Callback<TreeView<TreeViewEntry>,TreeCell<TreeViewEntry>>(){
-            @Override
-            public TreeCell<TreeViewEntry> call(TreeView<TreeViewEntry> p) {
-                return new JavaFXexplorer1TCF();
-            }
-        });
-        leftController.getExplorer1().setEditable(false);
-        leftController.getExplorer1().setPrefWidth(Display.getDesktopDisplayMode().getWidth());
-        leftController.getExplorer1().setPrefHeight(Display.getDesktopDisplayMode().getHeight());
-        
-        leftController.getLayer().getItems().addAll("Test","Testsss","Testtssst");
-        leftController.getLayer().valueProperty().addListener(new ChangeListener<String>() {
-			@Override
-			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				System.err.println("Old: "+oldValue+" New: "+newValue);
-				// TODO Auto-generated method stub	
-			}
-		});
-        
-        leftController.getConsiderPitchBox().setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				CheckBox considerBox = leftController.getConsiderPitchBox();
-				if (considerBox.isSelected()){
-					Core.getRender().getCamera().setConsiderPitch(true);
-				}else{
-					Core.getRender().getCamera().setConsiderPitch(false);
-				}
-			}
-		});
-        leftController.getMouseSensitivity().valueProperty().addListener(new ChangeListener<Number>() {
-        	public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
-        		double mouseSens = (double)new_val/500;
-        		Core.getRender().getCamera().setMouseSensitivity((float)mouseSens);
-        	}
-        });
-        leftController.getCameraSpeed().valueProperty().addListener(new ChangeListener<Number>() {
-        	public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
-        		double cameraSpeed = (double)new_val*4;
-        		Core.getGame().getPlayerHandler().getPlayerEntity().setMovementSpeed((float) cameraSpeed);
-        	}
-        });
-}
+		toolsWindow = new ToolsWindow();
+		Core.getJavaFXHandler().setMainWindow(this);
+	}
 	
 	public boolean createEBXWindow(EBXFile ebxFile){
 		try{
@@ -187,7 +65,7 @@ public class MainWindow extends Application{
 			});
 		}catch(Exception e){
 			e.printStackTrace();
-			System.err.println("EBX Window could not get created!");
+			System.err.println("EBXWindow creation failed");
 			return false;
 		}
 		return true;
@@ -200,10 +78,12 @@ public class MainWindow extends Application{
 			public void run() {
 				for (EBXWindow window : ebxWindows){
 					if (window.getStage()==stage){
+						stage.close();
 						ebxWindows.remove(window);
 						break;
 					}
-				}				
+				}			
+				System.err.println("EBXWindow stage not found!");
 			}
 		});
 		}catch(Exception e){
@@ -214,11 +94,11 @@ public class MainWindow extends Application{
 		return true;
 	}
 	
-	public boolean createImagePreviewWindow(File file, ResourceLink resourceLink, String title){
+	public boolean createImagePreviewWindow(File file, File ddsFile, ResourceLink resourceLink, String title){
 		try{
 			Platform.runLater(new Runnable() {
 				public void run() {
-					ImagePreviewWindow ipw = new ImagePreviewWindow(file, resourceLink, title);
+					ImagePreviewWindow ipw = new ImagePreviewWindow(file, ddsFile, resourceLink, title);
 					ipw.getController().setParentStage(ipw.getStage());
 					imagePreviewWindows.add(ipw);
 				}
@@ -233,15 +113,16 @@ public class MainWindow extends Application{
 	
 	public boolean destroyImagePreviewWindow(Stage stage){
 		try{Platform.runLater(new Runnable() {
-			
 			@Override
 			public void run() {
 				for (ImagePreviewWindow window : imagePreviewWindows){
 					if (window.getStage()==stage){
+						stage.close();
 						imagePreviewWindows.remove(window);
 						break;
 					}
-				}				
+				}
+				System.err.println("ImagePreviewWindow's stage not found!");
 			}
 		});
 		}catch(Exception e){
@@ -255,14 +136,14 @@ public class MainWindow extends Application{
 	
 
 	/*UPDATE METHODS*/	
-	public void updateLeftRoot(){
+	public void setPackageExplorer(TreeItem<TreeViewEntry> treeview){
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
-				leftController.getExplorer().setRoot(Core.getJavaFXHandler().getTreeViewStructureLeft());
-				leftController.getExplorer().scrollTo(0);
-				if (leftController.getExplorer().getRoot() != null){
-					leftController.getExplorer().getRoot().setExpanded(true);
+				toolsWindow.getController().getExplorer().setRoot(treeview);
+				toolsWindow.getController().getExplorer().scrollTo(0);
+				if (toolsWindow.getController().getExplorer().getRoot() != null){
+					toolsWindow.getController().getExplorer().getRoot().setExpanded(true);
 				}
 			}
 		});	
@@ -279,14 +160,16 @@ public class MainWindow extends Application{
 		});	
 	}
 	
-	public void updateLeftRoot1(){
+	public void setPackageExplorer1(TreeItem<TreeViewEntry> treeview, String filterStr){
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
-				leftController.getExplorer1().setRoot(Core.getJavaFXHandler().getTreeViewStructureLeft1());
-				if (leftController.getExplorer1().getRoot() != null){
-					leftController.getExplorer1().getRoot().setExpanded(true);
-				}
+				toolsWindow.setExplorer1(treeview, filterStr);
+				/*
+				toolsWindow.getController().getExplorer1().setRoot(treeview);
+				if (toolsWindow.getController().getExplorer1().getRoot() != null){
+					toolsWindow.getController().getExplorer1().getRoot().setExpanded(true);
+				}*/
 			}
 		});	
 	}
@@ -295,10 +178,11 @@ public class MainWindow extends Application{
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
-				if (stageLeft.isShowing()){
-					stageLeft.hide();
+				Stage tools = toolsWindow.getStage();
+				if (tools.isShowing()){
+					tools.hide();
 				}else{
-					stageLeft.show();
+					tools.show();
 				}
 			}
 		});	
@@ -357,5 +241,9 @@ public class MainWindow extends Application{
 		return imagePreviewWindows;
 	}
 	
+
+	public ArrayList<EBXWindow> getEBXWindows() {
+		return ebxWindows;
+	}
 	
 }

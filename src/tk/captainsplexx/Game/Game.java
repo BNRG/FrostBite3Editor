@@ -94,7 +94,7 @@ public class Game {
 			} catch (InterruptedException e1) {
 				e1.printStackTrace();
 			}
-			if (Core.gamePath != null && Core.getJavaFXHandler().getMainWindow().getModLoaderWindow().getController() != null){
+			if (Core.gamePath != null && Core.getJavaFXHandler().getMainWindow().getModLoaderWindow() != null){
 				break;
 			}
 		}
@@ -184,11 +184,11 @@ public class Game {
 				child.setExpanded(true);
 			}
 		}
-		Core.getJavaFXHandler().setTreeViewStructureLeft(explorerTree);
-		Core.getJavaFXHandler().getMainWindow().updateLeftRoot();
+		//Core.getJavaFXHandler().setTreeViewStructureLeft(explorerTree);
+		Core.getJavaFXHandler().getMainWindow().setPackageExplorer(explorerTree);
 		
-		Core.getJavaFXHandler().setTreeViewStructureLeft1(null);
-		Core.getJavaFXHandler().getMainWindow().updateLeftRoot1();
+		//Core.getJavaFXHandler().setTreeViewStructureLeft1(null);
+		Core.getJavaFXHandler().getMainWindow().setPackageExplorer1(null, null);
 		
 		/*
 		Core.getJavaFXHandler().setTreeViewStructureRight(null);

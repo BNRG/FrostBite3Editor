@@ -45,8 +45,8 @@ public class JavaFXexplorerTCF extends TreeCell<TreeViewEntry> {
 							
 							Core.getGame().setCurrentSB(sbpart);
 							TreeItem<TreeViewEntry> tree = TreeViewConverter.getTreeView(sbpart);
-							Core.getJavaFXHandler().setTreeViewStructureLeft1(tree);
-							Core.getJavaFXHandler().getMainWindow().updateLeftRoot1();
+							//Core.getJavaFXHandler().setTreeViewStructureLeft1(tree);
+							Core.getJavaFXHandler().getMainWindow().setPackageExplorer1(tree, null);
 						}else{
 							System.err.println(((TocSBLink)getTreeItem().getValue().getValue()).getType()+" are not supported yet.");
 						}
@@ -67,10 +67,10 @@ public class JavaFXexplorerTCF extends TreeCell<TreeViewEntry> {
 							convTocTree.setExpanded(true);
 							masterTree.getChildren().add(convTocTree);
 							masterTree.setExpanded(true);
-							Core.getJavaFXHandler().setTreeViewStructureLeft(masterTree);
-							Core.getJavaFXHandler().getMainWindow().updateLeftRoot();
+							//Core.getJavaFXHandler().setTreeViewStructureLeft(masterTree);
+							Core.getJavaFXHandler().getMainWindow().setPackageExplorer(masterTree);
 						}else{
-							System.err.println("NON CAS DETECTED!! NO SUPPORT YET. MAYBE NEVER, BECAUSE OF LEGAL RESTRICTIONS :X");
+							System.err.println("NON CAS DETECTED!! NO SUPPORT YET.");
 							getTreeItem().getParent().getChildren().remove(getTreeItem());
 						}
 						

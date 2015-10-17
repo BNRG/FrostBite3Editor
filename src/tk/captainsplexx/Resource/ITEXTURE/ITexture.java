@@ -93,12 +93,12 @@ public class ITexture {
     
     
     /*Texture Type*/
-    public static final int TT_2d = 1;
-    public static final int TT_Cube = 2;
-    public static final int TT_3d = 3;
-    public static final int TT_2dArray = 4;
-    public static final int TT_1dArray = 5;
-    public static final int TT_1d = 6;
+    public static final int TT_2d = 0;
+    public static final int TT_Cube = 1;
+    public static final int TT_3d = 2;
+    public static final int TT_2dArray = 3;
+    public static final int TT_1dArray = 4;
+    public static final int TT_1d = 5;
     /***********************************************END******************OF******************STATIC****************************************************************/
 	
 	

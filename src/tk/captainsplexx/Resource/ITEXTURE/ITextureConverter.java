@@ -95,7 +95,7 @@ public class ITextureConverter {
 		ITexture itexture = new ITexture();
 		
 		itexture.setFirstMip(originalITextureHeader.getFirstMip());
-		itexture.setNumSizes((byte) 0x1);
+		itexture.setUnknown(originalITextureHeader.getUnknown());
 		
 		if (originalITextureHeader.getTextureType() == ITexture.TF_NormalDXT1 
 				&& ddsHeader.getPixelformat().getDwFourCC() != ITexture.DDS_DXT1)
@@ -126,7 +126,7 @@ public class ITextureConverter {
 				itexture.setPixelFormat(ITexture.TF_ABGR32F);
 				break;
 			case ITexture.DDS_DXT1:
-				itexture.setPixelFormat(ITexture.TF_NormalDXT1);
+				itexture.setPixelFormat(ITexture.TF_DXT1);
 				break;
 			case ITexture.DDS_NormalDXN:
 				itexture.setPixelFormat(ITexture.TF_NormalDXN);
@@ -161,8 +161,8 @@ public class ITextureConverter {
 		
 		
 		itexture.setMipSizes(new int[15]);
-		int num = ddsHeader.getDwWidth();
-		int num2 = ddsHeader.getDwHeight();
+		int width = ddsHeader.getDwWidth();
+		int height = ddsHeader.getDwHeight();
 		if (ddsHeader.getPixelformat().getDwFourCC() == 0)
 		{
 			int num3 = 0;
@@ -171,39 +171,90 @@ public class ITextureConverter {
 				case ITexture.TF_ABGR16F:
 					for (int i = 0; i < ddsHeader.getDwMipMapCount(); i++)
 					{
-						int num4 = num;
-						int num5 = num2;
-						num4 = ((num4 < 1) ? 1 : num4);
-						num5 = ((num5 < 1) ? 1 : num5);
-						itexture.getMipSizes()[i] = (num4 * num3 + 7) / 8 * num5;//this makes no sense num3
-						num >>= 1;
-						num2 >>= 1;
+						/* Alpha Blue Green Red, each is using a single float.
+						 * So we get a total of 16 Bytes á pixel.
+						 */
+						itexture.getMipSizes()[i] = width * height * 16;
+						width >>= 1;
+						height >>= 1;
 					}
+					break;
+				default:
+					System.err.println(itexture.getPixelFormat()+" is currently not supported!");
 					break;
 			}
 		}
 		else
 		{
-			int num6 = 8;
+			/*
+			 * DXT:
+			 * When compressing a 4 colour palette is determined for these 16 pixels.
+			 * Afterwards each pixel will get an index into this palette, which only requires 2 bit per pixel.
+			 * For the palette only two colours are stored, the two extremes, and the other two colours are interpolated between these extremes.
+			 * The colour information is also stored with a compression so that only 16 bits are used per colour.
+			 * This means that these 16 pixels of the texture only take 64 bits to store (32 for the palette and 32 for the indexing).
+			 * 
+			 * Besides that the palette only stores two colour, let's call them colour1 and colour2.
+			 * The other two colours that can be indexed are linearly interpolated.
+			 * So that means that colour3 is 2/3 of colour1 plus 1/3 of colour2 and for colour4 the reverse is true (1/3 if colour1 plus 2/3 of colour2).
+			 * This means that if the 4 most common colours used in your 16 pixels are not on a one linear line in the colour space, you will loose some colours.
+			 * 
+			 * 
+			 * 
+			 * DXT1 + Alpha:
+			 * A 1 bit alpha channel means that the transparency is either on or off.
+			 * To store this one of the colours of the colour palette will get the meaning completely transparent.
+			 * The other three colours are left to store the colour information of your pixels.
+			 * So for the two colours stored in this case only one has to be interpolated,
+			 * colour3 is 1/2 colour1 plus 1/2 colour2.
+			 * This means even less resolution is left for different shades of colours.
+			 * 
+			 * 
+			 * 
+			 * DXT5 + Alpha:
+			 * For the alpha information it uses a palette, similar to the way the colour information is also stored.
+			 * This palette contains a minimum and maximum alpha value.
+			 * Then 6 other alpha values are interpolated between this minimum and maximum.
+			 * This thus allows more gradual changes of the alpha value.
+			 * A second variant does interpolate only 4 other alpha values between the minimum and maximum,
+			 * but also adds an alpha value of 0 and 1 (for fully transparent and not transparent).
+			 * For some textures this might give better results.
+			 * 
+			 * */
+			int bits = 8;
 			int pixelFormat = itexture.getPixelFormat();
 			if (pixelFormat == ITexture.TF_DXT5 || pixelFormat == ITexture.TF_NormalDXN)
 			{
-				num6 = 16;
+				bits = 16;
 			}
 			for (int j = 0; j < ddsHeader.getDwMipMapCount(); j++)
 			{
-				int num7 = (num + 3) / 4;
-				int num8 = (num2 + 3) / 4;
-				num7 = ((num7 < 1) ? 1 : num7);
-				num8 = ((num8 < 1) ? 1 : num8);
-				itexture.getMipSizes()[j] = num7 * num6 * num8;
-				num >>= 1;
-				num2 >>= 1;
+				int tWidth = width / 4;
+				int tHeight = height / 4;
+				/*num7 = ((num7 < 1) ? 1 : num7);
+				num8 = ((num8 < 1) ? 1 : num8);*/
+				itexture.getMipSizes()[j] = tWidth * bits * tHeight;
+				width >>= 1;
+				height >>= 1;
 			}
 		}
 		
+		/*System.err.println("Itexture Mip***EndOffset needs work! Currently use original...");
+		itexture.setMipOneEndOffset(originalITextureHeader.getMipOneEndOffset());
+		itexture.setMipTwoEndOffset(originalITextureHeader.getMipTwoEndOffset());
+		*/
+		
+		/* TODO It looks like Mip*(ONE and TWO)*EndOffset is not required if its inside the sbEntry
+		 * but letz go save and calculate EVERYTHING! :)
+		 */
+		System.err.println("Mip*(ONE and TWO)*EndOffset (ITextureConverter) are set to 0x00. Battlefield 4 did NOT crash! Othergames may do.\n"
+				+ "We have to look into that, later on...");
+		itexture.setMipOneEndOffset(0);
+		itexture.setMipTwoEndOffset(0);
+		
 		itexture.setChunkID(FileHandler.hexStringToByteArray(newGUID));
 		System.out.println("ITexture Header created for Chunk "+newGUID);
+		
 		return itexture;
 	}
 	

@@ -16,13 +16,13 @@
          <children>
             <HBox alignment="CENTER">
                <children>
-                  <Pane prefWidth="224.0" />
+                  <Pane prefWidth="224.0" visible="false" />
                   <Label text="FrostBite 3 ModLoader">
                      <font>
                         <Font size="32.0" />
                      </font>
                   </Label>
-                  <Pane layoutX="134.0" layoutY="10.0" prefWidth="182.0" />
+                  <Pane layoutX="134.0" layoutY="10.0" prefWidth="182.0" visible="false" />
                   <Button fx:id="runEditor" disable="true" mnemonicParsing="false" onAction="#runEditor" text="Editor" />
                </children>
             </HBox>
@@ -31,14 +31,19 @@
       </VBox>
    </top>
    <left>
-      <VBox prefHeight="550.0" prefWidth="194.0" BorderPane.alignment="CENTER">
+      <VBox prefHeight="182.0" prefWidth="194.0" BorderPane.alignment="CENTER">
          <children>
             <Label onMouseClicked="#openModFolder" prefHeight="17.0" prefWidth="195.0" text="Mods:    (Click here to open folder)">
                <padding>
                   <Insets left="7.0" />
                </padding>
             </Label>
-            <ListView fx:id="list" prefHeight="501.0" prefWidth="194.0" />
+            <ListView fx:id="list" prefHeight="489.0" prefWidth="194.0" />
+            <Label alignment="CENTER" onMouseClicked="#createNew" prefHeight="17.0" prefWidth="184.0" text="(Click here to create a new mod)">
+               <VBox.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </VBox.margin>
+            </Label>
          </children>
       </VBox>
    </left>
@@ -93,7 +98,7 @@
             </HBox>
          </top>
          <center>
-            <TextArea fx:id="desc" editable="false" prefHeight="393.0" prefWidth="582.0" BorderPane.alignment="CENTER">
+            <TextArea fx:id="desc" editable="false" prefHeight="346.0" prefWidth="582.0" BorderPane.alignment="CENTER">
                <cursor>
                   <Cursor fx:constant="DISAPPEAR" />
                </cursor>
@@ -106,7 +111,7 @@
             <Pane prefWidth="12.0" BorderPane.alignment="CENTER" />
          </right>
          <bottom>
-            <Pane prefHeight="13.0" prefWidth="606.0" BorderPane.alignment="CENTER" />
+            <Pane prefHeight="27.0" prefWidth="606.0" BorderPane.alignment="CENTER" />
          </bottom>
       </BorderPane>
    </center>

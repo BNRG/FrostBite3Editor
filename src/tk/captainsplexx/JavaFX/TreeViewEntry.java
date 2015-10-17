@@ -7,12 +7,15 @@ import tk.captainsplexx.JavaFX.Windows.MainWindow.EntryType;
 
 public class TreeViewEntry implements Cloneable{
 
-	public String name;
-	public String tooltip;
-	public ImageView graphic;
-	public Object value;
-	public EntryType type;
-	public short ebxType;
+	private String name;
+	private String tooltip;
+	private ImageView graphic;
+	private Object value;
+	private EntryType type;
+	private short ebxType;
+	
+	private int offset;
+	
 	
 	public TreeViewEntry(String name, ImageView graphic, Object value, EntryType type) {
 		this.name = name;
@@ -21,6 +24,7 @@ public class TreeViewEntry implements Cloneable{
 		this.type = type;
 		this.ebxType = 0;
 		this.tooltip = null;
+		this.offset = -1;
 	}
 	
 	
@@ -71,6 +75,19 @@ public class TreeViewEntry implements Cloneable{
 	public void setEBXType(short ebxType) {
 		this.ebxType = ebxType;
 	}
+	
+
+	public int getOffset() {
+		return offset;
+	}
+
+
+
+	public void setOffset(int offset) {
+		this.offset = offset;
+	}
+
+
 
 	public TreeViewEntry clone(){
 		try {

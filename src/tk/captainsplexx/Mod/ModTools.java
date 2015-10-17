@@ -10,6 +10,7 @@ import java.util.UUID;
 
 import tk.captainsplexx.Game.Core;
 import tk.captainsplexx.Resource.FileHandler;
+import tk.captainsplexx.Resource.FileSeeker;
 import tk.captainsplexx.Resource.ResourceHandler.LinkBundleType;
 import tk.captainsplexx.Resource.ResourceHandler.ResourceType;
 import tk.captainsplexx.Resource.CAS.CasCatEntry;
@@ -124,24 +125,25 @@ public class ModTools {
 			Package pack = new Package(FileHandler.normalizePath(file.getAbsolutePath()).replace(Core.getGame().getCurrentMod().getPath()+"/packages", "").replace(PACKTYPE, ""));
 			String line = "";
 			while ((line = br.readLine()) != null){
-			
-					String[] parts = line.split("\\|");
-					
-					/*| is treated as an OR in RegEx. So you need to escape it:
-					 * String[] separated = line.split("\\|");
-					 */
-					
-					if (parts.length<4||parts.length>5){continue;}
-					PackageEntry entry = new PackageEntry(
-						LinkBundleType.valueOf(parts[0]),
-						parts[1],
-						ResourceType.valueOf(parts[2]),
-						parts[3]
-					);
-					if (parts.length==5){//additional
-						entry.setTargetPath(parts[4]);
+					if (!line.startsWith("#")){
+						String[] parts = line.split("\\|");
+						
+						/*| is treated as an OR in RegEx. So you need to escape it:
+						 * String[] separated = line.split("\\|");
+						 */
+						
+						if (parts.length<4||parts.length>5){continue;}
+						PackageEntry entry = new PackageEntry(
+							LinkBundleType.valueOf(parts[0]),
+							parts[1],
+							ResourceType.valueOf(parts[2]),
+							parts[3]
+						);
+						if (parts.length==5){//additional
+							entry.setTargetPath(parts[4]);
+						}
+						pack.getEntries().add(entry);
 					}
-					pack.getEntries().add(entry);
 			}
 			br.close();
 			fr.close();
@@ -280,6 +282,13 @@ public class ModTools {
 										FileHandler.writeFile("output/debug/originalHeaderBytes", originalHeaderBytes);
 										
 										ITexture newITexture = ITextureConverter.getITextureHeader(ddsFileBytes, new ITexture(originalHeaderBytes, null), chunkID);
+																				
+										/*Temp debug test*/
+										System.err.println("Texture Replacement does not work at the moment :(\n"
+												+ "use originalHeaderBytes instead!");
+										ITexture oldITexture = new ITexture(originalHeaderBytes, new FileSeeker());
+										newITexture.setChunkID(oldITexture.getChunkID());
+																				
 										data = newITexture.toBytes();
 										
 										FileHandler.writeFile("output/debug/newITexture", data);
@@ -290,7 +299,10 @@ public class ModTools {
 										
 										byte[] blockData = ITextureConverter.getBlockData(ddsFileBytes);
 										casCatEntryChunk = CasManager.extendCAS(blockData, new File(casCatPath), manPatched);
-										modifyChunkEntry(casCatEntryChunk, chunkID, blockData.length, currentSBpart, true);
+										
+										/*TODO modifyChunkEntry hangs up the loading!!*/
+										System.err.println("modifyChunkEntry ENABLED! ----hangs up the loading-----");
+										modifyChunkEntry(casCatEntryChunk, chunkID, blockData.length, newITexture.getNameHash(), currentSBpart, true);
 									}else{
 										System.err.println("ITexture could not get applied!");
 									}
@@ -333,7 +345,9 @@ public class ModTools {
 							if (casCatEntryChunk!=null){
 								manPatched.getEntries().add(casCatEntryChunk);
 							}
-							manPatched.getEntries().add(casCatEntry);
+							if (casCatEntry!=null){
+								manPatched.getEntries().add(casCatEntry);
+							}
 						}
 						//TODO convToc.setTotalSize(totalSize);
 						String newPath = ((String) Core.getGame().getCurrentFile()+".sb").replace(Core.gamePath, path);
@@ -362,7 +376,7 @@ public class ModTools {
 				Core.keepAlive = false;
 				return true;
 			}
-			Core.getJavaFXHandler().getDialogBuilder().showError("ERROR", "Something went wrong :(");
+			Core.getJavaFXHandler().getDialogBuilder().showError("ERROR", "Something went wrong :(", null, null);
 			return false;
 		}else{
 			FileHandler.openFolder(Core.getGame().getCurrentMod().getDestFolderPath());
@@ -370,14 +384,95 @@ public class ModTools {
 			return false;
 		}
 	}
-	public boolean modifyChunkEntry(CasCatEntry chunkCatEntry, String chunkGuid, Integer chunkSize, ConvertedSBpart convertedSBpart, boolean isNew){
+	/*public ResourceLink modifyChunkEntry(CasCatEntry chunkCatEntry, String chunkGuid, Integer chunkSize, ConvertedSBpart convertedSBpart, boolean isNew){
+		return modifyChunkEntry(chunkCatEntry, chunkGuid, chunkSize, 0, convertedSBpart, isNew);
+	}*/
+	
+	public boolean modifyChunkEntry(CasCatEntry chunkCatEntry, String chunkGuid, Integer chunkSize, int h32NameHash, ConvertedSBpart convertedSBpart, boolean isNew){
 		if (isNew){
 			ResourceLink chunkLink = new ResourceLink();
 			chunkLink.setId(chunkGuid);
 			chunkLink.setSha1(chunkCatEntry.getSHA1());
+			
+			
+			/*TODO BF4 not working!!
+			 * Games like DragonAge Inq. does handle this different because
+			 * of a different compression method not supported yet.
+			 * 
+			 * Btw. DragonAge prob. saves the meta information in the same as chunks.
+			 * So no chunkmeta ??*/
+			
+			/*
+			SBENTRY:
+				ID: 01 10 96 C2 D2 DA DF 9B 39 31 23 20 14 07 C1 E7
+				SHA1: 78 3A 38 9D E8 F9 E8 FE E6 F3 35 C1 D9 D5 7A C9 0A 9C A9 33
+				SIZE: DE 77 10 00 00 00 00 00 == 1.079.262   ---> Same as SBENTRY(RANGEEND)
+				RANGESTART: 02 6E 0F 00 == 1.011.202 ---> Same as MipTWOoffset from ITEXTURE!
+				RANGEEND: DE 77 10 00 == 1.079.262 ---> Same as SBENTRY(SIZE)
+				LOGICALOFFSET: 00 00 14 00 == 1.310.720
+					Some has been 0 some has been quite high...
+					
+				LOGICALSIZE: 68 55 01 00 == 87.400 ---> Last bytes of chunk file ?why?
+
+			ITEXTURE:
+				FirstMip: 02
+				MipONEoffset: 3B 52 0C 00 == 807.483
+				MipTWOoffset: 02 6E 0F 00 == 1.011.202 ---> Same as SBENTRY(RANGESTART) || This is the first MipMap Level -2-
+				ChunkSize: 68 55 15 00 == 1.398.120 ---> SBENTRY(LOGICALOFFSET) + SBENTRY(LOGICALOFFSET) == this*/
+			
+			
+			
+			/*
+			id
+			sha1
+			size
+			logicalOffset
+			logicalSize
+
+			-----------------
+
+			id
+			sha1
+			size
+			logicalOffset
+			logicalSize
+			casPatchType
+
+			-----------------
+
+			id
+			sha1
+			size
+			rangeStart
+			rangeEnd
+			logicalOffset
+			logicalSize
+			casPatchType
+			
+			-----------------
+			
+			id
+			sha1
+			size
+			rangeStart
+			rangeEnd
+			logicalOffset
+			logicalSize
+			*/
+			
+			
 			chunkLink.setLogicalOffset(0);
 			chunkLink.setLogicalSize(chunkSize);
+			chunkLink.setRangeStart(0);
+			chunkLink.setRangeEnd(chunkSize);
+			
+			/*if (Game is DragonAge){
+				chunkLink.setH32(h32NameHash);
+				chunkLink.setMeta(new byte[] {8, 102, 105, 114, 115, 116, 77, 105, 112, 0, 0, 0, 0, 0, 0});
+			}*/
+			
 			convertedSBpart.getChunks().add(chunkLink);
+			return true;
 		}else{
 			System.err.println("TODO mofidy Chunk Entry that already exist!");
 		}

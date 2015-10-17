@@ -45,7 +45,23 @@ public class ModLoaderController {
 	
 	public void openModFolder(){
 		FileHandler.openFolder("mods/");
-	}	
+	}
+	
+	public void createNew(){
+		Core.getJavaFXHandler().getDialogBuilder().showInfo("Info",
+				"No Interface for that!\n\n"
+				+ "1. Create a new Folder inside the 'mods' folder.\n"
+				+ "2. Copy 'sample_info.txt' and 'sample_logo.png' inside it,\n"
+				+ "              as 'info.txt' and 'logo.png'.\n"
+				+ "3. Change values/image to whatever you need.\n\n"
+				+ "Restart the Tool, Select your new mod -> Click Editor!\n\n\n\n"
+				+ "Share your mod:\n\n"
+				+ "1. Make sure the clients are on the same Version.\n"
+				+ "2. ZIP your Modfolder using 7zip, Winrar or any other archiver!\n"
+				+ "3. Extract the ZIP inside the 'mods' folder on the target system\n\n"
+				+ "Restart the Tool, if it's already running!");
+			
+	}
 	
 	//set bottom label
 	public void setGamepath(String path) {
