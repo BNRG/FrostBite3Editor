@@ -82,8 +82,7 @@ public class MainWindow extends Application{
 						ebxWindows.remove(window);
 						break;
 					}
-				}			
-				System.err.println("EBXWindow stage not found!");
+				}
 			}
 		});
 		}catch(Exception e){

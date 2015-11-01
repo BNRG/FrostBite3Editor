@@ -8,6 +8,7 @@ import org.lwjgl.util.vector.Vector3f;
 import tk.captainsplexx.Entity.Entity;
 import tk.captainsplexx.Player.PlayerEntity;
 import tk.captainsplexx.Player.PlayerHandler;
+import tk.captainsplexx.Terrain.Terrain;
 
 public class InputHandler {
 	
@@ -71,12 +72,22 @@ public class InputHandler {
 	    	Core.getGame().getEntityHandler().getEntities().clear();
 	    }
 	    
+	    if (Keyboard.isKeyDown(Keyboard.KEY_NUMPAD1))
+	    {
+	    	System.err.println("Reloading Terrain DEBUG!");
+	    	Core.getGame().getTerrainHandler().getTerrainList().clear();
+	    	Core.getGame().getTerrainHandler().generate(0, 0);
+	    	Core.getGame().getTerrainHandler().distance=10;
+	    }
+	    
 	    
 	    if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE))//KEY_ESCAPE down
 	    {
 	    	Mouse.setGrabbed(false);
+	    	Core.DISPLAY_RATE=24;
 	    }
 	    if (Mouse.isButtonDown(0)){
+	    	Core.DISPLAY_RATE=60;
 	    	Mouse.setGrabbed(true);
 	    }
 	    

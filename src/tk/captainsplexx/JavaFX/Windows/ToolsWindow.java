@@ -77,6 +77,7 @@ public class ToolsWindow {
             }
         });
         controller.getExplorer1().setEditable(false);
+                
         controller.getExplorer1().setPrefWidth(Display.getDesktopDisplayMode().getWidth());
         controller.getExplorer1().setPrefHeight(Display.getDesktopDisplayMode().getHeight());
         

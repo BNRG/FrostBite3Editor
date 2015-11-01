@@ -24,6 +24,8 @@ import tk.captainsplexx.Mod.ModTools;
 import tk.captainsplexx.Render.Render;
 import tk.captainsplexx.Render.Gui.GuiTexture;
 import tk.captainsplexx.Resource.FileHandler;
+import tk.captainsplexx.Resource.DDS.DDS_HEADER;
+import tk.captainsplexx.Resource.DDS.DDS_PIXELFORMAT;
 import tk.captainsplexx.Resource.TOC.ResourceLink;
 
 public class Core {
@@ -112,7 +114,19 @@ public class Core {
 				}
 		}
 		
-		System.exit(0); */
+		
+		byte[] argb8888 = FileHandler.readFile("C:\\Users\\SpleXx\\Desktop\\levels_mp_mp_playground_ui_mp_playground_loading01.dds");
+		DDS_HEADER ddsheader = new DDS_HEADER(argb8888, null);
+		DDS_PIXELFORMAT format = ddsheader.getPixelformat();
+		
+		*/
+		System.err.println("If Modtools has replaced a resource and then tries to request the orignal resource in the second run for a diffrent resource,\n"
+				+ "it can't find it and the loader will crash.");
+		//System.exit(0); 
+		
+		
+		
+		
 		
 		
 		/*Initialize Variables*/

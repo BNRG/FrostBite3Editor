@@ -5,6 +5,7 @@ import javafx.scene.control.TreeView;
 import tk.captainsplexx.Game.Core;
 import tk.captainsplexx.JavaFX.TreeViewConverter;
 import tk.captainsplexx.JavaFX.TreeViewEntry;
+import tk.captainsplexx.Mod.ModTools;
 import tk.captainsplexx.Mod.Package;
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.ResourceHandler.LinkBundleType;
@@ -18,7 +19,9 @@ public class EBXWindowController {
 	public void saveEBX(){
 		if (ebxExplorer.getRoot() != null){
 			if (Core.getGame().getCurrentMod()!=null&&!Core.isDEBUG){
+				/*
 				String resPath = ebxExplorer.getRoot().getValue().getName()+".ebx";		
+				
 				String test = Core.getGame().getCurrentToc().getName();
 				Package pack = Core.getModTools().getPackage(test);
 				Core.getModTools().extendPackage(
@@ -31,12 +34,12 @@ public class EBXWindowController {
 				
 				//EBXFile ebxFile = TreeViewConverter.getEBXFile(ebxExplorer.getRoot());
 				//byte[] ebxBytes = EBXConverter.createEBX(ebxFile);
-				FileHandler.writeFile(Core.getGame().getCurrentMod().getPath()+"/resources/"+resPath, new byte[] {0x00}/*ebxBytes goes here!*/); //TODO
+				FileHandler.writeFile(Core.getGame().getCurrentMod().getPath()+ModTools.RESOURCEFOLDER+resPath, new byte[] {0x00}/*ebxBytes goes here!); //TODO
 				
 				
 				//This will be moved over into main save.
 				Core.getModTools().writePackages();
-				
+				*/
 				
 				System.err.println("TODO");
 			}else{

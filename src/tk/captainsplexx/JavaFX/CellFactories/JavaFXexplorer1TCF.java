@@ -24,6 +24,7 @@ import tk.captainsplexx.Resource.ResourceHandler;
 import tk.captainsplexx.Resource.ResourceHandler.ResourceType;
 import tk.captainsplexx.Resource.CAS.CasDataReader;
 import tk.captainsplexx.Resource.EBX.EBXFile;
+import tk.captainsplexx.Resource.ITEXTURE.ITexture;
 import tk.captainsplexx.Resource.ITEXTURE.ITextureHandler;
 import tk.captainsplexx.Resource.ITEXTURE.ImageConverter;
 import tk.captainsplexx.Resource.ITEXTURE.ImageConverter.ImageType;
@@ -119,7 +120,16 @@ public class JavaFXexplorer1TCF extends TreeCell<TreeViewEntry> {
 												File ddsFile = new File("temp/images/"+link.getName().replace('/', '_')+".dds");
 												FileHandler.writeFile(ddsFile.getAbsolutePath(), ddsBytes);
 												
-												File pngFile = ImageConverter.convert(ddsFile, ImageType.PNG, true);
+												File pngFile = null;
+												ITexture itexture = new ITexture(data, null);
+												if (itexture.getPixelFormat()==ITexture.TF_NormalDXN){
+													//Convert using Nvidia
+													File tga = ImageConverter.convertToTGA(ddsFile);
+													pngFile = ImageConverter.convert(tga, ImageType.PNG, true);
+												}else{
+													//Convert using ImageMagick
+													pngFile = ImageConverter.convert(ddsFile, ImageType.PNG, true);
+												}
 												if (pngFile!=null){
 													Core.getJavaFXHandler().getMainWindow().createImagePreviewWindow(pngFile, ddsFile, link, link.getName());
 												}

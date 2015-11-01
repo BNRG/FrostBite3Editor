@@ -9,6 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeView;
+import javafx.scene.layout.AnchorPane;
 import tk.captainsplexx.Game.Core;
 import tk.captainsplexx.JavaFX.TreeViewEntry;
 import tk.captainsplexx.Resource.FileHandler;
@@ -112,6 +113,7 @@ public class ToolsWindowController {
 	public Slider getCameraSpeed() {
 		return cameraSpeed;
 	}
+
 	
 	
 	

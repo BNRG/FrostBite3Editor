@@ -7,7 +7,7 @@ public class EBXHandler {
 	//public String guidTablePath;
 	public EBXLoader loader;
 	public EBXCreator creator;
-	//public EBXGUIDHandler guidHandler;
+	public HashMap<String, String> ebxFileGUIDs /*GUID, ResourceLinkName*/;
 	public HashMap<EBXExternalFileReference, EBXFile> files /*FileName, File*/;
 	
 	public enum FieldValueType{
@@ -28,6 +28,7 @@ public class EBXHandler {
 		this.creator = new EBXCreator();
 		//this.guidHandler = new EBXGUIDHandler(guidTablePath);
 		this.files = new HashMap<EBXExternalFileReference, EBXFile>();
+		this.ebxFileGUIDs = new HashMap<>();
 	}
 
 	public HashMap<EBXExternalFileReference, EBXFile> getFiles() {
@@ -37,7 +38,7 @@ public class EBXHandler {
 	public EBXFile loadFile(byte[] data) {
 		loader.loadEBX(data);
 		EBXFile newFile = new EBXFile(loader.getTrueFilename(), loader.getInstances(), loader.getFileGUID());
-		EBXExternalFileReference efr = new EBXExternalFileReference(loader.getFileGUID(), loader.getFileGUID());
+		EBXExternalFileReference efr = new EBXExternalFileReference(loader.getFileGUID(), loader.getTrueFilename());
 		files.put(efr, newFile);
 		return newFile;
 	}
@@ -66,7 +67,7 @@ public class EBXHandler {
 				return files.get(efr);
 			}
 		}
-		System.err.println("FileGUID "+fileGUID+" has no reference in EBXHandler for an EBXFile!");
+		//System.err.println("FileGUID "+fileGUID+" has no reference in EBXHandler for an EBXFile!");
 		return null;
 		
 	}
@@ -76,8 +77,12 @@ public class EBXHandler {
 				return files.get(efr);
 			}
 		}
-		System.err.println("TrueFileName "+trueFileName+" has no reference in EBXHandler for an EBXFile!");
+		//System.err.println("TrueFileName "+trueFileName+" has no reference in EBXHandler for an EBXFile!");
 		return null;
 		
 	}
+
+	public HashMap<String, String> getEBXFileGUIDs() {
+		return ebxFileGUIDs;
+	}	
 }

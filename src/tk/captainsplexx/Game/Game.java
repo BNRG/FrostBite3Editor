@@ -38,7 +38,6 @@ public class Game {
 	public String currentFile;
 	public ConvertedTocFile currentToc;
 	public ConvertedSBpart currentSB;
-	//public HashMap<String, String> ebxFileGUIDs /*GUID, FileName*/;;
 	public HashMap<String, String> chunkGUIDSHA1;
 	public Mod currentMod;
 	public ArrayList<GuiTexture> guis;
@@ -144,6 +143,16 @@ public class Game {
 			}
 		}
 		/*End of common chunks!*/
+		/*Battlefield Weapons and Attachments*/
+		for (File file : FileHandler.listf(Core.gamePath+"/", "WeaponsAndAttachments")){
+			if (file.getAbsolutePath().endsWith(".toc")){
+				String relPath = file.getAbsolutePath().replace("\\", "/").replace(".toc", "");
+				TocFile toc = TocManager.readToc(relPath);
+				ConvertedTocFile convToc = TocConverter.convertTocFile(toc);
+				commonChunks.add(convToc);
+			}
+		}
+		
 	}
 
 	

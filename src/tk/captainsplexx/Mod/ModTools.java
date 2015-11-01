@@ -283,12 +283,13 @@ public class ModTools {
 										
 										ITexture newITexture = ITextureConverter.getITextureHeader(ddsFileBytes, new ITexture(originalHeaderBytes, null), chunkID);
 																				
-										/*Temp debug test*/
+										/*Temp debug test
 										System.err.println("Texture Replacement does not work at the moment :(\n"
 												+ "use originalHeaderBytes instead!");
 										ITexture oldITexture = new ITexture(originalHeaderBytes, new FileSeeker());
-										newITexture.setChunkID(oldITexture.getChunkID());
-																				
+										newITexture.setChunkID(oldITexture.getChunkID());*/
+																			
+										
 										data = newITexture.toBytes();
 										
 										FileHandler.writeFile("output/debug/newITexture", data);
@@ -300,9 +301,7 @@ public class ModTools {
 										byte[] blockData = ITextureConverter.getBlockData(ddsFileBytes);
 										casCatEntryChunk = CasManager.extendCAS(blockData, new File(casCatPath), manPatched);
 										
-										/*TODO modifyChunkEntry hangs up the loading!!*/
-										System.err.println("modifyChunkEntry ENABLED! ----hangs up the loading-----");
-										modifyChunkEntry(casCatEntryChunk, chunkID, blockData.length, newITexture.getNameHash(), currentSBpart, true);
+										modifyChunkEntry(casCatEntryChunk, chunkID, blockData.length, newITexture.getNameHash(), currentSBpart, true /*isNew*/);
 									}else{
 										System.err.println("ITexture could not get applied!");
 									}
@@ -390,39 +389,63 @@ public class ModTools {
 	
 	public boolean modifyChunkEntry(CasCatEntry chunkCatEntry, String chunkGuid, Integer chunkSize, int h32NameHash, ConvertedSBpart convertedSBpart, boolean isNew){
 		if (isNew){
+			//Confirmed! Everything working fine!!
+			
 			ResourceLink chunkLink = new ResourceLink();
+			
+			/*we are going for patched default without mip settings
+			 * and set the itexture starting map to 0 or 1. (whatever its starts at)*/
+			
 			chunkLink.setId(chunkGuid);
 			chunkLink.setSha1(chunkCatEntry.getSHA1());
+			chunkLink.setLogicalOffset(0);//start at 0 or first mip
+			chunkLink.setLogicalSize(chunkSize);
+			/*chunkLink.setRangeStart(0); we not need mip mapping
+			chunkLink.setRangeEnd(chunkSize);*/
+			chunkLink.setCasPatchType(1);//patch it using patched cas.
 			
 			
-			/*TODO BF4 not working!!
-			 * Games like DragonAge Inq. does handle this different because
-			 * of a different compression method not supported yet.
-			 * 
-			 * Btw. DragonAge prob. saves the meta information in the same as chunks.
-			 * So no chunkmeta ??*/
+			/* We need to put in the compressed size.
+			 * We not using any compression but have compression headers
+			 * The file is bigger as one block. So we have to calculate the
+			 * total number of blocks to get the header size we can add to the
+			 * raw dds block data size.*/
+			int sizeHeaders = CasManager.calculateNumberOfBlocks(chunkSize) * CasManager.blockHeaderNumBytes;
+			chunkLink.setSize(sizeHeaders+chunkSize);
+			
 			
 			/*
-			SBENTRY:
+			SBENTRY-CHUNK:
 				ID: 01 10 96 C2 D2 DA DF 9B 39 31 23 20 14 07 C1 E7
 				SHA1: 78 3A 38 9D E8 F9 E8 FE E6 F3 35 C1 D9 D5 7A C9 0A 9C A9 33
-				SIZE: DE 77 10 00 00 00 00 00 == 1.079.262   ---> Same as SBENTRY(RANGEEND)
-				RANGESTART: 02 6E 0F 00 == 1.011.202 ---> Same as MipTWOoffset from ITEXTURE!
-				RANGEEND: DE 77 10 00 == 1.079.262 ---> Same as SBENTRY(SIZE)
-				LOGICALOFFSET: 00 00 14 00 == 1.310.720
-					Some has been 0 some has been quite high...
+					the 3 following offset are based on the compressed entries.
+					Thats kinda wierd....
+					SIZE: DE 77 10 00 00 00 00 00 == 1.079.262   ---> Same as SBENTRY(RANGEEND)
+																	--> Compressed size with headers
+					RANGESTART: 02 6E 0F 00 == 1.011.202 ---> Same as MipONEnedoffset from ITEXTURE!
 					
-				LOGICALSIZE: 68 55 01 00 == 87.400 ---> Last bytes of chunk file ?why?
-
+								--> I've checked this value. its the position inside compressed block array.
+									So the offset contains the block header too!
+					
+								--> the delta is 0x109DC aka. 68.060... the offset is 0x91FE smaller as the size of (3rd counting form 1.) mip
+					RANGEEND: DE 77 10 00 == 1.079.262 ---> Same as SBENTRY(SIZE)
+								-->range end to logical offset has a space of 0x40000-0x77DE which is the delta from range end to the next mip ??
+				LOGICALOFFSET: 00 00 14 00 == 1.310.720 ---> first mip size + second mip size
+				LOGICALSIZE: 68 55 01 00 == 87.400 ---> 
+				has no idata or h32 or meta
+			
 			ITEXTURE:
 				FirstMip: 02
-				MipONEoffset: 3B 52 0C 00 == 807.483
-				MipTWOoffset: 02 6E 0F 00 == 1.011.202 ---> Same as SBENTRY(RANGESTART) || This is the first MipMap Level -2-
-				ChunkSize: 68 55 15 00 == 1.398.120 ---> SBENTRY(LOGICALOFFSET) + SBENTRY(LOGICALOFFSET) == this*/
+				MipONEnedoffset: 3B 52 0C 00 == 807.483 --> as chunk's rangestart its the compressed offset with block
+															headers
+												
+				MipTWOendoffset: 02 6E 0F 00 == 1.011.202 ---> Same as SBENTRY(RANGESTART) || This is the first MipMap Level -2-
+				ChunkSize: 68 55 15 00 == 1.398.120 ---> SBENTRY(LOGICALOFFSET) + SBENTRY(LOGICALOFFSET) == this
+				
+				
 			
+			*This seems to be the default one
 			
-			
-			/*
 			id
 			sha1
 			size
@@ -430,7 +453,8 @@ public class ModTools {
 			logicalSize
 
 			-----------------
-
+			*And i guess this is the patched default one.
+			
 			id
 			sha1
 			size
@@ -440,6 +464,21 @@ public class ModTools {
 
 			-----------------
 
+			*This resource can be extracted by given range arguments.
+			*ITexture is prob. using this for starting on a lower mip map
+			
+			id
+			sha1
+			size
+			rangeStart
+			rangeEnd
+			logicalOffset
+			logicalSize
+			
+			-----------------
+			
+			*the patched one with range
+			
 			id
 			sha1
 			size
@@ -448,23 +487,9 @@ public class ModTools {
 			logicalOffset
 			logicalSize
 			casPatchType
-			
-			-----------------
-			
-			id
-			sha1
-			size
-			rangeStart
-			rangeEnd
-			logicalOffset
-			logicalSize
 			*/
 			
 			
-			chunkLink.setLogicalOffset(0);
-			chunkLink.setLogicalSize(chunkSize);
-			chunkLink.setRangeStart(0);
-			chunkLink.setRangeEnd(chunkSize);
 			
 			/*if (Game is DragonAge){
 				chunkLink.setH32(h32NameHash);
@@ -474,7 +499,7 @@ public class ModTools {
 			convertedSBpart.getChunks().add(chunkLink);
 			return true;
 		}else{
-			System.err.println("TODO mofidy Chunk Entry that already exist!");
+			System.err.println("TODO modify Chunk Entry that already exist!");
 		}
 		return false;
 		
@@ -532,10 +557,11 @@ public class ModTools {
 			entry.setTargetPath(targetPath);
 		}
 		for (PackageEntry pEntry: pack.getEntries()){
-			if (pEntry.getBundleType()==bundle && pEntry.getSubPackage()==sbPart &&
-					pEntry.getResourcePath()==path && pEntry.getResType()==type &&
+			if (pEntry.getBundleType()==bundle && pEntry.getSubPackage().equals(sbPart) &&
+					pEntry.getResourcePath().equals(path) && pEntry.getResType()==type &&
 						pEntry.getTargetPath()==targetPath){
 				//entry does already exist.
+				System.err.println("Entry does allready exist. So we dont have to extend the package!");
 				return true;
 			}
 		}

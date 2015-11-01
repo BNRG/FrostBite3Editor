@@ -46,11 +46,17 @@ public class CasDataReader { //casPath == folderPath
 			byte[] base = CasDataReader.readCas(baseSHA1, Core.gamePath+"/Data", rs.getCasCatManager().getEntries(), false);
 			byte[] delta = CasDataReader.readCas(deltaSHA1, Core.gamePath+"/Update/Patch/Data", rs.getPatchedCasCatManager().getEntries(), true);
 			
+			
+			if (base==null||delta==null){
+				System.err.println("Base or Delta contains null data.");
+				return null;
+			}
+			
 			byte[] data = Patcher.getPatchedData(base, delta);
 			if (data != null){
 				return data;
 			}else{
-				System.err.println("null data... in CasDataReader (patched data useing delta)");
+				System.err.println("The patcher return null data. Something went wrong!");
 				return null;
 			}
 		}else if(patchType == 1){
@@ -101,6 +107,7 @@ public class CasDataReader { //casPath == folderPath
 			System.err.println("SHA not found in "+casFolderPath);
 			return null;
 		}catch (NullPointerException e){
+			e.printStackTrace();
 			return null;
 		}
 	}
@@ -113,6 +120,10 @@ public class CasDataReader { //casPath == folderPath
 			if (decompressedBlock != null){
 				for (Byte b : decompressedBlock){
 					output.add(b);
+					/*DEBUG
+					if (output.size()==1398120){
+						System.out.println(seeker.getOffset());
+					}*/
 				}
 			}else{
 				System.err.println("CasDataReader was not able to decode Block! - Following operations will fail!");

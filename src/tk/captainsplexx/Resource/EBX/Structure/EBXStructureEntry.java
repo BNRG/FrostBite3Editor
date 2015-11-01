@@ -1,6 +1,7 @@
 package tk.captainsplexx.Resource.EBX.Structure;
 
-public abstract class EBXStructureEntry {	
+public abstract class EBXStructureEntry {
+	private EBXStructureFile parent;
 	private EntryType type;
 	private String guid;
 	
@@ -17,7 +18,8 @@ public abstract class EBXStructureEntry {
 		VegetationTreeEntityData, StaticModelEntityData
 	}
 
-	public EBXStructureEntry(EntryType type, String guid) {
+	public EBXStructureEntry(EBXStructureFile parent, EntryType type, String guid) {
+		this.parent = parent;
 		this.type = type;
 		this.guid = guid;
 	}
@@ -44,6 +46,10 @@ public abstract class EBXStructureEntry {
 
 	public void setGuid(String guid) {
 		this.guid = guid;
+	}
+
+	public EBXStructureFile getParent() {
+		return parent;
 	}
 	
 	

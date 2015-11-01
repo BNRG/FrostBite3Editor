@@ -1,6 +1,7 @@
 package tk.captainsplexx.Resource.ITEXTURE;
 
 import tk.captainsplexx.Resource.FileHandler;
+import tk.captainsplexx.Resource.CAS.CasManager;
 import tk.captainsplexx.Resource.DDS.DDS_HEADER;
 import tk.captainsplexx.Resource.DDS.DDS_PIXELFORMAT;
 
@@ -72,6 +73,16 @@ public class ITextureConverter {
 					header.setDwFlags(header.getDwFlags() | 8);
 					break;
 				case ITexture.TF_ARGB8888:
+					//Loading Screens
+					pixelformat.setDwFourCC(0);
+					pixelformat.setDwABitMask(0xff000000);
+					pixelformat.setDwBBitMask(0xff);
+					pixelformat.setDwGBitMask(0xff00);
+					pixelformat.setDwRBitMask(0xff0000);
+					pixelformat.setDwRGBBitCount(32);
+					pixelformat.setDwFlags(0x41);
+					
+					header.setDwFlags(0x81007);					
 					break;
 				case ITexture.TF_ABGR16:
 					break;
@@ -94,7 +105,11 @@ public class ITextureConverter {
 		DDS_HEADER ddsHeader = new DDS_HEADER(ddsFile, null);
 		ITexture itexture = new ITexture();
 		
-		itexture.setFirstMip(originalITextureHeader.getFirstMip());
+		//itexture.setFirstMip(originalITextureHeader.getFirstMip());
+		//We don't want to calculate range args so, we start at the first mip.
+		itexture.setFirstMip((byte) 0x1);
+		//itexture.setFirstMip(originalITextureHeader.getFirstMip());
+		
 		itexture.setUnknown(originalITextureHeader.getUnknown());
 		
 		if (originalITextureHeader.getTextureType() == ITexture.TF_NormalDXT1 
@@ -117,9 +132,14 @@ public class ITextureConverter {
 					case 128:
 						itexture.setPixelFormat(ITexture.TF_ABGR32F);
 						break;
-					default:
+					case 32:
 						itexture.setPixelFormat(ITexture.TF_ARGB8888);
 						break;
+					default:
+						System.err.println("The RGBBitCount of " + ddsHeader.getPixelformat().getDwRGBBitCount() + " is not assigned to any valid formats.\n"
+								+ "You could try to use a DXT1(no alpha) or DXT5(Alpha) Texture instead.\n"
+								+ "Please submit your texture and format details to @CaptainSpleXx on GitHub!");
+						return null;
 				}
 				break;
 			case ITexture.DDS_ABGR32F:
@@ -139,13 +159,18 @@ public class ITextureConverter {
 				System.err.println("DDS File has an unknown format. Make sure to use a supported one!");
 				return null;
 		}
-		
-		itexture.setFirstMip(originalITextureHeader.getFirstMip());		
+				
 		itexture.setTextureType(((ddsHeader.getDwCaps2() == 65024) ? ITexture.TT_Cube : ITexture.TT_2d));
 		
 		if (originalITextureHeader.getTextureType() == ITexture.TT_Cube && ddsHeader.getDwCaps2() != 65024)
 		{
 			System.err.println("Original texture type is a cubemap! - Can't convert to DDS!");
+			return null;
+		}
+		
+		
+		if (itexture.getTextureType()!=originalITextureHeader.getTextureType()||itexture.getPixelFormat()!=originalITextureHeader.getPixelFormat()){
+			System.err.println("Can't continue. New file has a diffrent TextureType or PixelFormat!");
 			return null;
 		}
 		
@@ -238,19 +263,12 @@ public class ITextureConverter {
 				height >>= 1;
 			}
 		}
+		itexture.setMipSizes(originalITextureHeader.getMipSizes());
 		
-		/*System.err.println("Itexture Mip***EndOffset needs work! Currently use original...");
-		itexture.setMipOneEndOffset(originalITextureHeader.getMipOneEndOffset());
-		itexture.setMipTwoEndOffset(originalITextureHeader.getMipTwoEndOffset());
-		*/
-		
-		/* TODO It looks like Mip*(ONE and TWO)*EndOffset is not required if its inside the sbEntry
-		 * but letz go save and calculate EVERYTHING! :)
-		 */
-		System.err.println("Mip*(ONE and TWO)*EndOffset (ITextureConverter) are set to 0x00. Battlefield 4 did NOT crash! Othergames may do.\n"
-				+ "We have to look into that, later on...");
-		itexture.setMipOneEndOffset(0);
-		itexture.setMipTwoEndOffset(0);
+		itexture.setMipOneEndOffset(itexture.getMipSizes()[0] + (CasManager.calculateNumberOfBlocks(itexture.getMipSizes()[0]) * CasManager.blockHeaderNumBytes));
+		if (itexture.getNumSizes()>=2){
+			itexture.setMipTwoEndOffset(itexture.getMipOneEndOffset() + itexture.getMipSizes()[1] + (CasManager.calculateNumberOfBlocks(itexture.getMipSizes()[1]) * CasManager.blockHeaderNumBytes));
+		}
 		
 		itexture.setChunkID(FileHandler.hexStringToByteArray(newGUID));
 		System.out.println("ITexture Header created for Chunk "+newGUID);

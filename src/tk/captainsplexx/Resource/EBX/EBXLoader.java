@@ -176,6 +176,9 @@ public class EBXLoader {
 				isPrimaryInstance = false;
 			}
 		}
+		//Internal GUIDs are defined by their index.
+		//So we have to proc. the instancec first and set
+		//the real value after...
 		for (Integer i : internalGUIDFieldIndexs){
 			EBXField field = fields.get(i);
 			Integer tempValue = (Integer) field.getValue();
@@ -368,13 +371,11 @@ public class EBXLoader {
 					
 					
 					//String test = FileHandler.bytesToHex(FileHandler.toBytes(tempValue, ByteOrder.BIG_ENDIAN));
-					//String intGuid = internalGUIDs.get(tempValue-1);
-					
-					//System.err.println("INTERNAL GUID"); //TODO it does work if the numeration gets done erlier :) so change init ?
-					
-					
+					//String intGuid = internalGUIDs.get(tempValue-1);			
 					
 					field.setValue(tempValue, FieldValueType.Guid); //set tempValue temp as value.
+					//the real value gets set after the instance loop.
+					//order seems to be different but not wrong.
 				}
 			}
 		}else{

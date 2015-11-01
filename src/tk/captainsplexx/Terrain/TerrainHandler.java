@@ -9,9 +9,9 @@ import tk.captainsplexx.Player.PlayerHandler;
 
 public class TerrainHandler {
 	public ArrayList<Terrain> terrainList = new ArrayList<Terrain>();
-	float distance = 100f;
-	int maxX = 64;
-	int maxZ = 64;
+	public static float distance = 100f;
+	int maxX = 32;
+	int maxZ = 32;
 	
 	
 	public void generate(int idX, int idZ) {
@@ -23,7 +23,7 @@ public class TerrainHandler {
 	}
 	
 	public Terrain getCurrentTerrainOn(float x, float z){
-		for (Terrain terrain : terrainList) {
+		/*for (Terrain terrain : terrainList) {
 			if ((terrain.points[0][0].getX() >= x && terrain.points[maxX-1][maxZ-1].getX() <= x)||
 					(terrain.points[0][0].getX() <= x && terrain.points[maxX-1][maxZ-1].getX() >= x)){
 				if ((terrain.points[0][0].getZ() >= z && terrain.points[maxX-1][maxZ-1].getZ() <= z)||
@@ -31,7 +31,7 @@ public class TerrainHandler {
 					return terrain;
 				}
 			}
-		}
+		}*/
 		return null;
 	}
 	

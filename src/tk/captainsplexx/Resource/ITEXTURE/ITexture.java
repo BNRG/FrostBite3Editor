@@ -76,7 +76,7 @@ public class ITexture {
     public static final int DDS_DXT5 = 894720068;
     public static final int DDS_DXT5A = 826889281;
     public static final int DDS_ABGR32F = 116;
-    public static final int DDS_NormalDXN = 843666497;
+    public static final int DDS_NormalDXN = 843666497;//ATI2
     
     
     /*TextureFormat <-> DDS_Format*/

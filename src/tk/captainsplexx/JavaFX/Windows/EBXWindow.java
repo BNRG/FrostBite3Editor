@@ -38,7 +38,7 @@ public class EBXWindow {
 			e.printStackTrace();
 			return;
 		}
-	    scene = new Scene(parent, 275, 700);
+	    scene = new Scene(parent, 475, 700);
 	    stage = new Stage();
 	    stage.setScene(scene);
 	    if (ebxFile==null){

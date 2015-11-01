@@ -5,8 +5,8 @@ import tk.captainsplexx.Resource.EBX.EBXExternalGUID;
 import tk.captainsplexx.Resource.EBX.EBXFile;
 import tk.captainsplexx.Resource.EBX.EBXInstance;
 import tk.captainsplexx.Resource.EBX.Structure.EBXStructureEntry.EntryType;
-import tk.captainsplexx.Resource.EBX.Structure.Entry.EBXStrReferencedObjectData;
-import tk.captainsplexx.Resource.EBX.Structure.Entry.EBXStrSpatialPrefabBlueprint;
+import tk.captainsplexx.Resource.EBX.Structure.Entry.EBXReferencedObjectData;
+import tk.captainsplexx.Resource.EBX.Structure.Entry.EBXSpatialPrefabBlueprint;
 import tk.captainsplexx.Resource.TOC.ResourceLink;
 
 public class EBXStructureReader {
@@ -37,17 +37,17 @@ public class EBXStructureReader {
 	public static EBXStructureFile readStructure(EBXFile ebxFile){
 		EBXStructureFile structFile = new EBXStructureFile(ebxFile.getTruePath());
 		for (EBXInstance instance : ebxFile.getInstances()){
-			EBXStructureEntry entry = readEntry(instance);
+			EBXStructureEntry entry = readEntry(structFile, instance);
 			if (entry!=null){
 				structFile.getEntries().add(entry);
 			}else{
 				//return null;
 			}
-		}
+		}		
 		return structFile;
 	}
 	
-	private static EBXStructureEntry readEntry(EBXInstance ebxEntry){
+	private static EBXStructureEntry readEntry(EBXStructureFile parent, EBXInstance ebxEntry){
 		try{
 			EBXStructureEntry entry = null;
 /*INFO	System.out.println("Reading: "+ebxEntry.getComplex().getComplexDescriptor().getName()+" - "+ebxEntry.getGuid());*/
@@ -56,10 +56,10 @@ public class EBXStructureReader {
 			if (type!=null){
 				switch (type) {
 					case ReferenceObjectData:
-						entry = new EBXStrReferencedObjectData(ebxEntry);
+						entry = new EBXReferencedObjectData(parent, ebxEntry);
 						break;
 					case SpatialPrefabBlueprint:
-						entry = new EBXStrSpatialPrefabBlueprint(ebxEntry);
+						entry = new EBXSpatialPrefabBlueprint(parent, ebxEntry);
 						break;
 				}
 			}else{

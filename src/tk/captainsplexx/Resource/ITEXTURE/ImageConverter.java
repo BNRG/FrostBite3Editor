@@ -1,6 +1,9 @@
 package tk.captainsplexx.Resource.ITEXTURE;
 
 import java.io.File;
+import java.util.Random;
+
+import tk.captainsplexx.Resource.FileHandler;
 
 public class ImageConverter {
 	public static enum ImageType{
@@ -36,4 +39,27 @@ public class ImageConverter {
 		System.err.println("ImageConverter was not able to convert the target file!");
 		return null;
 	}
+	
+	public static File convertToTGA(File ddsFile){
+		if (!ddsFile.exists()){
+			System.err.println("DDS File does not exist! "+ddsFile.getAbsolutePath());
+		}		
+		String[] commands = {"lib/bin/nvidia/readdxt.exe", ddsFile.getAbsolutePath()};
+		try {
+			Process p = Runtime.getRuntime().exec(commands);
+			p.waitFor();
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println("DDSConverter runtime command execution failture.");
+			return null;
+		}
+		File tga = new File(ddsFile.getAbsolutePath().replace(".dds", "00.tga"));
+		if (tga.exists()){
+			return tga;
+		}
+		System.err.println("Converted tga could not be found for: "+ddsFile.getAbsolutePath());
+		return null;
+	}
 }
+
+

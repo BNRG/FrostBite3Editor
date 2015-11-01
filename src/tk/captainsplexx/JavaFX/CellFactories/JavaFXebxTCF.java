@@ -29,9 +29,11 @@ import tk.captainsplexx.JavaFX.TreeViewEntry;
 import tk.captainsplexx.JavaFX.Windows.MainWindow.EntryType;
 import tk.captainsplexx.JavaFX.Windows.MainWindow.WorkDropType;
 import tk.captainsplexx.Resource.FileHandler;
+import tk.captainsplexx.Resource.ResourceHandler;
 import tk.captainsplexx.Resource.EBX.EBXFieldDescriptor;
 import tk.captainsplexx.Resource.EBX.EBXFile;
 import tk.captainsplexx.Resource.EBX.EBXHandler;
+import tk.captainsplexx.Resource.TOC.ResourceLink;
 
 public class JavaFXebxTCF extends TreeCell<TreeViewEntry> {
 		private enum Operation {Name, Value};
@@ -159,22 +161,39 @@ public class JavaFXebxTCF extends TreeCell<TreeViewEntry> {
             follow.setOnAction(new EventHandler<ActionEvent>() {
                 public void handle(ActionEvent t) {
                 	try{
-	                	String[] target = ((String)getTreeItem().getValue().getValue()).split(" ");
-	                	if (target.length>1 && target[0].contains("/")){ //IS NOT AT NULL GUID OR IS NOT REFERENCED
-	                		Game game = Core.getGame();
-	                		System.err.println("EBXTCF Reworking FOLLOW!");
-	                		/*for (ResourceLink ebxLink : game.getCurrentSB().getEbx()){
-	                			if (ebxLink.getName().toLowerCase().equals(target[0].toLowerCase())){
-									byte[] data = CasDataReader.readCas(ebxLink.getBaseSha1(), ebxLink.getDeltaSha1(), ebxLink.getSha1(), ebxLink.getCasPatchType());
-									TreeItem<TreeViewEntry> ebx = TreeViewConverter.getTreeView(game.getResourceHandler().getEBXHandler().loadFile(data));
-									Core.getJavaFXHandler().setTreeViewStructureRight(ebx);
-									Core.getJavaFXHandler().getMainWindow().updateRightRoot();
-	                				break;
-	                			}
-	                		}*/
+                		String target = ((String)getTreeItem().getValue().getValue());
+                		if (target!=null){
+                			String[] targetArr = target.split(" ");
+    	                	if (targetArr.length==2){//guid has a file guid and instance guid
+    	                		ResourceHandler rs = Core.getGame().getResourceHandler();
+    	                		EBXHandler eh = rs.getEBXHandler();
+    	                		
+    	                		EBXFile file = eh.getEBXFileByGUID(targetArr[0]);
+    							if (file!=null){
+    								Core.getJavaFXHandler().getMainWindow().createEBXWindow(file);
+    							}else{
+    								for (ResourceLink link : Core.getGame().getCurrentSB().getEbx()){
+    									if (link.getEbxFileGUID().equalsIgnoreCase(targetArr[0])){
+    										byte[] data = rs.readResourceLink(link, false /*use Original*/);
+    										if (data!=null){
+    											EBXFile ebxFile = eh.loadFile(data);
+    											if (ebxFile!=null){
+    												Core.getJavaFXHandler().getMainWindow().createEBXWindow(ebxFile);
+    											}else{
+    												System.err.println("Link can't be followed, cuz EBXFile can't be converted!");
+    											}
+    										}else{
+    											System.err.println("Link can't be followed, cuz off missing data.");
+    										}
+    									}
+    								}
+    							}
+    						}else{
+    	                		System.err.println("Internal GUID's can't be followed!");
+    	                	}
 	                	}
                 	}catch (Exception e){
-                		System.out.println("Invaild link to follow. || TODO DELTA PATCH :)");
+                		System.out.println("Invaild link to follow.");
                 	}
                 }
             });
@@ -441,8 +460,13 @@ public class JavaFXebxTCF extends TreeCell<TreeViewEntry> {
 		    			String[] split = ((String)item.getValue()).split(" ");
 						if (ebxHandler.getFiles()!=null&&split.length==2){//DEBUG-
 							EBXFile file = ebxHandler.getEBXFileByGUID(split[0]);
-							if (file!=null){
+							if (file!=null){//Table with EBXFile
 								return file.getTruePath()+" "+split[1];
+							}else{//Table with ResourceLink's Name
+								String resourceLinksName = ebxHandler.getEBXFileGUIDs().get(split[0]);
+								if (resourceLinksName!=null){
+									return resourceLinksName+" "+split[1];
+								}
 							}
 						}
 						return (String)item.getValue();
@@ -501,9 +525,15 @@ public class JavaFXebxTCF extends TreeCell<TreeViewEntry> {
 			    			if (value.contains("/")){
 			    				String[] split = value.split(" ");			    				
 			    				if (split.length==2){
-				    				EBXFile file = ebxHandler.getEBXFileByName(split[0]);
+				    				EBXFile file = ebxHandler.getEBXFileByName(split[0]);//Table with EBXFile
 			    					if (file!=null){
 			    						return (file.getGuid()+" "+split[1]);
+			    					}else{
+			    						for (String guid : ebxHandler.getEBXFileGUIDs().keySet()){//Table just with the ResourceLink's Name.
+			    							if (split[0].equals(ebxHandler.getEBXFileGUIDs().get(guid))){
+			    								return (guid+" "+split[1]);
+			    							}
+			    						}
 			    					}
 								}
 			    				System.err.println("EXTERNAL GUID PATH COULD NOT BE FOUND IN DATABASE. NO CONVERTION TO FILEGUID POSSIBLE!");

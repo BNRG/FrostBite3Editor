@@ -7,6 +7,8 @@ import tk.captainsplexx.Game.Core;
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.ResourceHandler.LinkBundleType;
 import tk.captainsplexx.Resource.ResourceHandler.ResourceType;
+import tk.captainsplexx.Resource.CAS.CasDataReader;
+import tk.captainsplexx.Resource.EBX.EBXLoader;
 import tk.captainsplexx.Resource.TOC.TocManager.TocFieldType;
 
 public class TocConverter {
@@ -252,13 +254,20 @@ public class TocConverter {
 						}
 					}
 					try{
-						/*//TODO DISABLED UNTIL PATCH SYSTEM IMPEMENTED!
-						link.setEbxFileGUID(
-								EBXLoader.getGUID(CasDataReader.readCas(link.getSha1(),
-										Core.gamePath+"/Data", Core.getGame().getResourceHandler().getCasCatManager().getEntries())));
 						
-						Core.getGame().getEBXFileGUIDs().put(link.getEbxFileGUID(), link.getName());
-						*/
+						link.setEbxFileGUID(
+							EBXLoader.getGUID(
+								CasDataReader.readCas(
+										link.getBaseSha1(),
+										link.getDeltaSha1(),
+										link.getSha1(),
+										link.getCasPatchType()
+								)
+							)
+						);
+						
+						Core.getGame().getResourceHandler().getEBXHandler().getEBXFileGUIDs().put(link.getEbxFileGUID(), link.getName());
+						
 					}catch (Exception e){
 						//Timeout in JavaFX Thread ??
 					}

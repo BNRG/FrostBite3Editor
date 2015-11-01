@@ -19,6 +19,8 @@ public class CasManager {
 	static int blockSize = 0x10000;
 	static int blockContent = 0xFAD8&0xFFFF;
 	
+	public static int blockHeaderNumBytes = 8;//4 size, 2 type, 2 compressed size
+	
 	public static boolean createCAS(String path99cas){
 		try{
 			File casFile = new File(FileHandler.normalizePath(path99cas));
@@ -38,10 +40,14 @@ public class CasManager {
 	
 	public static CasCatEntry extendCAS(byte[] decompressedBytes, File cas, CasCatManager casCatMan){
 		if (!cas.exists()){return null;}
+		System.err.println("CasManager is extending the CAS using a custom max. block size\n"+
+				"we should change it to the default and set each block compressed size to 0x0!");
+		
+		
 		ArrayList<Byte> procEntries = new ArrayList<Byte>();	
 		
 		/*HANDLE BLOCK LOGIC*/
-		int blocks = decompressedBytes.length / blockContent;
+		int blocks = calculateNumberOfBlocks(decompressedBytes.length);
 		//System.out.println(blockContent);
 		System.out.println("Building "+(blocks+1)+" blocks in total.");
 		int restLen = decompressedBytes.length - (blocks * blockContent);
@@ -79,5 +85,9 @@ public class CasManager {
 			}
 		}
 		return sha1;
+	}
+	
+	public static int calculateNumberOfBlocks(int rawLength){
+		return rawLength / blockContent;
 	}
 }

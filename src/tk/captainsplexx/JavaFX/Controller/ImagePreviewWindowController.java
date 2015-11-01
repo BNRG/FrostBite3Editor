@@ -8,9 +8,13 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 import tk.captainsplexx.Game.Core;
+import tk.captainsplexx.Mod.ModTools;
+import tk.captainsplexx.Mod.Package;
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.CAS.CasDataReader;
 import tk.captainsplexx.Resource.ITEXTURE.ITexture;
+import tk.captainsplexx.Resource.ResourceHandler.LinkBundleType;
+import tk.captainsplexx.Resource.ResourceHandler.ResourceType;
 import tk.captainsplexx.Resource.TOC.ResourceLink;
 
 public class ImagePreviewWindowController {
@@ -23,7 +27,49 @@ public class ImagePreviewWindowController {
 	private Stage parentStage;
 	
 	public void importImage(){
-		System.err.println("TODO");
+		FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Import Image");
+        fileChooser.getExtensionFilters().add(
+                new ExtensionFilter("DirectDraw Surface", "*.dds"));
+        
+        File importFile = fileChooser.showOpenDialog(parentStage);
+		if (importFile!=null){
+			if (importFile.exists()){
+				String resPath = resourceLink.getName()+".dds";		
+				String curToc = Core.getGame().getCurrentToc().getName();
+				Package pack = Core.getModTools().getPackage(curToc);
+				if (pack!=null){
+					boolean succ = Core.getModTools().extendPackage(
+							LinkBundleType.BUNDLES,
+							Core.getGame().getCurrentSB().getPath(), 
+							ResourceType.ITEXTURE,
+							resPath,
+							pack
+					);
+					if (succ){
+						byte[] fileBytes = FileHandler.readFile(importFile.getAbsolutePath());
+						if (fileBytes!=null){
+							FileHandler.writeFile(Core.getGame().getCurrentMod().getPath()+ModTools.RESOURCEFOLDER+resPath, fileBytes);
+							
+							
+							//This will be moved over into main save.
+							Core.getModTools().writePackages();
+							System.out.println("Image successfully imported!");
+						}else{
+							System.err.println("Error! Could not read the file.. Permission Denied!");
+						}
+					}else{
+						System.err.println("The Package could not get extended!...");
+					}
+				}else{
+					System.err.println("Error! Package not found to put in.");
+				}		
+			}else{
+				System.err.println("Hey mate, why u did this ?? :) The selected file does not exist!");
+			}
+		}else{
+			System.err.println("No File Selected!");
+		}
 	}
 	
 	public boolean showInformations(){
