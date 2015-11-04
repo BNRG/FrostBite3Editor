@@ -1,45 +1,44 @@
 package tk.captainsplexx.Resource.EBX.Structure;
 
-import tk.captainsplexx.Game.Core;
-import tk.captainsplexx.Resource.EBX.EBXExternalGUID;
+import tk.captainsplexx.Resource.EBX.EBXComplex;
 import tk.captainsplexx.Resource.EBX.EBXFile;
 import tk.captainsplexx.Resource.EBX.EBXInstance;
-import tk.captainsplexx.Resource.EBX.Structure.EBXStructureEntry.EntryType;
+import tk.captainsplexx.Resource.EBX.Structure.Entry.EBXObjectBlueprint;
 import tk.captainsplexx.Resource.EBX.Structure.Entry.EBXReferencedObjectData;
 import tk.captainsplexx.Resource.EBX.Structure.Entry.EBXSpatialPrefabBlueprint;
-import tk.captainsplexx.Resource.TOC.ResourceLink;
+import tk.captainsplexx.Resource.EBX.Structure.Entry.EBXStaticModelEntityData;
 
 public class EBXStructureReader {
 	
-	public static EBXStructureFile readExternalGUIDTarget(EBXExternalGUID externalGUID, boolean useOriginalOnly){
-		ResourceLink targetLink = null;
-		for (ResourceLink ebxLink:Core.getGame().getCurrentSB().getEbx()){
-			if (ebxLink.getEbxFileGUID().equals(externalGUID.getFileGUID())){
-				targetLink = ebxLink;
-				break;
-			}
-		}
-		if (targetLink==null){
-			System.err.println("Target "+externalGUID.getBothGUIDs()+" could not get resolved. No link does exist.");
-		}
-		byte[] data = Core.getGame().getResourceHandler().readResource(
-				targetLink.getBaseSha1(), targetLink.getDeltaSha1(), targetLink.getSha1(),
-				targetLink.getCasPatchType(), targetLink.getName(),
-				targetLink.getType(), useOriginalOnly);
-		if (data==null){
-			return null;
-		}
-		EBXFile ebxFile = Core.getGame().getResourceHandler().getEBXHandler().loadFile(data);	
-		return EBXStructureReader.readStructure(ebxFile);
+	public static enum EntryType {
+		EBXInstance,
+		
+		ReferenceObjectData, WorldPartReferenceObjectData, SubWorldInclusionSetting,
+		InterfaceDescriptorData, SubWorldData, LightProbeVolumeData, PointLightEntityData,
+		CameraEntityData, EffectReferenceObjectData, GroundHeightEntityData, TerrainPhysicsComponentData,
+		TerrainEntityData, LocatorEntityData, MapMarkerEntityData, VehicleSpawnReferenceObjectData,
+		OBBData, VolumeVectorShapeData, BoolEntityData, AndEntityData, LogicReferenceObjectData, DelayEntityData,
+		RandomMultiEventEntityData, LogicVisualEnvironmentEntityData, PlatformSplitterEntityData,
+		OrEntityData, TransformEntityData, SyncedBoolEntityData, FadeEntityData,
+		UINPXTooltipEntityData, SequenceEntityData, CompareBoolEntityData, TransformPartPropertyTrackData,
+		UINPXTooltipLine, UINPXTextLine, UINPXPaddingLine, WorldPartData, SpatialPrefabBlueprint, ObjectBlueprint,
+		VegetationTreeEntityData, StaticModelEntityData
 	}
 	
-	
+	public static EntryType getEntryTypeByName(String name) {
+		try{
+			return EntryType.valueOf(name);
+		}catch (Exception e){
+			return null;
+		}
+	}
+		
 	public static EBXStructureFile readStructure(EBXFile ebxFile){
-		EBXStructureFile structFile = new EBXStructureFile(ebxFile.getTruePath());
+		EBXStructureFile structFile = new EBXStructureFile(ebxFile.getTruePath(), ebxFile.getGuid());
 		for (EBXInstance instance : ebxFile.getInstances()){
-			EBXStructureEntry entry = readEntry(structFile, instance);
-			if (entry!=null){
-				structFile.getEntries().add(entry);
+			EBXStructureInstance strInstance = readInstance(structFile, instance);
+			if (strInstance!=null){
+				structFile.getInstances().add(strInstance);
 			}else{
 				//return null;
 			}
@@ -47,19 +46,35 @@ public class EBXStructureReader {
 		return structFile;
 	}
 	
-	private static EBXStructureEntry readEntry(EBXStructureFile parent, EBXInstance ebxEntry){
+	private static EBXStructureInstance readInstance(EBXStructureFile parent, EBXInstance ebxInstance){
+		EBXStructureInstance instance = new EBXStructureInstance(parent, ebxInstance.getGuid(), null) {};
+		EBXStructureEntry entry = readEntry(instance, ebxInstance.getComplex());
+		if (entry!=null){
+			instance.setEntry(entry);
+			return instance;
+		}else{
+			return null;
+		}
+	}
+	
+	private static EBXStructureEntry readEntry(EBXStructureInstance parent, EBXComplex ebxComplex){
 		try{
 			EBXStructureEntry entry = null;
-/*INFO	System.out.println("Reading: "+ebxEntry.getComplex().getComplexDescriptor().getName()+" - "+ebxEntry.getGuid());*/
-			String name = ebxEntry.getComplex().getComplexDescriptor().getName();
-			EntryType type = EBXStructureEntry.getTypeFromInstance(name);
+			String name = ebxComplex.getComplexDescriptor().getName();
+			EntryType type = getEntryTypeByName(name);
 			if (type!=null){
 				switch (type) {
 					case ReferenceObjectData:
-						entry = new EBXReferencedObjectData(parent, ebxEntry);
+						entry = new EBXReferencedObjectData(parent, ebxComplex);
 						break;
 					case SpatialPrefabBlueprint:
-						entry = new EBXSpatialPrefabBlueprint(parent, ebxEntry);
+						entry = new EBXSpatialPrefabBlueprint(parent, ebxComplex);
+						break;
+					case ObjectBlueprint:
+						entry = new EBXObjectBlueprint(parent, ebxComplex);
+						break;
+					case StaticModelEntityData:
+						entry = new EBXStaticModelEntityData(parent, ebxComplex);
 						break;
 				}
 			}else{
@@ -72,7 +87,7 @@ public class EBXStructureReader {
 			}
 			return entry;
 		}catch (Exception e){
-			System.err.println("EBXStructureEntry could net get read in!");
+			System.err.println("EBXStructureEntry could not get read in!");
 			e.printStackTrace();
 			return null;
 		}

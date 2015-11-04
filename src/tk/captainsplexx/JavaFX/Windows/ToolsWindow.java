@@ -6,7 +6,6 @@ import org.lwjgl.opengl.Display;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -81,7 +80,7 @@ public class ToolsWindow {
         controller.getExplorer1().setPrefWidth(Display.getDesktopDisplayMode().getWidth());
         controller.getExplorer1().setPrefHeight(Display.getDesktopDisplayMode().getHeight());
         
-        controller.getLayer().getItems().addAll("Test","Testsss","Testtssst");
+        //controller.getLayer().getItems().addAll("Test","Testsss","Testtssst");
         controller.getLayer().valueProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {

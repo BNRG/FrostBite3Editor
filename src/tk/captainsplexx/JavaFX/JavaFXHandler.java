@@ -4,7 +4,6 @@ import java.util.concurrent.CountDownLatch;
 
 import antonsmirnov.javafx.dialog.Dialog.Builder;
 import javafx.application.Platform;
-import javafx.scene.control.TreeItem;
 import javafx.scene.image.Image;
 import tk.captainsplexx.JavaFX.Windows.MainWindow;
 import tk.captainsplexx.Resource.FileHandler;
@@ -57,6 +56,7 @@ public class JavaFXHandler {
 		dialogBuilder = new Builder();
 	}
 	
+
 	public boolean runAndWait(Runnable action) {
 	    if (action == null){
 	        System.err.println("No action given to run on JavaFX Thread.");

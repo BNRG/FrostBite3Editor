@@ -9,7 +9,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeView;
-import javafx.scene.layout.AnchorPane;
 import tk.captainsplexx.Game.Core;
 import tk.captainsplexx.JavaFX.TreeViewEntry;
 import tk.captainsplexx.Resource.FileHandler;
@@ -35,7 +34,12 @@ public class ToolsWindowController {
 	public Button search;
 	@FXML
 	public TextField filter;
+	@FXML
+	public Button destroyLayerButton;
 	
+	public void destroyLayer(){
+		Core.getGame().getEntityHandler().destroyEntityLayer(layer.getValue());
+	}
 	
 	public void search(){
 		if (filter.getText().equals("")){
@@ -114,6 +118,10 @@ public class ToolsWindowController {
 		return cameraSpeed;
 	}
 
+	public Button getDestroyLayerButton() {
+		return destroyLayerButton;
+	}
+	
 	
 	
 	

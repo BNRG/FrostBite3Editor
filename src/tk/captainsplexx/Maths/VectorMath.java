@@ -24,7 +24,7 @@ public class VectorMath {
 	
 	/*Multiply Vector3f*/
 	public static Vector3f multiply(Vector3f left, Vector3f right, Vector3f dest){
-		Vector3f vec = new Vector3f(left.x, left.y, left.x);
+		Vector3f vec = new Vector3f(left.x, left.y, left.z);
 		vec.x *= right.x;
 		vec.y *= right.y;
 		vec.z *= right.z;
@@ -34,13 +34,4 @@ public class VectorMath {
 		return vec;
 	}
 	
-	public static boolean multiply(Vector3f vec, Vector3f mul){
-		if (vec==null||mul==null){
-			return false;
-		}
-		vec.x *= mul.x;
-		vec.y *= mul.y;
-		vec.z *= mul.z;
-		return true;
-	}
 }

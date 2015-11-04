@@ -28,6 +28,7 @@ import org.lwjgl.util.vector.Vector3f;
 
 import tk.captainsplexx.Camera.FPCameraController;
 import tk.captainsplexx.Entity.Entity;
+import tk.captainsplexx.Entity.Layer.EntityLayer;
 import tk.captainsplexx.Game.Core;
 import tk.captainsplexx.Game.Game;
 import tk.captainsplexx.Game.Point;
@@ -152,7 +153,7 @@ public class Render {
 		shader.start();
 		shader.loadProjectionMatrix(projectionMatrix);
 		shader.loadViewMatrix(viewMatrix);
-		RenderEntities(game.entityHandler.getEntities(), identityMatrix, shader);	
+		RenderEntityLayers(game.getEntityHandler().getLayers(), identityMatrix, shader);
 		shader.stop();
 		
 		RenderTerrains(game.getShaderHandler().getTerrainShader());
@@ -166,9 +167,14 @@ public class Render {
 		}
 		Display.sync(Core.DISPLAY_RATE);
 	}
+	public void RenderEntityLayers(ArrayList<EntityLayer> layers, Matrix4f identityMatrix, StaticShader shader){
+		for (EntityLayer layer : layers){
+			RenderEntities(layer.getEntities(), identityMatrix, shader);
+		}
+	}
+	
 	public void RenderEntity(Entity e, Matrix4f parentMtx, StaticShader shader){
 		if (e.isVisible) {
-			
 			Matrix4f matrix = Matrices
 					.createTransformationMatrix(e.getPosition(),
 							e.getRotation(), e.getScaling());
@@ -190,21 +196,23 @@ public class Render {
 			shader.loadHeighlightedColor(e.getHeighlightedColor());
 			String[] texturedModels = e.getTexturedModelNames();
 			shader.loadTransformationMatrix(stackMtx);
-			for (int i = 0; i < texturedModels.length; i++) {
-				TexturedModel tm = game.modelHandler.getTexturedModels()
-						.get((texturedModels[i]));
-				RawModel raw = tm.rawModel;
-				glColor3f(0.25f, 0.25f, 0.25f);
-				GL30.glBindVertexArray(raw.vaoID);
-				GL20.glEnableVertexAttribArray(0);
-				GL20.glEnableVertexAttribArray(1);
-				GL13.glActiveTexture(GL13.GL_TEXTURE0);
-				GL11.glBindTexture(GL11.GL_TEXTURE_2D, tm.textureID);
-				GL11.glDrawElements(raw.drawMethod, raw.vertexCount,
-						GL11.GL_UNSIGNED_INT, 0);
-				GL20.glDisableVertexAttribArray(0);
-				GL20.glDisableVertexAttribArray(1);
-				GL30.glBindVertexArray(0);
+			if (texturedModels!=null){
+				for (int i = 0; i < texturedModels.length; i++) {
+					TexturedModel tm = game.modelHandler.getTexturedModels()
+							.get((texturedModels[i]));
+					RawModel raw = tm.rawModel;
+					glColor3f(0.25f, 0.25f, 0.25f);
+					GL30.glBindVertexArray(raw.vaoID);
+					GL20.glEnableVertexAttribArray(0);
+					GL20.glEnableVertexAttribArray(1);
+					GL13.glActiveTexture(GL13.GL_TEXTURE0);
+					GL11.glBindTexture(GL11.GL_TEXTURE_2D, tm.textureID);
+					GL11.glDrawElements(raw.drawMethod, raw.vertexCount,
+							GL11.GL_UNSIGNED_INT, 0);
+					GL20.glDisableVertexAttribArray(0);
+					GL20.glDisableVertexAttribArray(1);
+					GL30.glBindVertexArray(0);
+				}
 			}
 			RenderEntities(e.getChildrens(), stackMtx, shader);
 			shader.loadHighlighted(false);

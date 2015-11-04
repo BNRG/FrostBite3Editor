@@ -6,7 +6,6 @@ import tk.captainsplexx.Resource.FileSeeker;
 import tk.captainsplexx.Resource.CAS.CasDataReader;
 import tk.captainsplexx.Resource.DDS.DDS_HEADER;
 import tk.captainsplexx.Resource.TOC.ConvertedTocFile;
-import tk.captainsplexx.Resource.TOC.ResourceLink;
 import tk.captainsplexx.Resource.TOC.TocSBLink;
 
 public class ITextureHandler {

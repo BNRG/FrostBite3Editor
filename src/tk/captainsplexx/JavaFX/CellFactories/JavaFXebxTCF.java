@@ -23,7 +23,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.paint.Color;
 import tk.captainsplexx.Game.Core;
-import tk.captainsplexx.Game.Game;
 import tk.captainsplexx.JavaFX.JavaFXHandler;
 import tk.captainsplexx.JavaFX.TreeViewEntry;
 import tk.captainsplexx.JavaFX.Windows.MainWindow.EntryType;
@@ -168,25 +167,11 @@ public class JavaFXebxTCF extends TreeCell<TreeViewEntry> {
     	                		ResourceHandler rs = Core.getGame().getResourceHandler();
     	                		EBXHandler eh = rs.getEBXHandler();
     	                		
-    	                		EBXFile file = eh.getEBXFileByGUID(targetArr[0]);
+    	                		EBXFile file = eh.getEBXFileByGUID(targetArr[0], true/*tryLoad*/, false/*readOriginal*/);
     							if (file!=null){
     								Core.getJavaFXHandler().getMainWindow().createEBXWindow(file);
     							}else{
-    								for (ResourceLink link : Core.getGame().getCurrentSB().getEbx()){
-    									if (link.getEbxFileGUID().equalsIgnoreCase(targetArr[0])){
-    										byte[] data = rs.readResourceLink(link, false /*use Original*/);
-    										if (data!=null){
-    											EBXFile ebxFile = eh.loadFile(data);
-    											if (ebxFile!=null){
-    												Core.getJavaFXHandler().getMainWindow().createEBXWindow(ebxFile);
-    											}else{
-    												System.err.println("Link can't be followed, cuz EBXFile can't be converted!");
-    											}
-    										}else{
-    											System.err.println("Link can't be followed, cuz off missing data.");
-    										}
-    									}
-    								}
+    								System.err.println("Link can't be followed, cuz off missing data.");
     							}
     						}else{
     	                		System.err.println("Internal GUID's can't be followed!");
@@ -408,7 +393,8 @@ public class JavaFXebxTCF extends TreeCell<TreeViewEntry> {
         
         public String convertToString(TreeViewEntry item){
         	if (item.getValue()!=null){
-        		EBXHandler ebxHandler = Core.getGame().getResourceHandler().getEBXHandler();
+        		ResourceHandler rs = Core.getGame().getResourceHandler();
+        		EBXHandler ebxHandler = rs.getEBXHandler();
 	        	switch(item.getType()){
 		    		case STRING:
 		    			return (String)item.getValue();
@@ -458,14 +444,14 @@ public class JavaFXebxTCF extends TreeCell<TreeViewEntry> {
 		    		case GUID:
 		    			String fileGUIDName = null;
 		    			String[] split = ((String)item.getValue()).split(" ");
-						if (ebxHandler.getFiles()!=null&&split.length==2){//DEBUG-
-							EBXFile file = ebxHandler.getEBXFileByGUID(split[0]);
+						if (ebxHandler.getEBXFiles()!=null&&split.length==2){//DEBUG-
+							EBXFile file = ebxHandler.getEBXFileByGUID(split[0], false/*aka. don't try to load*/, false);
 							if (file!=null){//Table with EBXFile
 								return file.getTruePath()+" "+split[1];
 							}else{//Table with ResourceLink's Name
-								String resourceLinksName = ebxHandler.getEBXFileGUIDs().get(split[0]);
-								if (resourceLinksName!=null){
-									return resourceLinksName+" "+split[1];
+								ResourceLink resLink = rs.getResourceLinkByEBXGUID(split[0]);
+								if (resLink!=null){
+									return resLink.getName()+" "+split[1];
 								}
 							}
 						}
@@ -525,14 +511,13 @@ public class JavaFXebxTCF extends TreeCell<TreeViewEntry> {
 			    			if (value.contains("/")){
 			    				String[] split = value.split(" ");			    				
 			    				if (split.length==2){
-				    				EBXFile file = ebxHandler.getEBXFileByName(split[0]);//Table with EBXFile
+				    				EBXFile file = ebxHandler.getEBXFileByTrueFileName(split[0]);//Table with EBXFile
 			    					if (file!=null){
 			    						return (file.getGuid()+" "+split[1]);
 			    					}else{
-			    						for (String guid : ebxHandler.getEBXFileGUIDs().keySet()){//Table just with the ResourceLink's Name.
-			    							if (split[0].equals(ebxHandler.getEBXFileGUIDs().get(guid))){
-			    								return (guid+" "+split[1]);
-			    							}
+			    						String guid = ebxHandler.getEBXGUIDByResourceName(split[0]);
+			    						if (guid!=null){
+			    							return (guid+" "+split[1]);
 			    						}
 			    					}
 								}

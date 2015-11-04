@@ -11,9 +11,9 @@ public class EBXObjInstanceGUID {
 		this.guid = internalGuid;
 	}
 	
-	public EBXStructureEntry followInternalGUID(EBXStructureFile ebxStructureFile){
-		return ebxStructureFile.getEntryFromInstanceGUID(guid);		
-	}
+	public EBXStructureEntry followInternal(EBXStructureFile ebxStructureFile){
+		return ebxStructureFile.getInstanceByGUID(guid);		
+	}	
 	
 	public String getGUID(){
 		return guid;

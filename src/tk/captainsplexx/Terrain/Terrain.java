@@ -1,6 +1,5 @@
 package tk.captainsplexx.Terrain;
 
-import java.nio.ByteOrder;
 import java.util.Random;
 
 import org.lwjgl.util.vector.Vector3f;

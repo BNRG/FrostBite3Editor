@@ -28,8 +28,10 @@ public class EBXWindow {
 	private Parent parent;
 	private Stage stage;
 	private Scene scene;
+	private EBXFile ebxFile;
 
 	public EBXWindow(EBXFile ebxFile){
+		this.ebxFile = ebxFile;
 		try {
 			controller = new EBXWindowController();
 			ebxWindowLoader.setController(controller);
@@ -48,6 +50,7 @@ public class EBXWindow {
 	    }
 	    /*stage.setX(Display.getDesktopDisplayMode().getWidth()*0.985f-scene.getWidth());
 	    stage.setY(Display.getDesktopDisplayMode().getHeight()/2-(scene.getHeight()/2));*/
+	    controller.setStage(stage);
 	    
 	    stage.getIcons().add(JavaFXHandler.applicationIcon16);
 	    stage.getIcons().add(JavaFXHandler.applicationIcon32);
@@ -58,6 +61,8 @@ public class EBXWindow {
 				Core.getJavaFXHandler().getMainWindow().destroyEBXWindow(stage);
 			}
 		});
+	    controller.setWindow(this);
+	    
 	    controller.getEBXExplorer().setEditable(true);
 	    controller.getEBXExplorer().setPrefWidth(Display.getDesktopDisplayMode().getWidth());
 	    controller.getEBXExplorer().setPrefHeight(Display.getDesktopDisplayMode().getHeight());
@@ -95,6 +100,11 @@ public class EBXWindow {
 	public Scene getScene() {
 		return scene;
 	}
+
+	public EBXFile getEBXFile() {
+		return ebxFile;
+	}
+	
 	
 	
 }

@@ -24,9 +24,6 @@ import tk.captainsplexx.Mod.ModTools;
 import tk.captainsplexx.Render.Render;
 import tk.captainsplexx.Render.Gui.GuiTexture;
 import tk.captainsplexx.Resource.FileHandler;
-import tk.captainsplexx.Resource.DDS.DDS_HEADER;
-import tk.captainsplexx.Resource.DDS.DDS_PIXELFORMAT;
-import tk.captainsplexx.Resource.TOC.ResourceLink;
 
 public class Core {
 	/*Main Components*/
@@ -65,7 +62,7 @@ public class Core {
 	private static ArrayList<Runnable> runnables;
 	private static ArrayList<Runnable> runnablesQ;
 	private static boolean isExecutingRunnables;
-	public static Object[] sharedObjs;
+	//public static Object[] sharedObjs;
 		
 	public static void main(String[] args){
 		/*Everything's happen from here. Even your parents meet here!*/
@@ -133,7 +130,7 @@ public class Core {
 		runnables = new ArrayList<Runnable>();
 		runnablesQ = new ArrayList<Runnable>();
 		isExecutingRunnables = false;
-		sharedObjs = null;
+		//sharedObjs = null;
 		gamePath = null;
 		checkVersion();
 		
@@ -281,12 +278,12 @@ public class Core {
 	public static ModTools getModTools() {
 		return modTools;
 	}
-	public static Object[] getSharedObjs() {
+	/*public static Object[] getSharedObjs() {
 		return sharedObjs;
 	}
 	public static void setSharedObjs(Object[] sharedObjs) {
 		Core.sharedObjs = sharedObjs;
-	}
+	}*/
 	
 	public static void checkVersion(){
 		/*VERSION CHECK*/

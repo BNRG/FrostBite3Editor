@@ -3,16 +3,19 @@ package tk.captainsplexx.Resource.EBX.Structure;
 import java.util.ArrayList;
 
 public class EBXStructureFile {
-	private ArrayList<EBXStructureEntry> entries;
+	private ArrayList<EBXStructureInstance> instances;
 	private String structureName;
+	private String ebxGUID;
 	
-	public EBXStructureFile(String structureName){
-		this.entries = new ArrayList<>();
+	public EBXStructureFile(String structureName, String ebxGUID){
+		this.instances = new ArrayList<>();
 		this.structureName = structureName;
+		this.ebxGUID = ebxGUID;
 	}
-	public EBXStructureFile(String structureName, ArrayList<EBXStructureEntry> entries){
+	public EBXStructureFile(String structureName, String ebxGUID, ArrayList<EBXStructureInstance> instances){
 		this.structureName = structureName;
-		this.entries = entries;
+		this.instances = instances;
+		this.ebxGUID = ebxGUID;
 	}
 	public String getStructureName() {
 		return structureName;
@@ -20,17 +23,21 @@ public class EBXStructureFile {
 	public void setStructureName(String structureName) {
 		this.structureName = structureName;
 	}
-	public ArrayList<EBXStructureEntry> getEntries() {
-		return entries;
+	
+	public ArrayList<EBXStructureInstance> getInstances() {
+		return instances;
+	}
+	public String getEBXGUID() {
+		return ebxGUID;
 	}
 	
-	public EBXStructureEntry getEntryFromInstanceGUID(String guid){
-		for (EBXStructureEntry entry : entries){
-			if (entry.getGuid().equalsIgnoreCase(guid)){
-				return entry;
+	public EBXStructureInstance getInstanceByGUID(String guid){
+		for (EBXStructureInstance instance : instances){
+			if (instance.getGuid().equalsIgnoreCase(guid)){
+				return instance;
 			}
 		}
-		System.err.println("Instance "+guid+" does not exist in "+structureName+"! (EBXStructureFile -> getEntryFromInstanceGUID)");
+		System.err.println("Instance "+guid+" does not exist in "+structureName+"!");
 		return null;
 	}
 		

@@ -1,27 +1,15 @@
 package tk.captainsplexx.Resource.EBX.Structure;
 
+import tk.captainsplexx.Resource.EBX.Structure.EBXStructureReader.EntryType;
+
 public abstract class EBXStructureEntry {
-	private EBXStructureFile parent;
+	private EBXStructureEntry parent;
 	private EntryType type;
 	private String guid;
 	
-	public static enum EntryType {
-		ReferenceObjectData, WorldPartReferenceObjectData, SubWorldInclusionSetting,
-		InterfaceDescriptorData, SubWorldData, LightProbeVolumeData, PointLightEntityData,
-		CameraEntityData, EffectReferenceObjectData, GroundHeightEntityData, TerrainPhysicsComponentData,
-		TerrainEntityData, LocatorEntityData, MapMarkerEntityData, VehicleSpawnReferenceObjectData,
-		OBBData, VolumeVectorShapeData, BoolEntityData, AndEntityData, LogicReferenceObjectData, DelayEntityData,
-		RandomMultiEventEntityData, LogicVisualEnvironmentEntityData, PlatformSplitterEntityData,
-		OrEntityData, TransformEntityData, SyncedBoolEntityData, FadeEntityData,
-		UINPXTooltipEntityData, SequenceEntityData, CompareBoolEntityData, TransformPartPropertyTrackData,
-		UINPXTooltipLine, UINPXTextLine, UINPXPaddingLine, WorldPartData, SpatialPrefabBlueprint, ObjectBlueprint,
-		VegetationTreeEntityData, StaticModelEntityData
-	}
-
-	public EBXStructureEntry(EBXStructureFile parent, EntryType type, String guid) {
+	public EBXStructureEntry(EBXStructureEntry parent, EntryType type) {
 		this.parent = parent;
 		this.type = type;
-		this.guid = guid;
 	}
 
 	public EntryType getType() {
@@ -32,23 +20,9 @@ public abstract class EBXStructureEntry {
 		this.type = type;
 	}
 
-	public static EntryType getTypeFromInstance(String name) {
-		try{
-			return EntryType.valueOf(name);
-		}catch (Exception e){
-			return null;
-		}
-	}
+	
 
-	public String getGuid() {
-		return guid;
-	}
-
-	public void setGuid(String guid) {
-		this.guid = guid;
-	}
-
-	public EBXStructureFile getParent() {
+	public EBXStructureEntry getParent() {
 		return parent;
 	}
 	

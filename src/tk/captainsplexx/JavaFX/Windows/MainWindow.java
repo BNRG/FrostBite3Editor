@@ -9,6 +9,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.TreeItem;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
+import tk.captainsplexx.Entity.Layer.EntityLayer;
 import tk.captainsplexx.Game.Core;
 import tk.captainsplexx.JavaFX.TreeViewEntry;
 import tk.captainsplexx.Mod.Mod;
@@ -227,7 +228,20 @@ public class MainWindow extends Application{
 			selectGamePath();
 		}
 	}
-
+	
+	public void updateLayers(ArrayList<EntityLayer> layers){
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				ObservableList<String> list = toolsWindow.getController().getLayer().getItems();
+				list.clear();
+				for (EntityLayer layer : layers){
+					list.add(layer.getName());
+				}
+				toolsWindow.getController().getDestroyLayerButton().setDisable(layers.isEmpty());
+			}
+		});		
+	}
 
 
 	public ModLoaderWindow getModLoaderWindow() {

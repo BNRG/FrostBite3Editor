@@ -1,6 +1,8 @@
 package tk.captainsplexx.Resource.EBX;
 
+import tk.captainsplexx.Game.Core;
 import tk.captainsplexx.Resource.EBX.EBXHandler.FieldValueType;
+import tk.captainsplexx.Resource.EBX.Structure.EBXStructureEntry;
 
 public class EBXExternalGUID {
 	private String fileGUID;
@@ -43,5 +45,9 @@ public class EBXExternalGUID {
 	
 	public String getBothGUIDs(){
 		return fileGUID+"/"+instanceGUID;
+	}
+	
+	public EBXStructureEntry follow(boolean tryLoad, boolean loadOriginal){
+		return Core.getGame().getResourceHandler().getEBXHandler().getStructureInstance(this, tryLoad, loadOriginal);
 	}
 }

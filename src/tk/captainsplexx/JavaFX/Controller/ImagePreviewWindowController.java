@@ -11,10 +11,10 @@ import tk.captainsplexx.Game.Core;
 import tk.captainsplexx.Mod.ModTools;
 import tk.captainsplexx.Mod.Package;
 import tk.captainsplexx.Resource.FileHandler;
-import tk.captainsplexx.Resource.CAS.CasDataReader;
-import tk.captainsplexx.Resource.ITEXTURE.ITexture;
 import tk.captainsplexx.Resource.ResourceHandler.LinkBundleType;
 import tk.captainsplexx.Resource.ResourceHandler.ResourceType;
+import tk.captainsplexx.Resource.CAS.CasDataReader;
+import tk.captainsplexx.Resource.ITEXTURE.ITexture;
 import tk.captainsplexx.Resource.TOC.ResourceLink;
 
 public class ImagePreviewWindowController {

@@ -10,7 +10,6 @@ import java.util.UUID;
 
 import tk.captainsplexx.Game.Core;
 import tk.captainsplexx.Resource.FileHandler;
-import tk.captainsplexx.Resource.FileSeeker;
 import tk.captainsplexx.Resource.ResourceHandler.LinkBundleType;
 import tk.captainsplexx.Resource.ResourceHandler.ResourceType;
 import tk.captainsplexx.Resource.CAS.CasCatEntry;

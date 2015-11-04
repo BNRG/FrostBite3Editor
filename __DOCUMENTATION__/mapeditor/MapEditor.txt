@@ -1,0 +1,5 @@
+test-scaling-4x.png -> shows first attempts to test, if the original scaling fits to the editor. Models are 4x bigger as original,
+					   so i had to multiply the transformation by 4x.
+					   
+					   The image is taken from top in the editor and the void got replaced with the minimap of test-range.
+					   

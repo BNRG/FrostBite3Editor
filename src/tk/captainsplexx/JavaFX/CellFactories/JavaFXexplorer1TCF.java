@@ -102,13 +102,11 @@ public class JavaFXexplorer1TCF extends TreeCell<TreeViewEntry> {
 								if (link.getBundleType() == ResourceBundleType.EBX){
 									if (data != null){
 										EBXFile ebxFile = game.getResourceHandler().getEBXHandler().loadFile(data);
-										TreeItem<TreeViewEntry> ebx = TreeViewConverter.getTreeView(ebxFile);
-										
-										Core.getJavaFXHandler().getMainWindow().createEBXWindow(ebxFile);
-										
-										/*Core.getJavaFXHandler().setTreeViewStructureRight(ebx);
-										Core.getJavaFXHandler().getMainWindow().updateRightRoot();
-										*/
+										if (ebxFile!=null){
+											TreeItem<TreeViewEntry> ebx = TreeViewConverter.getTreeView(ebxFile);
+											
+											Core.getJavaFXHandler().getMainWindow().createEBXWindow(ebxFile);
+										}
 									}else{
 										System.err.println("Could not build EBX Explorer because of missing data.");
 									}

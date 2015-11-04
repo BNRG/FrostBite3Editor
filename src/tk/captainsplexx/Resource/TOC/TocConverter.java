@@ -264,11 +264,9 @@ public class TocConverter {
 										link.getCasPatchType()
 								)
 							)
-						);
-						
-						Core.getGame().getResourceHandler().getEBXHandler().getEBXFileGUIDs().put(link.getEbxFileGUID(), link.getName());
-						
+						);	
 					}catch (Exception e){
+						e.printStackTrace();
 						//Timeout in JavaFX Thread ??
 					}
 					break;

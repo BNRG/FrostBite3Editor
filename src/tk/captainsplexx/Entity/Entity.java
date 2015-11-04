@@ -26,15 +26,18 @@ public abstract class Entity {
 	public String[] texturedModelNames;
 	
 	public ArrayList<Entity> childrens = new ArrayList<>();
+	public Entity parent = null;
 
-	public Entity(String name, String[] texturedModelNames) {
+	public Entity(String name, Entity parent, String[] texturedModelNames) {
 		this.name = name;
+		this.parent = parent;
 		this.texturedModelNames = texturedModelNames;
 	}
 
-	public Entity(String name, String[] texturedModelNames,
+	public Entity(String name, Entity parent, String[] texturedModelNames,
 			Vector3f minCoords, Vector3f maxCoords) {
 		this.name = name;
+		this.parent = parent;
 		this.texturedModelNames = texturedModelNames;
 		this.minCoords = minCoords;
 		this.maxCoords = maxCoords;
@@ -228,6 +231,21 @@ public abstract class Entity {
 		} else {
 			this.isVisible = true;
 		}
+	}
+	
+	
+	
+
+	public void setTexturedModelNames(String[] texturedModelNames) {
+		this.texturedModelNames = texturedModelNames;
+	}
+
+	public Entity getParent() {
+		return parent;
+	}
+
+	public void setParent(Entity parent) {
+		this.parent = parent;
 	}
 
 	public abstract void update();

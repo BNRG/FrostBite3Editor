@@ -2,23 +2,42 @@ package tk.captainsplexx.JavaFX.Controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.TreeView;
+import javafx.stage.Stage;
 import tk.captainsplexx.Game.Core;
 import tk.captainsplexx.JavaFX.TreeViewConverter;
 import tk.captainsplexx.JavaFX.TreeViewEntry;
-import tk.captainsplexx.Mod.ModTools;
-import tk.captainsplexx.Mod.Package;
+import tk.captainsplexx.JavaFX.Windows.EBXWindow;
 import tk.captainsplexx.Resource.FileHandler;
-import tk.captainsplexx.Resource.ResourceHandler.LinkBundleType;
-import tk.captainsplexx.Resource.ResourceHandler.ResourceType;
 import tk.captainsplexx.Resource.EBX.EBXFile;
 
 public class EBXWindowController {
 	@FXML
-	public TreeView<TreeViewEntry> ebxExplorer;
-
+	private TreeView<TreeViewEntry> ebxExplorer;
+	
+	private EBXWindow window;
+	private Stage stage;
+	
+	
+	public void createLayer(){
+		Core.runOnMainThread(new Runnable() {
+			@Override
+			public void run() {
+				Core.getGame().getEntityHandler().createEntityLayer(window.getEBXFile());
+				System.err.println("--------------Layer creation done!!------------------");
+			}
+		});
+	}
+	
+	public void close(){
+		Core.getJavaFXHandler().getMainWindow().destroyEBXWindow(stage);
+	}
+	
 	public void saveEBX(){
 		if (ebxExplorer.getRoot() != null){
 			if (Core.getGame().getCurrentMod()!=null&&!Core.isDEBUG){
+				
+				//EBXFile ebxFile = window.getEBXFile();
+				
 				/*
 				String resPath = ebxExplorer.getRoot().getValue().getName()+".ebx";		
 				
@@ -62,6 +81,19 @@ public class EBXWindowController {
 		return ebxExplorer;
 	}
 
+	public void setStage(Stage stage) {
+		this.stage = stage;
+	}
+
+
+	public void setWindow(EBXWindow window) {
+		this.window = window;
+	}
+	
+	
+
+	
+	
 	
 	
 }

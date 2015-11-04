@@ -9,9 +9,16 @@ public class ModelHandler {
 	public Loader loader = new Loader();
 	
 	public RawModel addRawModel(int drawMethod, String name, float[] positions, float[] textures, int[] indices){
+		RawModel existingRawModel = rawModels.get(name);
+		if (existingRawModel!=null){
+			return existingRawModel;
+		}
 		RawModel model = loader.loadVAO(name, drawMethod, positions, textures, indices);
-		rawModels.put(name, model);
-		return model;
+		if (model!=null){
+			rawModels.put(name, model);
+			return model;
+		}
+		return null;
 	}
 	
 	public String addTexturedModel(RawModel rawModel, int textureID){

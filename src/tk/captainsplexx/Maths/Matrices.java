@@ -51,4 +51,20 @@ public class Matrices {
 		Matrix4f.translate(position, viewMatrix, viewMatrix);
 		return viewMatrix;
 	}
+	
+	public static Vector3f getRotationAngles(Vector3f right, Vector3f up, Vector3f forward){
+		System.err.println("getRotationAngles function from C-Sharp LevelEditor, should work"
+				+ " - not tested!");
+		Vector3f angles = new Vector3f();
+        // calculate the euler angles
+        float xRotation = (float) Math.atan2(forward.y, forward.z); // range: (-pi, pi)
+        float yRotation = (float) Math.atan2(-forward.x, Math.sqrt((forward.y * forward.y) + (forward.z * forward.z))); // range: (-(pi/2), pi/2)
+        float zRotation = (float) Math.atan2(up.x, right.x); // range: (-pi, pi)
+
+        // calculate euler angles to degrees
+        angles.x = (float) ((xRotation * 180) / Math.PI);
+        angles.y = (float) ((yRotation * 180) / Math.PI);
+        angles.z = (float) ((zRotation * 180) / Math.PI);
+        return angles;
+    }
 }

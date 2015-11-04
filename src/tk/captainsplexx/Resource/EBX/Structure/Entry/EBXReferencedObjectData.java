@@ -2,11 +2,11 @@ package tk.captainsplexx.Resource.EBX.Structure.Entry;
 
 import java.util.HashMap;
 
+import tk.captainsplexx.Resource.EBX.EBXComplex;
 import tk.captainsplexx.Resource.EBX.EBXExternalGUID;
 import tk.captainsplexx.Resource.EBX.EBXField;
-import tk.captainsplexx.Resource.EBX.EBXInstance;
 import tk.captainsplexx.Resource.EBX.Structure.EBXStructureEntry;
-import tk.captainsplexx.Resource.EBX.Structure.EBXStructureFile;
+import tk.captainsplexx.Resource.EBX.Structure.EBXStructureReader.EntryType;
 
 public class EBXReferencedObjectData extends EBXStructureEntry {
 
@@ -19,33 +19,33 @@ public class EBXReferencedObjectData extends EBXStructureEntry {
 	private boolean castReflectionEnable = false;
 	private boolean excluded = false;
 
-	public EBXReferencedObjectData(EBXStructureFile parent, EBXInstance ebxInstance) {
-		super(parent, EntryType.ReferenceObjectData, ebxInstance.getGuid());
-		for (EBXField instanceEntry : ebxInstance.getComplex().getFields()) {
-			switch (instanceEntry.getFieldDescritor().getName()) {
+	public EBXReferencedObjectData(EBXStructureEntry parent, EBXComplex complex) {
+		super(parent, EntryType.ReferenceObjectData);
+		for (EBXField field : complex.getFields()) {
+			switch (field.getFieldDescritor().getName()) {
 			case "Blueprint": /* -------------- Blueprint -------------- */
-				this.blueprint = new EBXExternalGUID(instanceEntry);
+				this.blueprint = new EBXExternalGUID(field);
 				break;
 			case "BlueprintTransform": /* -------------- BlueprintTransform -------------- */
-				this.blueprintTransform = new EBXBlueprintTransform(instanceEntry.getValueAsComplex());
+				this.blueprintTransform = new EBXBlueprintTransform(field.getValueAsComplex());
 				break;
 			case "ObjectVariation": /* -------------- BlueprintTransform -------------- */
-				this.objectVariation = new EBXExternalGUID(instanceEntry);
+				this.objectVariation = new EBXExternalGUID(field);
 				break;
 			case "StreamRealm": /* -------------- StreamRealm -------------- */
-				this.streamRealm = new EBXObjEnum((HashMap<?, ?>) instanceEntry.getValue(), true);
+				this.streamRealm = new EBXObjEnum((HashMap<?, ?>) field.getValue(), true);
 				break;
 			case "RadiosityTypeOverride": /* -------------- RadiosityTypeOverride -------------- */
-				this.radiosityTypeOverride = new EBXObjEnum((HashMap<?, ?>) instanceEntry.getValue(), true);
+				this.radiosityTypeOverride = new EBXObjEnum((HashMap<?, ?>) field.getValue(), true);
 				break;
 			case "CastSunShadowEnable": /* -------------- CastSunShadowEnable -------------- */
-				this.castSunShadowEnable = (boolean) instanceEntry.getValue();
+				this.castSunShadowEnable = (boolean) field.getValue();
 				break;
 			case "CastReflectionEnable": /* -------------- CastReflectionEnable -------------- */
-				this.castReflectionEnable = (boolean) instanceEntry.getValue();
+				this.castReflectionEnable = (boolean) field.getValue();
 				break;
 			case "Excluded": /* -------------- Excluded -------------- */
-				this.excluded = (boolean) instanceEntry.getValue();
+				this.excluded = (boolean) field.getValue();
 				break;
 			}
 		}

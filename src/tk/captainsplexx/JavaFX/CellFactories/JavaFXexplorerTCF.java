@@ -32,16 +32,10 @@ public class JavaFXexplorerTCF extends TreeCell<TreeViewEntry> {
 						TocSBLink link = ((TocSBLink)getTreeItem().getValue().getValue());
 						//TOC MODE
 						if (link.getType() == LinkBundleType.BUNDLES){
+							Core.getGame().getResourceHandler().getEBXHandler().reset();//clean all ebxFiles in DB
+							
 							TocFile part = link.getLinkedSBPart();
 							ConvertedSBpart sbpart = TocConverter.convertSBpart(part);
-							
-							/* THIS CREATOR DOES CHANGE CURRENT TOC
-							 * OFFSETS TO NEW ONE. THIS WILL AND CAN NOT BE HERE!
-							 * ONLY FOR DEBUG! - IF ENABLED, NO COMPARE TO ORIGINAL DATA POSSIBLE!
-							 */
-							//TocCreator.createModifiedSBFile(Core.getGame().getCurrentToc(), sbpart/*REPLACE WITH MODIF. 1*/, false, "output/"+getTreeItem().getParent().getValue().getName()+"_splexx.sb", true);	
-							//FileHandler.writeFile("output/"+getTreeItem().getParent().getValue().getName()+"_splexx.toc", TocCreator.createTocFile(Core.getGame().getCurrentToc()));
-							/*END*/
 							
 							Core.getGame().setCurrentSB(sbpart);
 							TreeItem<TreeViewEntry> tree = TreeViewConverter.getTreeView(sbpart);

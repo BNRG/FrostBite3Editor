@@ -8,7 +8,6 @@ import org.lwjgl.util.vector.Vector3f;
 import tk.captainsplexx.Entity.Entity;
 import tk.captainsplexx.Player.PlayerEntity;
 import tk.captainsplexx.Player.PlayerHandler;
-import tk.captainsplexx.Terrain.Terrain;
 
 public class InputHandler {
 	
@@ -69,7 +68,7 @@ public class InputHandler {
 	    
 	    if (Keyboard.isKeyDown(Keyboard.KEY_NUMPAD0))
 	    {
-	    	Core.getGame().getEntityHandler().getEntities().clear();
+	    	Core.getGame().getEntityHandler().clear();
 	    }
 	    
 	    if (Keyboard.isKeyDown(Keyboard.KEY_NUMPAD1))

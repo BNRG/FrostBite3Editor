@@ -42,7 +42,15 @@ public class ResourceHandler {
 		this.patchedCasCatManager = new CasCatManager();
 	}
 	
-	
+	public ResourceLink getResourceLinkByEBXGUID(String ebxGUID){
+		for (ResourceLink link : Core.getGame().getCurrentSB().getEbx()){
+			if (link.getEbxFileGUID().equalsIgnoreCase(ebxGUID)){
+				return link;
+			}
+		}
+		//System.err.println("ResourceLink not found for EBXGUID "+ebxGUID+"!");
+		return null;
+	}
 	
 	public byte[] readResourceLink(ResourceLink link, boolean useOriginal){
 		System.out.println("Reading Link: "+link.getName()+" - Original only:("+useOriginal+")");

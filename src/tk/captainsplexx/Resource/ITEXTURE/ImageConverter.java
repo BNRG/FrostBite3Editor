@@ -1,9 +1,6 @@
 package tk.captainsplexx.Resource.ITEXTURE;
 
 import java.io.File;
-import java.util.Random;
-
-import tk.captainsplexx.Resource.FileHandler;
 
 public class ImageConverter {
 	public static enum ImageType{
