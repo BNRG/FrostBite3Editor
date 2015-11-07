@@ -46,7 +46,6 @@ public class CasDataReader { //casPath == folderPath
 			byte[] base = CasDataReader.readCas(baseSHA1, Core.gamePath+"/Data", rs.getCasCatManager().getEntries(), false);
 			byte[] delta = CasDataReader.readCas(deltaSHA1, Core.gamePath+"/Update/Patch/Data", rs.getPatchedCasCatManager().getEntries(), true);
 			
-			
 			if (base==null||delta==null){
 				System.err.println("Base or Delta contains null data.");
 				return null;
@@ -65,7 +64,6 @@ public class CasDataReader { //casPath == folderPath
 			if (data != null){
 				return data;
 			}else{
-				System.err.println("null data... in CasDataReader (patched data replacement)");
 				return null;
 			}
 		}else{
@@ -104,7 +102,7 @@ public class CasDataReader { //casPath == folderPath
 					return FileHandler.readFile(casFilePath, e.getOffset(), e.getProcSize());
 				}
 			}
-			System.err.println("SHA not found in "+casFolderPath);
+			System.err.println("SHA "+SHA1+" not found in "+casFolderPath);
 			return null;
 		}catch (NullPointerException e){
 			e.printStackTrace();
@@ -117,7 +115,7 @@ public class CasDataReader { //casPath == folderPath
 		ArrayList<Byte> output = new ArrayList<Byte>();
 		while(seeker.getOffset()<data.length){
 			byte[] decompressedBlock = readBlock(data, seeker);
-			if (decompressedBlock != null){
+			if (decompressedBlock != null && !seeker.hasError()){
 				for (Byte b : decompressedBlock){
 					output.add(b);
 					/*DEBUG
@@ -141,7 +139,9 @@ public class CasDataReader { //casPath == folderPath
 		
 		if (compressionType == 0x0970){//COMPRESSED
 			//rawData = LZ4.decompress(FileHandler.readByte(encodedEntry, seeker, procSize-seeker.getOffset()));
-			byte[] rawData = LZ4.decompress(FileHandler.readByte(encodedEntry, seeker, compressedSize));
+			byte[] lz4data = FileHandler.readByte(encodedEntry, seeker, compressedSize);
+			if (lz4data==null){return null;}
+			byte[] rawData = LZ4.decompress(lz4data);
 			if (rawData.length<decompressedSize){
 				System.err.println("Decompressed file size does not match the cas.cat given one. "+rawData.length+" of "+decompressedSize+" Bytes loaded.");
 			}
@@ -161,7 +161,7 @@ public class CasDataReader { //casPath == folderPath
 			System.err.println("'Dragon Age Inquisition' is not supported yet. Please be patient! \n If you know the Compression type of it, let me know via twittah ;)");
 			return null;
 		}else{
-			System.err.println(FileHandler.bytesToHex(FileHandler.toBytes(compressionType, ByteOrder.LITTLE_ENDIAN))+" type was not defined in CasDataReader.");
+			System.err.println("Compression type " + FileHandler.bytesToHex(FileHandler.toBytes(compressionType, ByteOrder.LITTLE_ENDIAN))+" is not defined in CasDataReader.");
 			FileHandler.writeFile("output/debug/error_readBlock.tmp", encodedEntry);
 			return null;
 		}

@@ -6,6 +6,7 @@ import java.util.ConcurrentModificationException;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector3f;
 
+import tk.captainsplexx.Entity.Entity.Type;
 import tk.captainsplexx.Entity.Layer.EntityLayer;
 import tk.captainsplexx.Entity.Layer.EntityLayerConverter;
 import tk.captainsplexx.Game.Core;
@@ -59,13 +60,35 @@ public class EntityHandler {
 	public void destroyEntityLayer(String name){
 		EntityLayer layer = getEntityLayer(name);
 		if (layer!=null){
+			for (Entity e : layer.getEntities()){
+				destroyEntity(e);
+			}
 			layers.remove(layer);
 			Core.getJavaFXHandler().getMainWindow().updateLayers(Core.getGame().getEntityHandler().getLayers());
 		}
 	}
 	
+	public void destroyEntityLayer(EntityLayer layer){
+		if (layer!=null){
+			for (Entity e : layer.getEntities()){
+				destroyEntity(e);
+			}
+			layers.remove(layer);
+			Core.getJavaFXHandler().getMainWindow().updateLayers(Core.getGame().getEntityHandler().getLayers());
+		}
+	}
+	
+	public void destroyEntity(Entity e){
+		System.err.println("Destroy Entity and clean resources if not needed anymore, not done!");
+	}
+	
 	public void clear(){
-		layers.clear();
+		/*Clean's all entities with their resources!*/
+		for (EntityLayer layer : layers){
+			destroyEntityLayer(layer);
+		}
+		
+		
 	}
 	
 	public Entity getFocussedEntity(Vector3f position, Vector3f direction){
@@ -110,7 +133,7 @@ public class EntityHandler {
 	}
 	
 	
-	public Entity createEntity(byte[] mesh, String name, Entity parent, String loaderErrorDesc){
+	public Entity createEntity(byte[] mesh, Type type, String name, Entity parent, String loaderErrorDesc){
 		try{
 			System.out.println("Creating Entity "+name);
 			

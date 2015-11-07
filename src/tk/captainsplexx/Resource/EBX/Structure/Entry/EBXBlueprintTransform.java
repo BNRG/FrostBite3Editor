@@ -67,7 +67,7 @@ public class EBXBlueprintTransform {
 	
 	public Vector3f getRotation(){
 		if (type==BlueprintTransformType.LinearTransform){
-			return Matrices.getRotationAngles(getEBXVector(Component.RIGHT).getVector(), getEBXVector(Component.UP).getVector(), getEBXVector(Component.FORWARD).getVector());
+			return Matrices.getRotationInEulerAngles(getEBXVector(Component.RIGHT).getVector(), getEBXVector(Component.UP).getVector(), getEBXVector(Component.FORWARD).getVector());
 		}
 		//System.err.println("Can't get Rotation from "+type+" in EBXBlueprintTransform's method!");
 		return null;

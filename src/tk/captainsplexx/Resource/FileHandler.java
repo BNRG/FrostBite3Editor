@@ -263,6 +263,9 @@ public class FileHandler {
 		byte[] buffer = new byte[len];
 		for (int i = 0; i < len; i++) {
 			buffer[i] = readByte(input, seeker);
+			if (seeker.hasError()){
+				return null;
+			}
 		}
 		return buffer;
 	}
@@ -273,6 +276,9 @@ public class FileHandler {
 		seeker.seek(offset);
 		for (int i = 0; i < len; i++) {
 			buffer[i] = readByte(input, seeker);
+			if (seeker.hasError()){
+				return null;
+			}
 		}
 		return buffer;
 	}
@@ -488,10 +494,10 @@ public class FileHandler {
 		return tmp;
 	}
 	
-	public static boolean addBytes(byte[] arr, ArrayList<Byte> list){
+	public static boolean addBytes(byte[] arr, ArrayList<Byte> targetList){
 		try{
 			for (Byte b : arr){
-				list.add(b);
+				targetList.add(b);
 			}
 			return true;
 		}catch (Exception e){
@@ -500,10 +506,10 @@ public class FileHandler {
 		}
 	}
 	
-	public static boolean addBytes(byte[] arr, ArrayList<Byte> list, int startIdx, int length){
+	public static boolean addBytes(byte[] arr, ArrayList<Byte> targetList, int startIdx, int length){
 		try{
 			for (int i=startIdx; i<(startIdx+length);i++){
-				list.add(arr[i]);
+				targetList.add(arr[i]);
 			}
 			return true;
 		}catch (Exception e){

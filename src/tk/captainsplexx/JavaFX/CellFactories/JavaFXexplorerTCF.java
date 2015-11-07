@@ -33,6 +33,7 @@ public class JavaFXexplorerTCF extends TreeCell<TreeViewEntry> {
 						//TOC MODE
 						if (link.getType() == LinkBundleType.BUNDLES){
 							Core.getGame().getResourceHandler().getEBXHandler().reset();//clean all ebxFiles in DB
+							Core.getGame().getEntityHandler().clear();
 							
 							TocFile part = link.getLinkedSBPart();
 							ConvertedSBpart sbpart = TocConverter.convertSBpart(part);

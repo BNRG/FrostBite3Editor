@@ -45,12 +45,14 @@ public class EBXHandler {
 		
 	public EBXFile loadFile(byte[] data) {
 		try{
-			if (data==null){return null;}
-			loader.loadEBX(data);
-			EBXFile newFile = new EBXFile(loader.getTrueFilename(), loader.getInstances(), loader.getFileGUID());
-			EBXExternalFileReference efr = new EBXExternalFileReference(loader.getFileGUID(), loader.getTrueFilename());
-			ebxFiles.put(efr, newFile);
-			return newFile;
+			if (loader.loadEBX(data)){
+				EBXFile newFile = new EBXFile(loader.getTrueFilename(), loader.getInstances(), loader.getFileGUID());
+				EBXExternalFileReference efr = new EBXExternalFileReference(loader.getFileGUID(), loader.getTrueFilename());
+				ebxFiles.put(efr, newFile);
+				return newFile;
+			}else{
+				return null;
+			}
 		}catch (Exception e){
 			e.printStackTrace();
 			System.err.println("EBXFile could not be loaded.");

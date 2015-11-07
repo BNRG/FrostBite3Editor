@@ -52,19 +52,30 @@ public class Matrices {
 		return viewMatrix;
 	}
 	
-	public static Vector3f getRotationAngles(Vector3f right, Vector3f up, Vector3f forward){
-		System.err.println("getRotationAngles function from C-Sharp LevelEditor, should work"
-				+ " - not tested!");
+	public static Vector3f getRotationInEulerAngles(Vector3f right, Vector3f up, Vector3f forward){
+		//http://nghiaho.com/?page_id=846
+		//<-Checked working->
 		Vector3f angles = new Vector3f();
         // calculate the euler angles
-        float xRotation = (float) Math.atan2(forward.y, forward.z); // range: (-pi, pi)
-        float yRotation = (float) Math.atan2(-forward.x, Math.sqrt((forward.y * forward.y) + (forward.z * forward.z))); // range: (-(pi/2), pi/2)
-        float zRotation = (float) Math.atan2(up.x, right.x); // range: (-pi, pi)
-
-        // calculate euler angles to degrees
-        angles.x = (float) ((xRotation * 180) / Math.PI);
-        angles.y = (float) ((yRotation * 180) / Math.PI);
-        angles.z = (float) ((zRotation * 180) / Math.PI);
+		angles.x = (float) Math.atan2(forward.y, forward.z); // range: (-pi, pi)
+		angles.y = (float) Math.atan2(-forward.x, Math.sqrt((forward.y * forward.y) + (forward.z * forward.z))); // range: (-(pi/2), pi/2)
+		angles.z = (float) Math.atan2(up.x, right.x); // range: (-pi, pi)
         return angles;
+    }
+	
+	public static Vector3f getRotationInDegrees(Vector3f right, Vector3f up, Vector3f forward){
+		//http://nghiaho.com/?page_id=846
+		Vector3f degrees = new Vector3f();
+        // calculate the euler angles
+        Vector3f euler = getRotationInEulerAngles(right, up, forward);
+        // calculate euler angles to degrees
+        degrees.x = (float) ((euler.x * 180) / Math.PI);
+        degrees.y = (float) ((euler.y * 180) / Math.PI);
+        degrees.z = (float) ((euler.z * 180) / Math.PI);
+        
+        
+        /*!!!NOT TESTED YET!!!*/
+        System.err.println("getRotationInDegrees not tested yet!!");
+        return degrees;
     }
 }

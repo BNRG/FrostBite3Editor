@@ -6,8 +6,13 @@ import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
 public abstract class Entity {
+	
+	public static enum Type{
+			Object, Light,
+	};
 
 	public String name;
+	public Type type;
 
 	public Vector3f position = new Vector3f(0.0f, 0.0f, 0.0f);
 	public Vector3f rotation = new Vector3f(0.0f, 0.0f, 0.0f);
@@ -28,15 +33,17 @@ public abstract class Entity {
 	public ArrayList<Entity> childrens = new ArrayList<>();
 	public Entity parent = null;
 
-	public Entity(String name, Entity parent, String[] texturedModelNames) {
+	public Entity(String name, Type type, Entity parent, String[] texturedModelNames) {
 		this.name = name;
+		this.type = type;
 		this.parent = parent;
 		this.texturedModelNames = texturedModelNames;
 	}
 
-	public Entity(String name, Entity parent, String[] texturedModelNames,
-			Vector3f minCoords, Vector3f maxCoords) {
+	public Entity(String name, Type type, Entity parent, String[] texturedModelNames,
+			Vector3f minCoords, Vector3f maxCoords) {		
 		this.name = name;
+		this.type = type;
 		this.parent = parent;
 		this.texturedModelNames = texturedModelNames;
 		this.minCoords = minCoords;
@@ -246,6 +253,12 @@ public abstract class Entity {
 
 	public void setParent(Entity parent) {
 		this.parent = parent;
+	}
+	
+	
+
+	public Type getType() {
+		return type;
 	}
 
 	public abstract void update();

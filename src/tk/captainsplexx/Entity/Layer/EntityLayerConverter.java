@@ -5,6 +5,7 @@ import org.lwjgl.util.vector.Vector3f;
 import tk.captainsplexx.Entity.Entity;
 import tk.captainsplexx.Entity.EntityHandler;
 import tk.captainsplexx.Entity.ObjectEntity;
+import tk.captainsplexx.Entity.Entity.Type;
 import tk.captainsplexx.Game.Core;
 import tk.captainsplexx.Maths.Matrices;
 import tk.captainsplexx.Maths.VectorMath;
@@ -16,6 +17,7 @@ import tk.captainsplexx.Resource.EBX.Structure.EBXStructureFile;
 import tk.captainsplexx.Resource.EBX.Structure.EBXStructureInstance;
 import tk.captainsplexx.Resource.EBX.Structure.EBXStructureReader.EntryType;
 import tk.captainsplexx.Resource.EBX.Structure.Entry.EBXBlueprintTransform;
+import tk.captainsplexx.Resource.EBX.Structure.Entry.EBXDynamicModelEntityData;
 import tk.captainsplexx.Resource.EBX.Structure.Entry.EBXObjArray;
 import tk.captainsplexx.Resource.EBX.Structure.Entry.EBXObjArray.ArrayType;
 import tk.captainsplexx.Resource.EBX.Structure.Entry.EBXObjInstanceGUID;
@@ -87,11 +89,11 @@ public class EntityLayerConverter {
 				if (scaling!=null){
 					en.setScaling(scaling);
 				}
-				
+				*/
 				Vector3f rotation = transform.getRotation();
 				if (rotation!=null){
 					en.setRotation(rotation);
-				}*/
+				}
 				
 				Vector3f position = transform.getTranformation();
 				if (position!=null){
@@ -120,16 +122,22 @@ public class EntityLayerConverter {
 			case StaticModelEntityData:
 				EBXStaticModelEntityData smed = (EBXStaticModelEntityData) entry;
 				
-				en = getEntity(smed.getMesh(), parentEntity);
+				en = getEntity(smed.getMesh(), parentEntity, Type.Object);
+				break;
+			case DynamicModelEntityData:
+				EBXDynamicModelEntityData dmed = (EBXDynamicModelEntityData) entry;
+				
+				en = getEntity(dmed.getMesh(), parentEntity, Type.Object);
 				break;
 		}
 		if (en!=null){
+			calculateNewBoxSize(parentEntity, en);
 			return en;
 		}
 		return null;
 	}
 	
-	private static Entity getEntity(EBXExternalGUID externalGUID, Entity parentEntity){
+	private static Entity getEntity(EBXExternalGUID externalGUID, Entity parentEntity, Type type){
 		if (externalGUID==null){return null;};
 		ResourceLink ebxLink = Core.getGame().getResourceHandler().getResourceLinkByEBXGUID(externalGUID.getFileGUID());
 		if (ebxLink!=null){
@@ -138,7 +146,7 @@ public class EntityLayerConverter {
 				if (resLink.getName().equalsIgnoreCase(resLinkname)){
 					byte[] meshData = Core.getGame().getResourceHandler().readResourceLink(resLink);
 					if (meshData!=null){
-						return Core.getGame().getEntityHandler().createEntity(meshData, resLinkname, parentEntity, "EntityLayerConverter's getEntity-Method!");
+						return Core.getGame().getEntityHandler().createEntity(meshData, type, resLinkname, parentEntity, "EntityLayerConverter's getEntity-Method!");
 					}
 				}
 			}
@@ -162,6 +170,36 @@ public class EntityLayerConverter {
 			Entity iEntity = getEntity(target.getEntry(), parentEntity, target.getGuid(), loadOriginal);
 			if (iEntity!=null){
 				parentEntity.getChildrens().add(iEntity);
+			}
+		}
+	}
+	private static void calculateNewBoxSize(Entity parentEntity, Entity childEntity){
+		if (parentEntity!=null && childEntity !=null){
+			
+			Vector3f maxCoordsParent = parentEntity.getMaxCoords();
+			Vector3f minCoordsParent = parentEntity.getMinCoords();
+			
+			Vector3f maxRelCoordsChild = Vector3f.add(childEntity.getPosition(), childEntity.getMaxCoords(), null);
+			Vector3f minRelCoordsChild = Vector3f.add(childEntity.getPosition(), childEntity.getMinCoords(), null);
+					
+			if (maxRelCoordsChild.x > maxCoordsParent.x){
+				maxCoordsParent.x = maxRelCoordsChild.x;
+			}
+			if (maxRelCoordsChild.y > maxCoordsParent.y){
+				maxCoordsParent.y = maxRelCoordsChild.y;
+			}
+			if (maxRelCoordsChild.z > maxCoordsParent.z){
+				maxCoordsParent.z = maxRelCoordsChild.z;
+			}
+			
+			if (minRelCoordsChild.x < minCoordsParent.x){
+				minCoordsParent.x = minRelCoordsChild.x;
+			}
+			if (minRelCoordsChild.y < minCoordsParent.y){
+				minCoordsParent.y = minRelCoordsChild.y;
+			}
+			if (minRelCoordsChild.z < minCoordsParent.z){
+				minCoordsParent.z = minRelCoordsChild.z;
 			}
 		}
 	}

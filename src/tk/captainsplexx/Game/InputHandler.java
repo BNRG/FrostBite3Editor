@@ -11,13 +11,13 @@ import tk.captainsplexx.Player.PlayerHandler;
 
 public class InputHandler {
 	
-	public float speedMultipShift;
+	public float speedMultipShift = 1f;
+	
 	public void listen() {		
 		Entity en = Core.getGame().getEntityHandler().getFocussedEntity();
-		speedMultipShift = 1f;
-		if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
-	    {
-			speedMultipShift = 10f;
+		speedMultipShift += (Mouse.getDWheel()/50);
+		if (speedMultipShift<=0){
+	    	speedMultipShift = 1;
 	    }
 		if (Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
 	    {

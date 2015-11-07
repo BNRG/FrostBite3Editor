@@ -54,11 +54,15 @@ public class EBXLoader {
 	}
 	
 	public static String getGUID(byte[] ebxFile){
+		if (ebxFile==null){return null;}
 		//4Bytes Magic + 36Bytes Header == FileGUID Offset at 40. Byte (0x28)
 		return FileHandler.bytesToHex(FileHandler.readByte(ebxFile, 0x28, 16)).toUpperCase();
 	}
 
-	public void loadEBX(byte[] ebxFileBytes){
+	public boolean loadEBX(byte[] ebxFileBytes){
+		if (ebxFileBytes==null){
+			return false;
+		}
 		this.seeker = new FileSeeker();
 		this.ebxFileBytes = ebxFileBytes;
 		this.trueFilename = "";
@@ -86,11 +90,19 @@ public class EBXLoader {
 				FileHandler.readInt(ebxFileBytes, seeker, order), //length of string section including padding 0x1C 4bytes
 				FileHandler.readInt(ebxFileBytes, seeker, order), //num array repeater 0x20 4bytes
 				FileHandler.readInt(ebxFileBytes, seeker, order)); //length of normal payload section; the start of the array payload section is absStringOffset+lenString+lenPayload 0x24 4bytes	
-		
+		if (seeker.hasError()){
+			return false;
+		}
 		//Calculate ArraySection Start Offset
 		arraySectionstart=header.getAbsStringOffset()+header.getLenString()+header.getLenPayload();
+		if (seeker.hasError()){
+			return false;
+		}
 		//Read out file GUID as HEXSTRING!
 		fileGUID=FileHandler.bytesToHex(FileHandler.readByte(ebxFileBytes, seeker, 16)).toUpperCase();
+		if (seeker.hasError()){
+			return false;
+		}
 		//Calc of externalGUIDs
 		while (seeker.getOffset()%16!=0){ seeker.seek(1); } //#padding
 		externalGUIDs = new EBXExternalGUID[header.getNumGUID()];
@@ -99,6 +111,9 @@ public class EBXLoader {
 					(FileHandler.bytesToHex(FileHandler.readByte(ebxFileBytes, seeker, 16)).toUpperCase()),
 					(FileHandler.bytesToHex(FileHandler.readByte(ebxFileBytes, seeker, 16)).toUpperCase())
 			);
+			if (seeker.hasError()){
+				return false;
+			}
 		}
 		//Get Keywords and Calculate Hashes
 		this.keywordDict = new HashMap<Integer, String>();
@@ -108,6 +123,9 @@ public class EBXLoader {
 			String s = readString(ebxFileBytes, startKeyOffset+keyOffset);
 			keywordDict.put(EBXHandler.hasher(s.getBytes()), s);
 			keyOffset += s.length()+1;
+			if (seeker.hasError()){
+				return false;
+			}
 		}
 		//fieldDescriptors
 		seeker.setOffset(startKeyOffset+header.getLenName());
@@ -118,6 +136,9 @@ public class EBXLoader {
 					FileHandler.readShort(ebxFileBytes, seeker, order),
 					FileHandler.readInt(ebxFileBytes, seeker, order),
 					FileHandler.readInt(ebxFileBytes, seeker, order));
+			if (seeker.hasError()){
+				return false;
+			}
 		}		
 		//ComplexDescriptor
 		complexDescriptors = new EBXComplexDescriptor[header.getNumComplex()];
@@ -129,6 +150,9 @@ public class EBXLoader {
 					FileHandler.readShort(ebxFileBytes, seeker, order),
 					FileHandler.readShort(ebxFileBytes, seeker, order),
 					FileHandler.readShort(ebxFileBytes, seeker, order));
+			if (seeker.hasError()){
+				return false;
+			}
 		}
 		//instanceRepeaters
 		instanceRepeaters = new EBXInstanceRepeater[header.getNumInstanceRepeater()];
@@ -136,6 +160,9 @@ public class EBXLoader {
 			instanceRepeaters[i] = new EBXInstanceRepeater(
 					FileHandler.readShort(ebxFileBytes, seeker, order), 
 					FileHandler.readShort(ebxFileBytes, seeker, order));
+			if (seeker.hasError()){
+				return false;
+			}
 		}
 		
 		//arrayRepeaters
@@ -148,6 +175,9 @@ public class EBXLoader {
 					FileHandler.readInt(ebxFileBytes, seeker, order),
 					FileHandler.readInt(ebxFileBytes, seeker, order),
 					FileHandler.readInt(ebxFileBytes, seeker, order));
+			if (seeker.hasError()){
+				return false;
+			}
 		}
 		
 		
@@ -174,6 +204,12 @@ public class EBXLoader {
 				internalGUIDs.add(tempGUID);
 				instances.add(new EBXInstance(tempGUID, readComplex(ir.getComplexIndex(), true, false)));
 				isPrimaryInstance = false;
+				if (seeker.hasError()){
+					return false;
+				}
+			}
+			if (seeker.hasError()){
+				return false;
 			}
 		}
 		//Internal GUIDs are defined by their index.
@@ -189,6 +225,7 @@ public class EBXLoader {
 		}
 		
 		ebxFileBytes = null;
+		return true;
 	}
 	
 	private EBXComplex readComplex(int complexIndex, boolean isInstance, boolean hasEmtyPayload) {
@@ -205,6 +242,9 @@ public class EBXLoader {
 		for (int fieldIndex=0; fieldIndex<complexDesc.getNumField(); fieldIndex++){
 			seeker.setOffset(cmplx.getOffset()+fieldDescriptors[complexDesc.getFieldStartIndex()+fieldIndex].getOffset()-obfuscationShift);
 	    	fields[fieldIndex] = readField(complexDesc.getFieldStartIndex()+fieldIndex, hasEmtyPayload);
+	    	if (seeker.hasError()){
+				return null;
+			}
 		}
 		cmplx.fields = fields;
 		seeker.setOffset(cmplx.getOffset()+complexDesc.getSize()-obfuscationShift);
@@ -392,6 +432,10 @@ public class EBXLoader {
 			 */
 		}
 		/*<END OF DECODE>*/
+		
+		if (seeker.hasError()){
+			return null;
+		}
 		return field;
 		
 	}
@@ -424,8 +468,9 @@ public class EBXLoader {
 			try{
 				buffer[i] = fileArray[offset + i];
 			}catch(ArrayIndexOutOfBoundsException e){
-				System.out.println("END OF FILE REACHED!!");
+				System.out.println("Error, END OF FILE REACHED in EBXLoader!!");
 				buffer[i] = 0;
+				return null;
 			}
 		}
 		return buffer;

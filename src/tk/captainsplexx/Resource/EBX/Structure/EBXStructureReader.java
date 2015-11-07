@@ -3,6 +3,7 @@ package tk.captainsplexx.Resource.EBX.Structure;
 import tk.captainsplexx.Resource.EBX.EBXComplex;
 import tk.captainsplexx.Resource.EBX.EBXFile;
 import tk.captainsplexx.Resource.EBX.EBXInstance;
+import tk.captainsplexx.Resource.EBX.Structure.Entry.EBXDynamicModelEntityData;
 import tk.captainsplexx.Resource.EBX.Structure.Entry.EBXObjectBlueprint;
 import tk.captainsplexx.Resource.EBX.Structure.Entry.EBXReferencedObjectData;
 import tk.captainsplexx.Resource.EBX.Structure.Entry.EBXSpatialPrefabBlueprint;
@@ -22,7 +23,7 @@ public class EBXStructureReader {
 		OrEntityData, TransformEntityData, SyncedBoolEntityData, FadeEntityData,
 		UINPXTooltipEntityData, SequenceEntityData, CompareBoolEntityData, TransformPartPropertyTrackData,
 		UINPXTooltipLine, UINPXTextLine, UINPXPaddingLine, WorldPartData, SpatialPrefabBlueprint, ObjectBlueprint,
-		VegetationTreeEntityData, StaticModelEntityData
+		VegetationTreeEntityData, StaticModelEntityData, DynamicModelEntityData
 	}
 	
 	public static EntryType getEntryTypeByName(String name) {
@@ -76,6 +77,8 @@ public class EBXStructureReader {
 					case StaticModelEntityData:
 						entry = new EBXStaticModelEntityData(parent, ebxComplex);
 						break;
+					case DynamicModelEntityData:
+						entry = new EBXDynamicModelEntityData(parent, ebxComplex);
 				}
 			}else{
 				System.err.println("EBXStructureReader is INCLOMPLETE: "+name);
