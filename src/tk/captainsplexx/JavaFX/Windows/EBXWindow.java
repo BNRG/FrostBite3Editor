@@ -29,8 +29,10 @@ public class EBXWindow {
 	private Stage stage;
 	private Scene scene;
 	private EBXFile ebxFile;
+	private boolean isOriginalFile;
 
-	public EBXWindow(EBXFile ebxFile){
+	public EBXWindow(EBXFile ebxFile, String resLinkName, boolean isOriginal){
+		this.isOriginalFile = isOriginal;
 		this.ebxFile = ebxFile;
 		try {
 			controller = new EBXWindowController();
@@ -46,7 +48,7 @@ public class EBXWindow {
 	    if (ebxFile==null){
 	    	stage.setTitle("EBX Tools - NO FILE");
 	    }else{
-	    	stage.setTitle(ebxFile.getTruePath());
+	    	stage.setTitle(resLinkName);
 	    }
 	    /*stage.setX(Display.getDesktopDisplayMode().getWidth()*0.985f-scene.getWidth());
 	    stage.setY(Display.getDesktopDisplayMode().getHeight()/2-(scene.getHeight()/2));*/
@@ -70,7 +72,7 @@ public class EBXWindow {
 	    controller.getEBXExplorer().setCellFactory(new Callback<TreeView<TreeViewEntry>,TreeCell<TreeViewEntry>>(){
 	        @Override
 	        public TreeCell<TreeViewEntry> call(TreeView<TreeViewEntry> p) {
-	            return new JavaFXebxTCF();
+	            return new JavaFXebxTCF(ebxFile, isOriginal);
 	        }
 	    });
 	    
@@ -103,6 +105,10 @@ public class EBXWindow {
 
 	public EBXFile getEBXFile() {
 		return ebxFile;
+	}
+
+	public boolean isOriginalFile() {
+		return isOriginalFile;
 	}
 	
 	

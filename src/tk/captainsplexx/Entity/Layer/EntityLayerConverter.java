@@ -3,11 +3,10 @@ package tk.captainsplexx.Entity.Layer;
 import org.lwjgl.util.vector.Vector3f;
 
 import tk.captainsplexx.Entity.Entity;
+import tk.captainsplexx.Entity.Entity.Type;
 import tk.captainsplexx.Entity.EntityHandler;
 import tk.captainsplexx.Entity.ObjectEntity;
-import tk.captainsplexx.Entity.Entity.Type;
 import tk.captainsplexx.Game.Core;
-import tk.captainsplexx.Maths.Matrices;
 import tk.captainsplexx.Maths.VectorMath;
 import tk.captainsplexx.Resource.EBX.EBXExternalGUID;
 import tk.captainsplexx.Resource.EBX.EBXFile;
@@ -17,6 +16,7 @@ import tk.captainsplexx.Resource.EBX.Structure.EBXStructureFile;
 import tk.captainsplexx.Resource.EBX.Structure.EBXStructureInstance;
 import tk.captainsplexx.Resource.EBX.Structure.EBXStructureReader.EntryType;
 import tk.captainsplexx.Resource.EBX.Structure.Entry.EBXBlueprintTransform;
+import tk.captainsplexx.Resource.EBX.Structure.Entry.EBXBreakableModelEntityData;
 import tk.captainsplexx.Resource.EBX.Structure.Entry.EBXDynamicModelEntityData;
 import tk.captainsplexx.Resource.EBX.Structure.Entry.EBXObjArray;
 import tk.captainsplexx.Resource.EBX.Structure.Entry.EBXObjArray.ArrayType;
@@ -43,7 +43,7 @@ public class EntityLayerConverter {
 			EntityLayer layer = new EntityLayer(strArray[strArray.length-1]+" "+ebxFile.getGuid());
 			
 			for (EBXStructureInstance instance : structFile.getInstances()){
-				Entity en = getEntity(instance.getEntry(), null, instance.getGuid(), loadOriginal);	
+				Entity en = getEntity(instance.getEntry(), null, instance.getParentFile().getEBXGUID()+"/"+instance.getGuid(), loadOriginal);	
 				if (en!=null){
 					layer.getEntities().add(en);
 				}
@@ -70,15 +70,16 @@ public class EntityLayerConverter {
 			}
 		}
 	
-		Entity en = new ObjectEntity(entry.getType()+" "+guid, parentEntity, null);
+		Entity en = new ObjectEntity(guid, entry, parentEntity, null);
 		
 		switch(entry.getType()){
 			case EBXInstance:
 				EBXStructureInstance instance = (EBXStructureInstance) entry;
 				EBXStructureEntry instanceEntry = instance.getEntry();
-				Entity instanceEntity = getEntity(instanceEntry, en, instanceEntry.getType()+" "+instance.getGuid(), loadOriginal);
+				Entity instanceEntity = getEntity(instanceEntry, en, instance.getParentFile().getStructureName()+" "+instance.getGuid(), loadOriginal);
 				if (instanceEntity!=null){
-					en.getChildrens().add(instanceEntity);
+					//en.getChildrens().add(instanceEntity);
+					en = instanceEntity;
 				}
 				break;
 			case ReferenceObjectData:
@@ -90,6 +91,7 @@ public class EntityLayerConverter {
 					en.setScaling(scaling);
 				}
 				*/
+				
 				Vector3f rotation = transform.getRotation();
 				if (rotation!=null){
 					en.setRotation(rotation);
@@ -122,12 +124,17 @@ public class EntityLayerConverter {
 			case StaticModelEntityData:
 				EBXStaticModelEntityData smed = (EBXStaticModelEntityData) entry;
 				
-				en = getEntity(smed.getMesh(), parentEntity, Type.Object);
+				en = getEntity(smed.getMesh(), parentEntity, Type.Object, entry);
 				break;
 			case DynamicModelEntityData:
 				EBXDynamicModelEntityData dmed = (EBXDynamicModelEntityData) entry;
 				
-				en = getEntity(dmed.getMesh(), parentEntity, Type.Object);
+				en = getEntity(dmed.getMesh(), parentEntity, Type.Object, entry);
+				break;
+			case BreakableModelEntityData:
+				EBXBreakableModelEntityData bmed = (EBXBreakableModelEntityData) entry;
+				
+				en = getEntity(bmed.getMesh(), parentEntity, Type.Object, entry);
 				break;
 		}
 		if (en!=null){
@@ -137,7 +144,7 @@ public class EntityLayerConverter {
 		return null;
 	}
 	
-	private static Entity getEntity(EBXExternalGUID externalGUID, Entity parentEntity, Type type){
+	private static Entity getEntity(EBXExternalGUID externalGUID, Entity parentEntity, Type type, EBXStructureEntry structEntry){
 		if (externalGUID==null){return null;};
 		ResourceLink ebxLink = Core.getGame().getResourceHandler().getResourceLinkByEBXGUID(externalGUID.getFileGUID());
 		if (ebxLink!=null){
@@ -146,7 +153,7 @@ public class EntityLayerConverter {
 				if (resLink.getName().equalsIgnoreCase(resLinkname)){
 					byte[] meshData = Core.getGame().getResourceHandler().readResourceLink(resLink);
 					if (meshData!=null){
-						return Core.getGame().getEntityHandler().createEntity(meshData, type, resLinkname, parentEntity, "EntityLayerConverter's getEntity-Method!");
+						return Core.getGame().getEntityHandler().createEntity(meshData, type, structEntry, parentEntity, "EntityLayerConverter's getEntity-Method!");
 					}
 				}
 			}
@@ -157,7 +164,7 @@ public class EntityLayerConverter {
 	private static void handleInternalGUID(EBXObjInstanceGUID instanceGUID, Entity parentEntity, EBXStructureFile parentFile, boolean loadOriginal){
 		EBXStructureInstance followedInstance = (EBXStructureInstance) instanceGUID.followInternal(parentFile);
 		if (followedInstance!=null){
-			Entity iEntity = getEntity(followedInstance, parentEntity, followedInstance.getGuid(), loadOriginal);
+			Entity iEntity = getEntity(followedInstance, parentEntity, followedInstance.getParentFile().getStructureName()+" "+followedInstance.getGuid(), loadOriginal);
 			if (iEntity!=null){
 				parentEntity.getChildrens().add(iEntity);
 			}
@@ -167,7 +174,7 @@ public class EntityLayerConverter {
 	private static void handleExternalGUID(EBXExternalGUID externalGUID, Entity parentEntity, boolean loadOriginal){
 		EBXStructureInstance target = (EBXStructureInstance) externalGUID.follow(true, loadOriginal);
 		if (target!=null){
-			Entity iEntity = getEntity(target.getEntry(), parentEntity, target.getGuid(), loadOriginal);
+			Entity iEntity = getEntity(target.getEntry(), parentEntity, target.getParentFile().getStructureName()+" "+target.getGuid(), loadOriginal);
 			if (iEntity!=null){
 				parentEntity.getChildrens().add(iEntity);
 			}

@@ -9,6 +9,7 @@ import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -377,6 +378,7 @@ public class Dialog extends Stage {
 				
 				@Override
 				public void run() {
+					System.out.println(message);
 					Builder builder = new Builder();
 			        builder.create()
 				        .setOwner(owner)
@@ -384,6 +386,40 @@ public class Dialog extends Stage {
 				        .setInfoIcon()
 				        .setMessage(message)            
 				        .addOkButton(runnableWhenOK)
+				            .build()
+				                .show();
+				}
+			});
+	    }
+	    
+	    public void showAsk(String title, String message, Runnable runnableYES, Runnable runnableNO) {
+	    	Core.getJavaFXHandler().runAndWait(new Runnable() {
+				
+				@Override
+				public void run() {
+					Builder builder = new Builder();
+					System.out.println(message);
+			        builder.create()
+				        .setTitle(title)	
+				        .setWarningIcon()
+				        .setMessage(message)            
+				        .addYesButton(new EventHandler<Event>() {
+							@Override
+							public void handle(Event event) {
+								if (runnableYES!=null){
+									runnableYES.run();
+								}
+								builder.stage.close();
+							}
+						}).addNoButton(new EventHandler<Event>() {
+							@Override
+							public void handle(Event event) {
+								if (runnableNO!=null){
+									runnableNO.run();
+								}
+								builder.stage.close();
+							}
+						})
 				            .build()
 				                .show();
 				}
@@ -399,6 +435,7 @@ public class Dialog extends Stage {
 				
 				@Override
 				public void run() {
+					System.out.println(message);
 					 new Builder()
 			            .create()
 			            .setOwner(owner)
@@ -430,6 +467,7 @@ public class Dialog extends Stage {
 				
 				@Override
 				public void run() {
+					System.out.println(message);
 					new Builder()
 		            .create()
 		            .setOwner(owner)
@@ -463,6 +501,7 @@ public class Dialog extends Stage {
 	     * @param owner parent window 
 	     */
 	    public void showThrowable(String title, String message, Throwable t, Window owner, Runnable runnableWhenOK) {
+	    	System.out.println(message);
 	        new Builder()
 	            .create()
 	            .setOwner(owner)

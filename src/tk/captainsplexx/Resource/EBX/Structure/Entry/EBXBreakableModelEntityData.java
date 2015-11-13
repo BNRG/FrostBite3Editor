@@ -6,49 +6,44 @@ import tk.captainsplexx.Resource.EBX.EBXField;
 import tk.captainsplexx.Resource.EBX.Structure.EBXStructureEntry;
 import tk.captainsplexx.Resource.EBX.Structure.EBXStructureReader.EntryType;
 
-public class EBXDynamicModelEntityData extends EBXStructureEntry{
-
-	//$
+public class EBXBreakableModelEntityData extends EBXStructureEntry{
+	
+	
+		/* Skips:
+		 * $
+		 * DecalVolumeShader guid
+		 * DecalVolumeScaleFactor 2.0
+		 * EdgeModelLightMapData*/
+	
 	private EBXExternalGUID mesh = null;
-	//DestructiblePartCount
-	private boolean noCollision = false;
+	private long boneCount;
 	
+	public EBXBreakableModelEntityData(EBXStructureEntry parent, EBXComplex complex) {
+		super(parent, EntryType.BreakableModelEntityData);
 	
-	public EBXDynamicModelEntityData(EBXStructureEntry parent, EBXComplex complex) {
-		super(parent, EntryType.DynamicModelEntityData);
-		
 		for (EBXField field : complex.getFields()) {
 			switch (field.getFieldDescritor().getName()) {
+			case "BoneCount": /* -------------- BoneCount -------------- */
+				this.boneCount = (Long) field.getValue();
+				break;
 			case "Mesh": /* -------------- Mesh -------------- */
 				this.mesh = new EBXExternalGUID(field);
 				break;
-			case "NoCollision": /* -------------- NoCollision -------------- */
-				this.noCollision = (boolean) field.getValue();
+			default:
+				System.err.println(field.getFieldDescritor().getName()+" is not handled in EBXBreakableModelEntityData's Constructor for readIn!");
 				break;
 			}
 		}
+		
 	}
-
 
 	public EBXExternalGUID getMesh() {
 		return mesh;
 	}
 
-
-
-
-	public boolean hasNoCollision() {
-		return noCollision;
+	public long getBoneCount() {
+		return boneCount;
 	}
 
-
-	public void setNoCollision(boolean noCollision) {
-		this.noCollision = noCollision;
-	}
-	
-	
-	
-	
-	
 
 }

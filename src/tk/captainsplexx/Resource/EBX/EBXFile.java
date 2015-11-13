@@ -1,16 +1,19 @@
 package tk.captainsplexx.Resource.EBX;
 
+import java.nio.ByteOrder;
 import java.util.ArrayList;
 
 public class EBXFile {
 	private String truePath;
 	private String guid;
 	private ArrayList<EBXInstance> instances;
+	private ByteOrder order;
 	
-	public EBXFile(String truePath, ArrayList<EBXInstance> instances, String guid) {
+	public EBXFile(String truePath, ArrayList<EBXInstance> instances, String guid, ByteOrder order) {
 		this.truePath = truePath;
 		this.instances = instances;
 		this.guid = guid;
+		this.order = order;
 	}
 
 	public String getTruePath() {
@@ -31,6 +34,10 @@ public class EBXFile {
 
 	public void setTruePath(String truePath) {
 		this.truePath = truePath;
+	}
+
+	public ByteOrder getByteOrder() {
+		return order;
 	}
 	
 }

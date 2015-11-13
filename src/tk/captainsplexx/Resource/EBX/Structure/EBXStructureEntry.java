@@ -1,11 +1,11 @@
 package tk.captainsplexx.Resource.EBX.Structure;
 
+import tk.captainsplexx.Resource.EBX.EBXComplex;
 import tk.captainsplexx.Resource.EBX.Structure.EBXStructureReader.EntryType;
 
 public abstract class EBXStructureEntry {
 	private EBXStructureEntry parent;
 	private EntryType type;
-	private String guid;
 	
 	public EBXStructureEntry(EBXStructureEntry parent, EntryType type) {
 		this.parent = parent;
@@ -19,8 +19,8 @@ public abstract class EBXStructureEntry {
 	public void setType(EntryType type) {
 		this.type = type;
 	}
-
 	
+
 
 	public EBXStructureEntry getParent() {
 		return parent;

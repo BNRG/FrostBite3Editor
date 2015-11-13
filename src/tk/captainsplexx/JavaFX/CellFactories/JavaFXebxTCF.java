@@ -42,7 +42,12 @@ public class JavaFXebxTCF extends TreeCell<TreeViewEntry> {
         private ContextMenu contextMenu = new ContextMenu();
         public TreeItem<TreeViewEntry> draggedTreeItem;
         private MenuItem addText, addFloat, addDouble, addArray, addInteger, addBool, addList, addLong, addByte, addShort, remove, rename, follow;
-        public JavaFXebxTCF() {
+        
+        private EBXFile ebxFile;
+        private boolean isOriginal;
+        public JavaFXebxTCF(EBXFile ebxFile, boolean isOriginal) {
+        	this.ebxFile = ebxFile;
+        	this.isOriginal = isOriginal;
         	
             addText = new MenuItem("Add Text");
             addText.setGraphic(new ImageView(JavaFXHandler.textIcon));
@@ -167,11 +172,13 @@ public class JavaFXebxTCF extends TreeCell<TreeViewEntry> {
     	                		ResourceHandler rs = Core.getGame().getResourceHandler();
     	                		EBXHandler eh = rs.getEBXHandler();
     	                		
-    	                		EBXFile file = eh.getEBXFileByGUID(targetArr[0], true/*tryLoad*/, false/*readOriginal*/);
-    							if (file!=null){
-    								Core.getJavaFXHandler().getMainWindow().createEBXWindow(file);
+    	                		boolean readOriginal = false;
+    	                		EBXFile file = eh.getEBXFileByGUID(targetArr[0], true/*tryLoad*/, readOriginal);
+    	                		ResourceLink resLink = rs.getResourceLinkByEBXGUID(targetArr[0]);
+    							if (file!=null&&resLink!=null){
+    								Core.getJavaFXHandler().getMainWindow().createEBXWindow(file, resLink.getName(), readOriginal);
     							}else{
-    								System.err.println("Link can't be followed, cuz off missing data.");
+    								System.err.println("Link can't be followed, cuz off missing data or link.");
     							}
     						}else{
     	                		System.err.println("Internal GUID's can't be followed!");
@@ -271,7 +278,13 @@ public class JavaFXebxTCF extends TreeCell<TreeViewEntry> {
             }else if (modifyOp == null){
             	TreeViewEntry entry = getTreeItem().getValue();
     	        if (entry.getType()==EntryType.BOOL){
-    	        	entry.setValue(!((Boolean) entry.getValue()));
+    	        	Object bv = null;
+    	        	if ((boolean) entry.getValue()){
+    	        		bv = convertToObject("FALSE", entry);
+    	        	}else{
+    	        		bv = convertToObject("TRUE", entry);
+    	        	}
+    	        	entry.setValue(bv);
     	        	commitEdit(getTreeItem().getValue());
     	        }else if(entry.getType()==EntryType.ENUM&&entry.getValue() instanceof HashMap<?,?>){
     	        	HashMap<EBXFieldDescriptor, Boolean> enums = (HashMap<EBXFieldDescriptor, Boolean>) entry.getValue();
@@ -339,7 +352,7 @@ public class JavaFXebxTCF extends TreeCell<TreeViewEntry> {
 		                setGraphic(getTreeItem().getValue().getGraphic());
 		                contextMenu.getItems().clear();
 		                if (getTreeItem().getValue().getType()==EntryType.ARRAY||getTreeItem().getValue().getType()==EntryType.LIST){
-		                  	contextMenu.getItems().addAll(addText, addFloat, addDouble, addInteger, addLong, addByte, addBool, addArray, addList, remove);
+		                  //	contextMenu.getItems().addAll(addText, addFloat, addDouble, addInteger, addLong, addByte, addBool, addArray, addList, remove);
 		                }else if (getTreeItem().getValue().getType()==EntryType.GUID){
 		                  	contextMenu.getItems().addAll(follow ,rename, remove);
 		                }else if (getTreeItem()!= null){
@@ -484,25 +497,40 @@ public class JavaFXebxTCF extends TreeCell<TreeViewEntry> {
 			    		case ARRAY:
 			    			return(value);
 			    		case FLOAT:
-			    			return(Float.valueOf(value));
+			    			float f = Float.valueOf(value);
+			    			ebxHandler.getModifyHandler().addChange(ebxFile.getGuid(), ebxFile.getByteOrder(), isOriginal, item.getOffset(), f, EntryType.FLOAT);
+			    			return(f);
 			    		case DOUBLE:
 			    			return(Double.valueOf(value));
 			    		case SHORT:
-			    			return(Short.valueOf(value));
+			    			short sh = Short.valueOf(value);
+			    			ebxHandler.getModifyHandler().addChange(ebxFile.getGuid(), ebxFile.getByteOrder(), isOriginal, item.getOffset(), sh, EntryType.SHORT);
+			    			return(sh);
 			    		case INTEGER:
-			    			return(Integer.valueOf(value));
+			    			Integer i = Integer.valueOf(value);
+			    			ebxHandler.getModifyHandler().addChange(ebxFile.getGuid(), ebxFile.getByteOrder(), isOriginal, item.getOffset(), i, EntryType.INTEGER);
+			    			return(i);
 			    		case LONG:
-			    			return(Long.valueOf(value));
+			    			Long lon = Long.valueOf(value);
+			    			ebxHandler.getModifyHandler().addChange(ebxFile.getGuid(), ebxFile.getByteOrder(), isOriginal, item.getOffset(), lon, EntryType.LONG);
+			    			return(lon);
 			    		case UINTEGER:
-			    			return(Long.valueOf(value))& 0xffffffffL;
+			    			long l = (Long.valueOf(value))& 0xffffffffL;
+			    			Integer ui = Integer.valueOf((int) (l&0xFFFFFFFF));
+			    			ebxHandler.getModifyHandler().addChange(ebxFile.getGuid(), ebxFile.getByteOrder(), isOriginal, item.getOffset(), ui, EntryType.UINTEGER);
+			    			return(l);
 			    		case BYTE:
-			    			return(hexToByte(value));
+			    			byte b = hexToByte(value);
+			    			ebxHandler.getModifyHandler().addChange(ebxFile.getGuid(), ebxFile.getByteOrder(), isOriginal, item.getOffset(), b, EntryType.BYTE);
+			    			return(b);
 			    		case RAW:
 			    			return(FileHandler.hexStringToByteArray(value));
 			    		case BOOL:
 			    			if (value.equals("TRUE")){
+			    				ebxHandler.getModifyHandler().addChange(ebxFile.getGuid(), ebxFile.getByteOrder(), isOriginal, item.getOffset(), (byte) 0x1, EntryType.BOOL);
 			    				return true;
 			    			}else{
+			    				ebxHandler.getModifyHandler().addChange(ebxFile.getGuid(), ebxFile.getByteOrder(), isOriginal, item.getOffset(), (byte) 0x0, EntryType.BOOL);
 			    				return false;
 			    			}
 			    		case NULL:
@@ -535,6 +563,7 @@ public class JavaFXebxTCF extends TreeCell<TreeViewEntry> {
 		        	}
         		}
         	}catch(Exception e){
+        		e.printStackTrace();
         		System.err.println("Couldn't not parse entry with name "+item.getName()+" in JavaFXTreeCellFactory!");
         		return null;
         	}

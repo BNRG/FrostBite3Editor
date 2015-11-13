@@ -9,6 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeView;
+import tk.captainsplexx.Entity.Entity;
 import tk.captainsplexx.Game.Core;
 import tk.captainsplexx.JavaFX.TreeViewEntry;
 import tk.captainsplexx.Resource.FileHandler;
@@ -29,13 +30,13 @@ public class ToolsWindowController {
 	@FXML
 	public Slider mouseSensitivity;
 	@FXML
-	public Slider cameraSpeed;
-	@FXML
 	public Button search;
 	@FXML
 	public TextField filter;
 	@FXML
 	public Button destroyLayerButton;
+	@FXML
+	public TreeView<Entity> layerTreeView;
 	
 	public void destroyLayer(){
 		Core.getGame().getEntityHandler().destroyEntityLayer(layer.getValue());
@@ -114,13 +115,14 @@ public class ToolsWindowController {
 		return filter;
 	}
 
-	public Slider getCameraSpeed() {
-		return cameraSpeed;
-	}
-
 	public Button getDestroyLayerButton() {
 		return destroyLayerButton;
 	}
+
+	public TreeView<Entity> getLayerTreeView() {
+		return layerTreeView;
+	}
+	
 	
 	
 	

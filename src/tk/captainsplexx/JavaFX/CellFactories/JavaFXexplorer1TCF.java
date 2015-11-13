@@ -92,10 +92,12 @@ public class JavaFXexplorer1TCF extends TreeCell<TreeViewEntry> {
 						if (i.getValue().getValue() != null){
 							if (event.getButton() == MouseButton.PRIMARY){
 								
+								boolean loadOriginal = false;
+								
 								Game game = Core.getGame();
 								ResourceHandler rs = game.getResourceHandler();
 								ResourceLink link = (ResourceLink) i.getValue().getValue();
-								byte[] data = rs.readResourceLink(link, false /*useOriginalDataONLY*/);
+								byte[] data = rs.readResourceLink(link, loadOriginal);
 								if (Core.isDEBUG&&data!=null){
 									FileHandler.writeFile("output/debug/targetData_TCF1", data);
 								}
@@ -105,7 +107,7 @@ public class JavaFXexplorer1TCF extends TreeCell<TreeViewEntry> {
 										if (ebxFile!=null){
 											TreeItem<TreeViewEntry> ebx = TreeViewConverter.getTreeView(ebxFile);
 											
-											Core.getJavaFXHandler().getMainWindow().createEBXWindow(ebxFile);
+											Core.getJavaFXHandler().getMainWindow().createEBXWindow(ebxFile, link.getName(), loadOriginal);
 										}
 									}else{
 										System.err.println("Could not build EBX Explorer because of missing data.");

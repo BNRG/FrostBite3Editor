@@ -57,7 +57,7 @@ There a currently two known types:
 			  To obtain the total length of the logic block to find out where it ends
 			  and the next deltablock starts, we need the compressed length from the
 			  compressed logic block, so we have to seek 6 bytes forward to read the value
-			  and go 8 bytes back to get the staring point of the block.
+			  and go 8 bytes back to get the starting point of the block.
 			  
 			  The logic block, need to be decompressed from the current offset,
 			  with a total length of the obtained compressed size + adding the length

@@ -503,4 +503,9 @@ public class EBXLoader {
 		numDict.put(0xc13d, 4);
 		*/
 	}
+	public ByteOrder getByteOrder() {
+		return order;
+	}
+
+	
 }

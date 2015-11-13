@@ -9,8 +9,10 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.TreeItem;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
+import tk.captainsplexx.Entity.Entity;
 import tk.captainsplexx.Entity.Layer.EntityLayer;
 import tk.captainsplexx.Game.Core;
+import tk.captainsplexx.JavaFX.TreeViewConverter;
 import tk.captainsplexx.JavaFX.TreeViewEntry;
 import tk.captainsplexx.Mod.Mod;
 import tk.captainsplexx.Resource.EBX.EBXFile;
@@ -20,8 +22,15 @@ import tk.captainsplexx.Resource.TOC.ResourceLink;
 public class MainWindow extends Application{
 	
 	public static enum EntryType{
-		STRING, INTEGER, LONG, BOOL, FLOAT, DOUBLE, ARRAY, LIST, BYTE, NULL, SHORT,
-		SHA1, GUID, ENUM, HEX8, UINTEGER, RAW, CHUNKGUID, RAW2
+		//General
+		STRING, INTEGER, LONG, BOOL, FLOAT, DOUBLE, UINTEGER,
+		LIST, BYTE, NULL, SHORT,
+		
+		//Frostite specific.
+		ARRAY, SHA1, GUID, ENUM, HEX8, RAW, CHUNKGUID, RAW2,
+		
+		//Layer Specific.
+		EntityLayer, ObjectEntity, LightEntity,	
 	};
 	
 	public static enum WorkDropType { DROP_INTO, REORDER };
@@ -56,11 +65,11 @@ public class MainWindow extends Application{
 		Core.getJavaFXHandler().setMainWindow(this);
 	}
 	
-	public boolean createEBXWindow(EBXFile ebxFile){
+	public boolean createEBXWindow(EBXFile ebxFile, String resName, boolean isOriginal){
 		try{
 			Platform.runLater(new Runnable() {
 				public void run() {
-					EBXWindow window = new EBXWindow(ebxFile);
+					EBXWindow window = new EBXWindow(ebxFile, resName, isOriginal);
 					ebxWindows.add(window);
 				}
 			});
@@ -173,6 +182,20 @@ public class MainWindow extends Application{
 			}
 		});	
 	}
+	
+	public void setLayerTreeView(TreeItem<Entity> treeview){
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				toolsWindow.getController().getLayerTreeView().setRoot(treeview);
+				if (treeview!=null){
+					if (treeview.getChildren().size()>=1){
+						treeview.setExpanded(true);
+					}
+				}
+			}
+		});	
+	}
 		
 	public void toggleLeftVisibility(){
 		Platform.runLater(new Runnable() {
@@ -239,6 +262,15 @@ public class MainWindow extends Application{
 					list.add(layer.getName());
 				}
 				toolsWindow.getController().getDestroyLayerButton().setDisable(layers.isEmpty());
+				
+				
+				
+				
+				
+				/*TreeViewLayers*/
+				TreeItem<Entity> layerTree = TreeViewConverter.getTreeView(layers);
+				setLayerTreeView(layerTree);
+				System.out.println("TreeView for Layers updated!");
 			}
 		});		
 	}

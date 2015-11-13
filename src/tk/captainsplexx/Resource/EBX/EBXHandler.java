@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import tk.captainsplexx.Game.Core;
+import tk.captainsplexx.Resource.EBX.Modify.EBXModifyHandler;
 import tk.captainsplexx.Resource.EBX.Structure.EBXStructureEntry;
 import tk.captainsplexx.Resource.EBX.Structure.EBXStructureFile;
 import tk.captainsplexx.Resource.EBX.Structure.EBXStructureInstance;
@@ -17,6 +18,7 @@ public class EBXHandler {
 	public EBXCreator creator;
 	public HashMap<EBXExternalFileReference, EBXFile> ebxFiles /*FileName, File*/;
 	public ArrayList<EBXStructureFile> ebxStructureFiles;
+	public EBXModifyHandler modifyHandler;
 	
 	public enum FieldValueType{
 		Complex, ArrayComplex, String, Enum, ExternalGuid, Hex8, Unknown,/*Field,*/ Float, Integer, Bool, Short, Byte, UInteger, ChunkGuid, Guid
@@ -39,6 +41,7 @@ public class EBXHandler {
 		this.creator = new EBXCreator();
 		this.ebxFiles = new HashMap<EBXExternalFileReference, EBXFile>();
 		this.ebxStructureFiles = new ArrayList<>();
+		this.modifyHandler = new EBXModifyHandler();
 	}
 
 
@@ -46,7 +49,7 @@ public class EBXHandler {
 	public EBXFile loadFile(byte[] data) {
 		try{
 			if (loader.loadEBX(data)){
-				EBXFile newFile = new EBXFile(loader.getTrueFilename(), loader.getInstances(), loader.getFileGUID());
+				EBXFile newFile = new EBXFile(loader.getTrueFilename(), loader.getInstances(), loader.getFileGUID(), loader.getByteOrder());
 				EBXExternalFileReference efr = new EBXExternalFileReference(loader.getFileGUID(), loader.getTrueFilename());
 				ebxFiles.put(efr, newFile);
 				return newFile;
@@ -123,20 +126,8 @@ public class EBXHandler {
 			}
 		}
 		if (tryLoad){	
-			ResourceLink targetLink = null;
-			for (ResourceLink ebxLink : Core.getGame().getCurrentSB().getEbx()){
-				if (ebxLink.getEbxFileGUID().equalsIgnoreCase(fileGUID)){
-					targetLink = ebxLink;
-					break;
-				}
-			}
-			if (targetLink==null){
-				System.err.println("EBXFile not found. No ResourceLink with FileGUID "+fileGUID+" does exist.");
-				return null;
-			}
-			byte[] data = Core.getGame().getResourceHandler().readResourceLink(targetLink, loadOriginal);
+			byte[] data = getEBXFileBytesByGUID(fileGUID, loadOriginal);
 			if (data==null){
-				System.err.println("ResourceLink for EBXFile with with FileGUID "+fileGUID+" found, but can't load data.");
 				return null;
 			}
 			EBXFile ebxFile = loadFile(data);
@@ -150,6 +141,27 @@ public class EBXHandler {
 		return null;
 		
 	}
+	
+	public byte[] getEBXFileBytesByGUID(String fileGUID, boolean loadOriginal){
+		ResourceLink targetLink = null;
+		for (ResourceLink ebxLink : Core.getGame().getCurrentSB().getEbx()){
+			if (ebxLink.getEbxFileGUID()!=null){
+				if (ebxLink.getEbxFileGUID().equalsIgnoreCase(fileGUID)){
+					targetLink = ebxLink;
+					break;
+				}
+			}else{
+				System.err.println(ebxLink.getName()+" could not be read!");
+			}
+		}
+		if (targetLink==null){
+			System.err.println("EBXFile not found. No ResourceLink with FileGUID "+fileGUID+" does exist.");
+			return null;
+		}
+		byte[] data = Core.getGame().getResourceHandler().readResourceLink(targetLink, loadOriginal);
+		return data;
+	}
+	
 	public EBXFile getEBXFileByTrueFileName(String trueFileName){
 		for (EBXExternalFileReference efr : ebxFiles.keySet()){
 			if (efr.getTrueFileName().equalsIgnoreCase(trueFileName)){
@@ -196,5 +208,10 @@ public class EBXHandler {
 	public HashMap<EBXExternalFileReference, EBXFile> getEBXFiles() {
 		return ebxFiles;
 	}
+
+	public EBXModifyHandler getModifyHandler() {
+		return modifyHandler;
+	}
+	
 	
 }

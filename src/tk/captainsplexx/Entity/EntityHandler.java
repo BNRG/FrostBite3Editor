@@ -16,8 +16,8 @@ import tk.captainsplexx.Model.ModelHandler;
 import tk.captainsplexx.Model.RawModel;
 import tk.captainsplexx.Resource.ResourceHandler;
 import tk.captainsplexx.Resource.EBX.EBXFile;
+import tk.captainsplexx.Resource.EBX.Structure.EBXStructureEntry;
 import tk.captainsplexx.Resource.MESH.MeshChunkLoader;
-import tk.captainsplexx.Resource.TOC.ConvertedSBpart;
 
 public class EntityHandler {
 		
@@ -133,10 +133,8 @@ public class EntityHandler {
 	}
 	
 	
-	public Entity createEntity(byte[] mesh, Type type, String name, Entity parent, String loaderErrorDesc){
+	public Entity createEntity(byte[] mesh, Type type, EBXStructureEntry structEntry, Entity parent, String loaderErrorDesc){
 		try{
-			System.out.println("Creating Entity "+name);
-			
 			MeshChunkLoader msl = resourceHandler.getMeshChunkLoader();
 			msl.loadFile(mesh, Core.getGame().getCurrentSB());
 			String[] texturedModel = new String[msl.getSubMeshCount()];
@@ -163,7 +161,16 @@ public class EntityHandler {
 				}*/
 				texturedModel[submesh] = (modelHandler.addTexturedModel(model, textureID));
 			}
-			Entity en = new ObjectEntity(msl.getName(), parent, texturedModel);
+			Entity en = null;
+			switch (type){
+				case Object:
+					en = new ObjectEntity(msl.getName(), structEntry, parent, texturedModel);
+					break;
+				case Light:
+					en = new LightEntity(msl.getName(), structEntry, parent, texturedModel);
+					break;
+			}
+			
 			//axis aligned bounding box
 			float[] maxCoords = msl.getMaxCoords();
 			float[] minCoords = msl.getMinCoords();

@@ -190,6 +190,7 @@ public class TocConverter {
 						}else{
 							typeNotHandled(field);
 						}
+						link.setType(ResourceType.CHUNK);
 					}
 					Core.getGame().getChunkGUIDSHA1().put(link.getId().toLowerCase(), link.getSha1());
 					break;
@@ -252,6 +253,7 @@ public class TocConverter {
 						}else{
 							typeNotHandled(field);
 						}
+						link.setType(ResourceType.EBX);
 					}
 					try{
 						

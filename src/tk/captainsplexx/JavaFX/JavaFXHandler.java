@@ -47,6 +47,9 @@ public class JavaFXHandler {
 	public static final Image leftArrowIcon = new Image(FileHandler.getStream(imageFolder+"arrow-000.png"));
 	public static final Image rightArrowIcon = new Image(FileHandler.getStream(imageFolder+"arrow-180.png"));
 	public static final Image clipboardPasteIcon = new Image(FileHandler.getStream(imageFolder+"clipboard-paste.png"));
+	public static final Image asteriskYellow = new Image(FileHandler.getStream(imageFolder+"asterisk-yellow.png"));
+	public static final Image binocular = new Image(FileHandler.getStream(imageFolder+"binocular.png"));
+	public static final Image binocular2 = new Image(FileHandler.getStream(imageFolder+"binocular--arrow.png"));
 	
 	public Builder dialogBuilder;
 	

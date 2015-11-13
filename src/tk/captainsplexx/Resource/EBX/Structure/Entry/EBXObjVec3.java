@@ -11,6 +11,7 @@ public class EBXObjVec3 {
 	};
 	
 	private float x = 0f, y = 0f, z = 0f;
+	private int offset = -1;
 	private String name;
 	
 	
@@ -23,6 +24,7 @@ public class EBXObjVec3 {
 			switch (axis.getFieldDescritor().getName()){
 				case "x":
 					transVec3.setX((float) axis.getValue());
+					transVec3.setOffset(axis.getOffset());
 					break;
 				case "y":
 					transVec3.setY((float) axis.getValue());
@@ -78,6 +80,18 @@ public class EBXObjVec3 {
 		this.name = name;
 	}
 	
+	
+	
+	public int getOffset() {
+		return offset;
+	}
+
+
+	public void setOffset(int offset) {
+		this.offset = offset;
+	}
+
+
 	public Vector3f getVector(){
 		return new Vector3f(x, y, z);
 	}

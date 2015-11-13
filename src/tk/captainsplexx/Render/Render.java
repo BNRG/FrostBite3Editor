@@ -179,7 +179,7 @@ public class Render {
 					.createTransformationMatrix(e.getPosition(),
 							e.getRotation(), e.getScaling());
 			
-			Matrix4f stackMtx = Matrix4f.mul(matrix, parentMtx, null);
+			Matrix4f stackMtx = Matrix4f.mul(parentMtx, matrix, null);
 			
 			if (e.isShowBoundingBox()) {
 				shader.loadTransformationMatrix(Matrices

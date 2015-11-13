@@ -18,12 +18,14 @@ import javafx.scene.control.TreeView;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
+import tk.captainsplexx.Entity.Entity;
 import tk.captainsplexx.Game.Core;
 import tk.captainsplexx.JavaFX.JavaFXHandler;
 import tk.captainsplexx.JavaFX.TreeViewEntry;
 import tk.captainsplexx.JavaFX.TreeViewUtils;
 import tk.captainsplexx.JavaFX.CellFactories.JavaFXexplorer1TCF;
 import tk.captainsplexx.JavaFX.CellFactories.JavaFXexplorerTCF;
+import tk.captainsplexx.JavaFX.CellFactories.JavaFXlayerTCF;
 import tk.captainsplexx.JavaFX.Controller.ToolsWindowController;
 
 public class ToolsWindow {
@@ -75,6 +77,7 @@ public class ToolsWindow {
                 return new JavaFXexplorer1TCF();
             }
         });
+        
         controller.getExplorer1().setEditable(false);
                 
         controller.getExplorer1().setPrefWidth(Display.getDesktopDisplayMode().getWidth());
@@ -87,6 +90,19 @@ public class ToolsWindow {
 				System.err.println("Old: "+oldValue+" New: "+newValue);
 			}
 		});
+        
+        
+        
+        controller.getLayerTreeView().setEditable(false);
+        controller.getLayerTreeView().setPrefWidth(Display.getDesktopDisplayMode().getWidth());
+        controller.getLayerTreeView().setPrefHeight(Display.getDesktopDisplayMode().getHeight()); //Back to top in TCF or what ?
+
+        controller.getLayerTreeView().setCellFactory(new Callback<TreeView<Entity>,TreeCell<Entity>>(){
+            @Override
+            public TreeCell<Entity> call(TreeView<Entity> p) {
+                return new JavaFXlayerTCF();
+            }
+        });
         
         controller.getConsiderPitchBox().setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -103,12 +119,6 @@ public class ToolsWindow {
         	public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
         		double mouseSens = (double)new_val/500;
         		Core.getRender().getCamera().setMouseSensitivity((float)mouseSens);
-        	}
-        });
-        controller.getCameraSpeed().valueProperty().addListener(new ChangeListener<Number>() {
-        	public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
-        		double cameraSpeed = (double)new_val*4;
-        		Core.getGame().getPlayerHandler().getPlayerEntity().setMovementSpeed((float) cameraSpeed);
         	}
         });
 	}

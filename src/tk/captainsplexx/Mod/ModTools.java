@@ -543,7 +543,14 @@ public class ModTools {
 		targetList.add(link);
 		return false;
 	}
-	
+	public boolean extendCurrentPackage(LinkBundleType bundle, String sbPart, ResourceType type, String path){
+		String currentTocName = Core.getGame().getCurrentToc().getName();
+		Package currentPackage = Core.getModTools().getPackage(currentTocName);
+		if (currentPackage!=null){
+			return extendPackage(bundle, sbPart, type, path, currentPackage);
+		}
+		return false;
+	}
 	
 	public boolean extendPackage(LinkBundleType bundle, String sbPart, ResourceType type, String path, Package pack){
 		return extendPackage(bundle, sbPart, type, path, null, pack);

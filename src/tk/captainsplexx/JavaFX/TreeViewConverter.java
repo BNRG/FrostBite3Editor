@@ -7,6 +7,9 @@ import java.util.HashMap;
 
 import javafx.scene.control.TreeItem;
 import javafx.scene.image.ImageView;
+import tk.captainsplexx.Entity.Entity;
+import tk.captainsplexx.Entity.LayerEntity;
+import tk.captainsplexx.Entity.Layer.EntityLayer;
 import tk.captainsplexx.Game.Core;
 import tk.captainsplexx.JavaFX.Windows.MainWindow.EntryType;
 import tk.captainsplexx.Mod.ModTools;
@@ -223,7 +226,7 @@ public class TreeViewConverter {
 					instances.add(ebxInstance);
 				}
 			}
-			EBXFile file = new EBXFile(rootEntry.getValue().getName(), instances, (String) rootEntry.getValue().getValue());
+			EBXFile file = new EBXFile(rootEntry.getValue().getName(), instances, (String) rootEntry.getValue().getValue(), null);
 			return file;
 		}catch (Exception e){
 			e.printStackTrace();
@@ -626,5 +629,51 @@ public class TreeViewConverter {
 			}
 			counter++;
 		}
+	}
+	
+	public static TreeItem<Entity> getTreeView(ArrayList<EntityLayer> layers){
+		TreeItem<Entity> root = new TreeItem<Entity>(null);
+		for (EntityLayer eL : layers){
+			TreeItem<Entity> et = getTreeView(eL);
+			if (et!=null){
+				root.getChildren().add(et);
+			}
+		}
+		return root;
+		
+	}
+	
+	
+	public static TreeItem<Entity> getTreeView(EntityLayer layer){
+		TreeItem<Entity> layerRoot = new TreeItem<Entity>(new LayerEntity(layer.getName()));
+		layerRoot.setGraphic(new ImageView(JavaFXHandler.structureIcon));
+		for (Entity e : layer.getEntities()){
+			TreeItem<Entity> et = getTreeView(e);
+			if (et!=null){
+				layerRoot.getChildren().add(et);
+			}
+		}
+		return layerRoot;
+		
+	}
+	
+	private static TreeItem<Entity> getTreeView(Entity entity){
+		TreeItem<Entity> ent = new TreeItem<Entity>(entity);
+		
+		switch(entity.getType()){
+			case Light:
+				ent.setGraphic(new ImageView(JavaFXHandler.asteriskYellow));
+				break;
+			case Object:
+				ent.setGraphic(new ImageView(JavaFXHandler.instanceIcon/*box.png*/));
+				break;
+		}		
+		for (Entity child : entity.getChildrens()){
+			TreeItem<Entity> childEnt = getTreeView(child);
+			if (childEnt!=null){
+				ent.getChildren().add(childEnt);
+			}
+		}		
+		return ent;
 	}
 }

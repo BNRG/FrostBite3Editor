@@ -5,14 +5,18 @@ import java.util.ArrayList;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
+import tk.captainsplexx.Resource.EBX.Structure.EBXStructureEntry;
+
 public abstract class Entity {
 	
 	public static enum Type{
 			Object, Light,
+			Layer
 	};
 
 	public String name;
 	public Type type;
+	public EBXStructureEntry structEntry;
 
 	public Vector3f position = new Vector3f(0.0f, 0.0f, 0.0f);
 	public Vector3f rotation = new Vector3f(0.0f, 0.0f, 0.0f);
@@ -33,14 +37,15 @@ public abstract class Entity {
 	public ArrayList<Entity> childrens = new ArrayList<>();
 	public Entity parent = null;
 
-	public Entity(String name, Type type, Entity parent, String[] texturedModelNames) {
+	public Entity(String name, Type type, EBXStructureEntry structEntry, Entity parent, String[] texturedModelNames) {
 		this.name = name;
 		this.type = type;
 		this.parent = parent;
 		this.texturedModelNames = texturedModelNames;
+		this.structEntry = structEntry;
 	}
 
-	public Entity(String name, Type type, Entity parent, String[] texturedModelNames,
+	public Entity(String name, Type type, EBXStructureEntry structEntry, Entity parent, String[] texturedModelNames,
 			Vector3f minCoords, Vector3f maxCoords) {		
 		this.name = name;
 		this.type = type;
@@ -48,6 +53,7 @@ public abstract class Entity {
 		this.texturedModelNames = texturedModelNames;
 		this.minCoords = minCoords;
 		this.maxCoords = maxCoords;
+		this.structEntry = structEntry;
 	}
 
 	public void changePosition(float dx, float dy, float dz) {
@@ -195,6 +201,7 @@ public abstract class Entity {
 		this.minCoords = minCoords;
 	}
 
+	
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -254,8 +261,11 @@ public abstract class Entity {
 	public void setParent(Entity parent) {
 		this.parent = parent;
 	}
-	
-	
+
+
+	public EBXStructureEntry getStructEntry() {
+		return structEntry;
+	}
 
 	public Type getType() {
 		return type;

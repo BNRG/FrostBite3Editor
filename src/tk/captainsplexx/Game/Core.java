@@ -151,7 +151,6 @@ public class Core {
 		FOV = 60f;
 		
 		jfxHandler = new JavaFXHandler();
-		
 		eventHandler = new EventHandler();
 		game = new Game();
 		if (buildVersion.contains("NEW VERSION")){

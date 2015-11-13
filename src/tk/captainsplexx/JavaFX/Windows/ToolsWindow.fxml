@@ -43,194 +43,171 @@
         </Menu>
       </menus>
     </MenuBar>
-    <SplitPane dividerPositions="0.2505567928730512, 0.5" focusTraversable="true" orientation="VERTICAL" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
-      <items>
-        <AnchorPane prefHeight="157.0" prefWidth="277.0" SplitPane.resizableWithParent="false">
-               <children>
-                  <TabPane prefWidth="277.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                    <tabs>
-                        <Tab text="Core">
-                          <content>
-                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="64.0" prefWidth="277.0" />
-                          </content>
-                        </Tab>
-                      <Tab text="Map">
-                           <content>
-                              <VBox prefHeight="200.0" prefWidth="100.0">
+  <AnchorPane>
+         <children>
+            <TabPane prefWidth="277.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+              <tabs>
+                  <Tab text="Core">
+                     <content>
+                        <SplitPane dividerPositions="0.5" orientation="VERTICAL">
+                           <items>
+                        <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0">
+                                 <opaqueInsets>
+                                    <Insets />
+                                 </opaqueInsets>
                                  <children>
-                                    <VBox prefWidth="277.0">
+                                    <TreeView fx:id="explorer" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                 </children>
+                        </AnchorPane>
+                              <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0">
+                                 <children>
+                                    <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <children>
-                                          <HBox alignment="TOP_RIGHT">
+                                          <HBox>
                                              <children>
-                                                <Label alignment="TOP_CENTER" text="Layer">
-                                                   <padding>
-                                                      <Insets bottom="2.0" left="2.0" right="2.0" top="6.0" />
-                                                   </padding>
-                                                </Label>
-                                                <ComboBox fx:id="layer" prefWidth="150.0">
-                                                   <padding>
-                                                      <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-                                                   </padding>
-                                                </ComboBox>
-                                             </children>
-                                             <padding>
-                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                             </padding>
-                                          </HBox>
-                                          <HBox alignment="TOP_RIGHT" layoutX="10.0" layoutY="10.0">
-                                             <padding>
-                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                             </padding>
-                                             <children>
-                                                <Button fx:id="destroyLayerButton" disable="true" mnemonicParsing="false" onAction="#destroyLayer" text="destroy layer" />
+                                                <TextField fx:id="filter" prefHeight="25.0" prefWidth="190.0" promptText="Filter String">
+                                                   <HBox.margin>
+                                                      <Insets bottom="5.0" left="5.0" top="5.0" />
+                                                   </HBox.margin>
+                                                </TextField>
+                                                <Button fx:id="search" mnemonicParsing="false" onAction="#search" text="Search">
+                                                   <HBox.margin>
+                                                      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                                   </HBox.margin>
+                                                </Button>
                                              </children>
                                           </HBox>
+                                          <TreeView fx:id="explorer1" />
                                        </children>
                                     </VBox>
-                                    <HBox alignment="TOP_RIGHT">
-                                       <children>
-                                          <Label alignment="TOP_CENTER" text="Lightning">
-                                             <padding>
-                                                <Insets bottom="2.0" left="2.0" right="2.0" top="6.0" />
-                                             </padding>
-                                          </Label>
-                                          <ComboBox fx:id="lightning" prefWidth="150.0">
-                                             <padding>
-                                                <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-                                             </padding>
-                                          </ComboBox>
-                                       </children>
-                                       <padding>
-                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                       </padding>
-                                       <VBox.margin>
-                                          <Insets />
-                                       </VBox.margin>
-                                    </HBox>
-                                    <HBox alignment="TOP_RIGHT" layoutX="10.0" layoutY="10.0">
-                                       <children>
-                                          <Label text="LOD (sml. = higher)">
-                                             <padding>
-                                                <Insets bottom="2.0" left="2.0" right="2.0" top="6.0" />
-                                             </padding>
-                                          </Label>
-                                          <Button layoutX="261.0" layoutY="15.0" mnemonicParsing="false" onAction="#decLOD" prefHeight="25.0" prefWidth="26.0" text="-" />
-                                          <Label fx:id="lodLabel" alignment="CENTER" contentDisplay="CENTER" prefHeight="27.0" prefWidth="100.0" text="0" textAlignment="CENTER">
-                                             <opaqueInsets>
-                                                <Insets />
-                                             </opaqueInsets>
-                                             <padding>
-                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                             </padding>
-                                          </Label>
-                                          <Button layoutX="257.0" layoutY="15.0" mnemonicParsing="false" onAction="#incLOD" text="+" />
-                                       </children>
-                                       <padding>
-                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                       </padding>
-                                    </HBox>
                                  </children>
-                              </VBox>
-                           </content>
-                      </Tab>
-                        <Tab text="Camera">
-                           <content>
-                              <VBox prefHeight="200.0" prefWidth="100.0">
-                                 <children>
-                                    <HBox alignment="TOP_RIGHT" layoutX="10.0" layoutY="10.0">
-                                       <children>
-                                          <Label alignment="TOP_CENTER" text="Consider Pitch">
-                                             <padding>
-                                                <Insets bottom="2.0" left="2.0" right="2.0" top="6.0" />
-                                             </padding>
-                                          </Label>
-                                          <CheckBox fx:id="considerPitchBox" mnemonicParsing="false">
-                                             <HBox.margin>
-                                                <Insets bottom="2.0" left="10.0" right="2.0" top="6.0" />
-                                             </HBox.margin>
-                                          </CheckBox>
-                                       </children>
-                                       <padding>
-                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                       </padding>
-                                    </HBox>
-                                    <HBox alignment="TOP_RIGHT" layoutX="10.0" layoutY="10.0">
-                                       <children>
-                                          <Label alignment="TOP_CENTER" text="Mouse Sensitivity">
-                                             <padding>
-                                                <Insets bottom="2.0" left="2.0" right="2.0" top="8.0" />
-                                             </padding>
-                                          </Label>
-                                          <Slider fx:id="mouseSensitivity" prefHeight="31.0" prefWidth="140.0" showTickLabels="true" showTickMarks="true">
-                                             <padding>
-                                                <Insets bottom="2.0" left="2.0" right="2.0" top="8.0" />
-                                             </padding>
-                                          </Slider>
-                                       </children>
-                                       <padding>
-                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                       </padding>
-                                    </HBox>
-                                    <HBox alignment="TOP_RIGHT" layoutX="10.0" layoutY="45.0">
-                                       <children>
-                                          <Label alignment="TOP_CENTER" text="Camera Speed">
-                                             <padding>
-                                                <Insets bottom="2.0" left="2.0" right="2.0" top="8.0" />
-                                             </padding>
-                                          </Label>
-                                          <Slider fx:id="cameraSpeed" blockIncrement="1.0" majorTickUnit="2.0" max="25.0" min="1.0" minorTickCount="1" prefHeight="31.0" prefWidth="140.0" showTickLabels="true" showTickMarks="true">
-                                             <padding>
-                                                <Insets bottom="2.0" left="2.0" right="2.0" top="8.0" />
-                                             </padding>
-                                          </Slider>
-                                       </children>
-                                       <padding>
-                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                       </padding>
-                                    </HBox>
-                                 </children>
-                              </VBox>
-                           </content>
-                        </Tab>
-                    </tabs>
-                  </TabPane>
-               </children></AnchorPane>
-      <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0">
-               <opaqueInsets>
-                  <Insets />
-               </opaqueInsets>
-               <children>
-                  <TreeView fx:id="explorer" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-               </children>
-      </AnchorPane>
-            <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0">
-               <children>
-                  <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                     <children>
-                        <HBox>
+                                 <opaqueInsets>
+                                    <Insets />
+                                 </opaqueInsets>
+                              </AnchorPane>
+                           </items>
+                        </SplitPane>
+                     </content>
+                  </Tab>
+                <Tab text="Map">
+                     <content>
+                        <VBox prefHeight="200.0" prefWidth="100.0">
                            <children>
-                              <TextField fx:id="filter" prefHeight="25.0" prefWidth="190.0" promptText="Filter String">
-                                 <HBox.margin>
-                                    <Insets bottom="5.0" left="5.0" top="5.0" />
-                                 </HBox.margin>
-                              </TextField>
-                              <Button fx:id="search" mnemonicParsing="false" onAction="#search" text="Search">
-                                 <HBox.margin>
+                              <HBox alignment="TOP_RIGHT">
+                                 <children>
+                                    <Label alignment="TOP_CENTER" text="Lightning">
+                                       <padding>
+                                          <Insets bottom="2.0" left="2.0" right="2.0" top="6.0" />
+                                       </padding>
+                                    </Label>
+                                    <ComboBox fx:id="lightning" prefWidth="150.0">
+                                       <padding>
+                                          <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                                       </padding>
+                                    </ComboBox>
+                                 </children>
+                                 <padding>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                 </HBox.margin>
-                              </Button>
+                                 </padding>
+                                 <VBox.margin>
+                                    <Insets />
+                                 </VBox.margin>
+                              </HBox>
+                              <HBox alignment="TOP_RIGHT" layoutX="10.0" layoutY="10.0">
+                                 <children>
+                                    <Label text="LOD (sml. = higher)">
+                                       <padding>
+                                          <Insets bottom="2.0" left="2.0" right="2.0" top="6.0" />
+                                       </padding>
+                                    </Label>
+                                    <Button layoutX="261.0" layoutY="15.0" mnemonicParsing="false" onAction="#decLOD" prefHeight="25.0" prefWidth="26.0" text="-" />
+                                    <Label fx:id="lodLabel" alignment="CENTER" contentDisplay="CENTER" prefHeight="27.0" prefWidth="100.0" text="0" textAlignment="CENTER">
+                                       <opaqueInsets>
+                                          <Insets />
+                                       </opaqueInsets>
+                                       <padding>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </padding>
+                                    </Label>
+                                    <Button layoutX="257.0" layoutY="15.0" mnemonicParsing="false" onAction="#incLOD" text="+" />
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </padding>
+                              </HBox>
+                              <HBox alignment="TOP_RIGHT">
+                                 <children>
+                                    <Label alignment="TOP_CENTER" text="Mouse Sensitivity">
+                                       <padding>
+                                          <Insets bottom="2.0" left="2.0" right="2.0" top="8.0" />
+                                       </padding>
+                                    </Label>
+                                    <Slider fx:id="mouseSensitivity" prefHeight="31.0" prefWidth="140.0" showTickLabels="true" showTickMarks="true">
+                                       <padding>
+                                          <Insets bottom="2.0" left="2.0" right="2.0" top="8.0" />
+                                       </padding>
+                                    </Slider>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </padding>
+                              </HBox>
+                              <HBox alignment="TOP_RIGHT">
+                                 <children>
+                                    <Label alignment="TOP_CENTER" text="Consider Pitch">
+                                       <padding>
+                                          <Insets bottom="2.0" left="2.0" right="2.0" top="6.0" />
+                                       </padding>
+                                    </Label>
+                                    <CheckBox fx:id="considerPitchBox" mnemonicParsing="false">
+                                       <HBox.margin>
+                                          <Insets bottom="2.0" left="10.0" right="2.0" top="6.0" />
+                                       </HBox.margin>
+                                    </CheckBox>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </padding>
+                              </HBox>
                            </children>
-                        </HBox>
-                        <TreeView fx:id="explorer1" />
-                     </children>
-                  </VBox>
-               </children>
-               <opaqueInsets>
-                  <Insets />
-               </opaqueInsets>
-            </AnchorPane>
-      </items>
-    </SplitPane>
+                        </VBox>
+                     </content>
+                </Tab>
+                  <Tab text="Layer">
+                     <content>
+                        <VBox>
+                           <children>
+                              <HBox alignment="TOP_RIGHT">
+                                 <children>
+                                    <Label alignment="TOP_CENTER" text="Layer">
+                                       <padding>
+                                          <Insets bottom="2.0" left="2.0" right="2.0" top="6.0" />
+                                       </padding>
+                                    </Label>
+                                    <ComboBox fx:id="layer" prefWidth="150.0">
+                                       <padding>
+                                          <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                                       </padding>
+                                    </ComboBox>
+                                    <Button fx:id="destroyLayerButton" disable="true" mnemonicParsing="false" onAction="#destroyLayer" text="X">
+                                       <HBox.margin>
+                                          <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                                       </HBox.margin>
+                                    </Button>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </padding>
+                              </HBox>
+                              <TreeView fx:id="layerTreeView" />
+                           </children>
+                        </VBox>
+                     </content>
+                  </Tab>
+              </tabs>
+            </TabPane>
+         </children>
+      </AnchorPane>
       <BorderPane>
          <right>
             <Label alignment="TOP_RIGHT" contentDisplay="TOP" text="Twitter &amp; Reddit: @CaptainSpleXx" BorderPane.alignment="CENTER">

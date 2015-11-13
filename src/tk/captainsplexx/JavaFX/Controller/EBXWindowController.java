@@ -9,6 +9,8 @@ import tk.captainsplexx.JavaFX.TreeViewEntry;
 import tk.captainsplexx.JavaFX.Windows.EBXWindow;
 import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.EBX.EBXFile;
+import tk.captainsplexx.Resource.EBX.EBXHandler;
+import tk.captainsplexx.Resource.EBX.Modify.ChangeFile;
 
 public class EBXWindowController {
 	@FXML
@@ -35,9 +37,30 @@ public class EBXWindowController {
 	public void saveEBX(){
 		if (ebxExplorer.getRoot() != null){
 			if (Core.getGame().getCurrentMod()!=null&&!Core.isDEBUG){
+				EBXHandler ebxHandler = Core.getGame().getResourceHandler().getEBXHandler();
 				
-				//EBXFile ebxFile = window.getEBXFile();
-				
+				Core.getJavaFXHandler().getDialogBuilder().showAsk("WARNING!",
+						"After this process is completed successfully,\nthe EBXWindow will close and the Package will reload.\nThis can take some time!\n\nDo you really want to continue?",
+							new Runnable() {
+								@Override
+								public void run() {
+									EBXFile ebxFile = window.getEBXFile();
+									if (ebxFile!=null){
+										ChangeFile cFile = ebxHandler.getModifyHandler().getChangeFileByEBXGuid(ebxFile.getGuid());
+										if (cFile!=null){
+											if (cFile.applyChanges(true)){
+												Core.getJavaFXHandler().getDialogBuilder().showInfo("SUCESSFULL!", "Changes successfully appied to Mod!\nReloading...");
+												ebxHandler.reset();
+												Core.getJavaFXHandler().getMainWindow().destroyEBXWindow(stage);
+											}else{
+												Core.getJavaFXHandler().getDialogBuilder().showError("ERROR", "Error, while applying changes!", null);
+											}
+										}else{
+											Core.getJavaFXHandler().getDialogBuilder().showError("ERROR", "No changes found, unable to save.", null);
+										}
+									}
+								}
+							}, null);
 				/*
 				String resPath = ebxExplorer.getRoot().getValue().getName()+".ebx";		
 				
@@ -60,7 +83,7 @@ public class EBXWindowController {
 				Core.getModTools().writePackages();
 				*/
 				
-				System.err.println("TODO");
+				
 			}else{
 				//DEBUG--
 				EBXFile ebxFile = TreeViewConverter.getEBXFile(ebxExplorer.getRoot());

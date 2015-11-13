@@ -44,8 +44,10 @@ public class ResourceHandler {
 	
 	public ResourceLink getResourceLinkByEBXGUID(String ebxGUID){
 		for (ResourceLink link : Core.getGame().getCurrentSB().getEbx()){
-			if (link.getEbxFileGUID().equalsIgnoreCase(ebxGUID)){
-				return link;
+			if (link.getEbxFileGUID()!=null){
+				if (link.getEbxFileGUID().equalsIgnoreCase(ebxGUID)){
+					return link;
+				}
 			}
 		}
 		//System.err.println("ResourceLink not found for EBXGUID "+ebxGUID+"!");
@@ -84,13 +86,13 @@ public class ResourceHandler {
 						System.err.println("Mod file was found, this is our resource!");
 						data = FileHandler.readFile(Core.getGame().getCurrentMod().getPath()+ModTools.RESOURCEFOLDER+entry.getResourcePath());
 						if (data!=null){
-							break;
+							return data;
 						}
 					}
 				}
 			}
-		}else
-		System.out.println("No Mod file does exist for this resource, use ORIGINAL data from Game.");
+		}
+		System.err.println("No Mod file does exist for this resource, use ORIGINAL data from Game.");
 		data = CasDataReader.readCas(baseSHA1, deltaSHA1, SHA1, casPatchType);
 		//hope here, that it was found!
 		return data;
