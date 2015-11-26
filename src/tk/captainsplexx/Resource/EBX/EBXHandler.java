@@ -107,15 +107,32 @@ public class EBXHandler {
 	}
 	
 	public EBXStructureFile readEBXStructureFile(EBXFile ebxFile){
+		EBXStructureFile existingFile = getEBXStructureFileByGUID(ebxFile.getGuid(), false, false, true/*Look Only*/);
+		if (existingFile!=null){
+			return existingFile;
+		}
 		EBXStructureFile file = EBXStructureReader.readStructure(ebxFile);
 		if (file!=null){
 			if (ebxStructureFiles!=null){
 				ebxStructureFiles.add(file);
 			}
 			return file;
-		}else{
-			return null;
 		}
+		return null;
+	}
+	public EBXStructureFile getEBXStructureFileByGUID(String fileGUID, boolean tryLoad, boolean loadOriginal, boolean lookOnly){
+		for (EBXStructureFile file : ebxStructureFiles){
+			if (file.getEBXGUID().equalsIgnoreCase(fileGUID)){
+				return file;
+			}
+		}
+		if (!lookOnly){
+			EBXFile ebxFile = getEBXFileByGUID(fileGUID, tryLoad, loadOriginal);
+			if (ebxFile!=null){
+				return readEBXStructureFile(ebxFile);
+			}
+		}
+		return null;
 	}
 	
 	public EBXFile getEBXFileByGUID(String fileGUID, boolean tryLoad, boolean loadOriginal){

@@ -82,9 +82,9 @@ public class JavaFXlayerTCF extends TreeCell<Entity> {
 					setStyle("-fx-background-color: red");
 				}else if(item.getIsVisible()){
 					contextMenu.getItems().add(hide);
-				}else if (item.getTexturedModelNames()!=null){
+				}/*else if (item.getTexturedModelNames()!=null){
 					setStyle("-fx-background-color: green");
-				}
+				}*/
 			}else{
 				setText(item.getName());
 				setStyle("-fx-background-color: lightgrey");

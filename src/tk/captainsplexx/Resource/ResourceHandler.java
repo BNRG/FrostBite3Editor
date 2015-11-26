@@ -14,9 +14,7 @@ import tk.captainsplexx.Resource.MESH.MeshChunkLoader;
 import tk.captainsplexx.Resource.MESH.MeshVariationDatabaseHandler;
 import tk.captainsplexx.Resource.TOC.ResourceLink;
 
-public class ResourceHandler {
-	//public String chunkFolderPath;
-	
+public class ResourceHandler {	
 	public static enum ResourceType{ EBX, CHUNK, ITEXTURE, MESH, HKDESTRUCTION, HKNONDESTRUCTION, ANT,
 				ANIMTRACKDATA, RAGDOLL, OCCLUSIONMESH,
 			LIGHTINGSYSTEM, GFX, STREAIMINGSTUB, ENLIGHTEN, PROBESET, STATICENLIGHTEN,
@@ -32,14 +30,19 @@ public class ResourceHandler {
 	CasCatManager cCatManager; 
 	CasCatManager patchedCasCatManager;
 
-	public ResourceHandler(/*String chunkFolderPath, String guidTablePath*/) {
-		//this.chunkFolderPath = chunkFolderPath;
+	public ResourceHandler() {
 		this.mcL = new MeshChunkLoader();
-		this.ebxHandler = new EBXHandler(/*guidTablePath*/);
-		this.mvdH = new MeshVariationDatabaseHandler(this.ebxHandler);
+		this.ebxHandler = new EBXHandler();
+		this.mvdH = new MeshVariationDatabaseHandler();
 		this.textureHandler = new TextureHandler();
 		this.cCatManager = new CasCatManager();
 		this.patchedCasCatManager = new CasCatManager();
+	}
+	
+	public void resetEBXRelated(){
+		ebxHandler.reset();
+		mvdH.reset();
+		Core.getJavaFXHandler().getMainWindow().destroyEBXWindows();
 	}
 	
 	public ResourceLink getResourceLinkByEBXGUID(String ebxGUID){
@@ -54,6 +57,23 @@ public class ResourceHandler {
 		return null;
 	}
 	
+	public ResourceLink getResourceLink(String resourceName, ResourceType resourceType){
+		if (resourceType==ResourceType.EBX){
+			for (ResourceLink resLinkEBX : Core.getGame().getCurrentSB().getEbx()){
+				if (resLinkEBX.getName().equalsIgnoreCase(resourceName)){
+					return resLinkEBX;
+				}
+			}
+		}else{
+			for (ResourceLink resLinkRES : Core.getGame().getCurrentSB().getRes()){
+				if (resLinkRES.getName().equalsIgnoreCase(resourceName)){
+					return resLinkRES;
+				}
+			}
+		}
+		return null;
+	}
+		
 	public byte[] readResourceLink(ResourceLink link, boolean useOriginal){
 		System.out.println("Reading Link: "+link.getName()+" - Original only:("+useOriginal+")");
 		return readResource(link.getBaseSha1(), link.getDeltaSha1(), link.getSha1(), link.getCasPatchType(),
@@ -107,10 +127,6 @@ public class ResourceHandler {
 	public MeshChunkLoader getMeshChunkLoader() {
 		return mcL;
 	}
-	
-	/*public String getChunkFolderPath() {
-		return chunkFolderPath;
-	}*/
 	
 
 	public MeshVariationDatabaseHandler getMeshVariationDatabaseHandler() {

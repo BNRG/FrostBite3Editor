@@ -15,8 +15,10 @@ import tk.captainsplexx.Maths.VectorMath;
 import tk.captainsplexx.Model.ModelHandler;
 import tk.captainsplexx.Model.RawModel;
 import tk.captainsplexx.Resource.ResourceHandler;
+import tk.captainsplexx.Resource.EBX.EBXExternalGUID;
 import tk.captainsplexx.Resource.EBX.EBXFile;
 import tk.captainsplexx.Resource.EBX.Structure.EBXStructureEntry;
+import tk.captainsplexx.Resource.EBX.Structure.EBXStructureFile;
 import tk.captainsplexx.Resource.MESH.MeshChunkLoader;
 
 public class EntityHandler {
@@ -96,6 +98,7 @@ public class EntityHandler {
 	}
 	
 	public Entity getFocussedEntity(Vector3f position, Vector3f direction, int maxChecks, float checkDistance){
+		System.err.println("Raycasting has a big, A REALLY BIG performance problem! We have to thing about something else!");
 		this.ray = new Vector3f(position.x, position.y, position.z);
 		Vector3f origin = new Vector3f(position.x, position.y, position.z);
 		Vector3f absMinCoords = null;
@@ -133,11 +136,11 @@ public class EntityHandler {
 	}
 	
 	
-	public Entity createEntity(byte[] mesh, Type type, EBXStructureEntry structEntry, Entity parent, String loaderErrorDesc){
+	public Entity createEntity(byte[] mesh, Type type, EBXStructureEntry structEntry, EBXExternalGUID meshInstanceGUID, Entity parent, String loaderErrorDesc){
 		try{
 			MeshChunkLoader msl = resourceHandler.getMeshChunkLoader();
 			msl.loadFile(mesh, Core.getGame().getCurrentSB());
-			String[] texturedModel = new String[msl.getSubMeshCount()];
+			RawModel[] rawModels = new RawModel[msl.getSubMeshCount()];
 			//ArrayList<String> materials = resourceHandler.getMeshVariationDatabaseHandler().getMaterials(msl.getName(), 0); //VARIATION ID ??!
 			for (int submesh=0; submesh<msl.getSubMeshCount();submesh++){
 				RawModel model = modelHandler.addRawModel(GL11.GL_TRIANGLES, msl.getName()+submesh, msl.getVertexPositions(submesh), msl.getUVCoords(submesh), msl.getIndices(submesh));
@@ -159,15 +162,15 @@ public class EntityHandler {
 						}
 					}
 				}*/
-				texturedModel[submesh] = (modelHandler.addTexturedModel(model, textureID));
+				rawModels[submesh] = model;
 			}
 			Entity en = null;
 			switch (type){
 				case Object:
-					en = new ObjectEntity(msl.getName(), structEntry, parent, texturedModel);
+					en = new ObjectEntity(msl.getName(), structEntry, parent, rawModels, new EntityTextureData(meshInstanceGUID, null));
 					break;
 				case Light:
-					en = new LightEntity(msl.getName(), structEntry, parent, texturedModel);
+					en = new LightEntity(msl.getName(), structEntry, parent, rawModels);
 					break;
 			}
 			
@@ -181,6 +184,27 @@ public class EntityHandler {
 			e.printStackTrace();
 			System.err.println("Could not create entitiy: "+loaderErrorDesc);
 			return null;
+		}
+	}
+	
+	public void updateLayer(EntityLayer layer, EBXStructureFile meshVariationDatabase){
+		updateEntities(layer.getEntities(), meshVariationDatabase);
+	}
+	
+	private void updateEntity(Entity e, EBXStructureFile meshVariationDatabase){
+		if (e.getType()==Type.Object){
+			ObjectEntity objEn = (ObjectEntity) e;
+			EntityTextureData etd = objEn.getTextureData();
+			if (etd!=null){
+				etd.updateTextures(meshVariationDatabase);
+			}
+		}
+		updateEntities(e.getChildrens(), meshVariationDatabase);
+	}
+	
+	private void updateEntities(ArrayList<Entity> entities, EBXStructureFile meshVariationDatabase){
+		for (Entity e : entities){
+			updateEntity(e, meshVariationDatabase);
 		}
 	}
 

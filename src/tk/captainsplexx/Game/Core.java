@@ -9,6 +9,7 @@ import java.net.URLConnection;
 import java.nio.ByteBuffer;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
 
@@ -16,8 +17,12 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.util.vector.Vector2f;
+import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.opengl.ImageIOImageData;
 
+import tk.captainsplexx.Entity.Entity;
+import tk.captainsplexx.Entity.ObjectEntity;
+import tk.captainsplexx.Entity.Layer.EntityLayer;
 import tk.captainsplexx.Event.EventHandler;
 import tk.captainsplexx.JavaFX.JavaFXHandler;
 import tk.captainsplexx.Mod.ModTools;
@@ -64,67 +69,13 @@ public class Core {
 	private static boolean isExecutingRunnables;
 	//public static Object[] sharedObjs;
 		
+	
+	
+	public static Random random = new Random();
+	
 	public static void main(String[] args){
-		/*Everything's happen from here. Even your parents meet here!*/
-		
-		
-		/* Starwars battlefront beta DEBUG
-		 * 
-		 * CasCat file got changed and first 8 bytes after header is a little_endian long containing the number of entries.
-		 * 
-		 * 
-		byte[] blockdata = FileHandler.readFile("C:\\Users\\SpleXx\\Desktop\\settings_win32_cas_chunks");
-		byte[] finaldata = CasDataReader.convertToRAWData(blockdata);
-		FileHandler.writeFile("C:\\Users\\SpleXx\\Desktop\\settings_win32.ebx", finaldata);
-		
-		System.exit(0);
-		*/
-		
-		
-		
-		
-		//ITextureConverter.getITextureHeader(FileHandler.readFile("mods/SampleMod/resources/objects/architecture/housesettlement_01/t_housesettlement_01_railing_d.dds"), "01 10 96 C2 D2 DA DF 9B 39 31 23 20 14 07 C1 E7".replace(" ", ""));
-		
-		/*
-		byte[] file = FileHandler.readFile("D:\\dump_bf4_fs\\bundles_more_info\\ebx\\objects\\architecture\\housesettlement_01\\pf_housesettlement_01_medium_01_generic_mpnaval_nongroupable_autogen_Win32.ebx");
-		 "D:\\dump_bf4_fs\\bundles_more_info\\ebx\\levels\\mp\\mp_playground\\content\\layer2_buildings.ebx"
-				
-		
-		EBXFile ebxFile = new EBXHandler().loadFile(file);
-		EBXStructureFile structFile = EBXStructureReader.readStructure(ebxFile);
-		for (EBXStructureEntry entry : structFile.getEntries()){
-			switch (entry.getType()){
-				case ReferenceObjectData:
-					EBXStrReferencedObjectData en = (EBXStrReferencedObjectData) entry;
-					//System.out.println(en.getBlueprintTransform().getTransformation(Component.TRANS).getY());
-					continue;
-				case SpatialPrefabBlueprint:
-					System.out.println("Found SpatialPrefabBlueprint!");
-					EBXStrSpatialPrefabBlueprint spBlueprint = (EBXStrSpatialPrefabBlueprint) entry;
-					for (Object obj : spBlueprint.getObjectArray().getObjects()){
-						EBXObjInstanceGUID instanceGUID = (EBXObjInstanceGUID) obj;
-						EBXStructureEntry targetOBJ = instanceGUID.followInternalGUID(structFile);
-						if (targetOBJ!=null){
-							System.out.println(targetOBJ.getType()+" - "+targetOBJ.getGuid());
-						}
-					}
-				}
-		}
-		
-		
-		byte[] argb8888 = FileHandler.readFile("C:\\Users\\SpleXx\\Desktop\\levels_mp_mp_playground_ui_mp_playground_loading01.dds");
-		DDS_HEADER ddsheader = new DDS_HEADER(argb8888, null);
-		DDS_PIXELFORMAT format = ddsheader.getPixelformat();
-		
-		*/
 		System.err.println("If Modtools has replaced a resource and then tries to request the orignal resource in the second run for a diffrent resource,\n"
 				+ "it can't find it and the loader will crash.");
-		//System.exit(0); 
-		
-		
-		
-		
-		
 		
 		/*Initialize Variables*/
 		runnables = new ArrayList<Runnable>();
@@ -147,7 +98,7 @@ public class Core {
 		DISPLAY_RATE = 60;
 		
 		zNear = 1f;
-		zFar = 25000f;
+		zFar = 2500f;
 		FOV = 60f;
 		
 		jfxHandler = new JavaFXHandler();
@@ -204,6 +155,12 @@ public class Core {
 				render = new Render(game);	
 				inputHandler = new InputHandler();
 				
+				/*EntityLayer testLayer = new EntityLayer("test");
+				Entity parentEnt = new ObjectEntity("test", null, null, null);
+				stackEntityTest(0, 15, parentEnt);//15 means ~65.000!!!
+				testLayer.getEntities().add(parentEnt);
+				game.getEntityHandler().getLayers().add(testLayer);*/
+								
 				while(!Display.isCloseRequested() && keepAlive){
 					currentTime = (int) (System.currentTimeMillis()%1000/(1000/TICK_RATE));
 					if (currentTime != oldTime){
@@ -328,4 +285,19 @@ public class Core {
 	public static void keepAlive(boolean b) {
 		keepAlive = b;
 	}
+	
+	/*public static void stackEntityTest(int i, int max, Entity parent){
+		for (int ie = 0; ie<15;ie++){
+			if (i<=max){
+				i++;
+				Entity e = new ObjectEntity("test"+i, null, parent, null);
+				e.setPosition(new Vector3f(random.nextFloat(), random.nextFloat(), random.nextFloat()));
+				e.setRotation(new Vector3f(random.nextFloat(), random.nextFloat(), random.nextFloat()));
+				stackEntityTest(i, max, e);
+				parent.getChildrens().add(e);
+			}else{
+				break;
+			}
+		}
+	}*/
 }

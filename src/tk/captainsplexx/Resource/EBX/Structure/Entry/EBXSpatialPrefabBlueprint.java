@@ -11,7 +11,7 @@ public class EBXSpatialPrefabBlueprint extends EBXStructureEntry {
 	//Skip Name
 	private EBXObjArray objects = null;//Instance Reference!
 	
-	public EBXSpatialPrefabBlueprint(EBXStructureInstance parent, EBXComplex complex) {
+	public EBXSpatialPrefabBlueprint(EBXStructureEntry parent, EBXComplex complex) {
 		super(parent, EntryType.SpatialPrefabBlueprint);
 		
 		for (EBXField field : complex.getFieldAsComplex(0).getFields()) {//Everything is inside a PrefabBlueprint

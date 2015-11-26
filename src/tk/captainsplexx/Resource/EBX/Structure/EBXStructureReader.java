@@ -5,10 +5,15 @@ import tk.captainsplexx.Resource.EBX.EBXFile;
 import tk.captainsplexx.Resource.EBX.EBXInstance;
 import tk.captainsplexx.Resource.EBX.Structure.Entry.EBXBreakableModelEntityData;
 import tk.captainsplexx.Resource.EBX.Structure.Entry.EBXDynamicModelEntityData;
+import tk.captainsplexx.Resource.EBX.Structure.Entry.EBXMeshVariationDatabase;
+import tk.captainsplexx.Resource.EBX.Structure.Entry.EBXMeshVariationDatabaseEntry;
+import tk.captainsplexx.Resource.EBX.Structure.Entry.EBXMeshVariationDatabaseMaterial;
+import tk.captainsplexx.Resource.EBX.Structure.Entry.EBXMeshVariationDatabaseRedirectEntry;
 import tk.captainsplexx.Resource.EBX.Structure.Entry.EBXObjectBlueprint;
 import tk.captainsplexx.Resource.EBX.Structure.Entry.EBXReferencedObjectData;
 import tk.captainsplexx.Resource.EBX.Structure.Entry.EBXSpatialPrefabBlueprint;
 import tk.captainsplexx.Resource.EBX.Structure.Entry.EBXStaticModelEntityData;
+import tk.captainsplexx.Resource.EBX.Structure.Entry.EBXTextureShaderParameter;
 
 public class EBXStructureReader {
 	
@@ -24,7 +29,9 @@ public class EBXStructureReader {
 		OrEntityData, TransformEntityData, SyncedBoolEntityData, FadeEntityData,
 		UINPXTooltipEntityData, SequenceEntityData, CompareBoolEntityData, TransformPartPropertyTrackData,
 		UINPXTooltipLine, UINPXTextLine, UINPXPaddingLine, WorldPartData, SpatialPrefabBlueprint, ObjectBlueprint,
-		VegetationTreeEntityData, StaticModelEntityData, DynamicModelEntityData, BreakableModelEntityData
+		VegetationTreeEntityData, StaticModelEntityData, DynamicModelEntityData, BreakableModelEntityData,
+		TextureShaderParameter, TextureParameters, MeshVariationDatabaseMaterial, MeshVariationDatabaseEntry,
+		MeshVariationDatabase, MeshVariationDatabaseRedirectEntry
 	}
 	
 	public static EntryType getEntryTypeByName(String name) {
@@ -59,7 +66,7 @@ public class EBXStructureReader {
 		}
 	}
 	
-	private static EBXStructureEntry readEntry(EBXStructureInstance parent, EBXComplex ebxComplex){
+	public static EBXStructureEntry readEntry(EBXStructureEntry parent, EBXComplex ebxComplex){
 		try{
 			EBXStructureEntry entry = null;
 			String name = ebxComplex.getComplexDescriptor().getName();
@@ -84,6 +91,24 @@ public class EBXStructureReader {
 					case BreakableModelEntityData:
 						entry = new EBXBreakableModelEntityData(parent, ebxComplex);
 						break;
+					case TextureShaderParameter:
+						if (ebxComplex.getFields().length>0){
+							entry = new EBXTextureShaderParameter(parent, ebxComplex);
+						}else{
+							entry = null;
+						}
+						break;
+					case MeshVariationDatabaseMaterial:
+						entry = new EBXMeshVariationDatabaseMaterial(parent, ebxComplex);
+						break;
+					case MeshVariationDatabaseEntry:
+						entry = new EBXMeshVariationDatabaseEntry(parent, ebxComplex);
+						break;
+					case MeshVariationDatabaseRedirectEntry:
+						entry = new EBXMeshVariationDatabaseRedirectEntry(parent, ebxComplex);
+						break;
+					case MeshVariationDatabase:
+						entry = new EBXMeshVariationDatabase(parent, ebxComplex);
 				}
 			}else{
 				System.err.println("EBXStructureReader is INCLOMPLETE: "+name);

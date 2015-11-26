@@ -1,24 +1,27 @@
 package tk.captainsplexx.Resource.EBX.Structure.Entry;
 
+import tk.captainsplexx.Resource.EBX.EBXComplex;
 import tk.captainsplexx.Resource.EBX.EBXExternalGUID;
 import tk.captainsplexx.Resource.EBX.EBXField;
+import tk.captainsplexx.Resource.EBX.Structure.EBXStructureEntry;
 import tk.captainsplexx.Resource.EBX.Structure.EBXStructureInstance;
+import tk.captainsplexx.Resource.EBX.Structure.EBXStructureReader;
 
 public class EBXObjArray {
 	private Object[] objects = null;
 	private ArrayType type = null;
-	private EBXStructureInstance parent;
+	private EBXStructureEntry parent;
 	
 	public static enum ArrayType{
-		InstanceGUID, ExternalGUID //Complex, Objects, blah blah
+		InstanceGUID, ExternalGUID, Complex//Complex, Objects, blah blah
 	};
 	
-	public EBXObjArray(Object[] objects, EBXStructureInstance parent){
+	public EBXObjArray(Object[] objects, EBXStructureEntry parent){
 		this.objects = objects;
 		this.parent = parent;		
 	}
 	
-	public EBXObjArray(EBXField[] fields, EBXStructureInstance parent){
+	public EBXObjArray(EBXField[] fields, EBXStructureEntry parent){
 		this.parent = parent;
 		if (fields.length>0){
 			switch (fields[0].getType()){
@@ -43,6 +46,13 @@ public class EBXObjArray {
 						objects[i] = new EBXObjInstanceGUID((String) fields[i].getValue());
 					}
 					break;*/
+				case Complex:
+					this.type = ArrayType.Complex;
+					this.objects = new Object[fields.length];
+					for (int i=0; i<fields.length; i++){
+						objects[i] = EBXStructureReader.readEntry(parent, (EBXComplex) fields[i].getValue());
+					}
+					break;
 				default:
 					System.err.println("EBXObjArray has unhandled types in his constructor! "+fields[0].getType().toString());
 					break;
@@ -58,7 +68,7 @@ public class EBXObjArray {
 		return type;
 	}
 
-	public EBXStructureInstance getParent() {
+	public EBXStructureEntry getParent() {
 		return parent;
 	}
 	

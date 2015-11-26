@@ -103,6 +103,12 @@ public class MainWindow extends Application{
 		return true;
 	}
 	
+	public void destroyEBXWindows(){
+		for (EBXWindow window : ebxWindows){
+			destroyEBXWindow(window.getStage());
+		}
+	}
+	
 	public boolean createImagePreviewWindow(File file, File ddsFile, ResourceLink resourceLink, String title){
 		try{
 			Platform.runLater(new Runnable() {

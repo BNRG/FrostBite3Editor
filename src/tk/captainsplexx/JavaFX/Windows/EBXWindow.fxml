@@ -25,7 +25,8 @@
           </Menu>
             <Menu mnemonicParsing="false" text="Layer">
                <items>
-                  <MenuItem mnemonicParsing="false" onAction="#createLayer" text="Create" />
+                  <MenuItem mnemonicParsing="false" onAction="#createLayer" text="Create Layer" />
+                  <MenuItem mnemonicParsing="false" onAction="#createMeshVariationDatabase" text="Create MeshVariationDatabase" />
                </items>
             </Menu>
         </menus>

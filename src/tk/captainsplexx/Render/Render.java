@@ -28,6 +28,9 @@ import org.lwjgl.util.vector.Vector3f;
 
 import tk.captainsplexx.Camera.FPCameraController;
 import tk.captainsplexx.Entity.Entity;
+import tk.captainsplexx.Entity.EntityTextureData;
+import tk.captainsplexx.Entity.Entity.Type;
+import tk.captainsplexx.Entity.ObjectEntity;
 import tk.captainsplexx.Entity.Layer.EntityLayer;
 import tk.captainsplexx.Game.Core;
 import tk.captainsplexx.Game.Game;
@@ -51,6 +54,7 @@ public class Render {
 	public Matrix4f projectionMatrix;
 	public Matrix4f transformationMatrix;
 	GuiRenderer guiRenderer;
+	int renderCalls = 0;
 	
 	public static Matrix4f identityMatrix = new Matrix4f(); 
 
@@ -145,7 +149,7 @@ public class Render {
 
 		camera.yaw(camera.dx * camera.mouseSensitivity);
 		camera.pitch(-camera.dy * camera.mouseSensitivity);
-
+		
 		viewMatrix = Matrices.createViewMatrix(camera.getPosition(),
 				new Vector3f(camera.getPitch(), camera.getYaw(), 0.0f));
 
@@ -153,12 +157,14 @@ public class Render {
 		shader.start();
 		shader.loadProjectionMatrix(projectionMatrix);
 		shader.loadViewMatrix(viewMatrix);
+		renderCalls = 0;
 		RenderEntityLayers(game.getEntityHandler().getLayers(), identityMatrix, shader);
+		//System.out.println("RenderCalls: "+renderCalls);
 		shader.stop();
 		
 		RenderTerrains(game.getShaderHandler().getTerrainShader());
 		guiRenderer.update(game.getGuis());
-
+		
 		Display.update();
 		if (Display.wasResized()) {
 			updateProjectionMatrix(Core.FOV, Display.getWidth(),
@@ -166,20 +172,23 @@ public class Render {
 
 		}
 		Display.sync(Core.DISPLAY_RATE);
+		//Display.setVSyncEnabled(true);
 	}
 	public void RenderEntityLayers(ArrayList<EntityLayer> layers, Matrix4f identityMatrix, StaticShader shader){
 		for (EntityLayer layer : layers){
-			RenderEntities(layer.getEntities(), identityMatrix, shader);
+			RenderEntities(layer.getEntities(), identityMatrix, shader, false);
 		}
 	}
 	
-	public void RenderEntity(Entity e, Matrix4f parentMtx, StaticShader shader){
+	public void RenderEntity(Entity e, Matrix4f parentMtx, StaticShader shader, boolean recalcChilds){
 		if (e.isVisible) {
-			Matrix4f matrix = Matrices
-					.createTransformationMatrix(e.getPosition(),
-							e.getRotation(), e.getScaling());
-			
-			Matrix4f stackMtx = Matrix4f.mul(parentMtx, matrix, null);
+			Matrix4f stackMtx = null;
+			if (e.isRecalculateAbs() || recalcChilds || e.getAbsMatrix()==null){
+				e.recalculateAbsMatrix(parentMtx);
+				e.setRecalculateAbs(false);
+				recalcChilds = true;
+			}
+			stackMtx = e.getAbsMatrix();
 			
 			if (e.isShowBoundingBox()) {
 				shader.loadTransformationMatrix(Matrices
@@ -194,19 +203,34 @@ public class Render {
 				shader.loadHighlighted(true);
 			}
 			shader.loadHeighlightedColor(e.getHeighlightedColor());
-			String[] texturedModels = e.getTexturedModelNames();
+			RawModel[] rawModels = e.getRawModels();
 			shader.loadTransformationMatrix(stackMtx);
-			if (texturedModels!=null){
-				for (int i = 0; i < texturedModels.length; i++) {
-					TexturedModel tm = game.modelHandler.getTexturedModels()
-							.get((texturedModels[i]));
-					RawModel raw = tm.rawModel;
+			if (rawModels!=null){
+				int[] diffuseTextures = null;
+				if (e.getType()==Type.Object){
+					ObjectEntity objEntity = (ObjectEntity) e;
+					EntityTextureData etd = objEntity.getTextureData();
+					if (etd!=null){
+						if (etd.getMeshGUID().getInstanceGUID().equalsIgnoreCase("003c1de501eed2fab93fc29b19850e89")){
+							//System.out.println("Y");
+						}
+						if (etd.getDiffuseIDs()!=null){
+							diffuseTextures = etd.getDiffuseIDs();
+						}
+					}
+				}
+				for (int i = 0; i < rawModels.length; i++) {
+					RawModel raw = rawModels[i];
 					glColor3f(0.25f, 0.25f, 0.25f);
 					GL30.glBindVertexArray(raw.vaoID);
 					GL20.glEnableVertexAttribArray(0);
 					GL20.glEnableVertexAttribArray(1);
 					GL13.glActiveTexture(GL13.GL_TEXTURE0);
-					GL11.glBindTexture(GL11.GL_TEXTURE_2D, tm.textureID);
+					if (diffuseTextures!=null&&(i<diffuseTextures.length)){
+						GL11.glBindTexture(GL11.GL_TEXTURE_2D, diffuseTextures[i]);
+					}else{
+						GL11.glBindTexture(GL11.GL_TEXTURE_2D, game.getModelHandler().getLoader().getNotFoundID());
+					}
 					GL11.glDrawElements(raw.drawMethod, raw.vertexCount,
 							GL11.GL_UNSIGNED_INT, 0);
 					GL20.glDisableVertexAttribArray(0);
@@ -214,14 +238,15 @@ public class Render {
 					GL30.glBindVertexArray(0);
 				}
 			}
-			RenderEntities(e.getChildrens(), stackMtx, shader);
+			renderCalls++;
+			RenderEntities(e.getChildrens(), stackMtx, shader, recalcChilds);
 			shader.loadHighlighted(false);
 		}
 	}
 	
-	public void RenderEntities(ArrayList<Entity> entities, Matrix4f parentMtx, StaticShader shader){
+	public void RenderEntities(ArrayList<Entity> entities, Matrix4f parentMtx, StaticShader shader, boolean recalcChilds){
 		for (Entity e : entities) {
-			RenderEntity(e, parentMtx, shader);
+			RenderEntity(e, parentMtx, shader, recalcChilds);
 		}
 	}
 	

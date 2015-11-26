@@ -2,9 +2,12 @@ package tk.captainsplexx.Entity;
 
 import java.util.ArrayList;
 
+import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
+import tk.captainsplexx.Maths.Matrices;
+import tk.captainsplexx.Model.RawModel;
 import tk.captainsplexx.Resource.EBX.Structure.EBXStructureEntry;
 
 public abstract class Entity {
@@ -32,64 +35,76 @@ public abstract class Entity {
 	public Vector3f maxCoords = new Vector3f(0.0f, 0.0f, 0.0f);
 	public boolean showBoundingBox = false;
 
-	public String[] texturedModelNames;
+	public RawModel[] rawModels;
 	
 	public ArrayList<Entity> childrens = new ArrayList<>();
 	public Entity parent = null;
+	
+	public Matrix4f absMatrix = null;
+	public Matrix4f relMatrix = null;
+	public boolean recalculateAbs = true;
 
-	public Entity(String name, Type type, EBXStructureEntry structEntry, Entity parent, String[] texturedModelNames) {
+	public Entity(String name, Type type, EBXStructureEntry structEntry, Entity parent, RawModel[] rawModels) {
 		this.name = name;
 		this.type = type;
 		this.parent = parent;
-		this.texturedModelNames = texturedModelNames;
+		this.rawModels = rawModels;
 		this.structEntry = structEntry;
+		recalculateRelMatrix();
 	}
 
-	public Entity(String name, Type type, EBXStructureEntry structEntry, Entity parent, String[] texturedModelNames,
+	public Entity(String name, Type type, EBXStructureEntry structEntry, Entity parent, RawModel[] rawModels,
 			Vector3f minCoords, Vector3f maxCoords) {		
 		this.name = name;
 		this.type = type;
 		this.parent = parent;
-		this.texturedModelNames = texturedModelNames;
+		this.rawModels = rawModels;
 		this.minCoords = minCoords;
 		this.maxCoords = maxCoords;
 		this.structEntry = structEntry;
+		recalculateRelMatrix();
 	}
 
 	public void changePosition(float dx, float dy, float dz) {
 		position.x += dx;
 		position.y += dy;
 		position.z += dz;
+		recalculateRelMatrix();
 	}
 
 	public void changePosition(Vector3f relPos) {
 		position.x += relPos.x;
 		position.y += relPos.y;
 		position.z += relPos.z;
+		recalculateRelMatrix();
 	}
 
 	public void changeRotation(float dx, float dy, float dz) {
 		rotation.x += dx;
 		rotation.y += dy;
 		rotation.z += dz;
+		recalculateRelMatrix();
 	}
 
 	public void changeScaling(float dx, float dy, float dz) {
 		scaling.x += dx;
 		scaling.y += dy;
 		scaling.z += dz;
+		recalculateRelMatrix();
 	}
 
 	public void changeVelocity(float relX, float relY, float relZ) {
 		this.velocity.x += relX;
 		this.velocity.y += relY;
 		this.velocity.z += relZ;
+		recalculateRelMatrix();
 	}
 
 	public void changeVelocity(Vector3f relVel) {
 		this.velocity.x += relVel.x;
 		this.velocity.y += relVel.y;
 		this.velocity.z += relVel.z;
+		recalculateRelMatrix();
 	}
 
 	public ArrayList<Entity> getChildrens() {
@@ -133,9 +148,6 @@ public abstract class Entity {
 	}
 
 
-	public String[] getTexturedModelNames() {
-		return texturedModelNames;
-	}
 
 	public Vector3f getVelocity() {
 		return velocity;
@@ -151,6 +163,7 @@ public abstract class Entity {
 				* (float) Math.cos(Math.toRadians(rotation.y)));
 		position.x -= vec.x;
 		position.z += vec.y;
+		recalculateRelMatrix();
 		return vec;
 	}
 
@@ -160,6 +173,7 @@ public abstract class Entity {
 				* (float) Math.cos(Math.toRadians(rotation.y)));
 		position.x += vec.x;
 		position.z -= vec.y;
+		recalculateRelMatrix();
 		return vec;
 	}
 
@@ -169,6 +183,7 @@ public abstract class Entity {
 				* (float) Math.cos(Math.toRadians(rotation.y - 90)));
 		position.x += vec.x;
 		position.z -= vec.y;
+		recalculateRelMatrix();
 		return vec;
 	}
 
@@ -178,6 +193,7 @@ public abstract class Entity {
 				* (float) Math.cos(Math.toRadians(rotation.y + 90)));
 		position.x += vec.x;
 		position.z -= vec.y;
+		recalculateRelMatrix();
 		return vec;
 	}
 
@@ -208,14 +224,17 @@ public abstract class Entity {
 
 	public void setPosition(Vector3f position) {
 		this.position = position;
+		recalculateRelMatrix();
 	}
 
 	public void setRotation(Vector3f rotation) {
 		this.rotation = rotation;
+		recalculateRelMatrix();
 	}
 
 	public void setScaling(Vector3f scaling) {
 		this.scaling = scaling;
+		recalculateRelMatrix();
 	}
 	
 	public void setShowBoundingBox(boolean showBoundingBox) {
@@ -248,11 +267,11 @@ public abstract class Entity {
 	}
 	
 	
-	
 
-	public void setTexturedModelNames(String[] texturedModelNames) {
-		this.texturedModelNames = texturedModelNames;
+	public RawModel[] getRawModels() {
+		return rawModels;
 	}
+
 
 	public Entity getParent() {
 		return parent;
@@ -269,6 +288,33 @@ public abstract class Entity {
 
 	public Type getType() {
 		return type;
+	}
+	
+	
+
+	public Matrix4f getAbsMatrix() {
+		return absMatrix;
+	}
+
+	public boolean isRecalculateAbs() {
+		return recalculateAbs;
+	}
+
+	public Matrix4f getRelMatrix() {
+		return relMatrix;
+	}
+
+	public void setRecalculateAbs(boolean recalculateAbs) {
+		this.recalculateAbs = recalculateAbs;
+	}
+	
+	public void recalculateRelMatrix(){
+		this.relMatrix =  Matrices.createTransformationMatrix(position,
+				rotation, scaling);
+	}
+	
+	public void recalculateAbsMatrix(Matrix4f parentMtx){
+		this.absMatrix = Matrix4f.mul(parentMtx, relMatrix, null);
 	}
 
 	public abstract void update();

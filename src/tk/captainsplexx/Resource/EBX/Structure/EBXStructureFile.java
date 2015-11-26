@@ -2,6 +2,8 @@ package tk.captainsplexx.Resource.EBX.Structure;
 
 import java.util.ArrayList;
 
+import tk.captainsplexx.Resource.EBX.Structure.EBXStructureReader.EntryType;
+
 public class EBXStructureFile {
 	private ArrayList<EBXStructureInstance> instances;
 	private String structureName;
@@ -38,6 +40,15 @@ public class EBXStructureFile {
 			}
 		}
 		System.err.println("Instance "+guid+" does not exist in "+structureName+"!");
+		return null;
+	}
+	
+	public EBXStructureInstance getFirstInstance(EntryType instanceEntryType){
+		for (EBXStructureInstance instance : instances){
+			if (instance.getEntry().getType()==instanceEntryType){
+				return instance;
+			}
+		}
 		return null;
 	}
 		

@@ -11,6 +11,7 @@ import tk.captainsplexx.Resource.TOC.TocSBLink;
 public class ITextureHandler {
 	
 	public static byte[] getDSS(byte[] itextureData) {
+		if (itextureData==null){return null;}
 		FileSeeker seeker = new FileSeeker();
 		ITexture itexture = new ITexture(itextureData, seeker);
 		String itextureChunkID = FileHandler.bytesToHex(itexture.getChunkID()).toLowerCase();

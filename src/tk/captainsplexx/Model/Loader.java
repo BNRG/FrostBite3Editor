@@ -26,11 +26,11 @@ public class Loader {
 	public int notFoundID;
 	public int crosshairID;
 	
-	public RawModel loadVAO(String name, int drawMethod, float[] positions, float[] textures, int[] indices){
+	public RawModel loadVAO(String name, int drawMethod, float[] positions, float[] uvs, int[] indices){
 		int vaoID = createVAO();
 		bindIndiciesBuffer(indices);
 		storeDataAsAttr(0, 3, positions);
-		storeDataAsAttr(1, 2, textures);
+		storeDataAsAttr(1, 2, uvs);
 		unbindVAO();
 		return new RawModel(name, vaoID, indices.length, drawMethod);
 	}
@@ -94,7 +94,7 @@ public class Loader {
 				textures.put(path, texture.getTextureID());
 				return texture.getTextureID();
 			} catch (IOException e) {
-				System.err.println("FILE NOT FOUND! "+path);
+				System.err.println("Unable to load Texture - FILE NOT FOUND! "+path);
 				return notFoundID;
 			}	
 		}

@@ -1,8 +1,11 @@
 package tk.captainsplexx.JavaFX.Controller;
 
+import java.util.ArrayList;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.TreeView;
 import javafx.stage.Stage;
+import tk.captainsplexx.Entity.Layer.EntityLayer;
 import tk.captainsplexx.Game.Core;
 import tk.captainsplexx.JavaFX.TreeViewConverter;
 import tk.captainsplexx.JavaFX.TreeViewEntry;
@@ -11,6 +14,7 @@ import tk.captainsplexx.Resource.FileHandler;
 import tk.captainsplexx.Resource.EBX.EBXFile;
 import tk.captainsplexx.Resource.EBX.EBXHandler;
 import tk.captainsplexx.Resource.EBX.Modify.ChangeFile;
+import tk.captainsplexx.Resource.EBX.Structure.EBXStructureFile;
 
 public class EBXWindowController {
 	@FXML
@@ -26,6 +30,34 @@ public class EBXWindowController {
 			public void run() {
 				Core.getGame().getEntityHandler().createEntityLayer(window.getEBXFile());
 				System.err.println("--------------Layer creation done!!------------------");
+			}
+		});
+	}
+	
+	public void createMeshVariationDatabase(){
+		Core.runOnMainThread(new Runnable() {
+			@Override
+			public void run() {
+				if (window.getStage().getTitle().contains("variation")){
+					EBXStructureFile strcFile = Core.getGame().getResourceHandler().getEBXHandler().readEBXStructureFile(window.getEBXFile());
+					if (strcFile!=null){
+						Core.getGame().getResourceHandler().getMeshVariationDatabaseHandler().addDatabase(strcFile);
+						Core.getJavaFXHandler().getDialogBuilder().showInfo("SUCCESSFUL", "MeshVariationDatabase added SUCCESSFUL!!", null, null);
+						
+						
+
+						//DEBUG
+						ArrayList<EntityLayer> layers = Core.getGame().getEntityHandler().getLayers();
+						if (!layers.isEmpty()){
+							Core.getGame().getEntityHandler().updateLayer(layers.get(0), strcFile);
+						}
+						
+					}else{
+						Core.getJavaFXHandler().getDialogBuilder().showError("ERROR", "MeshVariationDatabase FAILED!!", null);
+					}	
+				}else{
+					Core.getJavaFXHandler().getDialogBuilder().showError("ERROR", "Not a valid MeshVariationDatabase!", null);
+				}	
 			}
 		});
 	}
@@ -50,7 +82,7 @@ public class EBXWindowController {
 										if (cFile!=null){
 											if (cFile.applyChanges(true)){
 												Core.getJavaFXHandler().getDialogBuilder().showInfo("SUCESSFULL!", "Changes successfully appied to Mod!\nReloading...");
-												ebxHandler.reset();
+												Core.getGame().getResourceHandler().resetEBXRelated();
 												Core.getJavaFXHandler().getMainWindow().destroyEBXWindow(stage);
 											}else{
 												Core.getJavaFXHandler().getDialogBuilder().showError("ERROR", "Error, while applying changes!", null);

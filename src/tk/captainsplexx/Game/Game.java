@@ -163,7 +163,7 @@ public class Game {
 	
 	public void lowRateUpdate(){
 		PlayerEntity pe = playerHandler.getPlayerEntity();
-		entityHandler.getFocussedEntity(pe.getPos(), pe.getRot());
+		//entityHandler.getFocussedEntity(pe.getPos(), pe.getRot());
 	}
 	
 	public void buildExplorerTree(){		
