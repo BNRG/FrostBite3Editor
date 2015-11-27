@@ -7,6 +7,7 @@ import org.lwjgl.opengl.Display;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -19,6 +20,7 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import tk.captainsplexx.Entity.Entity;
+import tk.captainsplexx.Entity.Layer.EntityLayer;
 import tk.captainsplexx.Game.Core;
 import tk.captainsplexx.JavaFX.JavaFXHandler;
 import tk.captainsplexx.JavaFX.TreeViewEntry;
@@ -27,6 +29,7 @@ import tk.captainsplexx.JavaFX.CellFactories.JavaFXexplorer1TCF;
 import tk.captainsplexx.JavaFX.CellFactories.JavaFXexplorerTCF;
 import tk.captainsplexx.JavaFX.CellFactories.JavaFXlayerTCF;
 import tk.captainsplexx.JavaFX.Controller.ToolsWindowController;
+import tk.captainsplexx.Resource.EBX.Structure.EBXStructureFile;
 
 public class ToolsWindow {
 	private Stage stage;
@@ -91,6 +94,19 @@ public class ToolsWindow {
 			}
 		});
         
+        controller.getVariationDatabase().valueProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				handleVariationDatabaseChange(newValue);
+			}
+		});
+        /*controller.getVariationDatabase().setOnMouseClicked(new EventHandler<Event>() {
+
+			@Override
+			public void handle(Event event) {
+				handleVariationDatabase(controller.getVariationDatabase().getValue());				
+			}
+		});*/
         
         
         controller.getLayerTreeView().setEditable(false);
@@ -121,6 +137,44 @@ public class ToolsWindow {
         		Core.getRender().getCamera().setMouseSensitivity((float)mouseSens);
         	}
         });
+	}
+	
+	private void handleVariationDatabaseChange(String newValue){
+		if (controller.getLayer().getValue()!=""&&controller.getLayer().getValue()!=null){
+			String currentLayerName = controller.getLayer().getValue().split(" ")[0];
+			String currentDatabaseName = controller.getVariationDatabase().getValue().split(" ")[0];
+			Core.getJavaFXHandler().getDialogBuilder().showAsk("Question", "Do you want to assign "+currentDatabaseName+" to the current layer ?", new Runnable() {
+				public void run() {
+					//Pressed YES
+					EntityLayer layer = Core.getGame().getEntityHandler().getEntityLayer(currentLayerName);
+					EBXStructureFile variationDB = Core.getGame().getResourceHandler().getMeshVariationDatabaseHandler().getDatabaseByName(currentDatabaseName);
+					if (layer==null||variationDB==null){
+						Core.getJavaFXHandler().getDialogBuilder().showError("ERROR", "Something went wrong!", null);
+					}else{
+						Core.runOnMainThread(new Runnable() {
+							
+							@Override
+							public void run() {
+								Core.getGame().getEntityHandler().updateLayer(layer, variationDB);
+							}
+						});
+						
+					}
+				}
+			}, new Runnable() {
+				//Pressed NO
+				@Override
+				public void run() {
+					Core.getJavaFXHandler().getDialogBuilder().showAsk("Question", "Do you want to DELETE "+currentDatabaseName+" then ?", new Runnable() {
+						@Override
+						public void run() {
+							//Pressed YES
+							Core.getGame().getResourceHandler().getMeshVariationDatabaseHandler().deleteDatabase(currentDatabaseName);
+						}
+					}, null);
+				}
+			});
+		}
 	}
 	
 	public void setExplorer1(TreeItem<TreeViewEntry> root, String str){

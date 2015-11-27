@@ -24,6 +24,8 @@ public class ToolsWindowController {
 	@FXML
 	public ComboBox<String> layer;
 	@FXML
+	public ComboBox<String> variationDatabase;
+	@FXML
 	public ComboBox<String> lightning;
 	@FXML
 	public CheckBox considerPitchBox;
@@ -122,10 +124,10 @@ public class ToolsWindowController {
 	public TreeView<Entity> getLayerTreeView() {
 		return layerTreeView;
 	}
-	
-	
-	
-	
-	
+
+	public ComboBox<String> getVariationDatabase() {
+		return variationDatabase;
+	}
+		
 	
 }

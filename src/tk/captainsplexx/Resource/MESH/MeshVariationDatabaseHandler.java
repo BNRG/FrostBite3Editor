@@ -3,6 +3,7 @@ package tk.captainsplexx.Resource.MESH;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import tk.captainsplexx.Game.Core;
 import tk.captainsplexx.Resource.EBX.EBXComplex;
 import tk.captainsplexx.Resource.EBX.EBXExternalGUID;
 import tk.captainsplexx.Resource.EBX.EBXField;
@@ -24,10 +25,38 @@ public class MeshVariationDatabaseHandler {
 	
 	public void reset(){
 		databases = new ArrayList<>();
+		Core.getJavaFXHandler().getMainWindow().updateMeshvariationDatabaseComboBox(databases);
+	}
+	
+	public void deleteDatabase(String name){
+		EBXStructureFile db = getDatabaseByName(name);
+		if (db!=null){
+			databases.remove(db);
+			Core.getJavaFXHandler().getMainWindow().updateMeshvariationDatabaseComboBox(databases);
+		}
 	}
 	
 	public void addDatabase(EBXStructureFile structFile){
 		databases.add(structFile);
+		Core.getJavaFXHandler().getMainWindow().updateMeshvariationDatabaseComboBox(databases);
+	}
+	
+	public EBXStructureFile getDatabaseByName(String name){
+		for (EBXStructureFile db : databases){
+			if (db.getStructureName().equalsIgnoreCase(name)){
+				return db;
+			}
+		}
+		return null;
+	}
+	
+	public EBXStructureFile getDatabaseByEBXGUID(String ebxGUID){
+		for (EBXStructureFile db : databases){
+			if (db.getEBXGUID().equalsIgnoreCase(ebxGUID)){
+				return db;
+			}
+		}
+		return null;
 	}
 	
 	public EBXMeshVariationDatabaseEntry getVariationDatabaseEntry(EBXStructureFile databaseFile, long variationAssetNameHash, EBXExternalGUID meshExternalGUID, boolean excludeRedirect){

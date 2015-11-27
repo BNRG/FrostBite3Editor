@@ -40,7 +40,8 @@ public class EntityLayerConverter {
 		EBXStructureFile structFile = ebxHandler.getStructureFileByGUID(ebxFile.getGuid(), true, loadOriginal/*don't load original*/);
 		if (structFile!=null){
 			String[] strArray = ebxFile.getTruePath().split("/");		
-			EntityLayer layer = new EntityLayer(strArray[strArray.length-1]+" "+ebxFile.getGuid());
+			//EntityLayer layer = new EntityLayer(strArray[strArray.length-1]+" "+ebxFile.getGuid());
+			EntityLayer layer = new EntityLayer(ebxFile.getTruePath()+" "+ebxFile.getGuid());
 			
 			for (EBXStructureInstance instance : structFile.getInstances()){
 				Entity en = getEntity(instance.getEntry(), null, new EBXExternalGUID(instance.getParentFile().getEBXGUID(), instance.getGuid()), loadOriginal);	

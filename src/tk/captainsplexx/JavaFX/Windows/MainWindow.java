@@ -16,6 +16,7 @@ import tk.captainsplexx.JavaFX.TreeViewConverter;
 import tk.captainsplexx.JavaFX.TreeViewEntry;
 import tk.captainsplexx.Mod.Mod;
 import tk.captainsplexx.Resource.EBX.EBXFile;
+import tk.captainsplexx.Resource.EBX.Structure.EBXStructureFile;
 import tk.captainsplexx.Resource.TOC.ResourceLink;
 
 
@@ -277,6 +278,20 @@ public class MainWindow extends Application{
 				TreeItem<Entity> layerTree = TreeViewConverter.getTreeView(layers);
 				setLayerTreeView(layerTree);
 				System.out.println("TreeView for Layers updated!");
+			}
+		});		
+	}
+	
+	public void updateMeshvariationDatabaseComboBox(ArrayList<EBXStructureFile> databases){
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				ObservableList<String> list = toolsWindow.getController().getVariationDatabase().getItems();
+				list.clear();
+				list.add("NULL");
+				for (EBXStructureFile db : databases){
+					list.add(db.getStructureName()+" "+db.getEBXGUID());
+				}				
 			}
 		});		
 	}

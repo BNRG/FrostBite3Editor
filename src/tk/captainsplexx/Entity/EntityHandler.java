@@ -51,8 +51,9 @@ public class EntityHandler {
 	
 	
 	public EntityLayer getEntityLayer(String name){
+		name=name.toLowerCase();
 		for (EntityLayer layer : layers){
-			if (layer.getName().equalsIgnoreCase(name)){
+			if (layer.getName().toLowerCase().startsWith(name)){
 				return layer;
 			}
 		}
@@ -92,6 +93,7 @@ public class EntityHandler {
 		
 		
 	}
+
 	
 	public Entity getFocussedEntity(Vector3f position, Vector3f direction){
 		return getFocussedEntity(position, direction, MAX_RAY_CHECKS, RAY_CHECK_DISTANCE);
@@ -189,6 +191,7 @@ public class EntityHandler {
 	
 	public void updateLayer(EntityLayer layer, EBXStructureFile meshVariationDatabase){
 		updateEntities(layer.getEntities(), meshVariationDatabase);
+		Core.getJavaFXHandler().getDialogBuilder().showInfo("UPDATED", "The layer got updated by the Meshvariation Database!");
 	}
 	
 	private void updateEntity(Entity e, EBXStructureFile meshVariationDatabase){

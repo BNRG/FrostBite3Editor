@@ -46,11 +46,11 @@ public class EBXWindowController {
 						
 						
 
-						//DEBUG
+						/*DEBUG
 						ArrayList<EntityLayer> layers = Core.getGame().getEntityHandler().getLayers();
 						if (!layers.isEmpty()){
 							Core.getGame().getEntityHandler().updateLayer(layers.get(0), strcFile);
-						}
+						}*/
 						
 					}else{
 						Core.getJavaFXHandler().getDialogBuilder().showError("ERROR", "MeshVariationDatabase FAILED!!", null);
