@@ -34,7 +34,13 @@ public class JavaFXexplorerTCF extends TreeCell<TreeViewEntry> {
 						if (link.getType() == LinkBundleType.BUNDLES){
 							Core.getGame().getResourceHandler().resetEBXRelated();//clean all ebxFiles in DB
 							Core.getGame().getEntityHandler().clear();
-							Core.getGame().getModelHandler().getLoader().cleanUp();//Clean VAO, VBO, Textures!
+							/*Core.runOnMainThread(new Runnable() {
+								@Override
+								public void run() {
+									Core.getGame().getModelHandler().getLoader().cleanUp();//Clean VAO, VBO, Textures!
+								}
+							});*/
+							
 							
 							TocFile part = link.getLinkedSBPart();
 							ConvertedSBpart sbpart = TocConverter.convertSBpart(part);
